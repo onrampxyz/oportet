@@ -6,7 +6,7 @@ import { Cuer } from 'cuer'
 import { cx } from 'cva'
 import { Address, Hex, Value } from 'ox'
 import { Chains } from 'porto'
-import { base, baseSepolia } from 'porto/core/Chains'
+import { riseTestnet } from 'porto/core/Chains'
 import { Hooks } from 'porto/wagmi'
 import * as React from 'react'
 import { toast } from 'sonner'
@@ -342,16 +342,16 @@ export function Dashboard() {
                   return
                 }
                 await switchChainAsync({
-                  chainId: Chains.baseSepolia.id,
+                  chainId: Chains.riseTestnet.id,
                 }).catch()
                 if (!capabilities.data) return
                 const exp1 = capabilities.data?.[
-                  Chains.baseSepolia.id
+                  Chains.riseTestnet.id
                 ]?.feeToken?.tokens?.find((t) => t.uid === 'exp1')
                 if (!exp1) return
                 addFunds.mutate({
                   address: account.address,
-                  chainId: Chains.baseSepolia.id,
+                  chainId: Chains.riseTestnet.id,
                   token: exp1?.address as Address.Address,
                   // @ts-expect-error TODO: fix type
                   tokenAddress: exp1?.address as Address.Address,
@@ -671,10 +671,7 @@ export function Dashboard() {
                         className="size-8 rounded-full p-1 text-gray11 hover:bg-red-100 hover:text-red-500"
                         onClick={() => {
                           if (!id || !address) return
-                          const chainId =
-                            import.meta.env.VITE_VERCEL_ENV === 'production'
-                              ? base.id
-                              : baseSepolia.id
+                          const chainId = riseTestnet.id
                           revokeAdmin.mutate({
                             address: account.address,
                             chainId,

@@ -91,7 +91,7 @@ export async function createAccount(_: unknown, args: createAccount.Arguments) {
   // Register public key for verification.
   if (adminKey) Dialog.messenger.registerPublicKey(adminKey.publicKey)
 
-  const chainId = args.testnet ? Chains.baseSepolia.id : Chains.base.id
+  const chainId = Chains.riseTestnet.id
 
   // Create an account.
   s.start('Creating account...')
