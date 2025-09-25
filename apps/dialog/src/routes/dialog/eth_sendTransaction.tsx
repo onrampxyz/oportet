@@ -9,6 +9,7 @@ import { porto } from '~/lib/Porto'
 import { useAuthSessionRedirect } from '~/lib/ReactNative'
 import * as Router from '~/lib/Router'
 import { ActionRequest } from '../-components/ActionRequest'
+import { useEffect } from 'react'
 
 export const Route = createFileRoute('/dialog/eth_sendTransaction')({
   component: RouteComponent,
@@ -89,6 +90,12 @@ function RouteComponent() {
       })
     },
   })
+  
+  useEffect(() => {
+    if (respond.error) {
+      console.error(respond.error)
+    }
+  }, [respond.error])
 
   useAuthSessionRedirect(respond)
 
