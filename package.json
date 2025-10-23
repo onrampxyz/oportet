@@ -179,7 +179,7 @@
     }
   },
   "[!start-pkg]": {},
-  "name": "porto",
+  "name": "rise-wallet",
   "description": "Next-gen Account for Ethereum",
   "version": "0.2.29",
   "type": "module",
