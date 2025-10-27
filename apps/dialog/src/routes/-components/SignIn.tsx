@@ -24,7 +24,7 @@ export function SignIn(props: SignIn.Props) {
         <Layout.Header.Default
           content={
             <>
-              Authenticate with your Porto account to start using{' '}
+              Authenticate with your RISE Wallet account to start using{' '}
               {hostname ? (
                 <span className="font-medium">{hostname}</span>
               ) : (

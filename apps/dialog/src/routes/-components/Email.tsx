@@ -56,7 +56,7 @@ export function Email(props: Email.Props) {
     if (cli) return undefined
     return (
       <>
-        Use <span className="font-medium">Porto</span> to sign in to{' '}
+        Use <span className="font-medium">RISE Wallet</span> to sign in to{' '}
         {hostname ? (
           <>
             <span className="font-medium">{hostname}</span>
@@ -100,8 +100,8 @@ export function Email(props: Email.Props) {
             width="full"
           >
             {actions.includes('sign-up')
-              ? 'Sign in with Porto'
-              : 'Continue with Porto'}
+              ? 'Sign in with RISE Wallet'
+              : 'Continue with RISE Wallet'}
           </Button>
         )}
 
@@ -152,11 +152,11 @@ export function Email(props: Email.Props) {
               {invalid ? (
                 'Invalid email'
               ) : actions.includes('sign-in') ? (
-                'Create Porto account'
+                'Create RISE Wallet account'
               ) : (
                 <div className="flex gap-2">
                   <IconScanFace className="size-5.25" />
-                  Sign up with Porto
+                  Sign up with RISE Wallet
                 </div>
               )}
             </Button>

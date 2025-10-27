@@ -53,7 +53,7 @@ export namespace Layout {
         )}
         {right ?? (
           <Button
-            render={<Link aria-label="About Porto" to="/about" />}
+            render={<Link aria-label="About RISE Wallet" to="/about" />}
             size="square"
             variant="outline"
           >
@@ -74,8 +74,8 @@ export namespace Layout {
           className="h-min w-min! px-2! py-1"
           render={
             <a
-              aria-label="Learn more about Porto"
-              href="https://porto.sh"
+              aria-label="Learn more about RISE Wallet"
+              href="https://github.com/risechain/porto-rise"
               rel="noreferrer"
               target="_blank"
             >

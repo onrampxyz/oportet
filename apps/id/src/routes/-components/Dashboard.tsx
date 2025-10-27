@@ -365,7 +365,7 @@ export function Dashboard() {
             <Button
               render={
                 <a
-                  href="https://t.me/porto_devs"
+                  href="https://t.me/porto_devs" // TODO: Jen
                   rel="noreferrer"
                   target="_blank"
                 >

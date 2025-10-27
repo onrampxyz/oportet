@@ -96,7 +96,7 @@ export namespace ErrorScreen {
     errorTitle: string,
     serializedError: string,
   ) {
-    const subject = `Porto Error Report: ${errorTitle}`
+    const subject = `RISE Wallet Error Report: ${errorTitle}`
     const body =
       'Please describe what you were doing when this error occurred:' +
       `\n\n\n\n---\nError Details:\n${serializedError}`

@@ -43,7 +43,7 @@ export function Landing() {
             <IndeterminateLoader
               align="vertical"
               description="Please check for a system prompt."
-              hint="You can choose any of your existing Porto passkeys to sign in."
+              hint="You can choose any of your existing RISE Wallet passkeys to sign in."
               title="Signing in"
             />
           ) : (
