@@ -10,7 +10,7 @@ import {
   useConnect,
   useConnectors,
   useDisconnect,
-  useSwitchChain
+  useSwitchChain,
 } from 'wagmi'
 import { mipdConfig } from '~/lib/Wagmi'
 import LucideChevronRight from '~icons/lucide/chevron-right'
@@ -32,10 +32,6 @@ export function Connectors() {
   const switchChain = useSwitchChain({ config: mipdConfig })
 
   const [open, setOpen] = useState(false)
-
-  // const [view, setView] = useState<'default' | 'success' | 'loading'>(
-  //   'default',
-  // )
 
   const grantAdmin = Hooks.useGrantAdmin()
 
