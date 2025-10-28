@@ -1,5 +1,3 @@
-import { cx } from 'cva'
-import { AddressFormatter } from '~/utils'
 import LucideCheck from '~icons/lucide/check'
 import LucideCopy from '~icons/lucide/copy'
 import LucideShield from '~icons/lucide/shield-alert'
