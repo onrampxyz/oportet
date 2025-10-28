@@ -1,4 +1,5 @@
 import { cx } from 'cva'
+import { Hooks } from 'porto/wagmi'
 
 type BalanceChange = {
   totalChange: string
@@ -106,6 +107,10 @@ const DUMMY_PROTOCOL_POSITIONS: ProtocolPosition[] = [
 ]
 
 export function Portfolio() {
+  const { data: assets } = Hooks.useAssets()
+
+  console.log("assets:: ", assets)
+
   return (
     <div className="space-y-6">
       {/* 24h Balance Change Section */}
@@ -116,27 +121,27 @@ export function Portfolio() {
         </p>
 
         <div className="grid grid-cols-4 gap-4">
-          <div>
+          <div className='border rounded-md border-gray5 p-5 text-center'>
             <p className="mb-1 text-gray10 text-xs">Total Change</p>
-            <p className="font-semibold text-xl">
+            <p className="text-2xl">
               {DUMMY_BALANCE_CHANGE.totalChange}
             </p>
           </div>
-          <div>
+          <div className='border rounded-md border-gray5 p-5 text-center'>
             <p className="mb-1 text-gray10 text-xs">Wallet</p>
-            <p className="font-semibold text-green-600 text-xl">
+            <p className="text-2xl text-green-600">
               {DUMMY_BALANCE_CHANGE.wallet}
             </p>
           </div>
-          <div>
+          <div className='border rounded-md border-gray5 p-5 text-center'>
             <p className="mb-1 text-gray10 text-xs">Protocols</p>
-            <p className="font-semibold text-green-600 text-xl">
+            <p className="text-2xl text-green-600">
               {DUMMY_BALANCE_CHANGE.protocols}
             </p>
           </div>
-          <div>
+          <div className='border rounded-md border-gray5 p-5 text-center'>
             <p className="mb-1 text-gray10 text-xs">Transactions</p>
-            <p className="font-semibold text-xl">
+            <p className="text-2xl">
               {DUMMY_BALANCE_CHANGE.transactions}
             </p>
           </div>
