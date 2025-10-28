@@ -1,5 +1,3 @@
-import * as Ariakit from '@ariakit/react'
-import { useAccount } from 'wagmi'
 import LucideCheck from '~icons/lucide/check'
 import LucideCopy from '~icons/lucide/copy'
 import LucideShield from '~icons/lucide/shield-alert'
@@ -27,9 +25,7 @@ const DUMMY_RECOVERY_WALLETS: RecoveryWallet[] = [
 
 // component > internal > core > actions > rpc_method
 export function Recovery() {
-  const dialogStore = Ariakit.useDialogStore()
-
-  const account = useAccount()
+  // const account = useAccount()
 
   // const admins = Hooks.useAdmins({
   //   query: {
@@ -82,13 +78,7 @@ export function Recovery() {
             >
               Remove All
             </button>
-            <button
-              className="rounded-lg bg-violet9 px-4 py-2 font-medium text-sm text-white transition-colors hover:bg-violet-700"
-              onClick={dialogStore.show}
-              type="button"
-            >
-              + Add Recovery Wallet
-            </button>
+            <Connectors />
           </div>
         </div>
 
@@ -173,9 +163,6 @@ export function Recovery() {
           </div>
         )} */}
       </div>
-
-      {/* Add Recovery Wallet Modal */}
-      <Connectors {...dialogStore} />
     </div>
   )
 }

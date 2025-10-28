@@ -15,7 +15,11 @@ import { Route as PlaygroundImport } from './routes/playground'
 import { Route as LayoutV1Import } from './routes/_layoutV1'
 import { Route as LayoutImport } from './routes/_layout'
 import { Route as LayoutIndexImport } from './routes/_layout.index'
+import { Route as LayoutTransactionsImport } from './routes/_layout.transactions'
+import { Route as LayoutSessionsImport } from './routes/_layout.sessions'
+import { Route as LayoutRecoveryV1Import } from './routes/_layout.recovery-v1'
 import { Route as LayoutRecoveryImport } from './routes/_layout.recovery'
+import { Route as LayoutPortfolioImport } from './routes/_layout.portfolio'
 import { Route as LayoutAboutImport } from './routes/_layout.about'
 import { Route as LayoutEmailVerifyImport } from './routes/_layout.email.verify'
 
@@ -43,9 +47,33 @@ const LayoutIndexRoute = LayoutIndexImport.update({
   getParentRoute: () => LayoutRoute,
 } as any)
 
+const LayoutTransactionsRoute = LayoutTransactionsImport.update({
+  id: '/transactions',
+  path: '/transactions',
+  getParentRoute: () => LayoutRoute,
+} as any)
+
+const LayoutSessionsRoute = LayoutSessionsImport.update({
+  id: '/sessions',
+  path: '/sessions',
+  getParentRoute: () => LayoutRoute,
+} as any)
+
+const LayoutRecoveryV1Route = LayoutRecoveryV1Import.update({
+  id: '/recovery-v1',
+  path: '/recovery-v1',
+  getParentRoute: () => LayoutRoute,
+} as any)
+
 const LayoutRecoveryRoute = LayoutRecoveryImport.update({
   id: '/recovery',
   path: '/recovery',
+  getParentRoute: () => LayoutRoute,
+} as any)
+
+const LayoutPortfolioRoute = LayoutPortfolioImport.update({
+  id: '/portfolio',
+  path: '/portfolio',
   getParentRoute: () => LayoutRoute,
 } as any)
 
@@ -93,11 +121,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutAboutImport
       parentRoute: typeof LayoutImport
     }
+    '/_layout/portfolio': {
+      id: '/_layout/portfolio'
+      path: '/portfolio'
+      fullPath: '/portfolio'
+      preLoaderRoute: typeof LayoutPortfolioImport
+      parentRoute: typeof LayoutImport
+    }
     '/_layout/recovery': {
       id: '/_layout/recovery'
       path: '/recovery'
       fullPath: '/recovery'
       preLoaderRoute: typeof LayoutRecoveryImport
+      parentRoute: typeof LayoutImport
+    }
+    '/_layout/recovery-v1': {
+      id: '/_layout/recovery-v1'
+      path: '/recovery-v1'
+      fullPath: '/recovery-v1'
+      preLoaderRoute: typeof LayoutRecoveryV1Import
+      parentRoute: typeof LayoutImport
+    }
+    '/_layout/sessions': {
+      id: '/_layout/sessions'
+      path: '/sessions'
+      fullPath: '/sessions'
+      preLoaderRoute: typeof LayoutSessionsImport
+      parentRoute: typeof LayoutImport
+    }
+    '/_layout/transactions': {
+      id: '/_layout/transactions'
+      path: '/transactions'
+      fullPath: '/transactions'
+      preLoaderRoute: typeof LayoutTransactionsImport
       parentRoute: typeof LayoutImport
     }
     '/_layout/': {
@@ -121,14 +177,22 @@ declare module '@tanstack/react-router' {
 
 interface LayoutRouteChildren {
   LayoutAboutRoute: typeof LayoutAboutRoute
+  LayoutPortfolioRoute: typeof LayoutPortfolioRoute
   LayoutRecoveryRoute: typeof LayoutRecoveryRoute
+  LayoutRecoveryV1Route: typeof LayoutRecoveryV1Route
+  LayoutSessionsRoute: typeof LayoutSessionsRoute
+  LayoutTransactionsRoute: typeof LayoutTransactionsRoute
   LayoutIndexRoute: typeof LayoutIndexRoute
   LayoutEmailVerifyRoute: typeof LayoutEmailVerifyRoute
 }
 
 const LayoutRouteChildren: LayoutRouteChildren = {
   LayoutAboutRoute: LayoutAboutRoute,
+  LayoutPortfolioRoute: LayoutPortfolioRoute,
   LayoutRecoveryRoute: LayoutRecoveryRoute,
+  LayoutRecoveryV1Route: LayoutRecoveryV1Route,
+  LayoutSessionsRoute: LayoutSessionsRoute,
+  LayoutTransactionsRoute: LayoutTransactionsRoute,
   LayoutIndexRoute: LayoutIndexRoute,
   LayoutEmailVerifyRoute: LayoutEmailVerifyRoute,
 }
@@ -140,7 +204,11 @@ export interface FileRoutesByFullPath {
   '': typeof LayoutV1Route
   '/playground': typeof PlaygroundRoute
   '/about': typeof LayoutAboutRoute
+  '/portfolio': typeof LayoutPortfolioRoute
   '/recovery': typeof LayoutRecoveryRoute
+  '/recovery-v1': typeof LayoutRecoveryV1Route
+  '/sessions': typeof LayoutSessionsRoute
+  '/transactions': typeof LayoutTransactionsRoute
   '/': typeof LayoutIndexRoute
   '/email/verify': typeof LayoutEmailVerifyRoute
 }
@@ -149,7 +217,11 @@ export interface FileRoutesByTo {
   '': typeof LayoutV1Route
   '/playground': typeof PlaygroundRoute
   '/about': typeof LayoutAboutRoute
+  '/portfolio': typeof LayoutPortfolioRoute
   '/recovery': typeof LayoutRecoveryRoute
+  '/recovery-v1': typeof LayoutRecoveryV1Route
+  '/sessions': typeof LayoutSessionsRoute
+  '/transactions': typeof LayoutTransactionsRoute
   '/': typeof LayoutIndexRoute
   '/email/verify': typeof LayoutEmailVerifyRoute
 }
@@ -160,23 +232,51 @@ export interface FileRoutesById {
   '/_layoutV1': typeof LayoutV1Route
   '/playground': typeof PlaygroundRoute
   '/_layout/about': typeof LayoutAboutRoute
+  '/_layout/portfolio': typeof LayoutPortfolioRoute
   '/_layout/recovery': typeof LayoutRecoveryRoute
+  '/_layout/recovery-v1': typeof LayoutRecoveryV1Route
+  '/_layout/sessions': typeof LayoutSessionsRoute
+  '/_layout/transactions': typeof LayoutTransactionsRoute
   '/_layout/': typeof LayoutIndexRoute
   '/_layout/email/verify': typeof LayoutEmailVerifyRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '' | '/playground' | '/about' | '/recovery' | '/' | '/email/verify'
+  fullPaths:
+    | ''
+    | '/playground'
+    | '/about'
+    | '/portfolio'
+    | '/recovery'
+    | '/recovery-v1'
+    | '/sessions'
+    | '/transactions'
+    | '/'
+    | '/email/verify'
   fileRoutesByTo: FileRoutesByTo
-  to: '' | '/playground' | '/about' | '/recovery' | '/' | '/email/verify'
+  to:
+    | ''
+    | '/playground'
+    | '/about'
+    | '/portfolio'
+    | '/recovery'
+    | '/recovery-v1'
+    | '/sessions'
+    | '/transactions'
+    | '/'
+    | '/email/verify'
   id:
     | '__root__'
     | '/_layout'
     | '/_layoutV1'
     | '/playground'
     | '/_layout/about'
+    | '/_layout/portfolio'
     | '/_layout/recovery'
+    | '/_layout/recovery-v1'
+    | '/_layout/sessions'
+    | '/_layout/transactions'
     | '/_layout/'
     | '/_layout/email/verify'
   fileRoutesById: FileRoutesById
@@ -213,7 +313,11 @@ export const routeTree = rootRoute
       "filePath": "_layout.tsx",
       "children": [
         "/_layout/about",
+        "/_layout/portfolio",
         "/_layout/recovery",
+        "/_layout/recovery-v1",
+        "/_layout/sessions",
+        "/_layout/transactions",
         "/_layout/",
         "/_layout/email/verify"
       ]
@@ -228,8 +332,24 @@ export const routeTree = rootRoute
       "filePath": "_layout.about.tsx",
       "parent": "/_layout"
     },
+    "/_layout/portfolio": {
+      "filePath": "_layout.portfolio.tsx",
+      "parent": "/_layout"
+    },
     "/_layout/recovery": {
       "filePath": "_layout.recovery.tsx",
+      "parent": "/_layout"
+    },
+    "/_layout/recovery-v1": {
+      "filePath": "_layout.recovery-v1.tsx",
+      "parent": "/_layout"
+    },
+    "/_layout/sessions": {
+      "filePath": "_layout.sessions.tsx",
+      "parent": "/_layout"
+    },
+    "/_layout/transactions": {
+      "filePath": "_layout.transactions.tsx",
       "parent": "/_layout"
     },
     "/_layout/": {
