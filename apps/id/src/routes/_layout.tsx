@@ -7,7 +7,7 @@ export const Route = createFileRoute('/_layout')({
 
 function RouteComponent() {
   return (
-    <div className="w-full space-y-8 max-w-7xl mx-auto">
+    <div className="mx-auto w-full max-w-7xl space-y-8">
       <Header />
       <Outlet />
     </div>

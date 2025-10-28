@@ -84,7 +84,7 @@ const StatusBadge = ({ status }: { status: TransactionStatus }) => {
   return (
     <span
       className={cx(
-        'rounded-full px-2.5 py-1 text-xs font-medium capitalize',
+        'rounded-full px-2.5 py-1 font-medium text-xs capitalize',
         statusStyles[status],
       )}
     >
@@ -98,7 +98,7 @@ export function Transactions() {
     <div className="space-y-4">
       {/* Header */}
       <div>
-        <h2 className="font-semibold text-lg text-gray12">
+        <h2 className="font-semibold text-gray12 text-lg">
           Recent Transactions
         </h2>
       </div>

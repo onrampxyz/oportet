@@ -46,12 +46,12 @@ type Asset = {
   chainId: number
   balance: bigint
 } & (
-  | {
+    | {
       metadata: null
       type: 'native'
       feeToken: boolean
     }
-  | {
+    | {
       type: 'erc20'
       metadata: {
         name?: string
@@ -61,7 +61,7 @@ type Asset = {
       }
       feeToken: boolean
     }
-)
+  )
 
 export function Dashboard() {
   const [, copyToClipboard] = useCopyToClipboard({ timeout: 2_000 })
@@ -161,9 +161,9 @@ export function Dashboard() {
   const showManageEmail = false
   const [emailData, setEmailData] = React.useState<
     | {
-        email: string
-        verified: boolean
-      }
+      email: string
+      verified: boolean
+    }
     | undefined
   >()
   const [email, setEmail] = React.useState('')
@@ -1050,7 +1050,7 @@ function AssetRow(
                             'peer',
                             'w-full font-mono text-xs placeholder:text-gray10 focus:outline-none sm:text-sm dark:text-gray12',
                             valid &&
-                              'not-data-focus-visible:not-focus-visible:not-focus:not-aria-invalid:text-transparent',
+                            'not-data-focus-visible:not-focus-visible:not-focus:not-aria-invalid:text-transparent',
                           )}
                           data-field={`${address}-recipient`}
                           name={sendForm.names.sendRecipient}
@@ -1169,8 +1169,8 @@ function AssetRow(
                   ? 'bg-accent text-white hover:bg-accentHover'
                   : 'cursor-not-allowed bg-gray4 *:text-gray8! hover:bg-gray7',
               )}
-              // onClick={submitForm}
-              // type="button"
+            // onClick={submitForm}
+            // type="button"
             >
               {sendCalls.isPending || callStatus.isFetching ? (
                 <Spinner className="size-3! sm:size-4!" />

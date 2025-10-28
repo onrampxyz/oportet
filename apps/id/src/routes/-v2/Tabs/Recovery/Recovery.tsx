@@ -1,15 +1,18 @@
+import * as Ariakit from '@ariakit/react'
+import { useAccount } from 'wagmi'
 import LucideCheck from '~icons/lucide/check'
 import LucideCopy from '~icons/lucide/copy'
 import LucideShield from '~icons/lucide/shield-alert'
 import LucideTrash from '~icons/lucide/trash-2'
+import { Connectors } from './Connectors'
 
 type RecoveryWallet = {
-  id: string
-  name: string
   address: string
-  verified: boolean
   addedDate: string
   avatar?: string
+  id: string
+  name: string
+  verified: boolean
 }
 
 const DUMMY_RECOVERY_WALLETS: RecoveryWallet[] = [
@@ -20,37 +23,33 @@ const DUMMY_RECOVERY_WALLETS: RecoveryWallet[] = [
     name: 'Metamask',
     verified: true,
   },
-  {
-    addedDate: '2/20/2024',
-    address: '0xabcdeff12...abcdeff12',
-    id: '2',
-    name: 'Phantom',
-    verified: true,
-  },
-  {
-    addedDate: '3/10/2024',
-    address: '0x987654321...98765432',
-    id: '3',
-    name: 'Rabby',
-    verified: false,
-  },
-  {
-    addedDate: '3/10/2024',
-    address: '0x987654321...98765432',
-    id: '4',
-    name: 'Rabby',
-    verified: false,
-  },
-  {
-    addedDate: '3/10/2024',
-    address: '0x987654321...98765432',
-    id: '5',
-    name: 'Rabby',
-    verified: false,
-  },
 ]
 
+// component > internal > core > actions > rpc_method
 export function Recovery() {
+  const dialogStore = Ariakit.useDialogStore()
+
+  const account = useAccount()
+
+  // const admins = Hooks.useAdmins({
+  //   query: {
+  //     enabled: account.status === 'connected',
+  //     select: (data) => ({
+  //       ...data,
+  //       keys: data.keys.filter((key) => key.type === 'address'),
+  //     }),
+  //   },
+  // })
+
+
+  // const recoverWallets = useMemo(() => {
+  //   if (admins.data?.keys.length) {
+  //     console.log("admins.data?.keys:: ", admins.data?.keys)
+  //     return admins.data?.keys
+  //   }
+  //   return []
+  // }, [admins.data])
+
   return (
     <div className="space-y-6">
       {/* Warning Banner */}
@@ -69,7 +68,7 @@ export function Recovery() {
           <div>
             <div className="flex items-center gap-2">
               <LucideShield className="size-5 text-gray10" />
-              <h2 className="font-semibold text-lg text-gray12">
+              <h2 className="font-semibold text-gray12 text-lg">
                 Recovery Wallets
               </h2>
             </div>
@@ -86,6 +85,7 @@ export function Recovery() {
             </button>
             <button
               className="rounded-lg bg-violet9 px-4 py-2 font-medium text-sm text-white transition-colors hover:bg-violet-700"
+              onClick={dialogStore.show}
               type="button"
             >
               + Add Recovery Wallet
@@ -174,6 +174,9 @@ export function Recovery() {
           </div>
         )} */}
       </div>
+
+      {/* Add Recovery Wallet Modal */}
+      <Connectors {...dialogStore} />
     </div>
   )
 }

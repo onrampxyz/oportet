@@ -126,7 +126,7 @@ export function Sessions() {
       {/* Header with Actions */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="font-semibold text-lg text-gray12">Active Sessions</h2>
+          <h2 className="font-semibold text-gray12 text-lg">Active Sessions</h2>
           <p className="mt-1 text-gray10 text-sm">
             Manage session keys and permissions for connected dApps
           </p>
@@ -165,7 +165,7 @@ export function Sessions() {
               <div>
                 <p className="mb-1 text-gray10 text-xs">Session</p>
                 <div className="flex items-center gap-1">
-                  <p className="font-mono font-medium text-gray12 text-sm">
+                  <p className="font-medium font-mono text-gray12 text-sm">
                     {session.session.key}
                   </p>
                   <button
@@ -211,10 +211,10 @@ export function Sessions() {
                 Allowed Contracts
               </p>
               <div className="grid grid-cols-2 gap-2">
-                {session.session.allowedContracts.map((contract, idx) => (
+                {session.session.allowedContracts.map((contract) => (
                   <div
                     className="flex items-center justify-between rounded-lg border border-gray4 bg-gray1 px-3 py-2 dark:bg-gray2"
-                    key={idx}
+                    key={contract.address}
                   >
                     <div className="flex items-center gap-2">
                       <span className="font-mono text-gray12 text-xs">
@@ -247,10 +247,10 @@ export function Sessions() {
           </h3>
         </div>
         <ul className="space-y-2">
-          {SECURITY_TIPS.map((tip, idx) => (
+          {SECURITY_TIPS.map((tip) => (
             <li
               className="flex items-start gap-2 text-blue-900 text-sm dark:text-blue-200"
-              key={idx}
+              key={tip}
             >
               <span className="mt-1 text-blue-600 dark:text-blue-400">•</span>
               <span>{tip}</span>

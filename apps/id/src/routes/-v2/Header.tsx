@@ -62,12 +62,12 @@ export function Header() {
   return (
     <div className="">
       {/* Account info would go here */}
-      <div className="p-6 flex justify-between items-center">
+      <div className="flex items-center justify-between p-6">
         <div className="flex gap-4">
-          <div className="h-10 w-10 bg-violet9 rounded-full"></div>
+          <div className="h-10 w-10 rounded-full bg-violet9" />
           <div>
             <p className="text-sm">{AddressFormatter.mask(address)}</p>
-            <p className="text-sm font-semibold">
+            <p className="font-semibold text-sm">
               {formatEther(balance?.value ?? 0n)}{' '}
               <span className="text-sm">{balance?.symbol ?? 'ETH'}</span>
             </p>
@@ -86,7 +86,7 @@ export function Header() {
             )}
           </Ariakit.Button>
           <Ariakit.Button
-            className="bg-violet9 px-4 py-2 rounded-md text-white"
+            className="rounded-md bg-violet9 px-4 py-2 text-white"
             onClick={() => {
               disconnect()
             }}

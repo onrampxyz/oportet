@@ -8,7 +8,7 @@ export function Dashboard() {
 
   return (
     <div className="space-y-4">
-      <div className="px-6 space-y-8">
+      <div className="space-y-8 px-6">
         {/* Tabs */}
         <Layout.Tabs activeTab={activeTab} onTabChange={setActiveTab}>
           {/* Portfolio Tab */}
