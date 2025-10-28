@@ -95,7 +95,7 @@ export function Recovery() {
 
         {/* Recovery Wallets List */}
         <div className="space-y-2">
-          {DUMMY_RECOVERY_WALLETS.map((wallet, index) => (
+          {DUMMY_RECOVERY_WALLETS.map((wallet) => (
             <div
               className="flex items-center justify-between rounded-lg border border-gray5 bg-white p-4 transition-colors hover:bg-gray2 dark:bg-gray1"
               key={wallet.id}
