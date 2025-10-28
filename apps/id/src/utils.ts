@@ -19,6 +19,69 @@ export namespace StringFormatter {
   }
 }
 
+export namespace AddressFormatter {
+  /**
+   * Masks an Ethereum address to show only the first and last few characters.
+   * @param address - The Ethereum address to mask (e.g., "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb")
+   * @param options - Configuration options
+   * @param options.start - Number of characters to show at the start (default: 6, includes "0x")
+   * @param options.end - Number of characters to show at the end (default: 4)
+   * @returns Masked address (e.g., "0x742d...0bEb")
+   *
+   * @example
+   * AddressFormatter.mask("0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb")
+   * // Returns: "0x742d...0bEb"
+   *
+   * @example
+   * AddressFormatter.mask("0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb", { start: 8, end: 6 })
+   * // Returns: "0x742d35...5f0bEb"
+   */
+  export function mask(
+    address: string | undefined,
+    { start = 6, end = 4 }: { start?: number; end?: number } = {},
+  ): string {
+    if (!address) return ''
+    if (address.length <= start + end) return address
+    return `${address.slice(0, start)}...${address.slice(-end)}`
+  }
+
+  /**
+   * Formats an Ethereum address with checksum capitalization and masking.
+   * @param address - The Ethereum address to format
+   * @param options - Configuration options (same as mask function)
+   * @returns Masked address string
+   *
+   * @example
+   * AddressFormatter.format("0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb")
+   * // Returns: "0x742d...0bEb"
+   */
+  export function format(
+    address: string | undefined,
+    options?: { start?: number; end?: number },
+  ): string {
+    return mask(address, options)
+  }
+
+  /**
+   * Gets the short form of an address (first 6 chars including 0x and last 4 chars).
+   * This is a convenience wrapper around mask with commonly used defaults.
+   * @param address - The Ethereum address
+   * @returns Masked address (e.g., "0x742d...0bEb")
+   */
+  export function short(address: string | undefined): string {
+    return mask(address, { start: 6, end: 4 })
+  }
+
+  /**
+   * Gets the long form of an address (first 10 chars and last 8 chars).
+   * @param address - The Ethereum address
+   * @returns Masked address (e.g., "0x742d35Cc66...95f0bEb")
+   */
+  export function long(address: string | undefined): string {
+    return mask(address, { start: 10, end: 8 })
+  }
+}
+
 export namespace ValueFormatter {
   const numberIntl = new Intl.NumberFormat('en-US', {
     maximumSignificantDigits: 6,

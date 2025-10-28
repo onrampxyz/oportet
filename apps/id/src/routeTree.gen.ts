@@ -12,6 +12,7 @@
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as PlaygroundImport } from './routes/playground'
+import { Route as LayoutV1Import } from './routes/_layoutV1'
 import { Route as LayoutImport } from './routes/_layout'
 import { Route as LayoutIndexImport } from './routes/_layout.index'
 import { Route as LayoutRecoveryImport } from './routes/_layout.recovery'
@@ -23,6 +24,11 @@ import { Route as LayoutEmailVerifyImport } from './routes/_layout.email.verify'
 const PlaygroundRoute = PlaygroundImport.update({
   id: '/playground',
   path: '/playground',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const LayoutV1Route = LayoutV1Import.update({
+  id: '/_layoutV1',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -64,6 +70,13 @@ declare module '@tanstack/react-router' {
       path: ''
       fullPath: ''
       preLoaderRoute: typeof LayoutImport
+      parentRoute: typeof rootRoute
+    }
+    '/_layoutV1': {
+      id: '/_layoutV1'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof LayoutV1Import
       parentRoute: typeof rootRoute
     }
     '/playground': {
@@ -124,7 +137,7 @@ const LayoutRouteWithChildren =
   LayoutRoute._addFileChildren(LayoutRouteChildren)
 
 export interface FileRoutesByFullPath {
-  '': typeof LayoutRouteWithChildren
+  '': typeof LayoutV1Route
   '/playground': typeof PlaygroundRoute
   '/about': typeof LayoutAboutRoute
   '/recovery': typeof LayoutRecoveryRoute
@@ -133,6 +146,7 @@ export interface FileRoutesByFullPath {
 }
 
 export interface FileRoutesByTo {
+  '': typeof LayoutV1Route
   '/playground': typeof PlaygroundRoute
   '/about': typeof LayoutAboutRoute
   '/recovery': typeof LayoutRecoveryRoute
@@ -143,6 +157,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/_layout': typeof LayoutRouteWithChildren
+  '/_layoutV1': typeof LayoutV1Route
   '/playground': typeof PlaygroundRoute
   '/_layout/about': typeof LayoutAboutRoute
   '/_layout/recovery': typeof LayoutRecoveryRoute
@@ -154,10 +169,11 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths: '' | '/playground' | '/about' | '/recovery' | '/' | '/email/verify'
   fileRoutesByTo: FileRoutesByTo
-  to: '/playground' | '/about' | '/recovery' | '/' | '/email/verify'
+  to: '' | '/playground' | '/about' | '/recovery' | '/' | '/email/verify'
   id:
     | '__root__'
     | '/_layout'
+    | '/_layoutV1'
     | '/playground'
     | '/_layout/about'
     | '/_layout/recovery'
@@ -168,11 +184,13 @@ export interface FileRouteTypes {
 
 export interface RootRouteChildren {
   LayoutRoute: typeof LayoutRouteWithChildren
+  LayoutV1Route: typeof LayoutV1Route
   PlaygroundRoute: typeof PlaygroundRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   LayoutRoute: LayoutRouteWithChildren,
+  LayoutV1Route: LayoutV1Route,
   PlaygroundRoute: PlaygroundRoute,
 }
 
@@ -187,6 +205,7 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/_layout",
+        "/_layoutV1",
         "/playground"
       ]
     },
@@ -198,6 +217,9 @@ export const routeTree = rootRoute
         "/_layout/",
         "/_layout/email/verify"
       ]
+    },
+    "/_layoutV1": {
+      "filePath": "_layoutV1.tsx"
     },
     "/playground": {
       "filePath": "playground.tsx"

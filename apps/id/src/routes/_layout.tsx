@@ -1,22 +1,13 @@
 import { createFileRoute, Outlet } from '@tanstack/react-router'
-
-import { Intro } from './-components/Intro'
-import { Layout } from './-components/Layout'
+import { Header } from './-v2/Header'
 
 export const Route = createFileRoute('/_layout')({
   component: RouteComponent,
 })
 
 function RouteComponent() {
-  return (
-    <Layout>
-      <Layout.Hero>
-        <Intro />
-      </Layout.Hero>
-
-      <Layout.Content>
-        <Outlet />
-      </Layout.Content>
-    </Layout>
-  )
+  return <div className='w-full space-y-8 max-w-7xl mx-auto'>
+    <Header />
+    <Outlet />
+  </div>
 }
