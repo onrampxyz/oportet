@@ -1,25 +1,20 @@
-import { Spinner } from '@porto/apps/components'
+import { Spinner, Toast } from '@porto/apps/components'
+import { riseTestnet } from 'porto/core/Chains'
 import { Hooks } from 'porto/wagmi'
 import { useMemo } from 'react'
+import { toast } from 'sonner'
 import { useAccount } from 'wagmi'
+import { TruncatedAddress } from '~/components/TruncatedAddress'
 import LucideCheck from '~icons/lucide/check'
 import LucideCopy from '~icons/lucide/copy'
 import LucideShield from '~icons/lucide/shield-alert'
 import LucideTrash from '~icons/lucide/trash-2'
 import { Connectors } from './Connectors'
 
-type RecoveryWallet = {
-  address: string
-  addedDate: string
-  avatar?: string
-  id: string
-  name: string
-  verified: boolean
-}
-
 // component > internal > core > actions > rpc_method
 export function Recovery() {
   const account = useAccount()
+
   const admins = Hooks.useAdmins({
     query: {
       enabled: account.status === 'connected',
@@ -32,10 +27,38 @@ export function Recovery() {
 
   const recoverWallets = useMemo(() => {
     if (admins.data?.keys.length) {
+      console.log('admins.data?.keys:: ', admins.data?.keys)
       return admins.data?.keys
     }
     return []
   }, [admins.data])
+
+  const revokeAdmin = Hooks.useRevokeAdmin({
+    mutation: {
+      onError: (error) => {
+        if (error.name === 'UserRejectedRequestError') return
+        toast.custom((t) => (
+          <Toast
+            className={t}
+            description={error.message}
+            kind="error"
+            title="Recovery Revoke Failed"
+          />
+        ))
+      },
+      onSuccess: () => {
+        toast.custom((t) => (
+          <Toast
+            className={t}
+            description="You have revoked a recovery admin"
+            kind="success"
+            title="Recovery Revoked"
+          />
+        ))
+        admins.refetch()
+      },
+    },
+  })
 
   return (
     <div className="space-y-6">
@@ -65,7 +88,8 @@ export function Recovery() {
           </div>
           <div className="flex gap-2">
             <button
-              className="rounded-lg bg-red-500 px-4 py-2 font-medium text-sm text-white transition-colors hover:bg-red-600"
+              className='rounded-lg bg-red-500 px-4 py-2 font-medium text-sm text-white opacity-25 transition-colors hover:bg-red-600'
+              disabled // TODO: no rpc_method available to remove - workaround would be remove one at a time
               type="button"
             >
               Remove All
@@ -88,34 +112,46 @@ export function Recovery() {
               className="flex items-center justify-between rounded-lg border border-gray5 bg-white p-4 transition-colors hover:bg-gray2 dark:bg-gray1"
               key={wallet.id}
             >
-              {/* Left section: Avatar and Wallet Info */}
-              <div className="flex items-center gap-3">
-                {/* Wallet Info */}
-                <div>
-                  <div className="flex items-center gap-2">
-                    <LucideCheck className="size-4 text-green-600" />
-                  </div>
-                  <div className="mt-1 flex items-center gap-2">
-                    <p className="font-mono text-gray10 text-xs">{wallet.id}</p>
-                    <button
-                      className="text-gray10 transition-colors hover:text-gray12"
-                      onClick={() => {
-                        navigator.clipboard.writeText(wallet.id)
-                      }}
-                      title="Copy address"
-                      type="button"
-                    >
-                      <LucideCopy className="size-3.5" />
-                    </button>
-                  </div>
-                  <p className="mt-0.5 text-gray10 text-xs">Added on ...</p>
+              {/* Wallet Info */}
+              <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 rounded-full bg-green3 p-2">
+                  <LucideCheck className="size-4 text-green-600" />
+                </div>
+                <div className="mt-1 flex items-center gap-2">
+                  <TruncatedAddress
+                    address={wallet.id ?? wallet.publicKey}
+                    className="justify-start text-left text-sm sm:text-md"
+                    end={10}
+                    start={10}
+                  />
+
+                  <button
+                    className="text-gray10 transition-colors hover:text-gray12"
+                    onClick={() => {
+                      navigator.clipboard.writeText(
+                        wallet.id ?? wallet.publicKey,
+                      )
+                    }}
+                    title="Copy address"
+                    type="button"
+                  >
+                    <LucideCopy className="size-3.5" />
+                  </button>
                 </div>
               </div>
 
-              {/* Right section: Actions */}
               <div className="flex items-center gap-2">
                 <button
                   className="flex items-center gap-1 rounded-lg p-2 text-red-600 transition-colors hover:bg-red-50 dark:hover:bg-red-900/20"
+                  onClick={() => {
+                    if (!wallet.id || !wallet.publicKey) return
+                    const chainId = riseTestnet.id
+                    revokeAdmin.mutate({
+                      address: account.address,
+                      chainId,
+                      id: wallet.id,
+                    })
+                  }}
                   title="Remove wallet"
                   type="button"
                 >

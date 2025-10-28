@@ -1,10 +1,17 @@
 import { useLocation } from '@tanstack/react-router'
+import { useAccount } from 'wagmi'
+import { Landing } from '../-components/Landing'
 import { Layout } from '../-v2/Layout'
 import { Portfolio, Recovery, Sessions, Transactions } from './Tabs'
 
 // Dashboard with routing-based tabs
 export function Dashboard() {
   const location = useLocation()
+  const { isConnected } = useAccount()
+
+  if (!isConnected) {
+    return <Landing />
+  }
 
   // Determine active tab from current pathname
   const getActiveTab = () => {

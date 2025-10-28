@@ -1,7 +1,6 @@
 import { createFileRoute, Navigate } from '@tanstack/react-router'
 import { useAccount } from 'wagmi'
 
-// import { Dashboard } from './-components/Dashboard'
 import { Landing } from './-components/Landing'
 
 export const Route = createFileRoute('/_layout/')({
