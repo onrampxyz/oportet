@@ -76,7 +76,7 @@ export function Recovery() {
 
         {/* Loading State */}
         {admins?.isPending && (
-          <div className='flex items-center justify-center'>
+          <div className="flex items-center justify-center">
             <Spinner className="size-6!" />
           </div>
         )}
