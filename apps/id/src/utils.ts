@@ -69,7 +69,7 @@ export namespace AddressFormatter {
    * @returns Masked address (e.g., "0x742d...0bEb")
    */
   export function short(address: string | undefined): string {
-    return mask(address, { start: 6, end: 4 })
+    return mask(address, { end: 4, start: 6 })
   }
 
   /**
@@ -78,7 +78,7 @@ export namespace AddressFormatter {
    * @returns Masked address (e.g., "0x742d35Cc66...95f0bEb")
    */
   export function long(address: string | undefined): string {
-    return mask(address, { start: 10, end: 8 })
+    return mask(address, { end: 8, start: 10 })
   }
 }
 

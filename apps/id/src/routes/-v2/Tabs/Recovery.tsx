@@ -1,9 +1,9 @@
 import { cx } from 'cva'
 import { AddressFormatter } from '~/utils'
+import LucideCheck from '~icons/lucide/check'
+import LucideCopy from '~icons/lucide/copy'
 import LucideShield from '~icons/lucide/shield-alert'
 import LucideTrash from '~icons/lucide/trash-2'
-import LucideCopy from '~icons/lucide/copy'
-import LucideCheck from '~icons/lucide/check'
 
 type RecoveryWallet = {
   id: string
@@ -16,39 +16,39 @@ type RecoveryWallet = {
 
 const DUMMY_RECOVERY_WALLETS: RecoveryWallet[] = [
   {
+    addedDate: '1/25/2024',
+    address: '0x123456789...12345678',
     id: '1',
     name: 'Metamask',
-    address: '0x123456789...12345678',
     verified: true,
-    addedDate: '1/25/2024',
   },
   {
+    addedDate: '2/20/2024',
+    address: '0xabcdeff12...abcdeff12',
     id: '2',
     name: 'Phantom',
-    address: '0xabcdeff12...abcdeff12',
     verified: true,
-    addedDate: '2/20/2024',
   },
   {
+    addedDate: '3/10/2024',
+    address: '0x987654321...98765432',
     id: '3',
     name: 'Rabby',
-    address: '0x987654321...98765432',
     verified: false,
-    addedDate: '3/10/2024',
   },
   {
+    addedDate: '3/10/2024',
+    address: '0x987654321...98765432',
     id: '4',
     name: 'Rabby',
-    address: '0x987654321...98765432',
     verified: false,
-    addedDate: '3/10/2024',
   },
   {
+    addedDate: '3/10/2024',
+    address: '0x987654321...98765432',
     id: '5',
     name: 'Rabby',
-    address: '0x987654321...98765432',
     verified: false,
-    addedDate: '3/10/2024',
   },
 ]
 
@@ -59,8 +59,8 @@ export function Recovery() {
       <div className="flex items-start gap-3 rounded-lg border border-amber-300 bg-amber-50 p-4 dark:border-amber-700 dark:bg-amber-900/20">
         <LucideShield className="mt-0.5 size-5 shrink-0 text-amber-600 dark:text-amber-400" />
         <p className="text-amber-900 text-sm dark:text-amber-200">
-          Never share your recovery phrase with anyone. Anyone with access to it can
-          control your wallet and steal your funds.
+          Never share your recovery phrase with anyone. Anyone with access to it
+          can control your wallet and steal your funds.
         </p>
       </div>
 
@@ -71,7 +71,9 @@ export function Recovery() {
           <div>
             <div className="flex items-center gap-2">
               <LucideShield className="size-5 text-gray10" />
-              <h2 className="font-semibold text-lg text-gray12">Recovery Wallets</h2>
+              <h2 className="font-semibold text-lg text-gray12">
+                Recovery Wallets
+              </h2>
             </div>
             <p className="mt-1 text-gray10 text-sm">
               Manage backup wallets that can be used to recover your account
@@ -97,8 +99,8 @@ export function Recovery() {
         <div className="space-y-2">
           {DUMMY_RECOVERY_WALLETS.map((wallet, index) => (
             <div
-              key={wallet.id}
               className="flex items-center justify-between rounded-lg border border-gray5 bg-white p-4 transition-colors hover:bg-gray2 dark:bg-gray1"
+              key={wallet.id}
             >
               {/* Left section: Avatar and Wallet Info */}
               <div className="flex items-center gap-3">
@@ -120,7 +122,9 @@ export function Recovery() {
                     )}
                   </div>
                   <div className="mt-1 flex items-center gap-2">
-                    <p className="font-mono text-gray10 text-xs">{wallet.address}</p>
+                    <p className="font-mono text-gray10 text-xs">
+                      {wallet.address}
+                    </p>
                     <button
                       className="text-gray10 transition-colors hover:text-gray12"
                       onClick={() => {

@@ -16,67 +16,69 @@ type Transaction = {
 
 const DUMMY_TRANSACTIONS: Transaction[] = [
   {
-    id: '1',
-    type: 'Bridge',
+    amount: '+500.00',
     description: 'Ethereum → RISE',
+    hash: '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb',
+    id: '1',
+    isPositive: true,
     status: 'pending',
     timestamp: '2 hours ago',
-    amount: '+500.00',
     token: 'USDC',
-    isPositive: true,
-    hash: '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb',
+    type: 'Bridge',
   },
   {
-    id: '2',
-    type: 'Received',
+    amount: '+500.00',
     description: 'From 0x9e85d40...b',
+    hash: '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb',
+    id: '2',
+    isPositive: true,
     status: 'completed',
     timestamp: '5 hours ago',
-    amount: '+500.00',
     token: 'USDC',
-    isPositive: true,
-    hash: '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb',
+    type: 'Received',
   },
   {
+    amount: '-10.00',
+    description: 'To 0x9e85d70cb...',
+    hash: '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb',
     id: '3',
-    type: 'Send',
-    description: 'To 0x9e85d70cb...',
+    isPositive: false,
     status: 'completed',
     timestamp: '8 hours ago',
-    amount: '-10.00',
     token: 'RISE',
-    isPositive: false,
-    hash: '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb',
+    type: 'Send',
   },
   {
+    amount: '-10.00',
+    description: 'To 0x9e85d70cb...',
+    hash: '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb',
     id: '4',
-    type: 'Send',
-    description: 'To 0x9e85d70cb...',
+    isPositive: false,
     status: 'completed',
     timestamp: '8 hours ago',
-    amount: '-10.00',
     token: 'RISE',
-    isPositive: false,
-    hash: '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb',
+    type: 'Send',
   },
   {
-    id: '5',
-    type: 'Send',
+    amount: '-10.00',
     description: 'To 0x9e85d70cb...',
+    hash: '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb',
+    id: '5',
+    isPositive: false,
     status: 'failed',
     timestamp: '8 hours ago',
-    amount: '-10.00',
     token: 'RISE',
-    isPositive: false,
-    hash: '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb',
+    type: 'Send',
   },
 ]
 
 const StatusBadge = ({ status }: { status: TransactionStatus }) => {
   const statusStyles = {
-    pending: 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400',
-    completed: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
+    completed:
+      'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
     failed: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400',
+    pending:
+      'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400',
   }
 
   return (
@@ -96,15 +98,17 @@ export function Transactions() {
     <div className="space-y-4">
       {/* Header */}
       <div>
-        <h2 className="font-semibold text-lg text-gray12">Recent Transactions</h2>
+        <h2 className="font-semibold text-lg text-gray12">
+          Recent Transactions
+        </h2>
       </div>
 
       {/* Transactions List */}
       <div className="space-y-2">
         {DUMMY_TRANSACTIONS.map((transaction) => (
           <div
-            key={transaction.id}
             className="flex items-center justify-between rounded-lg border border-gray5 bg-white p-4 transition-colors hover:bg-gray2 dark:bg-gray1"
+            key={transaction.id}
           >
             {/* Left section: Type and Description */}
             <div className="flex-1">
@@ -113,7 +117,9 @@ export function Transactions() {
                   {transaction.type}
                 </h3>
               </div>
-              <p className="mt-0.5 text-gray10 text-xs">{transaction.description}</p>
+              <p className="mt-0.5 text-gray10 text-xs">
+                {transaction.description}
+              </p>
             </div>
 
             {/* Middle section: Status and Timestamp */}

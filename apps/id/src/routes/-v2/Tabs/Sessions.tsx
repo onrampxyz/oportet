@@ -24,10 +24,6 @@ const DUMMY_SESSIONS: Session[] = [
   {
     id: '1',
     session: {
-      key: '0x8f2c...8f2a',
-      expiresIn: '50 minutes',
-      type: 'p256',
-      spendLimit: '50 Tokens per minute',
       allowedContracts: [
         {
           address: '0x1f0B...F984',
@@ -54,15 +50,15 @@ const DUMMY_SESSIONS: Session[] = [
           permissions: ['read'],
         },
       ],
+      expiresIn: '50 minutes',
+      key: '0x8f2c...8f2a',
+      spendLimit: '50 Tokens per minute',
+      type: 'p256',
     },
   },
   {
     id: '2',
     session: {
-      key: '0x8f2c...8f2a',
-      expiresIn: '50 minutes',
-      type: 'p256',
-      spendLimit: '50 Tokens per minute',
       allowedContracts: [
         {
           address: '0x1f0B...F984',
@@ -81,15 +77,15 @@ const DUMMY_SESSIONS: Session[] = [
           permissions: ['read'],
         },
       ],
+      expiresIn: '50 minutes',
+      key: '0x8f2c...8f2a',
+      spendLimit: '50 Tokens per minute',
+      type: 'p256',
     },
   },
   {
     id: '3',
     session: {
-      key: '0x8f2c...8f2a',
-      expiresIn: '50 minutes',
-      type: 'p256',
-      spendLimit: '50 Tokens per minute',
       allowedContracts: [
         {
           address: '0x1f0B...F984',
@@ -108,6 +104,10 @@ const DUMMY_SESSIONS: Session[] = [
           permissions: ['read'],
         },
       ],
+      expiresIn: '50 minutes',
+      key: '0x8f2c...8f2a',
+      spendLimit: '50 Tokens per minute',
+      type: 'p256',
     },
   },
 ]
@@ -143,12 +143,14 @@ export function Sessions() {
       <div className="space-y-4">
         {DUMMY_SESSIONS.map((session) => (
           <div
-            key={session.id}
             className="rounded-lg border border-gray5 bg-white p-6 dark:bg-gray1"
+            key={session.id}
           >
             {/* Session Header */}
             <div className="mb-4 flex items-start justify-between">
-              <h3 className="font-semibold text-gray12">Session Key {session.id}</h3>
+              <h3 className="font-semibold text-gray12">
+                Session Key {session.id}
+              </h3>
               <button
                 className="rounded-lg p-2 text-red-600 transition-colors hover:bg-red-50 dark:hover:bg-red-900/20"
                 title="Revoke session"
@@ -205,12 +207,14 @@ export function Sessions() {
 
             {/* Allowed Contracts */}
             <div>
-              <p className="mb-3 font-medium text-gray12 text-sm">Allowed Contracts</p>
+              <p className="mb-3 font-medium text-gray12 text-sm">
+                Allowed Contracts
+              </p>
               <div className="grid grid-cols-2 gap-2">
                 {session.session.allowedContracts.map((contract, idx) => (
                   <div
-                    key={idx}
                     className="flex items-center justify-between rounded-lg border border-gray4 bg-gray1 px-3 py-2 dark:bg-gray2"
+                    key={idx}
                   >
                     <div className="flex items-center gap-2">
                       <span className="font-mono text-gray12 text-xs">
@@ -245,8 +249,8 @@ export function Sessions() {
         <ul className="space-y-2">
           {SECURITY_TIPS.map((tip, idx) => (
             <li
-              key={idx}
               className="flex items-start gap-2 text-blue-900 text-sm dark:text-blue-200"
+              key={idx}
             >
               <span className="mt-1 text-blue-600 dark:text-blue-400">•</span>
               <span>{tip}</span>

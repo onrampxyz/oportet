@@ -6,8 +6,10 @@ export const Route = createFileRoute('/_layout')({
 })
 
 function RouteComponent() {
-  return <div className='w-full space-y-8 max-w-7xl mx-auto'>
-    <Header />
-    <Outlet />
-  </div>
+  return (
+    <div className="w-full space-y-8 max-w-7xl mx-auto">
+      <Header />
+      <Outlet />
+    </div>
+  )
 }

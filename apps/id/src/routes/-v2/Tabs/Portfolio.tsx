@@ -26,82 +26,82 @@ type ProtocolPosition = {
 }
 
 const DUMMY_BALANCE_CHANGE: BalanceChange = {
-  totalChange: '+$51.15',
-  wallet: '+$23.45',
   protocols: '+$51.15',
+  totalChange: '+$51.15',
   transactions: 12,
+  wallet: '+$23.45',
 }
 
 const DUMMY_WALLET_BALANCES: WalletBalance[] = [
   {
-    symbol: 'WETH',
-    name: 'Wrapped Ether',
     address: '$3,535.669',
     balance: '2.45 WETH',
+    name: 'Wrapped Ether',
+    symbol: 'WETH',
     usdValue: '$9,001.89',
   },
   {
-    symbol: 'RISE',
-    name: 'Rise Token',
     address: '$3,535.669',
     balance: '2.45 RISE',
+    name: 'Rise Token',
+    symbol: 'RISE',
     usdValue: '$9,001.89',
   },
   {
-    symbol: 'USDC',
-    name: 'USD Coin',
     address: '$3,535.669',
     balance: '2.45 USDC',
+    name: 'USD Coin',
+    symbol: 'USDC',
     usdValue: '$9,001.89',
   },
   {
-    symbol: 'WBTC',
-    name: 'Wrapped Bitcoin',
     address: '$3,535.669',
     balance: '2.45 WBTC',
+    name: 'Wrapped Bitcoin',
+    symbol: 'WBTC',
     usdValue: '$9,001.89',
   },
   {
-    symbol: 'USDT',
-    name: 'Tether USD',
     address: '$3,535.669',
     balance: '2.45 USDT',
+    name: 'Tether USD',
+    symbol: 'USDT',
     usdValue: '$9,001.89',
   },
 ]
 
 const DUMMY_PROTOCOL_POSITIONS: ProtocolPosition[] = [
   {
+    apy: '24.5%',
+    change24h: '++$5.20',
     protocol: 'Uniswap V3',
     protocolIcon: 'U',
     type: 'Liquidity Pool',
     value: '$2,450.00',
-    apy: '24.5%',
-    change24h: '++$5.20',
   },
   {
+    apy: '24.5%',
+    change24h: '++$5.20',
     protocol: 'Uniswap V3',
     protocolIcon: 'U',
     type: 'Liquidity Pool',
     value: '$2,450.00',
-    apy: '24.5%',
-    change24h: '++$5.20',
   },
   {
+    apy: '24.5%',
+    change24h: '++$5.20',
     protocol: 'Uniswap V3',
     protocolIcon: 'U',
     type: 'Liquidity Pool',
     value: '$2,450.00',
-    apy: '24.5%',
-    change24h: '++$5.20',
   },
   {
+    apy: '24.5%',
+    change24h: '++$5.20',
     protocol: 'Uniswap V3',
     protocolIcon: 'U',
     type: 'Liquidity Pool',
     value: '$2,450.00',
-    apy: '24.5%',
-    change24h: '++$5.20',
   },
 ]
 
@@ -118,7 +118,9 @@ export function Portfolio() {
         <div className="grid grid-cols-4 gap-4">
           <div>
             <p className="mb-1 text-gray10 text-xs">Total Change</p>
-            <p className="font-semibold text-xl">{DUMMY_BALANCE_CHANGE.totalChange}</p>
+            <p className="font-semibold text-xl">
+              {DUMMY_BALANCE_CHANGE.totalChange}
+            </p>
           </div>
           <div>
             <p className="mb-1 text-gray10 text-xs">Wallet</p>
@@ -134,7 +136,9 @@ export function Portfolio() {
           </div>
           <div>
             <p className="mb-1 text-gray10 text-xs">Transactions</p>
-            <p className="font-semibold text-xl">{DUMMY_BALANCE_CHANGE.transactions}</p>
+            <p className="font-semibold text-xl">
+              {DUMMY_BALANCE_CHANGE.transactions}
+            </p>
           </div>
         </div>
       </div>
@@ -142,13 +146,15 @@ export function Portfolio() {
       {/* Wallet Balances Section */}
       <div className="rounded-lg border border-gray5 bg-white p-6 dark:bg-gray1">
         <h2 className="mb-2 font-semibold text-lg">Wallet Balances</h2>
-        <p className="mb-4 text-gray10 text-sm">Your token holdings in this wallet</p>
+        <p className="mb-4 text-gray10 text-sm">
+          Your token holdings in this wallet
+        </p>
 
         <div className="space-y-3">
           {DUMMY_WALLET_BALANCES.map((balance, index) => (
             <div
-              key={index}
               className="flex items-center justify-between rounded-lg border border-gray4 p-3 hover:bg-gray2"
+              key={index}
             >
               <div className="flex items-center gap-3">
                 <div className="flex size-10 items-center justify-center rounded-full bg-gray5">
@@ -157,12 +163,16 @@ export function Portfolio() {
                   </span>
                 </div>
                 <div>
-                  <p className="font-medium text-gray12 text-sm">{balance.symbol}</p>
+                  <p className="font-medium text-gray12 text-sm">
+                    {balance.symbol}
+                  </p>
                   <p className="text-gray10 text-xs">{balance.address}</p>
                 </div>
               </div>
               <div className="text-right">
-                <p className="font-semibold text-gray12 text-sm">{balance.balance}</p>
+                <p className="font-semibold text-gray12 text-sm">
+                  {balance.balance}
+                </p>
                 <p className="text-gray10 text-xs">{balance.usdValue}</p>
               </div>
             </div>
@@ -181,12 +191,16 @@ export function Portfolio() {
           <table className="w-full">
             <thead>
               <tr className="border-b border-gray5 text-left">
-                <th className="pb-3 font-medium text-gray10 text-xs">Protocol</th>
+                <th className="pb-3 font-medium text-gray10 text-xs">
+                  Protocol
+                </th>
                 <th className="pb-3 font-medium text-gray10 text-xs">Type</th>
                 <th className="pb-3 text-right font-medium text-gray10 text-xs">
                   Value
                 </th>
-                <th className="pb-3 text-right font-medium text-gray10 text-xs">APY</th>
+                <th className="pb-3 text-right font-medium text-gray10 text-xs">
+                  APY
+                </th>
                 <th className="pb-3 text-right font-medium text-gray10 text-xs">
                   24h Change
                 </th>
@@ -195,8 +209,8 @@ export function Portfolio() {
             <tbody>
               {DUMMY_PROTOCOL_POSITIONS.map((position, index) => (
                 <tr
-                  key={index}
                   className="border-b border-gray3 hover:bg-gray2 last:border-0"
+                  key={index}
                 >
                   <td className="py-3">
                     <div className="flex items-center gap-2">
@@ -219,10 +233,14 @@ export function Portfolio() {
                     </span>
                   </td>
                   <td className="py-3 text-right">
-                    <p className="font-medium text-gray12 text-sm">{position.value}</p>
+                    <p className="font-medium text-gray12 text-sm">
+                      {position.value}
+                    </p>
                   </td>
                   <td className="py-3 text-right">
-                    <p className="font-medium text-green-600 text-sm">{position.apy}</p>
+                    <p className="font-medium text-green-600 text-sm">
+                      {position.apy}
+                    </p>
                   </td>
                   <td className="py-3 text-right">
                     <p
