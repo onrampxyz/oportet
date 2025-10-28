@@ -88,7 +88,7 @@ export function Recovery() {
           </div>
           <div className="flex gap-2">
             <button
-              className='rounded-lg bg-red-500 px-4 py-2 font-medium text-sm text-white opacity-25 transition-colors hover:bg-red-600'
+              className="rounded-lg bg-red-500 px-4 py-2 font-medium text-sm text-white opacity-25 transition-colors hover:bg-red-600"
               disabled // TODO: no rpc_method available to remove - workaround would be remove one at a time
               type="button"
             >
@@ -173,12 +173,7 @@ export function Recovery() {
               Add backup wallets to ensure you can always recover your account
               if you lose access to your primary device.
             </p>
-            <button
-              className="rounded-lg bg-violet9 px-6 py-2.5 font-medium text-sm text-white transition-colors hover:bg-violet-700"
-              type="button"
-            >
-              Add Your First Recovery Wallet
-            </button>
+            <Connectors label="Add your first Recovery Wallet" />
           </div>
         )}
       </div>
