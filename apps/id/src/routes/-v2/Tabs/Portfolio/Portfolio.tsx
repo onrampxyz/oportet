@@ -10,6 +10,8 @@ const DUMMY_BALANCE_CHANGE: BalanceChange = {
 }
 
 export function Portfolio() {
+  console.log('All env vars:', import.meta.env)
+
   return (
     <div className="space-y-6">
       {/* 24h Balance Change Section */}

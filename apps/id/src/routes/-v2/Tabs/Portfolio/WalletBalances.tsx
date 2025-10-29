@@ -1,6 +1,11 @@
+import { Spinner } from '@porto/apps/components'
 import { toNumber } from 'ox/Hex'
+import { Hooks } from 'porto/wagmi'
+import { useMemo } from 'react'
 import type { Hex } from 'viem'
-import { DUMMY_ASSETS, formatBalance } from '~/mock/assets'
+import { useAccount } from 'wagmi'
+import { formatBalance } from '~/mock/assets'
+import type { AssetsByChain } from '~/types/asset'
 import type { BalanceByChain, WalletBalance } from '~/types/portfolio'
 import { AddressFormatter } from '~/utils'
 
@@ -26,11 +31,14 @@ function getMockPrice(symbol: string): number {
   return prices[symbol] || 1
 }
 
-function transformAssetsToBalancesByChain(): BalanceByChain[] {
+function transformAssetsToBalancesByChain(
+  assets: AssetsByChain,
+): BalanceByChain[] {
   const balancesByChain: BalanceByChain[] = []
 
-  for (const [chainId, chainAssets] of Object.entries(DUMMY_ASSETS)) {
+  for (const [chainId, chainAssets] of Object.entries(assets)) {
     const balances: WalletBalance[] = []
+    if (chainId === '0' || !chainAssets) continue
 
     for (const asset of chainAssets) {
       if (!asset.metadata) continue
@@ -72,16 +80,38 @@ function transformAssetsToBalancesByChain(): BalanceByChain[] {
 }
 
 export function WalletBalances() {
-  // const { address } = useAccount()
-  // TODO: Enable this once implemented
-  // const { data: assets } = Hooks.useAssets({ account: address })
+  const { address } = useAccount()
+  const { data: assets, isPending } = Hooks.useAssets({ account: address })
 
-  const balancesByChain = transformAssetsToBalancesByChain()
+  const balancesByChain = useMemo(() => {
+    if (assets) {
+      return transformAssetsToBalancesByChain(assets as AssetsByChain)
+    }
+    return []
+  }, [assets])
+
+  console.log("balancesByChain:: ", balancesByChain)
 
   return (
     <div className="space-y-4 rounded-lg border border-gray5 bg-white p-6 dark:bg-gray1">
+
       <h2 className="font-semibold text-lg">Wallet Balances By Chain</h2>
-      {balancesByChain.map((chainData) => (
+      {/* Loading State */}
+      {isPending && (
+        <div className="flex items-center justify-center">
+          <Spinner className="size-6!" />
+        </div>
+      )}
+
+      {!isPending && balancesByChain.length === 0 && (
+        <div className="">
+          <p className="font-medium text-gray10 text-sm">
+            No Balance in your wallet!
+          </p>
+        </div>
+      )}
+
+      {!isPending && balancesByChain?.map((chainData) => (
         <div className="" key={chainData.chainId}>
           <div className="mb-4 flex items-center justify-between">
             <div>
