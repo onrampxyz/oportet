@@ -17,7 +17,6 @@ import LucideChevronRight from '~icons/lucide/chevron-right'
 import LucideX from '~icons/lucide/x'
 
 export function Connectors({ label }: { label?: string }) {
-
   const account = useAccount()
 
   const _connectors = useConnectors({ config: mipdConfig })
@@ -123,7 +122,7 @@ export function Connectors({ label }: { label?: string }) {
         }}
         type="button"
       >
-        {label ?? "+ Add Recovery Wallet"}
+        {label ?? '+ Add Recovery Wallet'}
       </button>
       <Ariakit.Dialog
         className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm"
