@@ -1,7 +1,6 @@
 export type Asset = {
   address: `0x${string}` | 'native'
   balance: bigint
-  chainId: number
   metadata: {
     decimals: number
     name: string

@@ -90,11 +90,10 @@ export function WalletBalances() {
     return []
   }, [assets])
 
-  console.log("balancesByChain:: ", balancesByChain)
+  console.log('balancesByChain:: ', balancesByChain)
 
   return (
     <div className="space-y-4 rounded-lg border border-gray5 bg-white p-6 dark:bg-gray1">
-
       <h2 className="font-semibold text-lg">Wallet Balances By Chain</h2>
       {/* Loading State */}
       {isPending && (
@@ -111,53 +110,54 @@ export function WalletBalances() {
         </div>
       )}
 
-      {!isPending && balancesByChain?.map((chainData) => (
-        <div className="" key={chainData.chainId}>
-          <div className="mb-4 flex items-center justify-between">
-            <div>
-              <h3 className="font-semibold">{chainData.chainName}</h3>
-              <p className="text-gray10 text-sm">
-                {chainData.balances.length} token
-                {chainData.balances.length !== 1 ? 's' : ''}
-              </p>
-            </div>
-            <div className="rounded-full bg-violet9/10 px-3 py-1">
-              <p className="font-mono text-violet9 text-xs">
-                {toNumber(chainData.chainId as Hex)}
-              </p>
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            {chainData.balances.map((balance) => (
-              <div
-                className="flex items-center justify-between rounded-lg border border-gray4 p-3 hover:bg-gray2"
-                key={`${chainData.chainId}-${balance.address}`}
-              >
-                <div className="flex items-center gap-3">
-                  <div className="flex size-10 items-center justify-center rounded-full bg-gradient-to-br from-violet9 to-violet11">
-                    <span className="font-semibold text-sm text-white">
-                      {balance.symbol.charAt(0)}
-                    </span>
-                  </div>
-                  <div>
-                    <p className="font-medium text-gray12 text-sm">
-                      {balance.symbol}
-                    </p>
-                    <p className="text-gray10 text-xs">{balance.name}</p>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <p className="font-semibold text-gray12 text-sm">
-                    {balance.balance}
-                  </p>
-                  <p className="text-gray10 text-xs">{balance.usdValue}</p>
-                </div>
+      {!isPending &&
+        balancesByChain?.map((chainData) => (
+          <div className="" key={chainData.chainId}>
+            <div className="mb-4 flex items-center justify-between">
+              <div>
+                <h3 className="font-semibold">{chainData.chainName}</h3>
+                <p className="text-gray10 text-sm">
+                  {chainData.balances.length} token
+                  {chainData.balances.length !== 1 ? 's' : ''}
+                </p>
               </div>
-            ))}
+              <div className="rounded-full bg-violet9/10 px-3 py-1">
+                <p className="font-mono text-violet9 text-xs">
+                  {toNumber(chainData.chainId as Hex)}
+                </p>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              {chainData.balances.map((balance) => (
+                <div
+                  className="flex items-center justify-between rounded-lg border border-gray4 p-3 hover:bg-gray2"
+                  key={`${chainData.chainId}-${balance.address}`}
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="flex size-10 items-center justify-center rounded-full bg-gradient-to-br from-violet9 to-violet11">
+                      <span className="font-semibold text-sm text-white">
+                        {balance.symbol.charAt(0)}
+                      </span>
+                    </div>
+                    <div>
+                      <p className="font-medium text-gray12 text-sm">
+                        {balance.symbol}
+                      </p>
+                      <p className="text-gray10 text-xs">{balance.name}</p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <p className="font-semibold text-gray12 text-sm">
+                      {balance.balance}
+                    </p>
+                    <p className="text-gray10 text-xs">{balance.usdValue}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
-      ))}
+        ))}
     </div>
   )
 }
