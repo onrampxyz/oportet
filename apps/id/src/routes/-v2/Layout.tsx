@@ -112,7 +112,7 @@ export namespace Layout {
               'after:absolute after:right-0 after:bottom-0 after:left-0 after:h-0.5',
               'rounded-t-md',
               activeTab === 'portfolio'
-                ? 'bg-violet9 text-white after:bg-violet9'
+                ? 'bg-violet9 text-white after:bg-violet9 hover:text-white'
                 : '',
             )}
             to="/portfolio"
@@ -126,7 +126,7 @@ export namespace Layout {
               'after:absolute after:right-0 after:bottom-0 after:left-0 after:h-0.5',
               'rounded-t-md',
               activeTab === 'transactions'
-                ? 'bg-violet9 text-white after:bg-violet9'
+                ? 'bg-violet9 text-white after:bg-violet9 hover:text-white'
                 : '',
             )}
             to="/transactions"
@@ -140,7 +140,7 @@ export namespace Layout {
               'after:absolute after:right-0 after:bottom-0 after:left-0 after:h-0.5',
               'rounded-t-md',
               activeTab === 'recovery'
-                ? 'bg-violet9 text-white after:bg-violet9'
+                ? 'bg-violet9 text-white after:bg-violet9 hover:text-white'
                 : '',
             )}
             to="/recovery"
@@ -154,7 +154,7 @@ export namespace Layout {
               'after:absolute after:right-0 after:bottom-0 after:left-0 after:h-0.5',
               'rounded-t-md',
               activeTab === 'manage-sessions'
-                ? 'bg-violet9 text-white after:bg-violet9'
+                ? 'bg-violet9 text-white after:bg-violet9 hover:text-white'
                 : '',
             )}
             to="/sessions"

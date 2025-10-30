@@ -41,7 +41,7 @@ export function Dashboard() {
 
   return (
     <div className="space-y-4">
-      <div className="space-y-8 px-6">
+      <div className="space-y-8 px-6 pb-6">
         {/* Tabs with routing */}
         <Layout.TabsRouter activeTab={activeTab}>
           {renderTabContent()}

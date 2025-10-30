@@ -1,4 +1,5 @@
 import { Value } from 'ox'
+import type { Spend } from './types/session'
 
 export namespace ArrayUtils {
   export function sum(array: number[]) {
@@ -181,5 +182,64 @@ export namespace DateFormatter {
     if (hours > 0) return `${hours}h`
     if (minutes > 0) return `${minutes}m`
     return `${seconds}s`
+  }
+}
+
+export namespace SessionFormatter {
+  /**
+   * Formats a Unix timestamp expiry time to human-readable duration.
+   * @param expiry - Unix timestamp (in seconds) when the session expires
+   * @returns Human-readable duration string (e.g., "2 hours", "30 minutes", "Expired")
+   *
+   * @example
+   * SessionFormatter.formatExpiryTime(Math.floor(Date.now() / 1000) + 3600)
+   * // Returns: "1 hour"
+   */
+  export function formatExpiryTime(expiry: number): string {
+    const now = Math.floor(Date.now() / 1000)
+    const diff = expiry - now
+
+    if (diff <= 0) return 'Expired'
+
+    const minutes = Math.floor(diff / 60)
+    const hours = Math.floor(minutes / 60)
+    const days = Math.floor(hours / 24)
+
+    if (days > 0) return `${days} day${days > 1 ? 's' : ''}`
+    if (hours > 0) return `${hours} hour${hours > 1 ? 's' : ''}`
+    return `${minutes} minute${minutes > 1 ? 's' : ''}`
+  }
+
+  /**
+   * Formats spend limit from permission data to readable format.
+   * @param spend - Array of spend limit objects from permission
+   * @returns Formatted spend limit string (e.g., "50.00 tokens per hour", "No limit")
+   *
+   * @example
+   * SessionFormatter.formatSpendLimit([{ limit: BigInt('50000000000000000000'), period: 'hour', token: '0x...' }])
+   * // Returns: "50.00 tokens per hour"
+   */
+  export function formatSpendLimit(spend: Spend[]): string {
+    if (spend.length === 0) return 'No limit'
+
+    const firstSpend = spend[0]
+    if (!firstSpend) return 'No limit'
+
+    const amount = Number(firstSpend.limit) / 1e18 // Assuming 18 decimals
+    return `${amount.toFixed(2)} tokens per ${firstSpend.period}`
+  }
+
+  /**
+   * Truncates an Ethereum address to a shorter format for display.
+   * @param address - The Ethereum address to truncate
+   * @returns Truncated address (e.g., "0x1234...5678")
+   *
+   * @example
+   * SessionFormatter.truncateAddress("0x1234567890123456789012345678901234567890")
+   * // Returns: "0x1234...7890"
+   */
+  export function truncateAddress(address: string): string {
+    if (address.length <= 10) return address
+    return `${address.slice(0, 6)}...${address.slice(-4)}`
   }
 }
