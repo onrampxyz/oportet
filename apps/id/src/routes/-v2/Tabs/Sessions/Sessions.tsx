@@ -48,7 +48,7 @@ export function Sessions() {
             Revoke All Sessions
           </button>
           <button
-            className='rounded-lg bg-violet9 px-4 py-2 font-medium text-sm text-white opacity-25 transition-colors hover:bg-violet-700'
+            className="rounded-lg bg-violet9 px-4 py-2 font-medium text-sm text-white opacity-25 transition-colors hover:bg-violet-700"
             disabled
             type="button"
           >
