@@ -143,7 +143,7 @@ export function Header() {
         </div>
         <div className="flex items-center gap-2">
           <Ariakit.Button
-            className='flex items-center justify-center rounded-md p-3 transition-colors hover:bg-gray3'
+            className="flex items-center justify-center rounded-md p-3 transition-colors hover:bg-gray3"
             onClick={toggleTheme}
             title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
           >
