@@ -1,5 +1,5 @@
 import * as Ariakit from '@ariakit/react'
-import { Toast } from '@porto/apps/components'
+import { Button, Toast } from '@porto/apps/components'
 import { riseTestnet } from 'porto/core/Chains'
 import { Hooks } from 'porto/wagmi'
 import { useMemo, useState } from 'react'
@@ -113,18 +113,17 @@ export function Connectors({ label }: { label?: string }) {
     }
   }
 
-
   return (
     <div>
-      <button
-        className="rounded-lg bg-violet9 px-4 py-2 font-medium text-sm text-white transition-colors hover:bg-violet-700"
+      <Button
         onClick={() => {
           setOpen(true)
         }}
         type="button"
+        variant="primary"
       >
         {label ?? '+ Add Recovery Wallet'}
-      </button>
+      </Button>
       <Ariakit.Dialog
         className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm"
         onClose={() => setOpen(false)}

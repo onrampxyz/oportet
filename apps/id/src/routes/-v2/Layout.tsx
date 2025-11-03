@@ -53,10 +53,10 @@ export namespace Layout {
                 className={cx(
                   'relative flex items-center gap-2 px-4 py-2 font-medium text-sm transition-colors',
                   'text-gray10 hover:text-gray12',
-                  'data-[active-item]:text-white',
+                  'data-[active-item]:text-white data-[active-item]:hover:bg-[var(--background-color-th_primary-hovered)]',
                   'after:absolute after:right-0 after:bottom-0 after:left-0 after:h-0.5',
-                  'rounded-t-md data-[active-item]:bg-violet9',
-                  'data-[active-item]:after:bg-violet9',
+                  'rounded-t-md data-[active-item]:bg-[var(--background-color-th_primary)]',
+                  'data-[active-item]:after:[var(--background-color-th_primary)]',
                 )}
                 id={tab.id}
                 key={tab.id}
@@ -103,7 +103,7 @@ export namespace Layout {
                   'after:absolute after:right-0 after:bottom-0 after:left-0 after:h-0.5',
                   'rounded-t-md',
                   activeTab === tab.id
-                    ? 'bg-violet9 text-white after:bg-violet9 hover:text-white'
+                    ? 'bg-[var(--background-color-th_primary)] text-white hover:text-white after:[var(--background-color-th_primary)]'
                     : '',
                 )}
                 key={tab.id}

@@ -540,7 +540,7 @@ export function ApplePayButton(
     <div className="h-12.5 w-full pt-px">
       <Button
         {...props}
-        className="h-11! w-full! rounded-4xl! bg-black! font-medium! text-[21px]! text-white! tracking-[0.22px]! dark:bg-white! dark:text-black!"
+        // className="h-11! w-full! rounded-4xl! bg-black! font-medium! text-[21px]! text-white! tracking-[0.22px]! dark:bg-white! dark:text-black!"
         loading={loading ? content : undefined}
         variant="strong"
         width="grow"

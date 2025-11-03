@@ -1,5 +1,5 @@
 import * as Ariakit from '@ariakit/react'
-import { Toast } from '@porto/apps/components'
+import { Button, Toast } from '@porto/apps/components'
 import type { Address } from 'ox'
 import { Chains } from 'porto'
 import { Hooks } from 'porto/wagmi'
@@ -142,19 +142,18 @@ export function Header() {
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <Ariakit.Button
-            className="flex items-center justify-center rounded-md p-3 transition-colors hover:bg-gray3"
+          <Button
             onClick={toggleTheme}
             title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
+            variant="outline"
           >
             {theme === 'light' ? (
               <LucideMoon className="size-5 text-gray11" />
             ) : (
               <LucideSun className="size-5 text-gray11" />
             )}
-          </Ariakit.Button>
-          <Ariakit.Button
-            className="rounded-md border border-gray7 px-4 py-2 dark:text-white"
+          </Button>
+          <Button
             onClick={(event) => {
               event.preventDefault()
               event.stopPropagation()
@@ -162,15 +161,15 @@ export function Header() {
             }}
           >
             Add Funds
-          </Ariakit.Button>
-          <Ariakit.Button
-            className="rounded-md bg-violet9 px-4 py-2 text-white"
+          </Button>
+          <Button
             onClick={() => {
               disconnect()
             }}
+            variant="primary"
           >
             Sign out
-          </Ariakit.Button>
+          </Button>
         </div>
       </div>
       <Ariakit.Separator className="border-gray5" />

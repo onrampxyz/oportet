@@ -15,7 +15,6 @@ import { porto } from '~/lib/Porto'
 import * as Tokens from '~/lib/Tokens'
 import { Layout } from '~/routes/-components/Layout'
 import TriangleAlertIcon from '~icons/lucide/triangle-alert'
-import Star from '~icons/ph/star-four-bold'
 import { ApplePayButton, ApplePayIframe } from './ActionPreview'
 import { SetupApplePay } from './SetupApplePay'
 
@@ -212,7 +211,6 @@ export function AddFunds(props: AddFunds.Props) {
     <Layout>
       <Layout.Header>
         <Layout.Header.Default
-          icon={Star}
           title="Add funds"
           variant="default"
         />
@@ -231,8 +229,8 @@ export function AddFunds(props: AddFunds.Props) {
           {showApplePay &&
             address &&
             (onrampStatus?.email &&
-            onrampStatus.phone &&
-            !onrampStatus.reverifyPhone ? (
+              onrampStatus.phone &&
+              !onrampStatus.reverifyPhone ? (
               <div className="flex w-full flex-col">
                 {createOrder.isSuccess && createOrder.data?.url && (
                   <ApplePayIframe
@@ -244,10 +242,10 @@ export function AddFunds(props: AddFunds.Props) {
                 )}
                 {(!iframeLoaded ||
                   lastOrderEvent?.eventName ===
-                    'onramp_api.apple_pay_button_pressed' ||
+                  'onramp_api.apple_pay_button_pressed' ||
                   lastOrderEvent?.eventName === 'onramp_api.polling_start') && (
-                  <ApplePayButton label="Buy with" loading />
-                )}
+                    <ApplePayButton label="Buy with" loading />
+                  )}
               </div>
             ) : (
               <ApplePayButton
