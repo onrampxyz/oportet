@@ -86,21 +86,12 @@ export function Recovery() {
               Manage backup wallets that can be used to recover your account
             </p>
           </div>
-          <div className="flex gap-2">
-            <button
-              className="rounded-lg bg-red-500 px-4 py-2 font-medium text-sm text-white opacity-25 transition-colors hover:bg-red-600"
-              disabled // TODO: no rpc_method available to remove - workaround would be remove one at a time
-              type="button"
-            >
-              Remove All
-            </button>
-            <Connectors />
-          </div>
+          {!admins?.isPending && <Connectors />}
         </div>
 
         {/* Loading State */}
         {admins?.isPending && (
-          <div className="flex items-center justify-center">
+          <div className="flex items-center justify-center pt-6">
             <Spinner className="size-6!" />
           </div>
         )}

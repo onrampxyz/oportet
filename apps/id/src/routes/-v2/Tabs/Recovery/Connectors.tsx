@@ -25,6 +25,10 @@ export function Connectors({ label }: { label?: string }) {
     return _connectors.filter((c) => !c.id.toLowerCase().includes('porto'))
   }, [_connectors])
 
+  if (!connectors.length) {
+    return null
+  }
+
   const connect = useConnect({ config: mipdConfig })
   const disconnect = useDisconnect({ config: mipdConfig })
   const switchChain = useSwitchChain({ config: mipdConfig })
@@ -109,9 +113,6 @@ export function Connectors({ label }: { label?: string }) {
     }
   }
 
-  if (!connectors.length) {
-    return null
-  }
 
   return (
     <div>

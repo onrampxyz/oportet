@@ -41,22 +41,6 @@ export function Sessions() {
             Manage session keys and permissions for connected dApps
           </p>
         </div>
-        <div className="flex items-center gap-2">
-          <button
-            className="rounded-lg bg-red-500 px-4 py-2 font-medium text-sm text-white opacity-25 transition-colors hover:bg-red-600"
-            disabled
-            type="button"
-          >
-            Revoke All Sessions
-          </button>
-          <button
-            className="rounded-lg bg-violet9 px-4 py-2 font-medium text-sm text-white opacity-25 transition-colors hover:bg-violet-700"
-            disabled
-            type="button"
-          >
-            Create Session Key
-          </button>
-        </div>
       </div>
 
       {/* Sessions List */}
@@ -188,7 +172,7 @@ export function Sessions() {
 
       {/* Loading State */}
       {permissions?.isPending && (
-        <div className="flex items-center justify-center">
+        <div className="flex items-center justify-center pt-6">
           <Spinner className="size-6!" />
         </div>
       )}

@@ -97,7 +97,7 @@ export function WalletBalances() {
       <h2 className="font-semibold text-lg">Wallet Balances By Chain</h2>
       {/* Loading State */}
       {isPending && (
-        <div className="flex items-center justify-center">
+        <div className="flex items-center justify-center pt-6">
           <Spinner className="size-6!" />
         </div>
       )}
