@@ -210,10 +210,7 @@ export function AddFunds(props: AddFunds.Props) {
   return (
     <Layout>
       <Layout.Header>
-        <Layout.Header.Default
-          title="Add funds"
-          variant="default"
-        />
+        <Layout.Header.Default title="Add funds" variant="default" />
       </Layout.Header>
 
       <Layout.Content>
@@ -229,8 +226,8 @@ export function AddFunds(props: AddFunds.Props) {
           {showApplePay &&
             address &&
             (onrampStatus?.email &&
-              onrampStatus.phone &&
-              !onrampStatus.reverifyPhone ? (
+            onrampStatus.phone &&
+            !onrampStatus.reverifyPhone ? (
               <div className="flex w-full flex-col">
                 {createOrder.isSuccess && createOrder.data?.url && (
                   <ApplePayIframe
@@ -242,10 +239,10 @@ export function AddFunds(props: AddFunds.Props) {
                 )}
                 {(!iframeLoaded ||
                   lastOrderEvent?.eventName ===
-                  'onramp_api.apple_pay_button_pressed' ||
+                    'onramp_api.apple_pay_button_pressed' ||
                   lastOrderEvent?.eventName === 'onramp_api.polling_start') && (
-                    <ApplePayButton label="Buy with" loading />
-                  )}
+                  <ApplePayButton label="Buy with" loading />
+                )}
               </div>
             ) : (
               <ApplePayButton
