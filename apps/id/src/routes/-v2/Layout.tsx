@@ -3,6 +3,29 @@ import { Link } from '@tanstack/react-router'
 import { cx } from 'cva'
 import type { PropsWithChildren } from 'react'
 
+export const TabItems = [
+  {
+    id: 'portfolio',
+    name: 'Portfolio',
+    path: '/portfolio',
+  },
+  // {
+  //   id: 'transactions',
+  //   name: 'Transactions',
+  //   path: '/transactions',
+  // },
+  {
+    id: 'recovery',
+    name: 'Recovery',
+    path: '/recovery',
+  },
+  {
+    id: 'sessions',
+    name: 'Manage Sessions',
+    path: '/sessions',
+  },
+]
+
 export function Layout(props: PropsWithChildren) {
   return <main className="mx-auto flex h-full max-lg:flex-col" {...props} />
 }
@@ -24,58 +47,24 @@ export namespace Layout {
         }}
       >
         <Ariakit.TabList className="flex gap-0 border-gray5 border-b">
-          <Ariakit.Tab
-            className={cx(
-              'relative flex items-center gap-2 px-4 py-2 font-medium text-sm transition-colors',
-              'text-gray10 hover:text-gray12',
-              'data-[active-item]:text-white',
-              'after:absolute after:right-0 after:bottom-0 after:left-0 after:h-0.5',
-              'rounded-t-md data-[active-item]:bg-violet9',
-              'data-[active-item]:after:bg-violet9',
-            )}
-            id="portfolio"
-          >
-            Portfolio
-          </Ariakit.Tab>
-          <Ariakit.Tab
-            className={cx(
-              'relative flex items-center gap-2 px-4 py-2 font-medium text-sm transition-colors',
-              'text-gray10 hover:text-gray12',
-              'data-[active-item]:text-white',
-              'after:absolute after:right-0 after:bottom-0 after:left-0 after:h-0.5',
-              'rounded-t-md data-[active-item]:bg-violet9',
-              'data-[active-item]:after:bg-violet9',
-            )}
-            id="transactions"
-          >
-            Transactions
-          </Ariakit.Tab>
-          <Ariakit.Tab
-            className={cx(
-              'relative flex items-center gap-2 px-4 py-2 font-medium text-sm transition-colors',
-              'text-gray10 hover:text-gray12',
-              'data-[active-item]:text-white',
-              'after:absolute after:right-0 after:bottom-0 after:left-0 after:h-0.5',
-              'rounded-t-md data-[active-item]:bg-violet9',
-              'data-[active-item]:after:bg-violet9',
-            )}
-            id="recovery"
-          >
-            Recovery
-          </Ariakit.Tab>
-          <Ariakit.Tab
-            className={cx(
-              'relative flex items-center gap-2 px-4 py-2 font-medium text-sm transition-colors',
-              'text-gray10 hover:text-gray12',
-              'data-[active-item]:text-white',
-              'after:absolute after:right-0 after:bottom-0 after:left-0 after:h-0.5',
-              'rounded-t-md data-[active-item]:bg-violet9',
-              'data-[active-item]:after:bg-violet9',
-            )}
-            id="manage-sessions"
-          >
-            Manage Sessions
-          </Ariakit.Tab>
+          {TabItems.map((tab) => {
+            return (
+              <Ariakit.Tab
+                className={cx(
+                  'relative flex items-center gap-2 px-4 py-2 font-medium text-sm transition-colors',
+                  'text-gray10 hover:text-gray12',
+                  'data-[active-item]:text-white',
+                  'after:absolute after:right-0 after:bottom-0 after:left-0 after:h-0.5',
+                  'rounded-t-md data-[active-item]:bg-violet9',
+                  'data-[active-item]:after:bg-violet9',
+                )}
+                id={tab.id}
+                key={tab.id}
+              >
+                {tab.name}
+              </Ariakit.Tab>
+            )
+          })}
         </Ariakit.TabList>
         {props.children}
       </Ariakit.TabProvider>
@@ -105,62 +94,25 @@ export namespace Layout {
     return (
       <div>
         <div className="flex gap-0 border-gray5 border-b">
-          <Link
-            className={cx(
-              'relative flex items-center gap-2 px-4 py-2 font-medium text-sm transition-colors',
-              'text-gray10 hover:text-gray12',
-              'after:absolute after:right-0 after:bottom-0 after:left-0 after:h-0.5',
-              'rounded-t-md',
-              activeTab === 'portfolio'
-                ? 'bg-violet9 text-white after:bg-violet9 hover:text-white'
-                : '',
-            )}
-            to="/portfolio"
-          >
-            Portfolio
-          </Link>
-          <Link
-            className={cx(
-              'relative flex items-center gap-2 px-4 py-2 font-medium text-sm transition-colors',
-              'text-gray10 hover:text-gray12',
-              'after:absolute after:right-0 after:bottom-0 after:left-0 after:h-0.5',
-              'rounded-t-md',
-              activeTab === 'transactions'
-                ? 'bg-violet9 text-white after:bg-violet9 hover:text-white'
-                : '',
-            )}
-            to="/transactions"
-          >
-            Transactions
-          </Link>
-          <Link
-            className={cx(
-              'relative flex items-center gap-2 px-4 py-2 font-medium text-sm transition-colors',
-              'text-gray10 hover:text-gray12',
-              'after:absolute after:right-0 after:bottom-0 after:left-0 after:h-0.5',
-              'rounded-t-md',
-              activeTab === 'recovery'
-                ? 'bg-violet9 text-white after:bg-violet9 hover:text-white'
-                : '',
-            )}
-            to="/recovery"
-          >
-            Recovery
-          </Link>
-          <Link
-            className={cx(
-              'relative flex items-center gap-2 px-4 py-2 font-medium text-sm transition-colors',
-              'text-gray10 hover:text-gray12',
-              'after:absolute after:right-0 after:bottom-0 after:left-0 after:h-0.5',
-              'rounded-t-md',
-              activeTab === 'manage-sessions'
-                ? 'bg-violet9 text-white after:bg-violet9 hover:text-white'
-                : '',
-            )}
-            to="/sessions"
-          >
-            Manage Sessions
-          </Link>
+          {TabItems.map((tab) => {
+            return (
+              <Link
+                className={cx(
+                  'relative flex items-center gap-2 px-4 py-2 font-medium text-sm transition-colors',
+                  'text-gray10 hover:text-gray12',
+                  'after:absolute after:right-0 after:bottom-0 after:left-0 after:h-0.5',
+                  'rounded-t-md',
+                  activeTab === tab.id
+                    ? 'bg-violet9 text-white after:bg-violet9 hover:text-white'
+                    : '',
+                )}
+                key={tab.id}
+                to={tab.path}
+              >
+                {tab.name}
+              </Link>
+            )
+          })}
         </div>
         <div className="pt-6">{props.children}</div>
       </div>

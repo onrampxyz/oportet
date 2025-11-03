@@ -1,4 +1,4 @@
 export { Portfolio } from './Portfolio/Portfolio'
 export { Recovery } from './Recovery/Recovery'
 export { Sessions } from './Sessions/Sessions'
-export { Transactions } from './Transactions'
+export { Transactions } from './Transaction/Transactions'

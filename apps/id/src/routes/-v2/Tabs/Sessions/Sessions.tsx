@@ -29,7 +29,7 @@ export function Sessions() {
     return []
   }, [permissions])
 
-  console.log("Sessions:: ", sessions)
+  console.log('Sessions:: ', sessions)
 
   return (
     <div className="space-y-6">
@@ -168,7 +168,9 @@ export function Sessions() {
                         )}
                         {call.signature && (
                           <div className="flex items-center gap-2">
-                            <span className="text-gray10 text-xs">Signature:</span>
+                            <span className="text-gray10 text-xs">
+                              Signature:
+                            </span>
                             <span className="font-mono text-gray11 text-xs">
                               {call.signature}
                             </span>
