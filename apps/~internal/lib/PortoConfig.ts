@@ -54,10 +54,12 @@ const dialogHosts = {
     ? undefined
     : 'https://anvil.localhost:5174/dialog/',
   prod: import.meta.env.PROD
-    ? 'https://rise-wallet-testnet.vercel.app/dialog/'
+    ? // ? 'https://rise-wallet-testnet.vercel.app/dialog/'
+      'https://rise-wallet-testnet-dialog-git-v2-ui-rise-labs.vercel.app/dialog'
     : 'https://localhost:5174/dialog/',
   stg: import.meta.env.PROD
-    ? 'https://rise-wallet-testnet.vercel.app/dialog/'
+    ? // ? 'https://rise-wallet-testnet.vercel.app/dialog/'
+      'https://rise-wallet-testnet-dialog-git-v2-ui-rise-labs.vercel.app/dialog'
     : 'https://stg.localhost:5174/dialog/',
 } as const satisfies Record<Env.Env, string | undefined>
 
