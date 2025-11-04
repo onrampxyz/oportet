@@ -7,7 +7,7 @@ import type {
   WalletSummary,
 } from '~/types/wallet'
 
-const API_BASE_URL = 'http://localhost:42069'
+const API_BASE_URL = 'https://points-api.marble.live/'
 
 /**
  * Fetches wallet balances for a given address
