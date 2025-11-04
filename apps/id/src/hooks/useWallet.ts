@@ -191,7 +191,7 @@ export function useWallet({
       calls.isLoading ||
       protocol.isLoading ||
       summary.isLoading,
-     protocol,
+    protocol,
     summary,
   }
 }

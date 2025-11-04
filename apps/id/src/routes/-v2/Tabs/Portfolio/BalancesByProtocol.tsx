@@ -46,7 +46,7 @@ export function BalancesByProtocol(props: ProtocolPositionProps) {
           <tbody>
             {!hasBalance && (
               <div className="">
-                <p className='pt-6 font-medium text-gray10 text-sm'>
+                <p className="pt-6 font-medium text-gray10 text-sm">
                   You have no available balance!
                 </p>
               </div>
