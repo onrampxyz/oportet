@@ -1,108 +1,28 @@
 import { Spinner } from '@porto/apps/components'
-import { toNumber } from 'ox/Hex'
-import { Hooks } from 'porto/wagmi'
-import { useMemo } from 'react'
-import type { Hex } from 'viem'
-import { useAccount } from 'wagmi'
-import { formatBalance } from '~/mock/assets'
-import type { AssetsByChain } from '~/types/asset'
-import type { BalanceByChain, WalletBalance } from '~/types/portfolio'
-import { AddressFormatter } from '~/utils'
+import { useChains } from 'wagmi'
+import type { Balance } from '~/hooks/useWallet'
 
-// Chain ID to name mapping
-const CHAIN_NAMES: Record<string, string> = {
-  '0x1': 'Ethereum',
-  '0x2105': 'Base',
-  '0xAA39DB': 'RISE Testnet',
-  '0xa': 'Optimism',
-  '0xa4b1': 'Arbitrum',
+export type WalletBalancesProps = {
+  balances?: Balance[]
+  isLoading: boolean
 }
 
-// Get mock price for token
-function getMockPrice(symbol: string): number {
-  const prices: Record<string, number> = {
-    ETH: 3535,
-    RISE: 0.1,
-    USDC: 1,
-    USDT: 1,
-    WBTC: 68000,
-    WETH: 3535,
-  }
-  return prices[symbol] || 1
-}
+export function WalletBalances(props: WalletBalancesProps) {
+  const { balances, isLoading } = props
+  const chains = useChains()
 
-function transformAssetsToBalancesByChain(
-  assets: AssetsByChain,
-): BalanceByChain[] {
-  const balancesByChain: BalanceByChain[] = []
-
-  for (const [chainId, chainAssets] of Object.entries(assets)) {
-    const balances: WalletBalance[] = []
-    if (chainId === '0' || !chainAssets) continue
-
-    for (const asset of chainAssets) {
-      if (!asset.metadata) continue
-
-      const formattedBalance = formatBalance(
-        asset.balance,
-        asset.metadata.decimals,
-      )
-      const mockPrice = getMockPrice(asset.metadata.symbol)
-      const usdValue = Number(formattedBalance) * mockPrice
-
-      balances.push({
-        address:
-          asset.address === 'native'
-            ? 'native'
-            : AddressFormatter.short(asset.address),
-        balance: `${formattedBalance} ${asset.metadata.symbol}`,
-        name: asset.metadata.name,
-        symbol: asset.metadata.symbol,
-        usdValue: `$${usdValue.toLocaleString('en-US', { maximumFractionDigits: 2, minimumFractionDigits: 2 })}`,
-      })
-    }
-
-    // Sort by USD value (descending)
-    balances.sort((a, b) => {
-      const aValue = Number.parseFloat(a.usdValue.replace(/[$,]/g, ''))
-      const bValue = Number.parseFloat(b.usdValue.replace(/[$,]/g, ''))
-      return bValue - aValue
-    })
-
-    balancesByChain.push({
-      balances,
-      chainId,
-      chainName: CHAIN_NAMES[chainId] || `Chain ${chainId}`,
-    })
-  }
-
-  return balancesByChain
-}
-
-export function WalletBalances() {
-  const { address } = useAccount()
-  const { data: assets, isPending } = Hooks.useAssets({ account: address })
-
-  const balancesByChain = useMemo(() => {
-    if (assets) {
-      return transformAssetsToBalancesByChain(assets as AssetsByChain)
-    }
-    return []
-  }, [assets])
-
-  console.log('balancesByChain:: ', balancesByChain)
 
   return (
     <div className="space-y-4 rounded-lg border border-gray5 bg-white p-6 dark:bg-gray1">
       <h2 className="font-semibold text-lg">Wallet Balances By Chain</h2>
       {/* Loading State */}
-      {isPending && (
+      {isLoading && (
         <div className="flex items-center justify-center pt-6">
           <Spinner className="size-6!" />
         </div>
       )}
 
-      {!isPending && balancesByChain.length === 0 && (
+      {!isLoading && balances?.length === 0 && (
         <div className="">
           <p className="font-medium text-gray10 text-sm">
             No Balance in your wallet!
@@ -110,29 +30,28 @@ export function WalletBalances() {
         </div>
       )}
 
-      {!isPending &&
-        balancesByChain?.map((chainData) => (
-          <div className="" key={chainData.chainId}>
+      {!isLoading &&
+        balances &&
+        chains?.map((chain) => (
+          <div className="" key={chain.id}>
             <div className="mb-4 flex items-center justify-between">
               <div>
-                <h3 className="font-semibold">{chainData.chainName}</h3>
+                <h3 className="font-semibold">{chain.id}</h3>
                 <p className="text-gray10 text-sm">
-                  {chainData.balances.length} token
-                  {chainData.balances.length !== 1 ? 's' : ''}
+                  {balances.length} token
+                  {balances.length !== 1 ? 's' : ''}
                 </p>
               </div>
               <div className="rounded-full bg-violet9/10 px-3 py-1">
-                <p className="font-mono text-violet9 text-xs">
-                  {toNumber(chainData.chainId as Hex)}
-                </p>
+                <p className="font-mono text-violet9 text-xs">{chain.name}</p>
               </div>
             </div>
 
             <div className="space-y-2">
-              {chainData.balances.map((balance) => (
+              {balances.map((balance) => (
                 <div
-                  className="flex items-center justify-between rounded-lg border border-gray4 p-3 hover:bg-gray2"
-                  key={`${chainData.chainId}-${balance.address}`}
+                  className='flex items-center justify-between rounded-lg border border-gray4 p-3 capitalize hover:bg-gray2'
+                  key={`${balance.tokenId}-${balance.symbol}`}
                 >
                   <div className="flex items-center gap-3">
                     <div className="flex size-10 items-center justify-center rounded-full bg-gradient-to-br from-violet9 to-violet11">
@@ -144,14 +63,16 @@ export function WalletBalances() {
                       <p className="font-medium text-gray12 text-sm">
                         {balance.symbol}
                       </p>
-                      <p className="text-gray10 text-xs">{balance.name}</p>
+                      <p className="text-gray10 text-xs capitalize">
+                        {balance.tokenId.replace(`${chain.id}-`, '')}
+                      </p>
                     </div>
                   </div>
                   <div className="text-right">
                     <p className="font-semibold text-gray12 text-sm">
-                      {balance.balance}
+                      {balance.balanceFormatted.toFixed(6)}{' '}<span className='font-normal'>{balance.symbol}</span>
                     </p>
-                    <p className="text-gray10 text-xs">{balance.usdValue}</p>
+                    <p className="text-gray10 text-xs">{balance.usdValue.toFixed(6)} $</p>
                   </div>
                 </div>
               ))}

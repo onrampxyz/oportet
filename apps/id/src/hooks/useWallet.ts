@@ -8,13 +8,15 @@ const API_BASE_URL = 'http://localhost:42069'
  */
 export type Balance = {
   // Define the balance structure based on your API response
-  token: Address.Address
-  amount: string
+  tokenId: string
+  balance: string
+  updatedAt: string
+  symbol: string
   decimals: number
-  symbol?: string
-  name?: string
-  price?: number
-  value?: number
+  price: number
+  priceSource: string
+  balanceFormatted: number
+  usdValue: number
 }
 
 export type Call = {

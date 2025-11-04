@@ -1,13 +1,12 @@
-import ChildProcess from 'node:child_process'
-import NodeFS from 'node:fs'
-import NodePath from 'node:path'
 import { sentryVitePlugin as SentryVitePlugin } from '@sentry/vite-plugin'
 import Tailwindcss from '@tailwindcss/vite'
 import { TanStackRouterVite } from '@tanstack/router-plugin/vite'
 import React from '@vitejs/plugin-react'
+import ChildProcess from 'node:child_process'
+import NodeFS from 'node:fs'
+import NodePath from 'node:path'
 import { defineConfig, loadEnv } from 'vite'
 import Mkcert from 'vite-plugin-mkcert'
-import Terminal from 'vite-plugin-terminal'
 import TsconfigPaths from 'vite-tsconfig-paths'
 
 import { Plugins } from '../~internal/vite/index'
@@ -50,13 +49,13 @@ export default defineConfig(({ mode }) => {
     }),
   ]
 
-  if (mode === 'development') {
-    plugins.push(
-      Terminal({
-        console: 'terminal',
-      }),
-    )
-  }
+  // if (mode === 'development') {
+  //   plugins.push(
+  //     Terminal({
+  //       console: 'terminal',
+  //     }),
+  //   )
+  // }
 
   return {
     build: {
