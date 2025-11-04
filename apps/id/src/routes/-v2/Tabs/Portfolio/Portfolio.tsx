@@ -8,11 +8,18 @@ export function Portfolio() {
   console.log('All env vars:', import.meta.env)
   const { address } = useAccount()
   const { balances, protocol, summary, calls, isLoading } = useWallet({
-    address,
+    address: '0x07b780e6d4d7177bd596e7cabf2725a471e685dc',
+    // address,
   })
 
+  console.log('balances:: ', balances.data)
+  console.log('positions:: ', protocol.data)
+  console.log('summary:: ', summary.data)
+  console.log('calls:: ', calls.data)
+  console.log('----------------------')
+
   return (
-    <div className="space-y-3">
+    <div className="space-y-6">
       {/* 24h Balance Change Section */}
       <Summary
         isLoading={isLoading}

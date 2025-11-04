@@ -1,6 +1,7 @@
 import { Spinner } from '@porto/apps/components'
 import { useChains } from 'wagmi'
 import type { Balance } from '~/types/wallet'
+import { ValueFormatter } from '~/utils'
 
 export type WalletBalancesProps = {
   balances?: Balance[]
@@ -12,6 +13,11 @@ export function WalletBalances(props: WalletBalancesProps) {
   const chains = useChains()
 
   const hasBalance = !isLoading && balances && balances?.length !== 0
+
+  const formatValue = (value: number | undefined) => {
+    if (value === undefined) return '$0.00'
+    return `$${ValueFormatter.formatToPrice(value)}`
+  }
 
   return (
     <div className="space-y-4 rounded-lg border border-gray5 bg-white p-6 dark:bg-gray1">
@@ -74,7 +80,7 @@ export function WalletBalances(props: WalletBalancesProps) {
                       <span className="font-normal">{balance.symbol}</span>
                     </p>
                     <p className="text-gray10 text-xs">
-                      {balance.usdValue.toFixed(4)} $
+                      {formatValue(balance.usdValue)}
                     </p>
                   </div>
                 </div>
