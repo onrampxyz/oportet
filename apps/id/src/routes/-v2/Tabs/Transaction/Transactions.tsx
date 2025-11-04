@@ -29,7 +29,7 @@ const StatusBadge = ({ status }: { status: TransactionStatus }) => {
 export function Transactions() {
   const { address } = useAccount()
   const { calls, isLoading } = useWallet({
-    address
+    address,
   })
 
   const getDate = (timestamp: number) => {
@@ -52,7 +52,6 @@ export function Transactions() {
         </h2>
       </div>
 
-
       {!isLoading && calls.data?.intents.length === 0 && (
         <div className="flex flex-col items-center justify-center rounded-lg border border-gray5 bg-white p-12 dark:bg-gray1">
           <p className="text-gray10 text-sm">No transactions yet</p>
@@ -67,52 +66,53 @@ export function Transactions() {
 
       {/* Transactions List */}
       <div className="space-y-2">
-        {!isLoading && calls.data?.intents?.map((transaction) => (
-          <div
-            className="flex items-center justify-between rounded-lg border border-gray5 bg-white p-4 transition-colors hover:bg-gray2 dark:bg-gray1"
-            key={transaction.id}
-          >
-            {/* Left section: Type and Description */}
-            <div className="flex-1">
-              <div className="flex items-center gap-2">
-                <h3 className="font-semibold text-gray12 text-sm capitalize">
-                  {transaction.calls[0]?.functionName || 'Transaction'}
-                </h3>
+        {!isLoading &&
+          calls.data?.intents?.map((transaction) => (
+            <div
+              className="flex items-center justify-between rounded-lg border border-gray5 bg-white p-4 transition-colors hover:bg-gray2 dark:bg-gray1"
+              key={transaction.id}
+            >
+              {/* Left section: Type and Description */}
+              <div className="flex-1">
+                <div className="flex items-center gap-2">
+                  <h3 className="font-semibold text-gray12 text-sm capitalize">
+                    {transaction.calls[0]?.functionName || 'Transaction'}
+                  </h3>
+                </div>
+                <p className="mt-0.5 text-gray10 text-xs">
+                  Block: {transaction.blockNumber}
+                </p>
               </div>
-              <p className="mt-0.5 text-gray10 text-xs">
-                Block: {transaction.blockNumber}
-              </p>
-            </div>
 
-            {/* Middle section: Status and Timestamp */}
-            <div className="flex flex-col items-center gap-1 px-8">
-              <StatusBadge
-                status={transaction.success ? 'completed' : 'failed'}
-              />
-              <p className="text-gray10 text-xs">
-                {getDate(Number(transaction.timestamp))}
-              </p>
-            </div>
+              {/* Middle section: Status and Timestamp */}
+              <div className="flex flex-col items-center gap-1 px-8">
+                <StatusBadge
+                  status={transaction.success ? 'completed' : 'failed'}
+                />
+                <p className="text-gray10 text-xs">
+                  {getDate(Number(transaction.timestamp))}
+                </p>
+              </div>
 
-            {/* Right section: Amount and Link */}
-            <div className="flex flex-col items-end gap-1">
-              <p className={cx('font-semibold text-sm')}>
-                {transaction.paymentAmount} ETH
-              </p>
-              {transaction.txHash && (
-                <a
-                  className="text-violet9 text-xs hover:underline"
-                  href={`https://explorer.testnet.riselabs.xyz/tx/${transaction.txHash}`}
-                  rel="noopener noreferrer"
-                  target="_blank"
-                  title="View on explorer"
-                >
-                  See Transaction
-                </a>
-              )}
+              {/* Right section: Amount and Link */}
+              <div className="flex flex-col items-end gap-1">
+                <p className={cx('font-semibold text-sm')}>
+                  {transaction.paymentAmount} ETH
+                </p>
+                {transaction.txHash && (
+                  <a
+                    className="text-violet9 text-xs hover:underline"
+                    href={`https://explorer.testnet.riselabs.xyz/tx/${transaction.txHash}`}
+                    rel="noopener noreferrer"
+                    target="_blank"
+                    title="View on explorer"
+                  >
+                    See Transaction
+                  </a>
+                )}
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
       </div>
     </div>
   )
