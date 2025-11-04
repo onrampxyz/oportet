@@ -1,4 +1,5 @@
 export * from './useClickOutside'
+export * from './useSelector'
 export * from './useTokenInfo'
 export * from './useTokenStandard'
 export * from './useWallet'

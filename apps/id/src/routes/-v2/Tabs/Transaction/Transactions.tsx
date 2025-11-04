@@ -1,7 +1,8 @@
 import { Spinner } from '@porto/apps/components'
 import { cx } from 'cva'
+import { formatEther } from 'viem'
 import { useAccount } from 'wagmi'
-import { useWallet } from '~/hooks'
+import { useSelector, useWallet } from '~/hooks'
 
 type TransactionStatus = 'pending' | 'completed' | 'failed'
 
@@ -29,8 +30,10 @@ const StatusBadge = ({ status }: { status: TransactionStatus }) => {
 export function Transactions() {
   const { address } = useAccount()
   const { calls, isLoading } = useWallet({
-    address,
+    address: '0x07b780e6d4d7177bd596e7cabf2725a471e685dc',
   })
+
+  console.log('calls', calls.data)
 
   const getDate = (timestamp: number) => {
     const date = new Date(timestamp * 1000)
@@ -43,6 +46,34 @@ export function Transactions() {
       year: '2-digit',
     })
   }
+
+  const getAmount = (decodedArgs: string) => {
+    if (decodedArgs === '') return 0
+
+    const amountArg = JSON.parse(decodedArgs)
+    console.log('amountArg', amountArg)
+
+    return `${Number(formatEther(amountArg[1] || 0)).toFixed(2)} ETH`
+  }
+
+  const getUniqueSelectors = () => {
+    if (!calls.data?.intents) return []
+
+    const selectors = calls.data.intents
+      .map((transaction) => transaction.calls[0]?.selector)
+      .filter((selector): selector is string => !!selector)
+
+    // Return unique selectors only
+    return [...new Set(selectors)]
+  }
+  const uniqueSelectors = getUniqueSelectors()
+
+  const selectorQueries = useSelector({
+    enabled: uniqueSelectors.length > 0,
+    selectors: uniqueSelectors,
+  })
+
+  console.log('selectorQueries', selectorQueries)
 
   return (
     <div className="space-y-4">
@@ -76,7 +107,10 @@ export function Transactions() {
               <div className="flex-1">
                 <div className="flex items-center gap-2">
                   <h3 className="font-semibold text-gray12 text-sm capitalize">
-                    {transaction.calls[0]?.functionName || 'Transaction'}
+                    {transaction.calls[0]?.functionName || <p className={cx('text-sm')}>
+                      {selectorQueries.data.get(transaction.calls[0]?.selector ?? '')
+                        ?.primarySignature || transaction.calls[0]?.selector}
+                    </p>}
                   </h3>
                 </div>
                 <p className="mt-0.5 text-gray10 text-xs">
@@ -96,9 +130,16 @@ export function Transactions() {
 
               {/* Right section: Amount and Link */}
               <div className="flex flex-col items-end gap-1">
-                <p className={cx('font-semibold text-sm')}>
-                  {transaction.paymentAmount} ETH
-                </p>
+                {transaction.calls[0]?.decodedArgsJson ? (
+                  <p className={cx('font-semibold text-sm')}>
+                    {getAmount(transaction.calls[0]?.decodedArgsJson)}
+                  </p>
+                ) : (
+
+                  <p className={cx('text-sm')}>
+                    {transaction.calls[0]?.to}
+                  </p>
+                )}
                 {transaction.txHash && (
                   <a
                     className="text-violet9 text-xs hover:underline"

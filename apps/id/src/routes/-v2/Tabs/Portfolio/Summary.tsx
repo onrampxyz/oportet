@@ -26,7 +26,7 @@ export function SummaryCard(props: SummaryCardProps) {
       {isLoading ? (
         <Spinner className="size-6!" />
       ) : (
-          <p className={cx('text-2xl', className)}>{value}</p>
+        <p className={cx('text-2xl', className)}>{value}</p>
       )}
     </div>
   )
