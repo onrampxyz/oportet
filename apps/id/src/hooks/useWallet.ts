@@ -1,85 +1,13 @@
 import { useQuery } from '@tanstack/react-query'
 import type { Address } from 'ox'
+import type {
+  Balance,
+  IntentsResponse,
+  Position,
+  WalletSummary,
+} from '~/types/wallet'
 
 const API_BASE_URL = 'http://localhost:42069'
-
-/**
- * Type definitions for wallet API responses
- */
-export type Balance = {
-  // Define the balance structure based on your API response
-  tokenId: string
-  balance: string
-  updatedAt: string
-  symbol: string
-  decimals: number
-  price: number
-  priceSource: string
-  balanceFormatted: number
-  usdValue: number
-}
-
-export type Position = {
-  // Define the position structure based on your API response
-  protocol: string
-  type: 'lending' | 'staking' | 'liquidity' | 'other'
-  tokens: Array<{
-    address: Address.Address
-    amount: string
-    symbol: string
-  }>
-  value?: number
-}
-
-export type WalletSummary = {
-  account: string
-  totalValue: number
-  breakdown: {
-    tokens: {
-      value: number
-      count: number
-    }
-    protocols: {
-      value: number
-      count: number
-    }
-  }
-}
-
-export type Call = {
-  id: string
-  idx: number
-  to: string
-  value: string
-  selector: string
-  functionName: string | null
-  decodedArgsJson: string | null
-}
-
-export type Intent = {
-  id: string
-  eoa: string
-  txHash: string
-  blockNumber: string
-  timestamp: string
-  success: boolean
-  paymentAmount: string
-  paymentToken: string
-  payer: string
-  errSelector: string
-  calls: Call[]
-}
-
-export type Pagination = {
-  limit: number
-  offset: number
-  hasMore: boolean
-}
-
-export type IntentsResponse = {
-  intents: Intent[]
-  pagination: Pagination
-}
 
 /**
  * Fetches wallet balances for a given address
@@ -152,28 +80,6 @@ export function useWalletCalls({
   })
 }
 
-export function useTotalCalls({
-  address,
-  enabled = true,
-}: {
-  address?: Address.Address | undefined
-  enabled?: boolean
-}) {
-  return useQuery({
-    enabled: enabled && !!address,
-    queryFn: async () => {
-      const response = await fetch(`${API_BASE_URL}/calls/${address}`)
-      if (!response.ok) {
-        throw new Error(`Failed to fetch calls: ${response.statusText}`)
-      }
-      return response.json() as Promise<Call[]>
-    },
-    queryKey: ['wallet', 'total_calls', address],
-    refetchInterval: 10_000, // Refetch every 10 seconds
-    staleTime: 5_000, // Consider data stale after 5 seconds
-  })
-}
-
 /**
  * Fetches wallet positions (DeFi protocols) for a given address
  *
@@ -199,7 +105,7 @@ export function useWalletPositions({
       if (!response.ok) {
         throw new Error(`Failed to fetch positions: ${response.statusText}`)
       }
-      return response.json() as Promise<Position[]>
+      return response.json() as Promise<Position>
     },
     queryKey: ['wallet', 'positions', address],
     refetchInterval: 60_000, // Refetch every 60 seconds
@@ -270,24 +176,22 @@ export function useWallet({
 }) {
   const balances = useWalletBalances({ address, enabled })
   const calls = useWalletCalls({ address, enabled, limit: callsLimit })
-  const positions = useWalletPositions({ address, enabled })
+  const protocol = useWalletPositions({ address, enabled })
   const summary = useWalletSummary({ address, enabled })
-  const totalCalls = useTotalCalls({ address, enabled })
 
   return {
     balances,
     calls,
-    error: balances.error || calls.error || positions.error || summary.error,
+    error: balances.error || calls.error || protocol.error || summary.error,
     isError:
-      balances.isError || calls.isError || positions.isError || summary.isError,
+      balances.isError || calls.isError || protocol.isError || summary.isError,
     // Convenience properties
     isLoading:
       balances.isLoading ||
       calls.isLoading ||
-      positions.isLoading ||
+      protocol.isLoading ||
       summary.isLoading,
-    positions,
+     protocol,
     summary,
-    totalCalls,
   }
 }

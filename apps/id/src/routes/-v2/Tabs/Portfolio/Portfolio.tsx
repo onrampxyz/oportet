@@ -1,23 +1,18 @@
 import { useAccount } from 'wagmi'
 import { useWallet } from '~/hooks'
+import { BalancesByProtocol } from './BalancesByProtocol'
 import { Summary } from './Summary'
 import { WalletBalances } from './WalletBalances'
 
 export function Portfolio() {
   console.log('All env vars:', import.meta.env)
   const { address } = useAccount()
-  const { balances, positions, summary, calls, isLoading } = useWallet({
-    address: '0x07b780e6d4d7177bd596e7cabf2725a471e685dc',
+  const { balances, protocol, summary, calls, isLoading } = useWallet({
+    address,
   })
 
-  console.log('balances:: ', balances.data)
-  console.log('positions:: ', positions.data)
-  console.log('summary:: ', summary.data)
-  console.log('calls:: ', calls.data)
-  console.log('----------------------')
-
   return (
-    <div className="space-y-6">
+    <div className="space-y-3">
       {/* 24h Balance Change Section */}
       <Summary
         isLoading={isLoading}
@@ -29,7 +24,10 @@ export function Portfolio() {
       <WalletBalances balances={balances.data} isLoading={isLoading} />
 
       {/* Balances by Protocol Section */}
-      {/* <BalancesByProtocol /> */}
+      <BalancesByProtocol
+        isLoading={isLoading}
+        positions={protocol?.data?.positions}
+      />
     </div>
   )
 }

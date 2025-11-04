@@ -1,14 +1,6 @@
 import { Spinner } from '@porto/apps/components'
 import { cx } from 'cva'
-import type { WalletSummary } from '~/hooks'
-import type { BalanceChange } from '~/types/portfolio'
-
-const DUMMY_BALANCE_CHANGE: BalanceChange = {
-  protocols: '+$51.15',
-  totalChange: '+$51.15',
-  transactions: 12,
-  wallet: '+$23.45',
-}
+import type { WalletSummary } from '~/types/wallet'
 
 export type SummaryProps = {
   summary?: WalletSummary
