@@ -14,12 +14,16 @@ export function Portfolio() {
   console.log('positions:: ', positions.data)
   console.log('summary:: ', summary.data)
   console.log('calls:: ', calls.data)
-  console.log("----------------------")
+  console.log('----------------------')
 
   return (
     <div className="space-y-6">
       {/* 24h Balance Change Section */}
-      <Summary isLoading={isLoading} summary={summary.data} transactionCount={calls.data?.intents?.length ?? 0} />
+      <Summary
+        isLoading={isLoading}
+        summary={summary.data}
+        transactionCount={calls.data?.intents?.length ?? 0}
+      />
 
       {/* Wallet Balances Section - Per Chain */}
       <WalletBalances balances={balances.data} isLoading={isLoading} />

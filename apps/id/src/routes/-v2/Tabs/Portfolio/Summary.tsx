@@ -44,7 +44,7 @@ export function Summary(props: SummaryProps) {
 
   return (
     <div className="rounded-lg border border-gray5 bg-white p-6 dark:bg-gray1">
-      <h2 className="mb-2 font-semibold text-lg">24h Balance Change</h2>
+      <h2 className="mb-2 font-semibold text-lg">Portfolio Summary</h2>
 
       <p className="mb-4 text-gray10 text-sm">
         Summary of portfolio changes over the last 24 hours
@@ -73,7 +73,6 @@ export function Summary(props: SummaryProps) {
           title="Transactions"
           value={transactionCount}
         />
-
       </div>
     </div>
   )
