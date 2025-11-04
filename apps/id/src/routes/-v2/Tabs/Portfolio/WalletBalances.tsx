@@ -11,7 +11,6 @@ export function WalletBalances(props: WalletBalancesProps) {
   const { balances, isLoading } = props
   const chains = useChains()
 
-
   return (
     <div className="space-y-4 rounded-lg border border-gray5 bg-white p-6 dark:bg-gray1">
       <h2 className="font-semibold text-lg">Wallet Balances By Chain</h2>
@@ -50,7 +49,7 @@ export function WalletBalances(props: WalletBalancesProps) {
             <div className="space-y-2">
               {balances.map((balance) => (
                 <div
-                  className='flex items-center justify-between rounded-lg border border-gray4 p-3 capitalize hover:bg-gray2'
+                  className="flex items-center justify-between rounded-lg border border-gray4 p-3 capitalize hover:bg-gray2"
                   key={`${balance.tokenId}-${balance.symbol}`}
                 >
                   <div className="flex items-center gap-3">
@@ -70,9 +69,12 @@ export function WalletBalances(props: WalletBalancesProps) {
                   </div>
                   <div className="text-right">
                     <p className="font-semibold text-gray12 text-sm">
-                      {balance.balanceFormatted.toFixed(6)}{' '}<span className='font-normal'>{balance.symbol}</span>
+                      {balance.balanceFormatted.toFixed(4)}{' '}
+                      <span className="font-normal">{balance.symbol}</span>
                     </p>
-                    <p className="text-gray10 text-xs">{balance.usdValue.toFixed(6)} $</p>
+                    <p className="text-gray10 text-xs">
+                      {balance.usdValue.toFixed(4)} $
+                    </p>
                   </div>
                 </div>
               ))}

@@ -19,18 +19,6 @@ export type Balance = {
   usdValue: number
 }
 
-export type Call = {
-  // Define the call structure based on your API response
-  id: string
-  hash: string
-  timestamp: number
-  status: 'pending' | 'confirmed' | 'failed'
-  from: Address.Address
-  to: Address.Address
-  value?: string
-  data?: string
-}
-
 export type Position = {
   // Define the position structure based on your API response
   protocol: string
@@ -44,11 +32,53 @@ export type Position = {
 }
 
 export type WalletSummary = {
-  // Define the wallet summary structure based on your API response
+  account: string
   totalValue: number
-  totalBalances: number
-  totalPositions: number
-  address: Address.Address
+  breakdown: {
+    tokens: {
+      value: number
+      count: number
+    }
+    protocols: {
+      value: number
+      count: number
+    }
+  }
+}
+
+export type Call = {
+  id: string
+  idx: number
+  to: string
+  value: string
+  selector: string
+  functionName: string | null
+  decodedArgsJson: string | null
+}
+
+export type Intent = {
+  id: string
+  eoa: string
+  txHash: string
+  blockNumber: string
+  timestamp: string
+  success: boolean
+  paymentAmount: string
+  paymentToken: string
+  payer: string
+  errSelector: string
+  calls: Call[]
+}
+
+export type Pagination = {
+  limit: number
+  offset: number
+  hasMore: boolean
+}
+
+export type IntentsResponse = {
+  intents: Intent[]
+  pagination: Pagination
 }
 
 /**
@@ -114,9 +144,31 @@ export function useWalletCalls({
       if (!response.ok) {
         throw new Error(`Failed to fetch calls: ${response.statusText}`)
       }
-      return response.json() as Promise<Call[]>
+      return response.json() as Promise<IntentsResponse>
     },
     queryKey: ['wallet', 'calls', address, limit],
+    refetchInterval: 10_000, // Refetch every 10 seconds
+    staleTime: 5_000, // Consider data stale after 5 seconds
+  })
+}
+
+export function useTotalCalls({
+  address,
+  enabled = true,
+}: {
+  address?: Address.Address | undefined
+  enabled?: boolean
+}) {
+  return useQuery({
+    enabled: enabled && !!address,
+    queryFn: async () => {
+      const response = await fetch(`${API_BASE_URL}/calls/${address}`)
+      if (!response.ok) {
+        throw new Error(`Failed to fetch calls: ${response.statusText}`)
+      }
+      return response.json() as Promise<Call[]>
+    },
+    queryKey: ['wallet', 'total_calls', address],
     refetchInterval: 10_000, // Refetch every 10 seconds
     staleTime: 5_000, // Consider data stale after 5 seconds
   })
@@ -220,6 +272,7 @@ export function useWallet({
   const calls = useWalletCalls({ address, enabled, limit: callsLimit })
   const positions = useWalletPositions({ address, enabled })
   const summary = useWalletSummary({ address, enabled })
+  const totalCalls = useTotalCalls({ address, enabled })
 
   return {
     balances,
@@ -235,5 +288,6 @@ export function useWallet({
       summary.isLoading,
     positions,
     summary,
+    totalCalls,
   }
 }
