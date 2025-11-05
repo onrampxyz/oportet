@@ -27,9 +27,6 @@ export function Transfer(props: TransferProps) {
   const {
     onTransfer,
     isPending: isTransferring,
-    data: result,
-    errorMessage,
-    isSuccess,
   } = useTransfer()
 
   if (!isOpen || !balance) return null
@@ -133,11 +130,10 @@ export function Transfer(props: TransferProps) {
             Recipient Address
           </label>
           <input
-            className={`w-full rounded-lg border p-3 text-sm focus:outline-none ${
-              addressError
+            className={`w-full rounded-lg border p-3 text-sm focus:outline-none ${addressError
                 ? 'border-red-500 focus:border-red-500'
                 : 'border-gray5 focus:border-violet9'
-            }`}
+              }`}
             id="address"
             onChange={(e) => {
               setToAddress(e.target.value)
@@ -159,9 +155,8 @@ export function Transfer(props: TransferProps) {
             Amount
           </label>
           <div
-            className={`flex gap-1 rounded-lg border px-3 py-2 ${
-              amountError ? 'border-red-500' : 'border-gray5'
-            }`}
+            className={`flex gap-1 rounded-lg border px-3 py-2 ${amountError ? 'border-red-500' : 'border-gray5'
+              }`}
           >
             <input
               className="flex-1 text-sm focus:border-violet9 focus:outline-none"
