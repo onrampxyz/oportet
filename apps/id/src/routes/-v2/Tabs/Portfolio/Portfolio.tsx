@@ -10,7 +10,7 @@ export function Portfolio() {
     address,
   })
 
-  console.log("calls:: ", calls.data)
+  console.log('calls:: ', calls.data)
 
   return (
     <div className="space-y-3">

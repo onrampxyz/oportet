@@ -139,7 +139,9 @@ export function Transactions() {
                     {getAmount(transaction.calls[0]?.decodedArgsJson)}
                   </p>
                 ) : (
-                  <p className={cx('text-sm')}>{AddressFormatter.mask(transaction.calls[0]?.to)}</p>
+                  <p className={cx('text-sm')}>
+                    {AddressFormatter.mask(transaction.calls[0]?.to)}
+                  </p>
                 )}
                 {transaction.txHash && (
                   <a

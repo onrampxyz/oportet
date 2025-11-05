@@ -141,17 +141,17 @@ export function Header() {
   useEffect(() => {
     const savedTheme = localStorage.getItem('__porto_theme')
     if (!savedTheme) {
-      console.log("savedTheme:: ", savedTheme)
+      console.log('savedTheme:: ', savedTheme)
       document.documentElement.classList.add('scheme-light')
       document.documentElement.classList.remove(
         'scheme-light-dark',
         'scheme-dark',
       )
       localStorage.setItem('__porto_theme', 'light')
-      setTheme("light")
+      setTheme('light')
     } else {
-      setTheme(savedTheme as "light" | "dark")
-      if (savedTheme === "dark") {
+      setTheme(savedTheme as 'light' | 'dark')
+      if (savedTheme === 'dark') {
         document.documentElement.classList.remove('scheme-light')
         document.documentElement.classList.add('scheme-light-dark')
         localStorage.setItem('__porto_theme', 'dark')

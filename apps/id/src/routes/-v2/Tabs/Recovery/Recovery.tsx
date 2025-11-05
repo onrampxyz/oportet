@@ -61,7 +61,6 @@ export function Recovery() {
   })
 
   const handleCopyAddress = (text: string) => {
-
     try {
       navigator.clipboard.writeText(text)
       toast.custom((t) => (
