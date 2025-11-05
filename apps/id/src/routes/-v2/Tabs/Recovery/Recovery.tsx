@@ -60,6 +60,30 @@ export function Recovery() {
     },
   })
 
+  const handleCopyAddress = (text: string) => {
+
+    try {
+      navigator.clipboard.writeText(text)
+      toast.custom((t) => (
+        <Toast
+          className={t}
+          description="Address copied to clipboard!"
+          kind="success"
+          title="Copied!"
+        />
+      ))
+    } catch (error) {
+      toast.custom((t) => (
+        <Toast
+          className={t}
+          description="Failed to copy address"
+          kind="error"
+          title="Copy Failed"
+        />
+      ))
+    }
+  }
+
   return (
     <div className="space-y-6">
       {/* Warning Banner */}
@@ -119,9 +143,7 @@ export function Recovery() {
                   <button
                     className="text-gray10 transition-colors hover:text-gray12"
                     onClick={() => {
-                      navigator.clipboard.writeText(
-                        wallet.id ?? wallet.publicKey,
-                      )
+                      handleCopyAddress(wallet.id ?? wallet.publicKey)
                     }}
                     title="Copy address"
                     type="button"

@@ -1,7 +1,9 @@
-import { Spinner } from '@porto/apps/components'
+import { Button, Spinner } from '@porto/apps/components'
+import { useState } from 'react'
 import { useChains } from 'wagmi'
 import type { Balance } from '~/types/wallet'
 import { ValueFormatter } from '~/utils'
+import { Transfer } from './Transfer'
 
 export type WalletBalancesProps = {
   balances?: Balance[]
@@ -10,13 +12,27 @@ export type WalletBalancesProps = {
 
 export function WalletBalances(props: WalletBalancesProps) {
   const { balances, isLoading } = props
+
   const chains = useChains()
+
+  const [isTransferModalOpen, setIsTransferModalOpen] = useState(false)
+  const [selectedBalance, setSelectedBalance] = useState<Balance | undefined>()
 
   const hasBalance = !isLoading && balances && balances?.length !== 0
 
   const formatValue = (value: number | undefined) => {
     if (value === undefined) return '$0.00'
     return `$${ValueFormatter.formatToPrice(value)}`
+  }
+
+  const handleTransfer = (balance: Balance) => {
+    setSelectedBalance(balance)
+    setIsTransferModalOpen(true)
+  }
+
+  const handleCloseModal = () => {
+    setIsTransferModalOpen(false)
+    setSelectedBalance(undefined)
   }
 
   return (
@@ -74,20 +90,34 @@ export function WalletBalances(props: WalletBalancesProps) {
                       </p>
                     </div>
                   </div>
-                  <div className="text-right">
-                    <p className="font-semibold text-gray12 text-sm">
-                      {balance.balanceFormatted.toFixed(4)}{' '}
-                      <span className="font-normal">{balance.symbol}</span>
-                    </p>
-                    <p className="text-gray10 text-xs">
-                      {formatValue(balance.usdValue)}
-                    </p>
+                  <div className="flex items-center gap-3">
+                    <div className="text-right">
+                      <p className="font-semibold text-gray12 text-sm">
+                        {balance.balanceFormatted.toFixed(4)}{' '}
+                        <span className="font-normal">{balance.symbol}</span>
+                      </p>
+                      <p className="text-gray10 text-xs">
+                        {formatValue(balance.usdValue)}
+                      </p>
+                    </div>
+                    <Button
+                      onClick={() => handleTransfer(balance)}
+                      variant="outline"
+                    >
+                      Transfer
+                    </Button>
                   </div>
                 </div>
               ))}
             </div>
           </div>
         ))}
+
+      <Transfer
+        balance={selectedBalance}
+        isOpen={isTransferModalOpen}
+        onClose={handleCloseModal}
+      />
     </div>
   )
 }

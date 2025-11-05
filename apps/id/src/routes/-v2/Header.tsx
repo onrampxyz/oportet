@@ -14,6 +14,7 @@ import {
   useSwitchChain,
 } from 'wagmi'
 import { AddressFormatter } from '~/utils'
+import LucideCopy from '~icons/lucide/copy'
 import LucideMoon from '~icons/lucide/moon'
 import LucideSun from '~icons/lucide/sun'
 
@@ -110,16 +111,58 @@ export function Header() {
     }
   }
 
+  const handleCopyAddress = async () => {
+    if (!address) return
+
+    try {
+      await navigator.clipboard.writeText(address)
+      toast.custom((t) => (
+        <Toast
+          className={t}
+          description="Address copied to clipboard!"
+          kind="success"
+          title="Copied!"
+        />
+      ))
+    } catch (error) {
+      toast.custom((t) => (
+        <Toast
+          className={t}
+          description="Failed to copy address"
+          kind="error"
+          title="Copy Failed"
+        />
+      ))
+    }
+  }
+
   // Set light mode as default on mount if no preference is saved
+  // TODO: improve this to check for system preference
   useEffect(() => {
     const savedTheme = localStorage.getItem('__porto_theme')
     if (!savedTheme) {
+      console.log("savedTheme:: ", savedTheme)
+      document.documentElement.classList.add('scheme-light')
       document.documentElement.classList.remove(
         'scheme-light-dark',
         'scheme-dark',
       )
-      document.documentElement.classList.add('scheme-light')
       localStorage.setItem('__porto_theme', 'light')
+      setTheme("light")
+    } else {
+      setTheme(savedTheme as "light" | "dark")
+      if (savedTheme === "dark") {
+        document.documentElement.classList.remove('scheme-light')
+        document.documentElement.classList.add('scheme-light-dark')
+        localStorage.setItem('__porto_theme', 'dark')
+      } else {
+        document.documentElement.classList.remove(
+          'scheme-light-dark',
+          'scheme-dark',
+        )
+        document.documentElement.classList.add('scheme-light')
+        localStorage.setItem('__porto_theme', 'light')
+      }
     }
   }, [])
 
@@ -134,7 +177,17 @@ export function Header() {
         <div className="flex gap-4">
           <div className="h-10 w-10 rounded-full bg-violet9" />
           <div>
-            <p className="text-sm">{AddressFormatter.mask(address)}</p>
+            <div className="flex items-center gap-2">
+              <p className="text-sm">{AddressFormatter.mask(address)}</p>
+              <button
+                className="text-gray11 transition-colors hover:text-gray12"
+                onClick={handleCopyAddress}
+                title="Copy address"
+                type="button"
+              >
+                <LucideCopy className="size-4" />
+              </button>
+            </div>
             <p className="font-semibold text-sm">
               {formatEther(balance?.value ?? 0n)}{' '}
               <span className="text-sm">{balance?.symbol ?? 'ETH'}</span>

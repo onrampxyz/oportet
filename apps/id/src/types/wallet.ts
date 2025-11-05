@@ -70,4 +70,5 @@ export type Pagination = {
 export type IntentsResponse = {
   intents: Intent[]
   pagination: Pagination
+  totalCount: number
 }

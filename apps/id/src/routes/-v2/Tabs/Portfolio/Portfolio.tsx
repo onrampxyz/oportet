@@ -5,11 +5,12 @@ import { Summary } from './Summary'
 import { WalletBalances } from './WalletBalances'
 
 export function Portfolio() {
-  console.log('All env vars:', import.meta.env)
   const { address } = useAccount()
   const { balances, protocol, summary, calls, isLoading } = useWallet({
     address,
   })
+
+  console.log("calls:: ", calls.data)
 
   return (
     <div className="space-y-3">
@@ -17,7 +18,7 @@ export function Portfolio() {
       <Summary
         isLoading={isLoading}
         summary={summary.data}
-        transactionCount={calls.data?.intents?.length ?? 0}
+        transactionCount={calls.data?.totalCount ?? 0}
       />
 
       {/* Wallet Balances Section - Per Chain */}

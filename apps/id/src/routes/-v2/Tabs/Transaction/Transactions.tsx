@@ -3,6 +3,7 @@ import { cx } from 'cva'
 import { formatEther } from 'viem'
 import { useAccount } from 'wagmi'
 import { useSelector, useWallet } from '~/hooks'
+import { AddressFormatter } from '~/utils'
 
 type TransactionStatus = 'pending' | 'completed' | 'failed'
 
@@ -138,7 +139,7 @@ export function Transactions() {
                     {getAmount(transaction.calls[0]?.decodedArgsJson)}
                   </p>
                 ) : (
-                  <p className={cx('text-sm')}>{transaction.calls[0]?.to}</p>
+                  <p className={cx('text-sm')}>{AddressFormatter.mask(transaction.calls[0]?.to)}</p>
                 )}
                 {transaction.txHash && (
                   <a
