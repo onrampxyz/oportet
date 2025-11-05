@@ -6,6 +6,7 @@ export type TransferProps = {
   address: Address
   recipient: Address
   parsedAmount: bigint
+  chainId?: number
 }
 
 export type TransactionCall = {
@@ -22,11 +23,10 @@ export function useTransfer() {
 
   async function executeWithPasskey(calls: TransactionCall[]) {
     try {
-      // TODO: Fix type instantation issue - wagmi
       const result = await sendCallsAsync({
         calls,
         version: '1',
-      } as any)
+      })
 
       return {
         data: { ...result, usedSessionKey: false },

@@ -1,22 +1,21 @@
-import * as Ariakit from '@ariakit/react'
-import { Button, Spinner } from '@porto/apps/components'
+import { Button, Spinner, Toast } from '@porto/apps/components'
 import { Address } from 'ox'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { toast } from 'sonner'
 import { parseUnits } from 'viem'
+import { useAccount } from 'wagmi'
 import { useTransfer } from '~/hooks/useTransfer'
 import type { Balance } from '~/types/wallet'
-import LucideX from '~icons/lucide/x'
 
 export type TransferProps = {
   balance?: Balance
   isOpen: boolean
   onClose: () => void
+  refetch: () => void
 }
 
 export function Transfer(props: TransferProps) {
-  const { balance, isOpen, onClose } = props
-
-  console.log('balance:', balance)
+  const { balance, isOpen, onClose, refetch } = props
 
   const [toAddress, setToAddress] = useState('')
   const [amount, setAmount] = useState('')
@@ -24,18 +23,36 @@ export function Transfer(props: TransferProps) {
   const [addressError, setAddressError] = useState('')
   const [amountError, setAmountError] = useState('')
 
-  const {
-    onTransfer,
-    isPending: isTransferring,
-  } = useTransfer()
+  const { chainId } = useAccount()
 
-  if (!isOpen || !balance) return null
+  const { onTransfer, isPending: isTransferring, errorMessage } = useTransfer()
+
+  // Reset form when balance changes or panel closes
+  useEffect(() => {
+    if (!isOpen) {
+      setToAddress('')
+      setAmount('')
+      setAddressError('')
+      setAmountError('')
+    }
+  }, [isOpen])
+
+  if (!balance) return null
 
   const handleMaxAmount = () => {
     if (balance) {
       setAmount(balance.balanceFormatted.toString())
       setAmountError('')
     }
+  }
+
+  const handleClose = () => {
+    // Reset form
+    setToAddress('')
+    setAmount('')
+    setAddressError('')
+    setAmountError('')
+    onClose()
   }
 
   const handleTransfer = async () => {
@@ -62,9 +79,6 @@ export function Transfer(props: TransferProps) {
     setAddressError('')
     setAmountError('')
 
-    // TODO: Implement send logic
-    console.log('Sending:', { address: toAddress, amount, balance })
-
     // TODO: expose token address instead of tokenId
     const tokenAddress = balance?.tokenId.split('-')[1]
     const parsedAmount = parseUnits(amount, balance.decimals)
@@ -72,57 +86,61 @@ export function Transfer(props: TransferProps) {
     if (tokenAddress) {
       const response = await onTransfer({
         address: tokenAddress as `0x${string}`,
+        chainId,
         parsedAmount,
         recipient: toAddress,
       })
 
-      console.log('response.error:: ', response.error)
+      if (response.error) {
+        toast.custom(
+          (t) => (
+            <Toast
+              className={t}
+              description={
+                errorMessage
+              }
+              kind='error'
+              title="Transaction failed"
+            />
+          ),
+          { duration: 3_500 },
+        )
+      }
+
       if (response.success) {
         // Close modal after a successful transfer
-        onClose()
+        toast.custom(
+          (t) => (
+            <Toast
+              className={t}
+              description="You have transferred your tokens successfully."
+              kind='success'
+              title="Transaction Succesful!"
+            />
+          ),
+          { duration: 3_500 },
+        )
+        refetch()
+        handleClose()
       }
     }
   }
 
-  const handleClose = () => {
-    // Reset form
-    setToAddress('')
-    setAmount('')
-    setAddressError('')
-    setAmountError('')
-    onClose()
-  }
+
 
   return (
-    <Ariakit.Dialog
-      // backdrop={<div className="dialog-backdrop" />}
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm"
-      onClose={handleClose}
-      open={isOpen}
+    <div
+      className={`overflow-hidden rounded-lg rounded-t-none border border-gray5 border-t-0 transition-all duration-300 ease-in-out ${isOpen ? 'max-h-[600px] p-4 opacity-100' : 'max-h-0 p-0 opacity-0'
+        }`}
     >
-      <div className="space-y-3 rounded-lg border border-gray5 bg-white p-5 dark:bg-gray1">
-        <div className="flex items-center justify-between">
-          <h2 className="font-semibold text-lg">Transfer Token</h2>
-
-          <Button
-            disabled={isTransferring}
-            onClick={handleClose}
-            size="small"
-            variant="outline"
-          >
-            <LucideX className="size-5" />
-          </Button>
-        </div>
-
+      <div className="space-y-3">
         {/* Balance Info */}
-        {balance && (
-          <div className="rounded-lg border border-gray5 bg-gray2 px-3 py-2">
-            <p className="text-gray10 text-xs">Available Balance</p>
-            <p className="font-semibold text-gray12 text-sm">
-              {balance.balanceFormatted} {balance.symbol}
-            </p>
-          </div>
-        )}
+        <div className="rounded-lg border border-gray5 bg-gray2 px-3 py-2">
+          <p className="text-gray10 text-xs">Available Balance</p>
+          <p className="font-semibold text-gray12 text-sm">
+            {balance.balanceFormatted} {balance.symbol}
+          </p>
+        </div>
 
         {/* Address Input */}
         <div className="space-y-2">
@@ -131,8 +149,8 @@ export function Transfer(props: TransferProps) {
           </label>
           <input
             className={`w-full rounded-lg border p-3 text-sm focus:outline-none ${addressError
-                ? 'border-red-500 focus:border-red-500'
-                : 'border-gray5 focus:border-violet9'
+              ? 'border-red-500 focus:border-red-500'
+              : 'border-gray5 focus:border-violet9'
               }`}
             id="address"
             onChange={(e) => {
@@ -200,10 +218,10 @@ export function Transfer(props: TransferProps) {
             onClick={handleTransfer}
             variant="primary"
           >
-            {isTransferring ? <Spinner /> : 'Send'}
+            {isTransferring ? <Spinner className="size-5!" /> : 'Send'}
           </Button>
         </div>
       </div>
-    </Ariakit.Dialog>
+    </div>
   )
 }

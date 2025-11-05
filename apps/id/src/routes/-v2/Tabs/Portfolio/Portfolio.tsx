@@ -10,7 +10,14 @@ export function Portfolio() {
     address,
   })
 
-  console.log('calls:: ', calls.data)
+  console.log('balances:: ', balances.data)
+
+  const handleRefetch = () => {
+    console.log('Refetching portfolio data...')
+    balances.refetch()
+    summary.refetch()
+    calls.refetch()
+  }
 
   return (
     <div className="space-y-3">
@@ -22,7 +29,7 @@ export function Portfolio() {
       />
 
       {/* Wallet Balances Section - Per Chain */}
-      <WalletBalances balances={balances.data} isLoading={isLoading} />
+      <WalletBalances balances={balances.data} isLoading={isLoading} refetch={handleRefetch} />
 
       {/* Balances by Protocol Section */}
       <BalancesByProtocol

@@ -1,22 +1,24 @@
 import { Button, Spinner } from '@porto/apps/components'
+import { cx } from 'cva'
 import { useState } from 'react'
 import { useChains } from 'wagmi'
 import type { Balance } from '~/types/wallet'
 import { ValueFormatter } from '~/utils'
+import LucideSend from '~icons/lucide/send'
 import { Transfer } from './Transfer'
 
 export type WalletBalancesProps = {
   balances?: Balance[]
   isLoading: boolean
+  refetch: () => void
 }
 
 export function WalletBalances(props: WalletBalancesProps) {
-  const { balances, isLoading } = props
+  const { balances, isLoading, refetch } = props
 
   const chains = useChains()
 
-  const [isTransferModalOpen, setIsTransferModalOpen] = useState(false)
-  const [selectedBalance, setSelectedBalance] = useState<Balance | undefined>()
+  const [openTransferId, setOpenTransferId] = useState<string | null>(null)
 
   const hasBalance = !isLoading && balances && balances?.length !== 0
 
@@ -26,13 +28,16 @@ export function WalletBalances(props: WalletBalancesProps) {
   }
 
   const handleTransfer = (balance: Balance) => {
-    setSelectedBalance(balance)
-    setIsTransferModalOpen(true)
+    const balanceId = `${balance.tokenId}-${balance.symbol}`
+    // Toggle: if clicking the same balance, close it; otherwise open the new one
+    setOpenTransferId((prev) => (prev === balanceId ? null : balanceId))
   }
 
-  const handleCloseModal = () => {
-    setIsTransferModalOpen(false)
-    setSelectedBalance(undefined)
+  const handleCloseTransfer = (balance: Balance) => {
+    const balanceId = `${balance.tokenId}-${balance.symbol}`
+    if (openTransferId === balanceId) {
+      setOpenTransferId(null)
+    }
   }
 
   return (
@@ -70,54 +75,66 @@ export function WalletBalances(props: WalletBalancesProps) {
             </div>
 
             <div className="space-y-2">
-              {balances.map((balance) => (
-                <div
-                  className="flex items-center justify-between rounded-lg border border-gray4 p-3 capitalize hover:bg-gray2"
-                  key={`${balance.tokenId}-${balance.symbol}`}
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="flex size-10 items-center justify-center rounded-full bg-gradient-to-br from-violet9 to-violet11">
-                      <span className="font-semibold text-sm text-white">
-                        {balance.symbol.charAt(0)}
-                      </span>
-                    </div>
-                    <div>
-                      <p className="font-medium text-gray12 text-sm">
-                        {balance.symbol}
-                      </p>
-                      <p className="text-gray10 text-xs capitalize">
-                        {balance.tokenId.replace(`${chain.id}-`, '')}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className="text-right">
-                      <p className="font-semibold text-gray12 text-sm">
-                        {balance.balanceFormatted.toFixed(4)}{' '}
-                        <span className="font-normal">{balance.symbol}</span>
-                      </p>
-                      <p className="text-gray10 text-xs">
-                        {formatValue(balance.usdValue)}
-                      </p>
-                    </div>
-                    <Button
-                      onClick={() => handleTransfer(balance)}
-                      variant="outline"
+              {balances.map((balance) => {
+                const balanceId = `${balance.tokenId}-${balance.symbol}`
+                const isOpen = openTransferId === balanceId
+
+                return (
+                  <div key={balanceId}>
+                    <div
+                      className={cx(
+                        'flex items-center justify-between rounded-lg border border-gray4 p-3 capitalize hover:bg-gray2',
+                        isOpen && 'rounded-b-none bg-gray2',
+                      )}
                     >
-                      Transfer
-                    </Button>
+                      <div className="flex items-center gap-3">
+                        <div className="flex size-10 items-center justify-center rounded-full bg-gradient-to-br from-violet9 to-violet11">
+                          <span className="font-semibold text-sm text-white">
+                            {balance.symbol.charAt(0)}
+                          </span>
+                        </div>
+                        <div>
+                          <p className="font-medium text-gray12 text-sm">
+                            {balance.symbol}
+                          </p>
+                          <p className="text-gray10 text-xs capitalize">
+                            {balance.tokenId.replace(`${chain.id}-`, '')}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-5">
+                        <div className="text-right">
+                          <p className="font-semibold text-gray12 text-sm">
+                            {balance.balanceFormatted.toFixed(4)}{' '}
+                            <span className="font-normal">
+                              {balance.symbol}
+                            </span>
+                          </p>
+                          <p className="text-gray10 text-xs">
+                            {formatValue(balance.usdValue)}
+                          </p>
+                        </div>
+                        <Button
+                          onClick={() => handleTransfer(balance)}
+                          size="small"
+                          title="Transfer"
+                        >
+                          <LucideSend className="size-4" />
+                        </Button>
+                      </div>
+                    </div>
+                    <Transfer
+                      balance={balance}
+                      isOpen={isOpen}
+                      onClose={() => handleCloseTransfer(balance)}
+                      refetch={refetch}
+                    />
                   </div>
-                </div>
-              ))}
+                )
+              })}
             </div>
           </div>
         ))}
-
-      <Transfer
-        balance={selectedBalance}
-        isOpen={isTransferModalOpen}
-        onClose={handleCloseModal}
-      />
     </div>
   )
 }

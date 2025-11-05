@@ -74,8 +74,6 @@ export function Transactions() {
     selectors: uniqueSelectors,
   })
 
-  console.log('selectorQueries', selectorQueries)
-
   return (
     <div className="space-y-4">
       <div>
