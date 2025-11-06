@@ -45,6 +45,7 @@ export type Call = {
   selector: string
   functionName: string | null
   decodedArgsJson: string | null
+  tokenSymbol: string | null
 }
 
 export type Intent = {

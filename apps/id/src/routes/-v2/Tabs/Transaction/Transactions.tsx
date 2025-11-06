@@ -54,7 +54,7 @@ export function Transactions() {
     const amountArg = JSON.parse(decodedArgs)
     console.log('amountArg', amountArg)
 
-    return `${Number(formatEther(amountArg[1] || 0)).toFixed(2)} ETH`
+    return `${Number(formatEther(amountArg[1] || 0)).toFixed(2)}`
   }
 
   const getUniqueSelectors = () => {
@@ -133,8 +133,8 @@ export function Transactions() {
               {/* Right section: Amount and Link */}
               <div className="flex flex-col items-end gap-1">
                 {transaction.calls[0]?.decodedArgsJson ? (
-                  <p className={cx('font-semibold text-sm')}>
-                    {getAmount(transaction.calls[0]?.decodedArgsJson)}
+                  <p className={cx('font-semibold text-sm capitalize')}>
+                    {getAmount(transaction.calls[0]?.decodedArgsJson)} {transaction.calls[0]?.tokenSymbol ?? "ETH"}
                   </p>
                 ) : (
                   <p className={cx('text-sm')}>
