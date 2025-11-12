@@ -90,7 +90,7 @@ function RouteComponent() {
       })
     },
   })
-  
+
   useEffect(() => {
     if (respond.error) {
       console.error(respond.error)
