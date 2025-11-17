@@ -5,7 +5,7 @@ export { fallback, http, type Transport, webSocket } from 'viem'
 export const relayUrls = {
   anvil: { http: 'http://localhost:9119' },
   prod: { http: 'https://rise-testnet-porto.fly.dev' },
-  stg: { http: 'https://rise-testnet-porto.fly.dev' },
+  stg: { http: 'https://rise-testnet-porto-staging.fly.dev' },
 } as const
 
 export function relayProxy(
