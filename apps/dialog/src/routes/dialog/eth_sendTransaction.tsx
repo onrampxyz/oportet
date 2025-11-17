@@ -3,13 +3,13 @@ import { createFileRoute } from '@tanstack/react-router'
 import { Provider, RpcResponse } from 'ox'
 import { Actions, Hooks } from 'porto/remote'
 import { RelayActions } from 'porto/viem'
+import { useEffect } from 'react'
 import { waitForCallsStatus } from 'viem/actions'
 import type * as Calls from '~/lib/Calls'
 import { porto } from '~/lib/Porto'
 import { useAuthSessionRedirect } from '~/lib/ReactNative'
 import * as Router from '~/lib/Router'
 import { ActionRequest } from '../-components/ActionRequest'
-import { useEffect } from 'react'
 
 export const Route = createFileRoute('/dialog/eth_sendTransaction')({
   component: RouteComponent,
