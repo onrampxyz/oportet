@@ -417,12 +417,24 @@ type BridgeToken = {
 
 // Hardcoded token configurations for bridging
 const BRIDGE_TOKENS: Record<number, BridgeToken[]> = {
+  // Rise Testnet
+  [riseTestnet.id]: [
+    {
+      address: '0x212Ee1EE02203e279c23bC8aB52c5b4428A3eCc7' as Address.Address,
+      bridgeContract:
+        '0x212Ee1EE02203e279c23bC8aB52c5b4428A3eCc7' as Address.Address,
+      bridgeType: 'hyperlane',
+      decimals: 18,
+      minDeposit: Value.from('0.1', 18), // 0.1 USDC
+      symbol: 'USDC',
+    },
+  ],
   // Base Sepolia
   84532: [
     {
       address: '0xc966f296d1735EbD224a537D2A3C1EE8be09eAe0' as Address.Address,
       bridgeContract:
-        '0x372bBdbEf8Da9fcfE058D4C7Cc6756ee6B4133B9' as Address.Address, // TODO: Replace with actual bridge contract
+        '0x372bBdbEf8Da9fcfE058D4C7Cc6756ee6B4133B9' as Address.Address,
       bridgeType: 'hyperlane',
       decimals: 18,
       minDeposit: Value.from('0.1', 18), // 0.1 USDC
@@ -524,6 +536,11 @@ function BridgeFromChain(props: {
       (t) => t.address.toLowerCase() === selectedTokenAddress?.toLowerCase(),
     )
   }, [tokens, selectedTokenAddress])
+  const destinationToken = React.useMemo(() => {
+    return BRIDGE_TOKENS[targetChainId]?.find(
+      (t) => t.symbol === selectedToken?.symbol,
+    )
+  }, [selectedToken])
 
   const canBridge = React.useMemo(() => {
     if (!tokenBalance || !selectedToken) return false
@@ -550,7 +567,7 @@ function BridgeFromChain(props: {
         bridgeState.status === 'destination-pending',
     ),
     async queryFn() {
-      if (!selectedTokenAddress) return 0n
+      if (!destinationToken) return 0n
 
       const hexChainId = `0x${targetChainId.toString(16)}` as Hex.Hex
       const response = await porto.provider.request({
@@ -561,7 +578,7 @@ function BridgeFromChain(props: {
             assetFilter: {
               [hexChainId]: [
                 {
-                  address: selectedTokenAddress,
+                  address: destinationToken.address,
                   type: 'erc20',
                 },
               ],
@@ -643,13 +660,8 @@ function BridgeFromChain(props: {
         destinationTxHash: undefined,
         status: 'completed',
       }))
-
-      // Call onSuccess after a brief delay to show the completed state
-      setTimeout(() => {
-        onSuccess()
-      }, 2000)
     }
-  }, [bridgeState.status, initialDestBalance, destBalance, onSuccess])
+  }, [bridgeState.status, initialDestBalance, destBalance])
 
   const bridge = () => {
     if (!selectedChainId || !selectedToken || !tokenBalance) return
@@ -691,7 +703,6 @@ function BridgeFromChain(props: {
   if (bridgeState.status !== 'idle') {
     const sourceChain = chains?.find((c) => c.id === bridgeState.sourceChainId)
     const allChains = [...(chains ?? []), ...porto._internal.config.chains]
-    // biome-ignore lint/suspicious/noExplicitAny: resolve type conflict between literal chain IDs
     const destChain = allChains.find((c: any) => c.id === targetChainId)
 
     return (
