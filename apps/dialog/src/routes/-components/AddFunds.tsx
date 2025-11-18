@@ -525,7 +525,9 @@ function BridgeFromChain(props: {
 
   useWatchBlockNumber({
     chainId: selectedChainId as never,
-    enabled: Boolean(selectedChainId && selectedTokenAddress),
+    enabled:
+      Boolean(selectedChainId && selectedTokenAddress) &&
+      bridgeState.status === 'idle',
     onBlockNumber() {
       refetchBalance()
     },
@@ -807,7 +809,7 @@ function BridgeFromChain(props: {
               </div>
             </div>
 
-            {selectedToken && tokenBalance && (
+            {selectedToken && tokenBalance !== undefined && (
               <Details opened>
                 <Details.Item
                   label="Amount"
