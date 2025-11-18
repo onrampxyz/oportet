@@ -1,21 +1,37 @@
 import { Env } from '@porto/apps'
 import { exp1Address } from '@porto/apps/contracts'
 import { usePrevious } from '@porto/apps/hooks'
-import { Button, Deposit, PresetsInput, Separator } from '@porto/ui'
+import {
+  Button,
+  CopyButton,
+  Deposit,
+  Details,
+  PresetsInput,
+  Separator,
+  Spinner,
+} from '@porto/ui'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { type Address, type Hex, Value } from 'ox'
 import { Hooks as RemoteHooks } from 'porto/remote'
 import { RelayActions } from 'porto/viem'
 import { Hooks } from 'porto/wagmi'
 import * as React from 'react'
-import { zeroAddress, zeroHash } from 'viem'
+import {
+  encodeFunctionData,
+  pad,
+  parseAbiItem,
+  zeroAddress,
+  zeroHash,
+} from 'viem'
 import { riseTestnet } from 'viem/chains'
-import { useWatchBlockNumber } from 'wagmi'
+import { useSendCallsSync, useWatchBlockNumber } from 'wagmi'
 import { DepositButtons } from '~/components/DepositButtons'
 import { useOnrampOrder } from '~/lib/onramp'
 import { porto } from '~/lib/Porto'
 import * as Tokens from '~/lib/Tokens'
 import { Layout } from '~/routes/-components/Layout'
+import CheckCircle from '~icons/lucide/check-circle'
+import ExternalLink from '~icons/lucide/external-link'
 import TriangleAlertIcon from '~icons/lucide/triangle-alert'
 import Star from '~icons/ph/star-four-bold'
 import { ApplePayButton, ApplePayIframe } from './ActionPreview'
@@ -152,13 +168,13 @@ export function AddFunds(props: AddFunds.Props) {
 
   const showFaucet = React.useMemo(() => {
     return false
-    if (import.meta.env.MODE === 'test') return true
-    // Don't show faucet if not on "default" view.
-    if (view !== 'default') return false
-    // Show faucet if on a testnet.
-    if (chain?.testnet) return true
-    return false
-  }, [chain, view])
+    // if (import.meta.env.MODE === 'test') return true
+    // // Don't show faucet if not on "default" view.
+    // if (view !== 'default') return false
+    // // Show faucet if on a testnet.
+    // if (chain?.testnet) return true
+    // return false
+  }, [])
 
   if (view === 'error')
     return (
@@ -394,7 +410,7 @@ type BridgeToken = {
   symbol: string
   address: Address.Address
   bridgeContract: Address.Address
-  bridgeType: 'hyperlane' | 'layerzero' | 'axelar'
+  bridgeType: 'hyperlane' | 'layerzero'
   minDeposit: bigint
   decimals: number
 }
@@ -404,48 +420,12 @@ const BRIDGE_TOKENS: Record<number, BridgeToken[]> = {
   // Base Sepolia
   84532: [
     {
-      address: '0x036CbD53842c5426634e7929541eC2318f3dCF7e' as Address.Address,
+      address: '0xc966f296d1735EbD224a537D2A3C1EE8be09eAe0' as Address.Address,
       bridgeContract:
-        '0x0000000000000000000000000000000000000000' as Address.Address, // TODO: Replace with actual bridge contract
+        '0x372bBdbEf8Da9fcfE058D4C7Cc6756ee6B4133B9' as Address.Address, // TODO: Replace with actual bridge contract
       bridgeType: 'hyperlane',
-      decimals: 6,
-      minDeposit: Value.from('0.1', 6), // 0.1 USDC
-      symbol: 'USDC',
-    },
-  ],
-  // Arbitrum Sepolia
-  421614: [
-    {
-      address: '0x75faf114eafb1BDbe2F0316DF893fd58CE46AA4d' as Address.Address,
-      bridgeContract:
-        '0x0000000000000000000000000000000000000000' as Address.Address, // TODO: Replace with actual bridge contract
-      bridgeType: 'hyperlane',
-      decimals: 6,
-      minDeposit: Value.from('0.1', 6), // 0.1 USDC
-      symbol: 'USDC',
-    },
-  ],
-  // Sepolia
-  11155111: [
-    {
-      address: '0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238' as Address.Address,
-      bridgeContract:
-        '0x0000000000000000000000000000000000000000' as Address.Address, // TODO: Replace with actual bridge contract
-      bridgeType: 'hyperlane',
-      decimals: 6,
-      minDeposit: Value.from('0.1', 6), // 0.1 USDC
-      symbol: 'USDC',
-    },
-  ],
-  // OP Sepolia
-  11155420: [
-    {
-      address: '0x5fd84259d66Cd46123540766Be93DFE6D43130D7' as Address.Address,
-      bridgeContract:
-        '0x0000000000000000000000000000000000000000' as Address.Address, // TODO: Replace with actual bridge contract
-      bridgeType: 'hyperlane',
-      decimals: 6,
-      minDeposit: Value.from('0.1', 6), // 0.1 USDC
+      decimals: 18,
+      minDeposit: Value.from('0.1', 18), // 0.1 USDC
       symbol: 'USDC',
     },
   ],
@@ -464,6 +444,17 @@ function BridgeFromChain(props: {
   const [selectedTokenAddress, setSelectedTokenAddress] = React.useState<
     Address.Address | undefined
   >()
+  const [bridgeState, setBridgeState] = React.useState<{
+    status:
+      | 'idle'
+      | 'source-pending'
+      | 'source-confirmed'
+      | 'destination-pending'
+      | 'completed'
+    sourceChainId?: number
+    sourceTxHash?: Hex.Hex
+    destinationTxHash?: Hex.Hex
+  }>({ status: 'idle' })
 
   const { data: chains } = useQuery({
     queryFn: () => {
@@ -539,44 +530,339 @@ function BridgeFromChain(props: {
     return tokenBalance >= selectedToken.minDeposit
   }, [tokenBalance, selectedToken])
 
-  const bridge = useMutation({
-    async mutationFn() {
-      if (!selectedChainId) throw new Error('Chain not selected')
-      if (!selectedToken) throw new Error('Token not selected')
-      if (!tokenBalance) throw new Error('Insufficient balance')
+  const {
+    data: bridgeData,
+    isPending: isBridgePending,
+    sendCallsSync,
+    isSuccess: isSendCallsSuccess,
+    error: bridgeError,
+  } = useSendCallsSync()
 
-      // TODO: Implement actual bridge contract call
-      // Bridge configuration available:
-      // - Bridge type: selectedToken.bridgeType (hyperlane/layerzero/axelar)
-      // - Bridge contract: selectedToken.bridgeContract
-      // - Token address: selectedToken.address
-      // - Amount: tokenBalance
-      // - Recipient: address (on Rise)
-      // - Target chain: targetChainId
-      //
-      // Example implementation for Hyperlane:
-      // await porto.provider.request({
-      //   method: 'wallet_sendCalls',
-      //   params: [{
-      //     calls: [{
-      //       to: selectedToken.bridgeContract,
-      //       data: encodeFunctionData({
-      //         abi: hyperlaneRouterAbi,
-      //         functionName: 'transferRemote',
-      //         args: [targetChainId, address, tokenBalance]
-      //       })
-      //     }]
-      //   }]
-      // })
+  // Track initial balance before bridge
+  const [initialDestBalance, setInitialDestBalance] = React.useState<
+    bigint | undefined
+  >()
 
-      throw new Error(
-        `Bridge contract not yet integrated for ${selectedToken.bridgeType}`,
-      )
+  // Query destination chain balance
+  const { data: destBalance, refetch: refetchDestBalance } = useQuery({
+    enabled: Boolean(
+      bridgeState.status === 'source-confirmed' ||
+        bridgeState.status === 'destination-pending',
+    ),
+    async queryFn() {
+      if (!selectedTokenAddress) return 0n
+
+      const hexChainId = `0x${targetChainId.toString(16)}` as Hex.Hex
+      const response = await porto.provider.request({
+        method: 'wallet_getAssets',
+        params: [
+          {
+            account: address,
+            assetFilter: {
+              [hexChainId]: [
+                {
+                  address: selectedTokenAddress,
+                  type: 'erc20',
+                },
+              ],
+            },
+            chainFilter: [hexChainId],
+          },
+        ],
+      })
+      const assets = response[hexChainId] ?? []
+      const asset = assets[0]
+      return asset ? BigInt(asset.balance) : 0n
     },
-    onSuccess() {
-      onSuccess()
+    queryKey: [
+      'bridge-dest-balance',
+      targetChainId,
+      selectedTokenAddress,
+      address,
+      bridgeState.status,
+    ],
+    refetchInterval:
+      bridgeState.status === 'destination-pending' ? 2000 : false,
+  })
+
+  // Watch for destination chain blocks
+  useWatchBlockNumber({
+    chainId: targetChainId as never,
+    enabled: bridgeState.status === 'destination-pending',
+    onBlockNumber() {
+      refetchDestBalance()
     },
   })
+
+  // Handle source chain transaction confirmation
+  React.useEffect(() => {
+    if (!isSendCallsSuccess) return
+    if (!bridgeData) return
+    if (!(bridgeData.status === 'success')) return
+    if (bridgeState.status !== 'source-pending') return
+
+    // Get transaction hash from receipts
+    const sourceTxHash = bridgeData.receipts?.[1]?.transactionHash as
+      | Hex.Hex
+      | undefined
+
+    setBridgeState((prev) => ({
+      ...prev,
+      sourceTxHash,
+      status: 'source-confirmed',
+    }))
+
+    // Record initial destination balance
+    setInitialDestBalance(destBalance ?? 0n)
+  }, [isSendCallsSuccess, bridgeData, bridgeState.status, destBalance])
+
+  // Transition to destination-pending after source confirmation
+  React.useEffect(() => {
+    if (bridgeState.status !== 'source-confirmed') return
+
+    const timer = setTimeout(() => {
+      setBridgeState((prev) => ({
+        ...prev,
+        status: 'destination-pending',
+      }))
+    }, 1000)
+
+    return () => clearTimeout(timer)
+  }, [bridgeState.status])
+
+  // Check if destination balance increased
+  React.useEffect(() => {
+    if (bridgeState.status !== 'destination-pending') return
+    if (initialDestBalance === undefined || destBalance === undefined) return
+
+    if (destBalance > initialDestBalance) {
+      setBridgeState((prev) => ({
+        ...prev,
+        // Note: We don't have access to the actual destination tx hash from the bridge
+        // This is a limitation of the current bridge implementation
+        destinationTxHash: undefined,
+        status: 'completed',
+      }))
+
+      // Call onSuccess after a brief delay to show the completed state
+      setTimeout(() => {
+        onSuccess()
+      }, 2000)
+    }
+  }, [bridgeState.status, initialDestBalance, destBalance, onSuccess])
+
+  const bridge = () => {
+    if (!selectedChainId || !selectedToken || !tokenBalance) return
+
+    setBridgeState({
+      sourceChainId: selectedChainId,
+      status: 'source-pending',
+    })
+
+    // TODO: get bridge quotes and include in value field
+    // TODO: switch bridge calls based on bridge type
+    sendCallsSync({
+      calls: [
+        {
+          abi: [
+            parseAbiItem('function approve(address spender, uint256 amount)'),
+          ],
+          args: [selectedToken.bridgeContract, tokenBalance],
+          functionName: 'approve',
+          to: selectedToken.address,
+        },
+        {
+          abi: [
+            parseAbiItem(
+              'function transferRemote(uint32 _destination,bytes32 _recipient,uint256 _amount)',
+            ),
+          ],
+          args: [targetChainId, pad(address), tokenBalance],
+          functionName: 'transferRemote',
+          to: selectedToken.bridgeContract,
+          value: 1n,
+        },
+      ],
+      chainId: selectedChainId as never,
+    })
+  }
+
+  // Show bridge progress view
+  if (bridgeState.status !== 'idle') {
+    const sourceChain = chains?.find((c) => c.id === bridgeState.sourceChainId)
+    const allChains = [...(chains ?? []), ...porto._internal.config.chains]
+    // biome-ignore lint/suspicious/noExplicitAny: resolve type conflict between literal chain IDs
+    const destChain = allChains.find((c: any) => c.id === targetChainId)
+
+    return (
+      <Layout>
+        <Layout.Header>
+          <Layout.Header.Default
+            icon={bridgeState.status === 'completed' ? CheckCircle : Star}
+            title={
+              bridgeState.status === 'completed'
+                ? 'Bridge completed'
+                : 'Bridging in progress'
+            }
+            variant={bridgeState.status === 'completed' ? 'success' : 'default'}
+          />
+        </Layout.Header>
+
+        <Layout.Content>
+          <div className="flex flex-col gap-3">
+            <Separator label="Bridge status" size="medium" spacing={0} />
+            {bridgeError && (
+              <div className="flex flex-col gap-3">
+                <div className="flex items-start gap-2">
+                  <div className="flex-1">
+                    <div className="font-medium text-sm text-th_base">
+                      Bridge error
+                    </div>
+                    <div className="text-sm text-th_base-secondary">
+                      {bridgeError.message}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            <div className="flex flex-col gap-3">
+              {/* Source Chain Status */}
+              <div className="flex items-start gap-2">
+                <div className="mt-1">
+                  {bridgeState.status === 'source-pending' ? (
+                    <Spinner size="small" />
+                  ) : (
+                    <CheckCircle className="size-5 text-th_positive" />
+                  )}
+                </div>
+                <div className="flex-1">
+                  <div className="font-medium text-sm text-th_base">
+                    Source chain transaction
+                  </div>
+                  <div className="text-sm text-th_base-secondary">
+                    {sourceChain?.name}
+                  </div>
+                  {bridgeState.sourceTxHash && (
+                    <div className="mt-1 flex items-center gap-2">
+                      <a
+                        className="flex items-center gap-1 text-sm text-th_primary hover:underline"
+                        href={`${sourceChain?.blockExplorers?.default?.url}/tx/${bridgeState.sourceTxHash}`}
+                        rel="noopener noreferrer"
+                        target="_blank"
+                      >
+                        View on explorer
+                        <ExternalLink className="size-3" />
+                      </a>
+                      <CopyButton
+                        size="mini"
+                        value={bridgeState.sourceTxHash}
+                        variant="content"
+                      />
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Destination Chain Status */}
+              <div className="flex items-start gap-2">
+                <div className="mt-1">
+                  {bridgeState.status === 'completed' ? (
+                    <CheckCircle className="size-5 text-th_positive" />
+                  ) : bridgeState.status === 'destination-pending' ? (
+                    <Spinner size="small" />
+                  ) : (
+                    <div className="size-5 rounded-full border-2 border-th_base-secondary" />
+                  )}
+                </div>
+                <div className="flex-1">
+                  <div className="font-medium text-sm text-th_base">
+                    Destination chain receipt
+                  </div>
+                  <div className="text-sm text-th_base-secondary">
+                    {destChain?.name}
+                  </div>
+                  {bridgeState.status === 'destination-pending' && (
+                    <div className="mt-1 text-sm text-th_base-secondary">
+                      Waiting for bridge to complete...
+                    </div>
+                  )}
+                  {bridgeState.status === 'completed' && (
+                    <div className="mt-1 text-sm text-th_positive">
+                      Tokens received successfully
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {selectedToken && tokenBalance && (
+              <Details opened>
+                <Details.Item
+                  label="Amount"
+                  value={`${Value.format(tokenBalance, selectedToken.decimals)} ${selectedToken.symbol}`}
+                />
+                <Details.Item
+                  label="Bridge type"
+                  value={selectedToken.bridgeType.toUpperCase()}
+                />
+              </Details>
+            )}
+          </div>
+        </Layout.Content>
+
+        <Layout.Footer>
+          <Layout.Footer.Actions>
+            {bridgeState.status === 'completed' ? (
+              <Button
+                onClick={() => onSuccess()}
+                variant="primary"
+                width="full"
+              >
+                Done
+              </Button>
+            ) : (
+              <Button disabled variant="secondary" width="full">
+                Bridge in progress...
+              </Button>
+            )}
+          </Layout.Footer.Actions>
+        </Layout.Footer>
+      </Layout>
+    )
+  }
+
+  const mintToken = async () => {
+    if (!selectedTokenAddress || !selectedChainId) return
+
+    const { id } = await porto.provider.request({
+      method: 'wallet_sendCalls',
+      params: [
+        {
+          calls: [
+            {
+              data: encodeFunctionData({
+                abi: [
+                  parseAbiItem('function mint(address to, uint256 amount)'),
+                ],
+                args: [address, Value.from('10', 18)],
+                functionName: 'mint',
+              }),
+              to: selectedTokenAddress,
+            },
+          ],
+          chainId: `0x${selectedChainId.toString(16)}`,
+        },
+      ],
+    })
+
+    const status = await porto.provider.request({
+      method: 'wallet_getCallsStatus',
+      params: [id],
+    })
+
+    console.log('mint call:', status)
+  }
 
   return (
     <Layout>
@@ -655,11 +941,20 @@ function BridgeFromChain(props: {
               )}
 
               {tokenBalance !== undefined && selectedToken && (
-                <p className="text-sm text-th_base-secondary">
-                  Your balance:{' '}
-                  {Value.format(tokenBalance, selectedToken.decimals)}{' '}
-                  {selectedToken.symbol}
-                </p>
+                <div className="flex gap-2">
+                  <p className="text-sm text-th_base-secondary">
+                    Your balance:{' '}
+                    {Value.format(tokenBalance, selectedToken.decimals)}{' '}
+                    {selectedToken.symbol}
+                  </p>
+                  <button
+                    className="text-sm text-th_base-secondary underline hover:cursor-pointer"
+                    onClick={mintToken}
+                    type="button"
+                  >
+                    mint
+                  </button>
+                </div>
               )}
             </>
           )}
@@ -674,8 +969,8 @@ function BridgeFromChain(props: {
           {selectedChainId && selectedTokenAddress && (
             <Button
               disabled={!canBridge}
-              loading={bridge.isPending && 'Bridging…'}
-              onClick={() => bridge.mutate()}
+              loading={isBridgePending && 'Bridging…'}
+              onClick={bridge}
               variant="primary"
               width="grow"
             >
