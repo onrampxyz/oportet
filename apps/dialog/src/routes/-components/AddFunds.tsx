@@ -16,13 +16,7 @@ import { Hooks as RemoteHooks } from 'porto/remote'
 import { RelayActions } from 'porto/viem'
 import { Hooks } from 'porto/wagmi'
 import * as React from 'react'
-import {
-  encodeFunctionData,
-  pad,
-  parseAbiItem,
-  zeroAddress,
-  zeroHash,
-} from 'viem'
+import { encodeFunctionData, parseAbiItem, zeroAddress, zeroHash } from 'viem'
 import { riseTestnet } from 'viem/chains'
 import { useSendCallsSync, useWatchBlockNumber } from 'wagmi'
 import { DepositButtons } from '~/components/DepositButtons'
@@ -413,6 +407,7 @@ type BridgeToken = {
   bridgeType: 'hyperlane' | 'layerzero'
   minDeposit: bigint
   decimals: number
+  bridgeWrapper: Address.Address
 }
 
 // Hardcoded token configurations for bridging
@@ -424,6 +419,7 @@ const BRIDGE_TOKENS: Record<number, BridgeToken[]> = {
       bridgeContract:
         '0x212Ee1EE02203e279c23bC8aB52c5b4428A3eCc7' as Address.Address,
       bridgeType: 'hyperlane',
+      bridgeWrapper: zeroAddress,
       decimals: 18,
       minDeposit: Value.from('0.1', 18), // 0.1 USDC
       symbol: 'USDC',
@@ -436,6 +432,7 @@ const BRIDGE_TOKENS: Record<number, BridgeToken[]> = {
       bridgeContract:
         '0x372bBdbEf8Da9fcfE058D4C7Cc6756ee6B4133B9' as Address.Address,
       bridgeType: 'hyperlane',
+      bridgeWrapper: '0x9Fe63D450edC97D700fA1D0081b84569102e5C1D',
       decimals: 18,
       minDeposit: Value.from('0.1', 18), // 0.1 USDC
       symbol: 'USDC',
@@ -688,13 +685,12 @@ function BridgeFromChain(props: {
         {
           abi: [
             parseAbiItem(
-              'function transferRemote(uint32 _destination,bytes32 _recipient,uint256 _amount)',
+              'function bridgeHyperlane(address _bridge, uint256 _amount)',
             ),
           ],
-          args: [targetChainId, pad(address), tokenBalance],
-          functionName: 'transferRemote',
-          to: selectedToken.bridgeContract,
-          value: 1n,
+          args: [selectedToken.bridgeContract, tokenBalance],
+          functionName: 'bridgeHyperlane',
+          to: selectedToken.bridgeWrapper,
         },
       ],
       chainId: selectedChainId as never,
