@@ -795,13 +795,22 @@ export function from<
               const { accounts } = await (async () => {
                 if (email || createAccount) {
                   const { label = undefined } =
-                    typeof createAccount === 'object' ? createAccount : {}
+                    typeof createAccount === 'object' &&
+                    createAccount.type === 'label'
+                      ? createAccount
+                      : {}
+                  const { rdns = undefined } =
+                    typeof createAccount === 'object' &&
+                    createAccount.type === 'provider'
+                      ? createAccount
+                      : {}
                   const { account } = await getMode().actions.createAccount({
                     admins,
                     email,
                     internal,
                     label,
                     permissions,
+                    providerRdns: rdns,
                     signInWithEthereum,
                   })
                   return { accounts: [account] }

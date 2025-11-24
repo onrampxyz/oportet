@@ -62,6 +62,7 @@ export function relay(parameters: relay.Parameters = {}) {
           permissions,
           internal,
           signInWithEthereum,
+          providerRdns,
         } = parameters
         const { client } = internal
 
@@ -70,14 +71,16 @@ export function relay(parameters: relay.Parameters = {}) {
         const feeTokens = await Tokens.getTokens(client)
 
         const adminKey = !mock
-          ? await Key.createWebAuthnP256({
-              createFn: webAuthn?.createFn,
-              label:
-                label ||
-                `${eoa.address.slice(0, 8)}\u2026${eoa.address.slice(-6)}`,
-              rpId: keystoreHost,
-              userId: Bytes.from(eoa.address),
-            })
+          ? providerRdns
+            ? await Key.createEip1193Provider({ rdns: providerRdns })
+            : await Key.createWebAuthnP256({
+                createFn: webAuthn?.createFn,
+                label:
+                  label ||
+                  `${eoa.address.slice(0, 8)}\u2026${eoa.address.slice(-6)}`,
+                rpId: keystoreHost,
+                userId: Bytes.from(eoa.address),
+              })
           : Key.createHeadlessWebAuthnP256()
         const sessionKey = await PermissionsRequest.toKey(permissions, {
           chainId: client.chain.id,

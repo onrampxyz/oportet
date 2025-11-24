@@ -164,7 +164,9 @@ export function getKey(
   if (account.keys && account.keys.length > 0) {
     if (typeof key === 'number') return account.keys[key]
     return account.keys.find(
-      (key) => key.privateKey && (!role || key.role === role),
+      (key) =>
+        (key.privateKey && (!role || key.role === role)) ||
+        key.type === 'eip1193provider',
     )
   }
 
