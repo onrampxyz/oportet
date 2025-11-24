@@ -517,7 +517,7 @@ export async function sendCalls<
       if (pre.signature) return pre
 
       const { authorizeKeys, key, calls, revokeKeys } = pre
-      const { context, digest } = await prepareCalls(client, {
+      const { context, digest, typedData } = await prepareCalls(client, {
         account: account_,
         authorizeKeys,
         calls,
@@ -530,6 +530,7 @@ export async function sendCalls<
       const signature = await Key.sign(key, {
         address: null,
         payload: digest,
+        typedData,
         webAuthn,
       })
       return { context, signature }
@@ -537,13 +538,16 @@ export async function sendCalls<
   )
 
   // Prepare main bundle.
-  const { capabilities, context, digest } = await prepareCalls(client, {
-    ...parameters,
-    account: account_,
-    chain,
-    key,
-    preCalls,
-  } as never)
+  const { capabilities, context, digest, typedData } = await prepareCalls(
+    client,
+    {
+      ...parameters,
+      account: account_,
+      chain,
+      key,
+      preCalls,
+    } as never,
+  )
 
   // Sign over the bundles.
   const signature = await (async () => {
@@ -551,6 +555,7 @@ export async function sendCalls<
       return await Key.sign(key, {
         address: null,
         payload: digest,
+        typedData,
         webAuthn,
         wrap: false,
       })
@@ -637,6 +642,7 @@ export async function signCalls(
     return await Key.sign(key, {
       address: null,
       payload: request.digest,
+      typedData: request.typedData,
       wrap: isPrecall,
     })
   throw new Error('no key or account provided')

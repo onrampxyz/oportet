@@ -30,6 +30,8 @@ import type {
   UnionRequiredBy,
 } from '../core/internal/types.js'
 import type * as Storage from '../core/Storage.js'
+import { getProvider } from './internal/provider.js'
+import type { prepareCalls } from './internal/relayActions.js'
 
 type PrivateKeyFn = () => Hex.Hex
 
@@ -48,7 +50,12 @@ export type BaseKey<
 >
 
 export type Key = OneOf<
-  AddressKey | P256Key | Secp256k1Key | WebCryptoKey | WebAuthnKey
+  | AddressKey
+  | P256Key
+  | Secp256k1Key
+  | WebCryptoKey
+  | WebAuthnKey
+  | Eip1193ProviderKey
 >
 export type AddressKey = BaseKey<'address'>
 export type P256Key = BaseKey<'p256', PrivateKeyFn>
@@ -66,6 +73,9 @@ export type WebAuthnKey = BaseKey<
       }
   >
 >
+export type Eip1193ProviderKey = BaseKey<'eip1193provider'> & {
+  rdns: string
+}
 
 export type Permissions = Key_schema.Permissions
 
@@ -116,6 +126,7 @@ export const fromSerializedSpendPeriod = {
 /** Key type to Relay key type mapping. */
 export const toRelayKeyType = {
   address: 'secp256k1',
+  eip1193provider: 'secp256k1',
   p256: 'p256',
   secp256k1: 'secp256k1',
   'webauthn-p256': 'webauthnp256',
@@ -130,6 +141,7 @@ export const toRelayKeyRole = {
 /** Key type to serialized (contract-compatible) key type mapping. */
 export const toSerializedKeyType = {
   address: 2,
+  eip1193provider: 2,
   p256: 0,
   secp256k1: 2,
   'webauthn-p256': 1,
@@ -375,6 +387,38 @@ export declare namespace createWebCryptoP256 {
   type Parameters = Pick<
     fromWebCryptoP256.Parameters,
     'expiry' | 'feeToken' | 'permissions' | 'role'
+  >
+}
+
+export async function createEip1193Provider(
+  parameters: createEip1193Provider.Parameters,
+) {
+  const { rdns } = parameters
+
+  const { provider = undefined } = (await getProvider({ rdns })) ?? {}
+
+  if (!provider) {
+    throw new Error('No provider found')
+  }
+
+  const [account] = await provider.request({
+    method: 'eth_requestAccounts',
+  })
+
+  if (!account) {
+    throw new Error('No account found')
+  }
+
+  return fromEip1193Provider({
+    ...parameters,
+    account,
+  })
+}
+
+export declare namespace createEip1193Provider {
+  type Parameters = Pick<
+    fromEip1193Provider.Parameters,
+    'expiry' | 'feeToken' | 'permissions' | 'role' | 'rdns'
   >
 }
 
@@ -833,6 +877,28 @@ export declare namespace fromWebCryptoP256 {
   }
 }
 
+export function fromEip1193Provider(
+  parameters: fromEip1193Provider.Parameters,
+) {
+  const { account } = parameters
+
+  return from({
+    publicKey: account,
+    type: 'eip1193provider',
+    ...parameters,
+  })
+}
+
+export declare namespace fromEip1193Provider {
+  type Parameters = Pick<
+    from.Value,
+    'expiry' | 'feeToken' | 'permissions' | 'role'
+  > & {
+    rdns: string
+    account: Hex.Hex
+  }
+}
+
 /**
  * Hashes a key.
  *
@@ -895,10 +961,10 @@ export function serialize(key: Key): Serialized {
 }
 
 export async function sign(key: Key, parameters: sign.Parameters) {
-  const { address, storage, webAuthn, wrap = true } = parameters
+  const { address, storage, webAuthn, wrap = true, typedData } = parameters
   const { privateKey, publicKey, type: keyType } = key
 
-  if (!privateKey)
+  if (keyType !== 'eip1193provider' && !privateKey)
     throw new Error(
       'Key does not have a private key to sign with.\n\nKey:\n' +
         Json.stringify(key, null, 2),
@@ -935,12 +1001,12 @@ export async function sign(key: Key, parameters: sign.Parameters) {
     }
     if (keyType === 'secp256k1') {
       return [
-        Signature.toHex(Secp256k1.sign({ payload, privateKey: privateKey() })),
+        Signature.toHex(Secp256k1.sign({ payload, privateKey: privateKey!() })),
         false,
       ]
     }
     if (keyType === 'webauthn-p256') {
-      if (privateKey.privateKey) {
+      if (privateKey!.privateKey) {
         const { payload: wrapped, metadata } = WebAuthnP256.getSignPayload({
           challenge: payload,
           origin: 'https://ithaca.xyz',
@@ -949,7 +1015,7 @@ export async function sign(key: Key, parameters: sign.Parameters) {
         const { r, s } = P256.sign({
           hash: true,
           payload: wrapped,
-          privateKey: privateKey.privateKey(),
+          privateKey: privateKey!.privateKey(),
         })
         const signature = serializeWebAuthnSignature({
           metadata,
@@ -958,7 +1024,7 @@ export async function sign(key: Key, parameters: sign.Parameters) {
         return [signature, false]
       }
 
-      const { credential, rpId } = privateKey
+      const { credential, rpId } = privateKey!
 
       const cacheKey = `porto.webauthnVerified.${key.hash}`
       const now = Date.now()
@@ -1001,6 +1067,27 @@ export async function sign(key: Key, parameters: sign.Parameters) {
         metadata,
         signature: { r, s },
       })
+      return [signature, false]
+    }
+    if (keyType === 'eip1193provider') {
+      const { provider = undefined } =
+        (await getProvider({ rdns: key.rdns })) ?? {}
+
+      if (!provider) throw new Error(`No provider found for key "${key.id}"`)
+
+      if (!typedData) {
+        const signature = await provider.request({
+          method: 'personal_sign',
+          params: [payload, publicKey],
+        })
+        return [signature, false]
+      }
+
+      const signature = await provider.request({
+        method: 'eth_signTypedData_v4',
+        params: [publicKey, JSON.stringify(typedData)],
+      })
+
       return [signature, false]
     }
     throw new Error(
@@ -1047,6 +1134,7 @@ export declare namespace sign {
      * @default true
      */
     wrap?: boolean | undefined
+    typedData?: prepareCalls.ReturnType['typedData']
   }
 }
 
