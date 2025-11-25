@@ -20,7 +20,7 @@ export function WalletBalances(props: WalletBalancesProps) {
 
   const [openTransferId, setOpenTransferId] = useState<string | null>(null)
 
-  const hasBalance = !isLoading && balances && balances?.length !== 0
+  const hasBalance = (balances && balances?.length !== 0)
 
   const formatValue = (value: number | undefined) => {
     if (value === undefined) return '$0.00'
@@ -45,12 +45,12 @@ export function WalletBalances(props: WalletBalancesProps) {
       <h2 className="font-semibold text-lg">Wallet Balances By Chain</h2>
       {/* Loading State */}
       {isLoading && (
-        <div className="flex items-center justify-center pt-6">
+        <div className="flex items-center justify-center py-4">
           <Spinner className="size-6!" />
         </div>
       )}
 
-      {!hasBalance && (
+      {!hasBalance && !isLoading && (
         <div className="">
           <p className="font-medium text-gray10 text-sm">
             You have no available balance in your wallet!
@@ -58,7 +58,7 @@ export function WalletBalances(props: WalletBalancesProps) {
         </div>
       )}
 
-      {hasBalance &&
+      {hasBalance && !isLoading &&
         chains?.map((chain) => (
           <div className="" key={chain.id}>
             <div className="mb-4 flex items-center justify-between">
