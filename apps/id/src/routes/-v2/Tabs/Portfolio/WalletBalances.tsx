@@ -20,7 +20,7 @@ export function WalletBalances(props: WalletBalancesProps) {
 
   const [openTransferId, setOpenTransferId] = useState<string | null>(null)
 
-  const hasBalance = (balances && balances?.length !== 0)
+  const hasBalance = balances && balances?.length !== 0
 
   const formatValue = (value: number | undefined) => {
     if (value === undefined) return '$0.00'
@@ -58,7 +58,8 @@ export function WalletBalances(props: WalletBalancesProps) {
         </div>
       )}
 
-      {hasBalance && !isLoading &&
+      {hasBalance &&
+        !isLoading &&
         chains?.map((chain) => (
           <div className="" key={chain.id}>
             <div className="mb-4 flex items-center justify-between">

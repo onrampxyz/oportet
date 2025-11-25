@@ -134,7 +134,8 @@ export function Transactions() {
               <div className="flex flex-col items-end gap-1">
                 {transaction.calls[0]?.decodedArgsJson ? (
                   <p className={cx('font-semibold text-sm capitalize')}>
-                    {getAmount(transaction.calls[0]?.decodedArgsJson)} {transaction.calls[0]?.tokenSymbol ?? "ETH"}
+                    {getAmount(transaction.calls[0]?.decodedArgsJson)}{' '}
+                    {transaction.calls[0]?.tokenSymbol ?? 'ETH'}
                   </p>
                 ) : (
                   <p className={cx('text-sm')}>

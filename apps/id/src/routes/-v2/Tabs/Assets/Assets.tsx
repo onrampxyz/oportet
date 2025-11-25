@@ -23,7 +23,6 @@ const dummy: Asset = {
 export function Assets() {
   const { address } = useAccount()
 
-
   const account = useAccount()
 
   const capabilities = useCapabilities({
@@ -74,10 +73,7 @@ export function Assets() {
 
   console.log('assets:: ', assets)
 
-  const wallet = assetsToWalletBalances(
-    assets.data ?? [],
-    new Map(),
-  )
+  const wallet = assetsToWalletBalances(assets.data ?? [], new Map())
 
   return (
     <div className="space-y-3">

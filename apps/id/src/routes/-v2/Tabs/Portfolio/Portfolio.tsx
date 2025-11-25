@@ -13,15 +13,15 @@ export function Portfolio() {
   console.log('calls:: ', calls.data)
 
   const handleRefetch = () => {
-    console.log("-----------------------------------")
+    console.log('-----------------------------------')
     console.log('Refetching portfolio data...')
     balances.refetch()
     summary.refetch()
     calls.refetch()
 
-    console.log("balances-new:: ", balances.data)
-    console.log("summary-new:: ", summary.data)
-    console.log("-----------------------------------")
+    console.log('balances-new:: ', balances.data)
+    console.log('summary-new:: ', summary.data)
+    console.log('-----------------------------------')
   }
 
   return (
