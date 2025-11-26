@@ -6,7 +6,6 @@ import { assetsToWalletBalances } from '~/lib/Mapper'
 import type { Asset } from '~/types/asset'
 import { WalletBalances } from '../Portfolio/WalletBalances'
 
-
 export function Assets() {
   const account = useAccount()
 

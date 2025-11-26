@@ -29,7 +29,6 @@ export function Sessions() {
     return []
   }, [permissions])
 
-
   return (
     <div className="space-y-6">
       {/* Header with Actions */}
@@ -128,7 +127,7 @@ export function Sessions() {
                 <div className="grid grid-cols-2 gap-2">
                   {permission.permissions.calls.map((call, idx) => (
                     <div
-                      className='flex flex-wrap items-center justify-between rounded-lg border border-gray4 bg-gray1 px-3 py-2 max-sm:col-span-2 dark:bg-gray2'
+                      className="flex flex-wrap items-center justify-between rounded-lg border border-gray4 bg-gray1 px-3 py-2 max-sm:col-span-2 dark:bg-gray2"
                       key={`${permission.id}-call-${idx}`}
                     >
                       <div className="flex flex-col gap-1">

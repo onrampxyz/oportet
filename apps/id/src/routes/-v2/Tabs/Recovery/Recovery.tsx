@@ -123,7 +123,7 @@ export function Recovery() {
         <div className="space-y-2">
           {recoverWallets.map((wallet) => (
             <div
-              className='flex items-start justify-between rounded-lg border border-gray5 bg-white p-4 transition-colors hover:bg-gray2 sm:items-center dark:bg-gray1'
+              className="flex items-start justify-between rounded-lg border border-gray5 bg-white p-4 transition-colors hover:bg-gray2 sm:items-center dark:bg-gray1"
               key={wallet.id}
             >
               {/* Wallet Info */}

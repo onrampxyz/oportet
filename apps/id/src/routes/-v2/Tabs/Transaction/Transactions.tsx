@@ -99,7 +99,7 @@ export function Transactions() {
         {!isLoading &&
           calls.data?.intents?.map((transaction) => (
             <div
-              className='flex flex-col gap-4 rounded-lg border border-gray5 bg-white p-4 transition-colors hover:bg-gray2 sm:flex-row sm:items-center sm:justify-between dark:bg-gray1'
+              className="flex flex-col gap-4 rounded-lg border border-gray5 bg-white p-4 transition-colors hover:bg-gray2 sm:flex-row sm:items-center sm:justify-between dark:bg-gray1"
               key={transaction.id}
             >
               {/* Left section: Type and Description */}
