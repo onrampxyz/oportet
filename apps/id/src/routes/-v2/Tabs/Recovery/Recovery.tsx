@@ -97,7 +97,7 @@ export function Recovery() {
       {/* Recovery Wallets Section */}
       <div className="space-y-4">
         {/* Header with Actions */}
-        <div className="flex items-center justify-between px-2">
+        <div className="flex flex-wrap items-center justify-between gap-4 px-2">
           <div>
             <div className="flex items-center gap-2">
               <LucideShield className="size-5 text-gray10" />
@@ -123,11 +123,11 @@ export function Recovery() {
         <div className="space-y-2">
           {recoverWallets.map((wallet) => (
             <div
-              className="flex items-center justify-between rounded-lg border border-gray5 bg-white p-4 transition-colors hover:bg-gray2 dark:bg-gray1"
+              className='flex items-start justify-between rounded-lg border border-gray5 bg-white p-4 transition-colors hover:bg-gray2 sm:items-center dark:bg-gray1'
               key={wallet.id}
             >
               {/* Wallet Info */}
-              <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2">
                 <div className="flex items-center gap-2 rounded-full bg-green3 p-2">
                   <LucideCheck className="size-4 text-green-600" />
                 </div>

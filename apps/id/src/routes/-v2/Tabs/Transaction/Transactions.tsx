@@ -99,7 +99,7 @@ export function Transactions() {
         {!isLoading &&
           calls.data?.intents?.map((transaction) => (
             <div
-              className="flex items-center justify-between rounded-lg border border-gray5 bg-white p-4 transition-colors hover:bg-gray2 dark:bg-gray1"
+              className='flex flex-col gap-4 rounded-lg border border-gray5 bg-white p-4 transition-colors hover:bg-gray2 sm:flex-row sm:items-center sm:justify-between dark:bg-gray1'
               key={transaction.id}
             >
               {/* Left section: Type and Description */}
@@ -121,7 +121,7 @@ export function Transactions() {
               </div>
 
               {/* Middle section: Status and Timestamp */}
-              <div className="flex flex-col items-center gap-1 px-8">
+              <div className="flex w-fit flex-col gap-1 sm:items-center sm:px-8">
                 <StatusBadge
                   status={transaction.success ? 'completed' : 'failed'}
                 />
@@ -131,7 +131,7 @@ export function Transactions() {
               </div>
 
               {/* Right section: Amount and Link */}
-              <div className="flex flex-col items-end gap-1">
+              <div className="flex flex-col gap-1 sm:items-end">
                 {transaction.calls[0]?.decodedArgsJson ? (
                   <p className={cx('font-semibold text-sm capitalize')}>
                     {getAmount(transaction.calls[0]?.decodedArgsJson)}{' '}

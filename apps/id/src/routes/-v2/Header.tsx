@@ -171,9 +171,9 @@ export function Header() {
   }
 
   return (
-    <div className="">
+    <div className="@container">
       {/* Account info would go here */}
-      <div className="flex items-center justify-between p-6">
+      <div className="flex flex-wrap items-center justify-between gap-3 p-3 md:p-6">
         <div className="flex gap-4">
           <div className="h-10 w-10 rounded-full bg-violet9" />
           <div>
@@ -194,11 +194,13 @@ export function Header() {
             </p>
           </div>
         </div>
+        <Ariakit.Separator className="w-full border-gray5 md:hidden" />
         <div className="flex items-center gap-2">
           <Button
             onClick={toggleTheme}
+            size="square"
             title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
-            variant="outline"
+          // variant="outline"
           >
             {theme === 'light' ? (
               <LucideMoon className="size-5 text-gray11" />

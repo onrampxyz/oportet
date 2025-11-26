@@ -29,7 +29,6 @@ export function Sessions() {
     return []
   }, [permissions])
 
-  console.log('Sessions:: ', sessions)
 
   return (
     <div className="space-y-6">
@@ -47,11 +46,11 @@ export function Sessions() {
       <div className="space-y-4">
         {sessions.map((permission) => (
           <div
-            className="rounded-lg border border-gray5 bg-white p-6 dark:bg-gray1"
+            className="rounded-lg border border-gray5 bg-white p-3 md:p-6 dark:bg-gray1"
             key={permission.id}
           >
             {/* Session Header */}
-            <div className="mb-2 flex items-start justify-between">
+            <div className="mb-2 flex items-center justify-between">
               <h3 className="font-semibold text-gray12">
                 Session Key {SessionFormatter.truncateAddress(permission.id)}
               </h3>
@@ -73,7 +72,7 @@ export function Sessions() {
 
             {/* Session Details Grid */}
             <div className="mb-4 grid grid-cols-4 gap-4 rounded-lg border border-gray4 bg-gray1 p-4 dark:bg-gray2">
-              <div>
+              <div className="max-sm:col-span-4">
                 <p className="mb-1 text-gray10 text-xs">Public Key</p>
                 <div className="flex items-center gap-1">
                   <p className="font-medium font-mono text-gray12 text-sm">
@@ -90,26 +89,26 @@ export function Sessions() {
                   </button>
                 </div>
               </div>
-              <div>
+              <div className="max-sm:col-span-4">
                 <p className="mb-1 text-gray10 text-xs">Chain ID:</p>
                 <p className="font-medium text-gray12 text-sm">
                   {permission.chainId}
                 </p>
               </div>
-              <div>
+              <div className="max-sm:col-span-4">
                 <p className="mb-1 text-gray10 text-xs">Expires In:</p>
                 <p className="font-medium text-gray12 text-sm">
                   {SessionFormatter.formatExpiryTime(permission.expiry)}
                 </p>
               </div>
-              <div>
+              <div className="max-sm:col-span-4">
                 <p className="mb-1 text-gray10 text-xs">Type:</p>
                 <p className="font-medium text-gray12 text-sm">
                   {permission.key.type}
                 </p>
               </div>
               {permission.permissions.spend && (
-                <div className="col-span-4">
+                <div>
                   <p className="mb-1 text-gray10 text-xs">Spend Limit:</p>
                   <p className="font-medium text-gray12 text-sm">
                     {SessionFormatter.formatSpendLimit([
@@ -129,7 +128,7 @@ export function Sessions() {
                 <div className="grid grid-cols-2 gap-2">
                   {permission.permissions.calls.map((call, idx) => (
                     <div
-                      className="flex items-center justify-between rounded-lg border border-gray4 bg-gray1 px-3 py-2 dark:bg-gray2"
+                      className='flex flex-wrap items-center justify-between rounded-lg border border-gray4 bg-gray1 px-3 py-2 max-sm:col-span-2 dark:bg-gray2'
                       key={`${permission.id}-call-${idx}`}
                     >
                       <div className="flex flex-col gap-1">
@@ -151,7 +150,7 @@ export function Sessions() {
                           </div>
                         )}
                         {call.signature && (
-                          <div className="flex items-center gap-2">
+                          <div className="flex flex-wrap items-center gap-2">
                             <span className="text-gray10 text-xs">
                               Signature:
                             </span>

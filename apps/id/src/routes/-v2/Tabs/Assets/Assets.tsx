@@ -6,23 +6,8 @@ import { assetsToWalletBalances } from '~/lib/Mapper'
 import type { Asset } from '~/types/asset'
 import { WalletBalances } from '../Portfolio/WalletBalances'
 
-const dummy: Asset = {
-  address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48' as Address.Address,
-  balance: 1000000000n, // 1000 USDC (6 decimals)
-  chainId: 1,
-  feeToken: false,
-  metadata: {
-    decimals: 6,
-    logo: 'https://example.com/usdc-logo.png',
-    name: 'USD Coin',
-    symbol: 'USDC',
-  },
-  type: 'erc20',
-}
 
 export function Assets() {
-  const { address } = useAccount()
-
   const account = useAccount()
 
   const capabilities = useCapabilities({

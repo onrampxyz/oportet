@@ -26,12 +26,12 @@ export const TabItems = [
   },
   {
     id: 'sessions',
-    name: 'Manage Sessions',
+    name: 'Sessions',
     path: '/sessions',
   },
 ]
 
-export function Layout(props: PropsWithChildren) {
+export function Layout(props: Readonly<PropsWithChildren>) {
   return <main className="mx-auto flex h-full max-lg:flex-col" {...props} />
 }
 
@@ -103,7 +103,7 @@ export namespace Layout {
             return (
               <Link
                 className={cx(
-                  'relative flex items-center gap-2 px-4 py-2 font-medium text-sm transition-colors',
+                  'relative flex items-center gap-2 px-3 py-2 font-medium text-xs transition-colors sm:text-sm md:px-4',
                   'text-gray10 hover:text-gray12',
                   'after:absolute after:right-0 after:bottom-0 after:left-0 after:h-0.5',
                   'rounded-t-md',

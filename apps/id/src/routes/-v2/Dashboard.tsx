@@ -18,7 +18,7 @@ export function Dashboard() {
     const pathname = location.pathname
     if (pathname.includes('/transactions')) return 'transactions'
     if (pathname.includes('/recovery')) return 'recovery'
-    if (pathname.includes('/sessions')) return 'manage-sessions'
+    if (pathname.includes('/sessions')) return 'sessions'
     if (pathname.includes('/assets')) return 'assets'
     if (pathname.includes('/portfolio')) return 'portfolio'
     // return 'portfolio' // default
@@ -36,7 +36,7 @@ export function Dashboard() {
         return <Transactions />
       case 'recovery':
         return <Recovery />
-      case 'manage-sessions':
+      case 'sessions':
         return <Sessions />
       default:
         return <Transactions />
@@ -46,7 +46,7 @@ export function Dashboard() {
 
   return (
     <div className="space-y-4">
-      <div className="space-y-8 px-6 pb-6">
+      <div className='space-y-2 px-3 pb-3 md:space-y-8 md:px-6 md:pb-6'>
         {/* Tabs with routing */}
         <Layout.TabsRouter activeTab={activeTab}>
           {renderTabContent()}
