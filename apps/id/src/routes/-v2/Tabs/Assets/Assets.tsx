@@ -1,4 +1,3 @@
-import type { Address } from 'ox'
 import { Hooks } from 'porto/wagmi'
 import { zeroAddress } from 'viem'
 import { useAccount, useCapabilities } from 'wagmi'
@@ -29,7 +28,7 @@ export function Assets() {
 
             const address = isNative
               ? zeroAddress
-              : (asset.address as Address.Address)
+              : (asset.address)
             if (!address || asset.balance === 0n) continue
             formattedAssets.push({
               address,

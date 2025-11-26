@@ -7,29 +7,9 @@ export type Asset = {
     symbol: string
   } | null
   type: 'native' | 'erc20' | 'erc721' | string
+  chainId?: number
+  feeToken?: boolean
 }
-
-// export type Asset = {
-//   address: `0x${string}` | 'native'
-//   chainId: number
-//   balance: bigint
-// } & (
-//   | {
-//       metadata: null
-//       type: 'native' | 'erc20' | 'erc721' | string
-//       feeToken: boolean
-//     }
-//   | {
-//       type: 'native' | 'erc20' | 'erc721' | string
-//       metadata: {
-//         name?: string
-//         symbol?: string
-//         decimals: number
-//         logo?: string | undefined
-//       }
-//       feeToken: boolean
-//     }
-// )
 
 export type AssetsByChain = {
   [chainId: `0x${string}`]: Asset[]
