@@ -1,4 +1,4 @@
-import * as Mipd from 'mipd'
+import * as Mipd from 'mipd-postmessage/child'
 
 const mipdStore = Mipd.createStore()
 
