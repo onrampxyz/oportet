@@ -73,9 +73,12 @@ export type WebAuthnKey = BaseKey<
       }
   >
 >
-export type Eip1193ProviderKey = BaseKey<'eip1193provider'> & {
-  rdns: string
-}
+export type Eip1193ProviderKey = BaseKey<
+  'eip1193provider',
+  {
+    rdns: string
+  }
+>
 
 export type Permissions = Key_schema.Permissions
 
@@ -964,7 +967,7 @@ export async function sign(key: Key, parameters: sign.Parameters) {
   const { address, storage, webAuthn, wrap = true, typedData } = parameters
   const { privateKey, publicKey, type: keyType } = key
 
-  if (keyType !== 'eip1193provider' && !privateKey)
+  if (!privateKey)
     throw new Error(
       'Key does not have a private key to sign with.\n\nKey:\n' +
         Json.stringify(key, null, 2),
@@ -1001,12 +1004,12 @@ export async function sign(key: Key, parameters: sign.Parameters) {
     }
     if (keyType === 'secp256k1') {
       return [
-        Signature.toHex(Secp256k1.sign({ payload, privateKey: privateKey!() })),
+        Signature.toHex(Secp256k1.sign({ payload, privateKey: privateKey() })),
         false,
       ]
     }
     if (keyType === 'webauthn-p256') {
-      if (privateKey!.privateKey) {
+      if (privateKey.privateKey) {
         const { payload: wrapped, metadata } = WebAuthnP256.getSignPayload({
           challenge: payload,
           origin: 'https://ithaca.xyz',
@@ -1015,7 +1018,7 @@ export async function sign(key: Key, parameters: sign.Parameters) {
         const { r, s } = P256.sign({
           hash: true,
           payload: wrapped,
-          privateKey: privateKey!.privateKey(),
+          privateKey: privateKey.privateKey(),
         })
         const signature = serializeWebAuthnSignature({
           metadata,
@@ -1024,7 +1027,7 @@ export async function sign(key: Key, parameters: sign.Parameters) {
         return [signature, false]
       }
 
-      const { credential, rpId } = privateKey!
+      const { credential, rpId } = privateKey
 
       const cacheKey = `porto.webauthnVerified.${key.hash}`
       const now = Date.now()
@@ -1071,7 +1074,7 @@ export async function sign(key: Key, parameters: sign.Parameters) {
     }
     if (keyType === 'eip1193provider') {
       const { provider = undefined } =
-        (await getProvider({ rdns: key.rdns })) ?? {}
+        (await getProvider({ rdns: privateKey.rdns })) ?? {}
 
       if (!provider) throw new Error(`No provider found for key "${key.id}"`)
 
