@@ -192,7 +192,8 @@ function RouteComponent() {
       <Email
         actions={actions}
         defaultValue={
-          typeof capabilities?.createAccount === 'object'
+          typeof capabilities?.createAccount === 'object' &&
+          capabilities.createAccount.type === 'label'
             ? capabilities?.createAccount?.label || ''
             : undefined
         }
