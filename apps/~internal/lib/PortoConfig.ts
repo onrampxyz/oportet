@@ -54,10 +54,10 @@ const dialogHosts = {
     ? undefined
     : 'https://anvil.localhost:5174/dialog/',
   prod: import.meta.env.PROD
-    ? 'https://rise-wallet-testnet.vercel.app/dialog/'
+    ? 'https://wallet.risechain.com/dialog/'
     : 'https://localhost:5174/dialog/',
   stg: import.meta.env.PROD
-    ? 'https://rise-wallet-testnet.vercel.app/dialog/'
+    ? 'https://stg.wallet.risechain.com/dialog/'
     : 'https://stg.localhost:5174/dialog/',
 } as const satisfies Record<Env.Env, string | undefined>
 
