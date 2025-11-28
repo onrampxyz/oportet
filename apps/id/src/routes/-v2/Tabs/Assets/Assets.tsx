@@ -26,9 +26,7 @@ export function Assets() {
           for (const asset of chainAssets) {
             const isNative = asset.type === 'native'
 
-            const address = isNative
-              ? zeroAddress
-              : (asset.address)
+            const address = isNative ? zeroAddress : asset.address
             if (!address || asset.balance === 0n) continue
             formattedAssets.push({
               address,

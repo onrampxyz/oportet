@@ -17,7 +17,8 @@ export function assetToBalance(
   const symbol =
     asset.type === 'erc20' ? asset?.metadata?.symbol || 'UNKNOWN' : 'ETH' // or whatever native token symbol for the chain
 
-  const decimals = (asset.type === 'erc20' ? asset?.metadata?.decimals : 18 ) ?? 18 // Native tokens typically have 18 decimals
+  const decimals =
+    (asset.type === 'erc20' ? asset?.metadata?.decimals : 18) ?? 18 // Native tokens typically have 18 decimals
 
   // Convert bigint balance to formatted number
   const balanceFormatted = Number(asset.balance) / 10 ** decimals
