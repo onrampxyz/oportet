@@ -9,12 +9,12 @@ console.log('Fetching chains for environments.')
 const environments = [
   {
     name: 'prod',
-    rpc: 'https://rise-testnet-porto.fly.dev',
+    rpc: 'https://relay.wallet.risechain.com',
     transportOverrides: {},
   },
   {
     name: 'stg',
-    rpc: 'https://rise-testnet-porto.fly.dev',
+    rpc: 'https://stg.relay.wallet.risechain.com',
     transportOverrides: {},
   },
 ] as const satisfies readonly {
