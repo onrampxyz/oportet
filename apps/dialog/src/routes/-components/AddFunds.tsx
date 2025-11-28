@@ -15,7 +15,6 @@ import { porto } from '~/lib/Porto'
 import * as Tokens from '~/lib/Tokens'
 import { Layout } from '~/routes/-components/Layout'
 import TriangleAlertIcon from '~icons/lucide/triangle-alert'
-import Star from '~icons/ph/star-four-bold'
 import { ApplePayButton, ApplePayIframe } from './ActionPreview'
 import { SetupApplePay } from './SetupApplePay'
 
@@ -211,11 +210,7 @@ export function AddFunds(props: AddFunds.Props) {
   return (
     <Layout>
       <Layout.Header>
-        <Layout.Header.Default
-          icon={Star}
-          title="Add funds"
-          variant="default"
-        />
+        <Layout.Header.Default title="Add funds" variant="default" />
       </Layout.Header>
 
       <Layout.Content>
