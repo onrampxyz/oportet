@@ -13,7 +13,7 @@ export type WalletBalancesProps = {
   refetch: () => void
 }
 
-export function WalletBalances(props: WalletBalancesProps) {
+export function WalletBalances(props: Readonly<WalletBalancesProps>) {
   const { balances, isLoading, refetch } = props
 
   const chains = useChains()

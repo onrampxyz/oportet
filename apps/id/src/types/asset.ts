@@ -9,6 +9,7 @@ export type Asset = {
   type: 'native' | 'erc20' | 'erc721' | string
   chainId?: number
   feeToken?: boolean
+  isNative?: boolean
 }
 
 export type AssetsByChain = {

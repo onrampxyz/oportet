@@ -26,9 +26,7 @@ export function Assets() {
           for (const asset of chainAssets) {
             const isNative = asset.type === 'native'
 
-            const address = isNative
-              ? zeroAddress
-              : (asset.address)
+            const address = isNative ? zeroAddress : asset.address
             if (!address || asset.balance === 0n) continue
             formattedAssets.push({
               address,
@@ -38,6 +36,7 @@ export function Assets() {
                 ? true
                 : (feeTokens?.some((token) => token.address === address) ??
                   false),
+              isNative,
               metadata: {
                 ...asset.metadata,
                 decimals: isNative ? 18 : asset.metadata!.decimals,
@@ -53,8 +52,6 @@ export function Assets() {
       },
     },
   })
-
-  console.log('assets:: ', assets)
 
   const wallet = assetsToWalletBalances(assets.data ?? [], new Map())
 
