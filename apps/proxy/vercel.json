@@ -5,86 +5,56 @@
   },
   "rewrites": [
     {
-      "destination": "/.well-known/m/apple-staging.txt",
+      "destination": "https://:env.dialog.wallet.risechain.com/dialog/",
       "has": [
         {
           "type": "host",
-          "value": "stg.id.porto.sh"
-        }
-      ],
-      "source": "/.well-known/apple-developer-merchantid-domain-association.txt"
-    },
-    {
-      "destination": "/.well-known/m/apple-staging2.txt",
-      "has": [
-        {
-          "type": "host",
-          "value": "id.porto.sh"
-        }
-      ],
-      "source": "/.well-known/apple-developer-merchantid-domain-association.txt"
-    },
-    {
-      "destination": "/.well-known/m/apple-prod.txt",
-      "has": [
-        {
-          "type": "host",
-          "value": "prod.id.porto.sh"
-        }
-      ],
-      "source": "/.well-known/apple-developer-merchantid-domain-association.txt"
-    },
-    {
-      "destination": "https://rise-wallet-testnet-dialog-:env.vercel.app/dialog/",
-      "has": [
-        {
-          "type": "host",
-          "value": "rise-wallet-testnet-(?<env>[^.]+).vercel.app"
+          "value": "(?<env>.*).wallet.risechain.com"
         }
       ],
       "source": "/dialog/"
     },
     {
-      "destination": "https://rise-wallet-testnet-dialog-:env.vercel.app/dialog/:match*",
+      "destination": "https://:env.dialog.wallet.risechain.com/dialog/:match*",
       "has": [
         {
           "type": "host",
-          "value": "rise-wallet-testnet-(?<env>[^.]+).vercel.app"
+          "value": "(?<env>.*).wallet.risechain.com"
         }
       ],
       "source": "/dialog/:match*"
     },
     {
-      "destination": "https://rise-wallet-testnet-id-:env.vercel.app/",
+      "destination": "https://:env.manage.wallet.risechain.com/",
       "has": [
         {
           "type": "host",
-          "value": "rise-wallet-testnet-(?<env>[^.]+).vercel.app"
+          "value": "(?<env>.*).wallet.risechain.com"
         }
       ],
       "source": "/"
     },
     {
-      "destination": "https://rise-wallet-testnet-id-:env.vercel.app/:match*",
+      "destination": "https://:env.manage.wallet.risechain.com/:match*",
       "has": [
         {
           "type": "host",
-          "value": "rise-wallet-testnet-(?<env>[^.]+).vercel.app"
+          "value": "(?<env>.*).wallet.risechain.com"
         }
       ],
       "source": "/:match*"
     },
     {
-      "destination": "https://rise-wallet-dialog.vercel.app/dialog/",
+      "destination": "https://dialog.wallet.risechain.com/dialog/",
       "source": "/dialog/"
     },
     {
-      "destination": "https://rise-wallet-dialog.vercel.app/dialog/:match*",
+      "destination": "https://dialog.wallet.risechain.com/dialog/:match*",
       "source": "/dialog/:match*"
     },
-    { "destination": "https://rise-wallet-id.vercel.app/", "source": "/" },
+    { "destination": "https://manage.wallet.risechain.com/", "source": "/" },
     {
-      "destination": "https://rise-wallet-id.vercel.app/:match*",
+      "destination": "https://manage.wallet.risechain.com/:match*",
       "source": "/:match*"
     }
   ]
