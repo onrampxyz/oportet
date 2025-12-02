@@ -70,7 +70,7 @@ export function Header() {
     if (!capabilities.data) return
     const exp1 = capabilities.data?.[
       Chains.riseTestnet.id
-    ]?.feeToken?.tokens?.find((t) => t.uid === 'exp1')
+    ]?.feeToken?.tokens?.find((t: any) => t.uid === 'exp1')
     if (!exp1) return
     addFunds.mutate({
       address,

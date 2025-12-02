@@ -1,4 +1,4 @@
-import 'porto/register'
+import 'rise-wallet/register'
 import { PortoConfig } from '@porto/apps'
 import { Mode, type RiseWallet, Storage } from 'rise-wallet'
 

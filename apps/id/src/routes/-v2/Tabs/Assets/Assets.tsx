@@ -34,7 +34,7 @@ export function Assets() {
               chainId: Number(chainId),
               feeToken: isNative
                 ? true
-                : (feeTokens?.some((token) => token.address === address) ??
+                : (feeTokens?.some((token: any) => token.address === address) ??
                   false),
               metadata: {
                 ...asset.metadata,
