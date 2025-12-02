@@ -1,5 +1,5 @@
-import { Chains } from 'rise-wallet'
 import { Children, createContext, useContext } from 'react'
+import { Chains } from 'rise-wallet'
 import { css, cx } from 'styled-system/css'
 import LucideRefreshCw from '~icons/lucide/refresh-cw'
 import { ButtonArea } from '../ButtonArea/ButtonArea.js'

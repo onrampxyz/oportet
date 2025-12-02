@@ -1,11 +1,11 @@
 import { Env, Theme } from '@porto/apps'
 import * as Sentry from '@sentry/react'
 import { Address } from 'ox'
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
 import { TrustedHosts } from 'rise-wallet/internal'
 import { Events } from 'rise-wallet/remote'
 import { Actions } from 'rise-wallet/wagmi'
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
 import { getConnectors, switchChain } from 'wagmi/actions'
 
 import * as Dialog from '~/lib/Dialog.ts'

@@ -1,9 +1,9 @@
 import * as Ariakit from '@ariakit/react'
 import { Button, Toast } from '@porto/apps/components'
 import type { Address } from 'ox'
+import { useEffect, useState } from 'react'
 import { Chains } from 'rise-wallet'
 import { Hooks } from 'rise-wallet/wagmi'
-import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { formatEther } from 'viem'
 import {

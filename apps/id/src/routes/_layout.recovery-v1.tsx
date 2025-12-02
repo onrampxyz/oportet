@@ -1,9 +1,9 @@
 import * as Ariakit from '@ariakit/react'
 import { Button, Spinner, Toast } from '@porto/apps/components'
 import { createFileRoute, Link } from '@tanstack/react-router'
+import * as React from 'react'
 import { riseTestnet } from 'rise-wallet/core/Chains'
 import { Hooks } from 'rise-wallet/wagmi'
-import * as React from 'react'
 import { toast } from 'sonner'
 import {
   type Connector,

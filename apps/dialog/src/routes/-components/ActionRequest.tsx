@@ -2,12 +2,12 @@ import { Button, ButtonArea, ChainsPath, Details } from '@porto/ui'
 import { useQuery } from '@tanstack/react-query'
 import { cx } from 'cva'
 import { type Address, Base64, Value } from 'ox'
+import * as React from 'react'
 import type * as Capabilities from 'rise-wallet/core/internal/relay/schema/capabilities'
 import type * as Quote_schema from 'rise-wallet/core/internal/relay/schema/quotes'
 import type * as Rpc from 'rise-wallet/core/internal/schema/request'
 import type * as Token from 'rise-wallet/core/internal/schema/token.js'
 import { Hooks } from 'rise-wallet/remote'
-import * as React from 'react'
 import {
   type Call,
   type Chain,

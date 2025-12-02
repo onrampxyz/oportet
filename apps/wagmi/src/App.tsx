@@ -1,6 +1,6 @@
+import { useState } from 'react'
 import { Hooks } from 'rise-wallet/wagmi'
 import { useConnect } from 'rise-wallet/wagmi/Hooks'
-import { useState } from 'react'
 import {
   type EIP1193Provider,
   formatEther,
