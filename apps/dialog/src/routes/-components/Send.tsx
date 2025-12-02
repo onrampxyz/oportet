@@ -1,6 +1,6 @@
 import { Button, ButtonArea, ChainsPath, CopyButton, Details } from '@porto/ui'
 import type { Address } from 'ox'
-import type * as Rpc from 'porto/core/internal/schema/request'
+import type * as Rpc from 'rise-wallet/core/internal/schema/request'
 import * as React from 'react'
 import type { Chain } from 'viem'
 import { AddressFormatter, PriceFormatter, ValueFormatter } from '~/utils'

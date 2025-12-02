@@ -1,7 +1,7 @@
 import * as Ariakit from '@ariakit/react'
 import { Button, Toast } from '@porto/apps/components'
-import { riseTestnet } from 'porto/core/Chains'
-import { Hooks } from 'porto/wagmi'
+import { riseTestnet } from 'rise-wallet/core/Chains'
+import { Hooks } from 'rise-wallet/wagmi'
 import { useMemo, useState } from 'react'
 import { toast } from 'sonner'
 import {

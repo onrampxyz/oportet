@@ -1,5 +1,5 @@
 import { Spinner } from '@porto/apps/components'
-import { Hooks } from 'porto/wagmi'
+import { Hooks } from 'rise-wallet/wagmi'
 import { useMemo } from 'react'
 import { useAccount } from 'wagmi'
 import { SessionFormatter } from '~/utils'

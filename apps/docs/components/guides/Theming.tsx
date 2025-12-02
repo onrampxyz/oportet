@@ -1,4 +1,4 @@
-import type { ThemeFragment } from 'porto/theme'
+import type { ThemeFragment } from 'rise-wallet/theme'
 import { useChainId, useConnect, useDisconnect } from 'wagmi'
 import * as WagmiConfig from '../../wagmi.config'
 import { Button } from '../Button'

@@ -1,4 +1,4 @@
-import { Route, Router } from 'porto/server'
+import { Route, Router } from 'rise-wallet/server'
 import * as Contracts from '../../contracts'
 
 export const route = Router({ basePath: '/porto' }).route(

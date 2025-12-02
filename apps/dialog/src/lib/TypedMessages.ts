@@ -1,4 +1,4 @@
-import * as u from 'porto/core/internal/schema/utils.js'
+import * as u from 'rise-wallet/core/internal/schema/utils.js'
 import * as z from 'zod/mini'
 
 const SchemaAddress = z.templateLiteral(['0x', z.string()])

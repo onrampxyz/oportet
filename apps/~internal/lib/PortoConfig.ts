@@ -1,5 +1,5 @@
-import { Mode, Transport } from 'porto'
-import type { Porto } from 'porto/remote'
+import { Mode, Transport } from 'rise-wallet'
+import type { Porto } from 'rise-wallet/remote'
 import { http, type ValueOf } from 'viem'
 import { riseTestnet } from 'viem/chains'
 

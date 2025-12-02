@@ -1,7 +1,7 @@
 import { useMutation } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
 import * as Provider from 'ox/Provider'
-import { Actions, Hooks } from 'porto/remote'
+import { Actions, Hooks } from 'rise-wallet/remote'
 import * as React from 'react'
 import * as Dialog from '~/lib/Dialog'
 import * as PermissionsRequest from '~/lib/PermissionsRequest'

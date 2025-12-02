@@ -1,5 +1,5 @@
 import * as UI from '@porto/ui'
-import { Actions } from 'porto/remote'
+import { Actions } from 'rise-wallet/remote'
 import type * as React from 'react'
 import * as Dialog from '~/lib/Dialog'
 import * as DialogErrors from '~/lib/DialogErrors'

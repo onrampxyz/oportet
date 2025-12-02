@@ -8,7 +8,7 @@ import {
   TokenIcon,
 } from '@porto/ui'
 import { type Address, Value } from 'ox'
-import type * as Rpc from 'porto/core/internal/schema/request'
+import type * as Rpc from 'rise-wallet/core/internal/schema/request'
 import * as React from 'react'
 import { type Chain, erc20Abi, maxUint256 } from 'viem'
 import { useReadContracts } from 'wagmi'

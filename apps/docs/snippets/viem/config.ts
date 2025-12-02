@@ -1,4 +1,4 @@
-import { Porto } from 'porto'
+import { Porto } from 'rise-wallet'
 import { createClient, custom } from 'viem'
 
 export const porto = Porto.create()

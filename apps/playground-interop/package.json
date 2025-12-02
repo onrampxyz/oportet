@@ -12,7 +12,7 @@
     "@porto/apps": "workspace:*",
     "@tailwindcss/vite": "catalog:",
     "@tanstack/react-query": "catalog:",
-    "porto": "workspace:*",
+    "rise-wallet": "workspace:*",
     "react": "catalog:",
     "react-dom": "catalog:",
     "tailwindcss": "catalog:",

@@ -1,4 +1,4 @@
-import { Hooks } from 'porto/wagmi'
+import { Hooks } from 'rise-wallet/wagmi'
 import { useState } from 'react'
 import { useAccount, useConnectors, useDisconnect } from 'wagmi'
 

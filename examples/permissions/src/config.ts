@@ -1,4 +1,4 @@
-import { porto } from 'porto/wagmi'
+import { porto } from 'rise-wallet/wagmi'
 import { parseEther } from 'viem'
 import { createConfig, http } from 'wagmi'
 import { baseSepolia } from 'wagmi/chains'

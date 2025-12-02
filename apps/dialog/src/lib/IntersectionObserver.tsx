@@ -1,6 +1,6 @@
 import { Button } from '@porto/ui'
 import { cx } from 'cva'
-import * as IntersectionObserver from 'porto/core/internal/intersectionObserver'
+import * as IntersectionObserver from 'rise-wallet/core/internal/intersectionObserver'
 import * as React from 'react'
 import { useInView } from 'react-intersection-observer'
 import { porto } from '~/lib/Porto'

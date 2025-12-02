@@ -25,7 +25,7 @@
     "cuer": "^0.0.2",
     "cva": "catalog:",
     "ox": "catalog:",
-    "porto": "workspace:*",
+    "rise-wallet": "workspace:*",
     "react": "catalog:",
     "react-dom": "catalog:",
     "sonner": "catalog:",

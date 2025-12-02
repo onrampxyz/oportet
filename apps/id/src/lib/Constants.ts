@@ -1,6 +1,6 @@
 import type { PortoConfig } from '@porto/apps'
 import type { Address } from 'ox'
-import { Chains } from 'porto'
+import { Chains } from 'rise-wallet'
 
 export const CORS_DESTROYER_URL = 'https://cors.porto.workers.dev'
 

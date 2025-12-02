@@ -2,9 +2,9 @@ import { PortoConfig } from '@porto/apps'
 import { exp1Address, exp2Address } from '@porto/apps/contracts'
 import { createStore } from 'mipd'
 import { Hex, Value } from 'ox'
-import { Chains, Dialog, Mode, Porto } from 'porto'
-import type { ThemeFragment } from 'porto/theme'
-import { RelayClient } from 'porto/viem'
+import { Chains, Dialog, Mode, RiseWallet } from 'rise-wallet'
+import type { ThemeFragment } from 'rise-wallet/theme'
+import { RelayClient } from 'rise-wallet/viem'
 
 export type ChainId = (typeof config.chains)[number]['id']
 
@@ -150,7 +150,7 @@ const chains = [
   ),
 ] as const
 
-export const porto = Porto.create({
+export const porto = RiseWallet.create({
   ...config,
   chains,
   merchantUrl: merchant ? '/merchant' : undefined,

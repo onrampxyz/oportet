@@ -1,4 +1,4 @@
-import { Chains } from 'porto'
+import { Chains } from 'rise-wallet'
 import { Children, createContext, useContext } from 'react'
 import { css, cx } from 'styled-system/css'
 import LucideRefreshCw from '~icons/lucide/refresh-cw'

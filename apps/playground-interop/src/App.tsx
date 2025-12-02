@@ -1,6 +1,6 @@
 import { exp1Config, exp2Config } from '@porto/apps/contracts'
 import { useQueryClient } from '@tanstack/react-query'
-import { Hooks, Query } from 'porto/wagmi'
+import { Hooks, Query } from 'rise-wallet/wagmi'
 import * as React from 'react'
 import {
   type Address,

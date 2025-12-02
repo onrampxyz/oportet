@@ -1,7 +1,7 @@
 import Checkbox from 'expo-checkbox'
 import { AbiFunction, type Hex, Json, Value } from 'ox'
-import { Key, RelayActions, RelayClient } from 'porto/viem'
-import { Hooks } from 'porto/wagmi'
+import { Key, RelayActions, RelayClient } from 'rise-wallet/viem'
+import { Hooks } from 'rise-wallet/wagmi'
 import * as React from 'react'
 import {
   Button,

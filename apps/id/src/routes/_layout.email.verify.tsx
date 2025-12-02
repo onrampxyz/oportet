@@ -1,7 +1,7 @@
 import { Button } from '@porto/apps/components'
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { Address } from 'ox'
-import { Hooks } from 'porto/wagmi'
+import { Hooks } from 'rise-wallet/wagmi'
 import * as React from 'react'
 import * as v from 'valibot'
 import { useAccount, useConnect, useConnectors } from 'wagmi'

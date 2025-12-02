@@ -2,7 +2,7 @@ import { useMutation } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
 import { Hex, Siwe } from 'ox'
 import * as Provider from 'ox/Provider'
-import { Actions } from 'porto/remote'
+import { Actions } from 'rise-wallet/remote'
 import { useMemo } from 'react'
 
 import { porto } from '~/lib/Porto'

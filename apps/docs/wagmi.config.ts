@@ -1,6 +1,6 @@
 import { PortoConfig } from '@porto/apps'
-import { Dialog, Mode } from 'porto'
-import { porto } from 'porto/wagmi'
+import { Dialog, Mode } from 'rise-wallet'
+import { porto } from 'rise-wallet/wagmi'
 import { createConfig, createStorage, http } from 'wagmi'
 import { baseSepolia, optimismSepolia } from 'wagmi/chains'
 

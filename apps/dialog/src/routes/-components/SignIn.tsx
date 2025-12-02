@@ -1,5 +1,5 @@
 import { Button } from '@porto/ui'
-import { Hooks } from 'porto/remote'
+import { Hooks } from 'rise-wallet/remote'
 
 import * as React from 'react'
 import * as Dialog from '~/lib/Dialog'

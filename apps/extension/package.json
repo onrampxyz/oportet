@@ -15,7 +15,7 @@
     "postinstall": "wxt prepare"
   },
   "dependencies": {
-    "porto": "workspace:*"
+    "rise-wallet": "workspace:*"
   },
   "devDependencies": {
     "typescript": "catalog:",

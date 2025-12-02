@@ -1,8 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { Value } from 'ox'
-import { baseSepolia } from 'porto/core/Chains'
-import { Mode } from 'porto/react-native'
-import { porto as portoConnector } from 'porto/wagmi'
+import { baseSepolia } from 'rise-wallet/core/Chains'
+import { Mode } from 'rise-wallet/react-native'
+import { porto as portoConnector } from 'rise-wallet/wagmi'
 import { Platform } from 'react-native'
 import { createConfig, createStorage, http } from 'wagmi'
 

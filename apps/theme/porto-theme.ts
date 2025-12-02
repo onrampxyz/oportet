@@ -1,4 +1,4 @@
-import type { LightDarkColor, Theme } from 'porto/theme'
+import type { LightDarkColor, Theme } from 'rise-wallet/theme'
 
 type FullTheme = Theme<'light dark'>
 

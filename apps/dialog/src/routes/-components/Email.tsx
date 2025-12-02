@@ -1,7 +1,7 @@
 import { Input } from '@porto/apps/components'
 import { Button, TextButton } from '@porto/ui'
 import { cx } from 'cva'
-import { Hooks } from 'porto/remote'
+import { Hooks } from 'rise-wallet/remote'
 import * as React from 'react'
 import * as Dialog from '~/lib/Dialog'
 import { porto } from '~/lib/Porto'
