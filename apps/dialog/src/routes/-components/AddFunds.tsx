@@ -216,13 +216,13 @@ export function AddFunds(props: AddFunds.Props) {
       <Layout.Content>
         <div className="flex flex-col gap-3">
           <Separator label="Select deposit method" size="medium" spacing={0} />
-          {showFaucet && (
+          {/*{showFaucet && (
             <Faucet
               address={address}
               chainId={chain?.id}
               onApprove={onApprove}
             />
-          )}
+          )}*/}
           {showApplePay &&
             address &&
             (onrampStatus?.email &&
