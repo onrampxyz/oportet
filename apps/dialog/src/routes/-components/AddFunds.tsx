@@ -1,12 +1,11 @@
-import { exp1Address } from '@porto/apps/contracts'
 import { usePrevious } from '@porto/apps/hooks'
-import { Button, PresetsInput, Separator } from '@porto/ui'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { type Address, type Hex, Value } from 'ox'
-import { Hooks as RemoteHooks } from 'porto/remote'
-import { RelayActions } from 'porto/viem'
-import { Hooks } from 'porto/wagmi'
+import { Button, Separator } from '@porto/ui'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
+import type { Address, Hex } from 'ox'
 import * as React from 'react'
+import { Hooks as RemoteHooks } from 'rise-wallet/remote'
+import { RelayActions } from 'rise-wallet/viem'
+import { Hooks } from 'rise-wallet/wagmi'
 import { zeroAddress, zeroHash } from 'viem'
 import { useWatchBlockNumber } from 'wagmi'
 import { DepositButtons } from '~/components/DepositButtons'
@@ -18,8 +17,8 @@ import TriangleAlertIcon from '~icons/lucide/triangle-alert'
 import { ApplePayButton, ApplePayIframe } from './ActionPreview'
 import { SetupApplePay } from './SetupApplePay'
 
-const presetAmounts = ['30', '50', '100', '250'] as const
-const maxAmount = 500
+// const presetAmounts = ['30', '50', '100', '250'] as const
+// const maxAmount = 500
 
 type View = 'default' | 'error' | 'onramp' | 'setup-onramp'
 
@@ -146,14 +145,14 @@ export function AddFunds(props: AddFunds.Props) {
     }
   }, [balanceMap, onApprove, previousBalanceMap])
 
-  const showFaucet = React.useMemo(() => {
-    if (import.meta.env.MODE === 'test') return true
-    // Don't show faucet if not on "default" view.
-    if (view !== 'default') return false
-    // Show faucet if on a testnet.
-    if (chain?.testnet) return true
-    return false
-  }, [chain, view])
+  // const showFaucet = React.useMemo(() => {
+  //   if (import.meta.env.MODE === 'test') return true
+  //   // Don't show faucet if not on "default" view.
+  //   if (view !== 'default') return false
+  //   // Show faucet if on a testnet.
+  //   if (chain?.testnet) return true
+  //   return false
+  // }, [chain, view])
 
   if (view === 'error')
     return (
@@ -216,13 +215,13 @@ export function AddFunds(props: AddFunds.Props) {
       <Layout.Content>
         <div className="flex flex-col gap-3">
           <Separator label="Select deposit method" size="medium" spacing={0} />
-          {showFaucet && (
+          {/*{showFaucet && (
             <Faucet
               address={address}
               chainId={chain?.id}
               onApprove={onApprove}
             />
-          )}
+          )}*/}
           {showApplePay &&
             address &&
             (onrampStatus?.email &&
@@ -282,80 +281,80 @@ export declare namespace AddFunds {
   }
 }
 
-function Faucet(props: {
-  address: Address.Address | undefined
-  chainId: number | undefined
-  onApprove: (result: { id: Hex.Hex }) => void
-}) {
-  const { address, chainId, onApprove } = props
+// function Faucet(props: {
+//   address: Address.Address | undefined
+//   chainId: number | undefined
+//   onApprove: (result: { id: Hex.Hex }) => void
+// }) {
+//   const { address, chainId, onApprove } = props
 
-  const [amount, setAmount] = React.useState<string>(presetAmounts[0])
+//   const [amount, setAmount] = React.useState<string>(presetAmounts[0])
 
-  const client = RemoteHooks.useRelayClient(porto)
-  const faucet = useMutation({
-    async mutationFn(e: React.FormEvent<HTMLFormElement>) {
-      e.preventDefault()
-      e.stopPropagation()
+//   const client = RemoteHooks.useRelayClient(porto)
+//   const faucet = useMutation({
+//     async mutationFn(e: React.FormEvent<HTMLFormElement>) {
+//       e.preventDefault()
+//       e.stopPropagation()
 
-      if (!address) throw new Error('address is required')
-      if (!chainId) throw new Error('chainId is required')
+//       if (!address) throw new Error('address is required')
+//       if (!chainId) throw new Error('chainId is required')
 
-      const value = Value.from(amount, 18)
+//       const value = Value.from(amount, 18)
 
-      const data = await RelayActions.addFaucetFunds(client, {
-        address,
-        chain: { id: chainId },
-        tokenAddress: exp1Address[chainId as never],
-        value,
-      })
-      return data
-    },
-    onSuccess(data) {
-      onApprove({ id: data.transactionHash })
-    },
-  })
+//       const data = await RelayActions.addFaucetFunds(client, {
+//         address,
+//         chain: { id: chainId },
+//         tokenAddress: exp1Address[chainId as never],
+//         value,
+//       })
+//       return data
+//     },
+//     onSuccess(data) {
+//       onApprove({ id: data.transactionHash })
+//     },
+//   })
 
-  return (
-    <form
-      className="grid h-min grid-flow-row auto-rows-min grid-cols-1 space-y-3"
-      onSubmit={(e) => faucet.mutate(e)}
-    >
-      <div className="col-span-1 row-span-1">
-        <PresetsInput
-          adornments={{
-            end: {
-              label: `Max. $${maxAmount}`,
-              type: 'fill',
-              value: String(maxAmount),
-            },
-            start: '$',
-          }}
-          inputMode="decimal"
-          max={maxAmount}
-          min={0}
-          onChange={setAmount}
-          placeholder="Enter amount"
-          presets={presetAmounts.map((value) => ({
-            label: `$${value}`,
-            value,
-          }))}
-          type="number"
-          value={amount}
-        />
-      </div>
-      <div className="col-span-1 row-span-1 space-y-3.5">
-        <Button
-          className="w-full flex-1"
-          data-testid="buy"
-          disabled={!address || !amount || Number(amount) === 0}
-          loading={faucet.isPending && 'Adding funds…'}
-          type="submit"
-          variant="primary"
-          width="grow"
-        >
-          Add faucet funds
-        </Button>
-      </div>
-    </form>
-  )
-}
+//   return (
+//     <form
+//       className="grid h-min grid-flow-row auto-rows-min grid-cols-1 space-y-3"
+//       onSubmit={(e) => faucet.mutate(e)}
+//     >
+//       <div className="col-span-1 row-span-1">
+//         <PresetsInput
+//           adornments={{
+//             end: {
+//               label: `Max. $${maxAmount}`,
+//               type: 'fill',
+//               value: String(maxAmount),
+//             },
+//             start: '$',
+//           }}
+//           inputMode="decimal"
+//           max={maxAmount}
+//           min={0}
+//           onChange={setAmount}
+//           placeholder="Enter amount"
+//           presets={presetAmounts.map((value) => ({
+//             label: `$${value}`,
+//             value,
+//           }))}
+//           type="number"
+//           value={amount}
+//         />
+//       </div>
+//       <div className="col-span-1 row-span-1 space-y-3.5">
+//         <Button
+//           className="w-full flex-1"
+//           data-testid="buy"
+//           disabled={!address || !amount || Number(amount) === 0}
+//           loading={faucet.isPending && 'Adding funds…'}
+//           type="submit"
+//           variant="primary"
+//           width="grow"
+//         >
+//           Add faucet funds
+//         </Button>
+//       </div>
+//     </form>
+//   )
+// }

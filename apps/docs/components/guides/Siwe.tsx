@@ -1,4 +1,4 @@
-import type { Porto } from 'porto'
+import type { Porto } from 'rise-wallet'
 import { hashMessage } from 'viem'
 import { useAccount, useChainId, useConnect, useDisconnect } from 'wagmi'
 import { Button } from '../Button'

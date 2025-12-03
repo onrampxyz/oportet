@@ -1,4 +1,4 @@
-import { Chains } from 'porto'
+import { Chains } from 'rise-wallet'
 
 export function getChains(env: string) {
   if (env === 'anvil')

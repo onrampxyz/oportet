@@ -1,7 +1,6 @@
 import { Button } from '@porto/ui'
-import { Hooks } from 'porto/remote'
-
 import * as React from 'react'
+import { Hooks } from 'rise-wallet/remote'
 import * as Dialog from '~/lib/Dialog'
 import { porto } from '~/lib/Porto'
 import { Layout } from '~/routes/-components/Layout'

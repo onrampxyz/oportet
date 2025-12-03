@@ -1,8 +1,8 @@
 import { Button } from '@porto/ui'
 import type { Address, Hex } from 'ox'
-import { Key } from 'porto'
-import type * as Token from 'porto/core/internal/schema/token'
-import { Hooks } from 'porto/wagmi'
+import { Key } from 'rise-wallet'
+import type * as Token from 'rise-wallet/core/internal/schema/token'
+import { Hooks } from 'rise-wallet/wagmi'
 
 import * as Calls from '~/lib/Calls'
 import { Layout } from '~/routes/-components/Layout'

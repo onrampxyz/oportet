@@ -11,7 +11,7 @@
   "dependencies": {
     "@porto/apps": "workspace:*",
     "@tanstack/react-query": "catalog:",
-    "porto": "workspace:*",
+    "rise-wallet": "workspace:*",
     "react": "catalog:",
     "react-dom": "catalog:",
     "viem": "catalog:",

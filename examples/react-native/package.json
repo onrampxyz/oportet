@@ -22,7 +22,7 @@
     "expo-network": "~8.0.7",
     "expo-web-browser": "~15.0.8",
     "ox": "^0.9.12",
-    "porto": "workspace:*",
+    "rise-wallet": "workspace:*",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "react-native": "0.81.5",

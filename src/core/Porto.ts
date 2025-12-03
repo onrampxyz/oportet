@@ -40,7 +40,7 @@ export const defaultConfig = {
  *
  * @example
  * ```ts twoslash
- * import { Porto } from 'porto'
+ * import { Porto } from 'rise-wallet'
  *
  * const porto = Porto.create()
  *
@@ -49,10 +49,10 @@ export const defaultConfig = {
  */
 export function create<
   const chains extends readonly [Chains.Chain, ...Chains.Chain[]],
->(parameters?: ExactPartial<Config<chains>> | undefined): Porto<chains>
+>(parameters?: ExactPartial<Config<chains>> | undefined): RiseWallet<chains>
 export function create(
   parameters: ExactPartial<Config> | undefined = {},
-): Porto {
+): RiseWallet {
   const chains = parameters.chains ?? defaultConfig.chains
   const transports = Object.fromEntries(
     chains!.map((chain) => [
@@ -216,7 +216,7 @@ export type Config<
   transports: Record<chains[number]['id'], Transport>
 }
 
-export type Porto<
+export type RiseWallet<
   chains extends readonly [Chains.Chain, ...Chains.Chain[]] = readonly [
     Chains.Chain,
     ...Chains.Chain[],

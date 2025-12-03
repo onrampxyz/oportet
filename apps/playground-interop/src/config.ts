@@ -1,7 +1,7 @@
 import 'porto/register'
 import { PortoConfig } from '@porto/apps'
-import { type Chains, Mode } from 'porto'
-import { porto } from 'porto/wagmi'
+import { type Chains, Mode } from 'rise-wallet'
+import { porto } from 'rise-wallet/wagmi'
 import { createConfig, createStorage } from 'wagmi'
 
 export const config = PortoConfig.getConfig()

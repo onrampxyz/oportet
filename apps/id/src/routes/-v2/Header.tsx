@@ -1,9 +1,9 @@
 import * as Ariakit from '@ariakit/react'
 import { Button, Toast } from '@porto/apps/components'
 import type { Address } from 'ox'
-import { Chains } from 'porto'
-import { Hooks } from 'porto/wagmi'
 import { useEffect, useState } from 'react'
+import { Chains } from 'rise-wallet'
+import { Hooks } from 'rise-wallet/wagmi'
 import { toast } from 'sonner'
 import { formatEther } from 'viem'
 import {
@@ -70,7 +70,7 @@ export function Header() {
     if (!capabilities.data) return
     const exp1 = capabilities.data?.[
       Chains.riseTestnet.id
-    ]?.feeToken?.tokens?.find((t) => t.uid === 'exp1')
+    ]?.feeToken?.tokens?.find((t: any) => t.uid === 'exp1')
     if (!exp1) return
     addFunds.mutate({
       address,

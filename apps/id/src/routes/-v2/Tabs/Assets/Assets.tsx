@@ -1,4 +1,4 @@
-import { Hooks } from 'porto/wagmi'
+import { Hooks } from 'rise-wallet/wagmi'
 import { zeroAddress } from 'viem'
 import { useAccount, useCapabilities } from 'wagmi'
 import { assetsToWalletBalances } from '~/lib/Mapper'
@@ -34,7 +34,7 @@ export function Assets() {
               chainId: Number(chainId),
               feeToken: isNative
                 ? true
-                : (feeTokens?.some((token) => token.address === address) ??
+                : (feeTokens?.some((token: any) => token.address === address) ??
                   false),
               isNative,
               metadata: {

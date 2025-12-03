@@ -1,4 +1,4 @@
-import { type Chains, Dialog, Mode, Porto, Transport } from 'porto'
+import { type Chains, Dialog, Mode, Porto, Transport } from 'rise-wallet'
 import { http } from 'viem'
 import { getChains } from '../chains.js'
 
