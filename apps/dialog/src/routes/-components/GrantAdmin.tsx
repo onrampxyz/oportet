@@ -1,9 +1,9 @@
 import { Button } from '@porto/ui'
 import type { Hex } from 'ox'
 import type * as Address from 'ox/Address'
-import { Key } from 'porto'
-import type * as Token from 'porto/core/internal/schema/token.js'
-import { Hooks } from 'porto/remote'
+import { Key } from 'rise-wallet'
+import type * as Token from 'rise-wallet/core/internal/schema/token.js'
+import { Hooks } from 'rise-wallet/remote'
 
 import * as Calls from '~/lib/Calls'
 import { porto } from '~/lib/Porto'

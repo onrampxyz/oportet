@@ -3,9 +3,9 @@ import { LogoLockup, Toast } from '@porto/apps/components'
 import { exp1Config, exp2Config, expNftConfig } from '@porto/apps/contracts'
 import { cx } from 'cva'
 import { type Address, P256, Provider, PublicKey, Value } from 'ox'
-import { Hooks } from 'porto/wagmi'
 import * as React from 'react'
 import { Link } from 'react-router'
+import { Hooks } from 'rise-wallet/wagmi'
 import { toast } from 'sonner'
 import { BaseError, UserRejectedRequestError } from 'viem'
 import {
@@ -71,7 +71,7 @@ export function HomePage() {
           </div>
           <div className="bg-gray3/50 p-[16px] font-mono text-[15px] max-[486px]:p-[12px] max-[486px]:text-[13px] dark:bg-gray1">
             <p className={`before:mr-3 before:text-gray8 before:content-['1']`}>
-              import {'{'} Porto {'}'} from 'porto'
+              import {'{'} Porto {'}'} from 'rise-wallet'
             </p>
             <p className={`before:mr-3 before:text-gray8 before:content-['2']`}>
               Porto.

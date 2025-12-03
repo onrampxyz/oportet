@@ -1,5 +1,5 @@
-import { Porto } from 'porto'
-import { RelayClient } from 'porto/viem'
+import { Porto } from 'rise-wallet'
+import { RelayClient } from 'rise-wallet/viem'
 import { describe, expect, test } from 'vitest'
 
 describe('fromPorto', () => {

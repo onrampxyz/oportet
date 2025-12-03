@@ -2,8 +2,8 @@ import { env } from 'cloudflare:workers'
 import { Hono } from 'hono'
 import { deleteCookie, setCookie } from 'hono/cookie'
 import * as jwt from 'hono/jwt'
-import { Porto } from 'porto'
-import { RelayClient } from 'porto/viem'
+import { Porto } from 'rise-wallet'
+import { RelayClient } from 'rise-wallet/viem'
 import {
   generateSiweNonce,
   parseSiweMessage,

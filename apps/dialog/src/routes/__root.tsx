@@ -7,9 +7,9 @@ import {
   Outlet,
   useLocation,
 } from '@tanstack/react-router'
-import { Actions, Hooks } from 'porto/remote'
-import { hostnames } from 'porto/trusted-hosts'
 import * as React from 'react'
+import { Actions, Hooks } from 'rise-wallet/remote'
+import { hostnames } from 'rise-wallet/trusted-hosts'
 import { ErrorBoundary } from '~/components/ErrorBoundary'
 import * as Dialog from '~/lib/Dialog'
 import { EnsureVisibility } from '~/lib/IntersectionObserver'

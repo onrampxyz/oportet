@@ -1,4 +1,5 @@
 import { Value } from 'ox'
+import type { Spend } from './types/session'
 
 export namespace ArrayUtils {
   export function sum(array: number[]) {
@@ -16,6 +17,69 @@ export namespace StringFormatter {
   ) {
     if (str.length <= start + end) return str
     return `${str.slice(0, start)}\u2026${str.slice(-end)}`
+  }
+}
+
+export namespace AddressFormatter {
+  /**
+   * Masks an Ethereum address to show only the first and last few characters.
+   * @param address - The Ethereum address to mask (e.g., "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb")
+   * @param options - Configuration options
+   * @param options.start - Number of characters to show at the start (default: 6, includes "0x")
+   * @param options.end - Number of characters to show at the end (default: 4)
+   * @returns Masked address (e.g., "0x742d...0bEb")
+   *
+   * @example
+   * AddressFormatter.mask("0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb")
+   * // Returns: "0x742d...0bEb"
+   *
+   * @example
+   * AddressFormatter.mask("0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb", { start: 8, end: 6 })
+   * // Returns: "0x742d35...5f0bEb"
+   */
+  export function mask(
+    address: string | undefined,
+    { start = 6, end = 4 }: { start?: number; end?: number } = {},
+  ): string {
+    if (!address) return ''
+    if (address.length <= start + end) return address
+    return `${address.slice(0, start)}...${address.slice(-end)}`
+  }
+
+  /**
+   * Formats an Ethereum address with checksum capitalization and masking.
+   * @param address - The Ethereum address to format
+   * @param options - Configuration options (same as mask function)
+   * @returns Masked address string
+   *
+   * @example
+   * AddressFormatter.format("0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb")
+   * // Returns: "0x742d...0bEb"
+   */
+  export function format(
+    address: string | undefined,
+    options?: { start?: number; end?: number },
+  ): string {
+    return mask(address, options)
+  }
+
+  /**
+   * Gets the short form of an address (first 6 chars including 0x and last 4 chars).
+   * This is a convenience wrapper around mask with commonly used defaults.
+   * @param address - The Ethereum address
+   * @returns Masked address (e.g., "0x742d...0bEb")
+   */
+  export function short(address: string | undefined): string {
+    return mask(address, { end: 4, start: 6 })
+  }
+
+  /**
+   * Gets the long form of an address (first 10 chars and last 8 chars).
+   * @param address - The Ethereum address
+   * @returns Masked address (e.g., "0x742d35Cc66...95f0bEb")
+   */
+  export function long(address: string | undefined): string {
+    return mask(address, { end: 8, start: 10 })
   }
 }
 
@@ -118,5 +182,64 @@ export namespace DateFormatter {
     if (hours > 0) return `${hours}h`
     if (minutes > 0) return `${minutes}m`
     return `${seconds}s`
+  }
+}
+
+export namespace SessionFormatter {
+  /**
+   * Formats a Unix timestamp expiry time to human-readable duration.
+   * @param expiry - Unix timestamp (in seconds) when the session expires
+   * @returns Human-readable duration string (e.g., "2 hours", "30 minutes", "Expired")
+   *
+   * @example
+   * SessionFormatter.formatExpiryTime(Math.floor(Date.now() / 1000) + 3600)
+   * // Returns: "1 hour"
+   */
+  export function formatExpiryTime(expiry: number): string {
+    const now = Math.floor(Date.now() / 1000)
+    const diff = expiry - now
+
+    if (diff <= 0) return 'Expired'
+
+    const minutes = Math.floor(diff / 60)
+    const hours = Math.floor(minutes / 60)
+    const days = Math.floor(hours / 24)
+
+    if (days > 0) return `${days} day${days > 1 ? 's' : ''}`
+    if (hours > 0) return `${hours} hour${hours > 1 ? 's' : ''}`
+    return `${minutes} minute${minutes > 1 ? 's' : ''}`
+  }
+
+  /**
+   * Formats spend limit from permission data to readable format.
+   * @param spend - Array of spend limit objects from permission
+   * @returns Formatted spend limit string (e.g., "50.00 tokens per hour", "No limit")
+   *
+   * @example
+   * SessionFormatter.formatSpendLimit([{ limit: BigInt('50000000000000000000'), period: 'hour', token: '0x...' }])
+   * // Returns: "50.00 tokens per hour"
+   */
+  export function formatSpendLimit(spend: Spend[]): string {
+    if (spend.length === 0) return 'No limit'
+
+    const firstSpend = spend[0]
+    if (!firstSpend) return 'No limit'
+
+    const amount = Number(firstSpend.limit) / 1e18 // Assuming 18 decimals
+    return `${amount.toFixed(2)} tokens per ${firstSpend.period}`
+  }
+
+  /**
+   * Truncates an Ethereum address to a shorter format for display.
+   * @param address - The Ethereum address to truncate
+   * @returns Truncated address (e.g., "0x1234...5678")
+   *
+   * @example
+   * SessionFormatter.truncateAddress("0x1234567890123456789012345678901234567890")
+   * // Returns: "0x1234...7890"
+   */
+  export function truncateAddress(address: string): string {
+    if (address.length <= 10) return address
+    return `${address.slice(0, 6)}...${address.slice(-4)}`
   }
 }

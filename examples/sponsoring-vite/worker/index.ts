@@ -1,5 +1,5 @@
 import { env } from 'cloudflare:workers'
-import { Route, Router } from 'porto/server'
+import { Route, Router } from 'rise-wallet/server'
 import * as Contracts from '../src/contracts.ts'
 
 export default Router({ basePath: '/porto' }).route(

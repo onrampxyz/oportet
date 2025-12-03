@@ -1,6 +1,6 @@
-import 'porto/register'
+import 'rise-wallet/register'
 import { PortoConfig } from '@porto/apps'
-import { Mode, type Porto, Storage } from 'porto'
+import { Mode, type RiseWallet, Storage } from 'rise-wallet'
 
 const host = (() => {
   const url = new URL(PortoConfig.getDialogHost())
@@ -16,6 +16,6 @@ export const config = {
     host,
   }),
   storage: Storage.combine(Storage.cookie(), Storage.localStorage()),
-} as const satisfies Porto.Config
+} as const satisfies RiseWallet.Config
 
 // export const porto = Porto.create(config)

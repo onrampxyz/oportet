@@ -38,7 +38,7 @@ export const defaultConfig = {
  *
  * @example
  * ```ts twoslash
- * import { Porto } from 'porto/remote'
+ * import { Porto } from 'rise-wallet/remote'
  * const porto = Porto.create()
  * ```
  */
@@ -109,12 +109,12 @@ export type Porto<
     Chains.Chain,
     ...Chains.Chain[],
   ],
-> = Porto_.Porto<chains> & {
+> = Porto_.RiseWallet<chains> & {
   mode: Mode.Mode
   messenger: OneOf<Messenger.WithReady | Messenger.Messenger>
   methodPolicies?: MethodPolicies.MethodPolicies | undefined
   ready: () => Promise<void>
-  _internal: Porto_.Porto<chains>['_internal'] & {
+  _internal: Porto_.RiseWallet<chains>['_internal'] & {
     remoteStore: StoreApi<RemoteState>
   }
 }

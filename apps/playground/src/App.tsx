@@ -19,8 +19,8 @@ import {
   TypedData,
   Value,
 } from 'ox'
-import { Dialog } from 'porto'
 import * as React from 'react'
+import { Dialog } from 'rise-wallet'
 import { erc20Abi, hashTypedData, isAddress, isHex, maxUint256 } from 'viem'
 import {
   generatePrivateKey,

@@ -5,10 +5,10 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { cx } from 'cva'
 import { Value } from 'ox'
 import type * as Address from 'ox/Address'
-import type * as Quote_schema from 'porto/core/internal/relay/schema/quotes'
-import { Hooks as RemoteHooks } from 'porto/remote'
-import { RelayActions } from 'porto/viem'
 import * as React from 'react'
+import type * as Quote_schema from 'rise-wallet/core/internal/relay/schema/quotes'
+import { Hooks as RemoteHooks } from 'rise-wallet/remote'
+import { RelayActions } from 'rise-wallet/viem'
 import { useWatchBlockNumber } from 'wagmi'
 import { DepositButtons } from '~/components/DepositButtons'
 import {
@@ -540,7 +540,7 @@ export function ApplePayButton(
     <div className="h-12.5 w-full pt-px">
       <Button
         {...props}
-        className="h-11! w-full! rounded-4xl! bg-black! font-medium! text-[21px]! text-white! tracking-[0.22px]! dark:bg-white! dark:text-black!"
+        // className="h-11! w-full! rounded-4xl! bg-black! font-medium! text-[21px]! text-white! tracking-[0.22px]! dark:bg-white! dark:text-black!"
         loading={loading ? content : undefined}
         variant="strong"
         width="grow"

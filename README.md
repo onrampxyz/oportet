@@ -1,16 +1,8 @@
-![Porto](https://github.com/ithacaxyz/porto/blob/main/.github/banner.png)
+# Rise Wallet
 
-# Porto
-
-Next-gen Account for Ethereum.
+A fork of [Porto](https://github.com/ithacaxyz/porto) — Next-gen Account for Ethereum — made specifically for the [RISE chain](https://riselabs.xyz).
 
 <p>
-  <a href="https://www.npmjs.com/package/porto">
-    <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="https://img.shields.io/npm/v/porto?colorA=21262d&colorB=21262d&style=flat">
-      <img src="https://img.shields.io/npm/v/porto?colorA=f6f8fa&colorB=f6f8fa&style=flat" alt="Version">
-    </picture>
-  </a>
   <a href="https://github.com/ithacaxyz/porto/blob/main/LICENSE-MIT">
     <picture>
       <source media="(prefers-color-scheme: dark)" srcset="https://img.shields.io/badge/license-MIT-blue.svg?colorA=21262d&colorB=21262d&style=flat">
@@ -27,7 +19,7 @@ Next-gen Account for Ethereum.
 
 ## Documentation
 
-For documentation and guides, visit [porto.sh](https://porto.sh).
+For Porto documentation and guides, visit [porto.sh](https://porto.sh).
 
 ## Development
 
@@ -75,5 +67,5 @@ shall be dual licensed as above, without any additional terms or conditions.
 
 ## Getting Help
 
-Have questions or building something cool with Porto Accounts?  
+Have questions or building something cool with Rise Wallet?  
 Join the Telegram group to chat with the team and other devs: [@porto_devs](https://t.me/porto_devs)
