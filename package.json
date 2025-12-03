@@ -241,8 +241,8 @@
     }
   },
   "license": "MIT",
-  "homepage": "https://ithaca.xyz",
-  "repository": "ithacaxyz/porto",
+  "homepage": "https://wallet.risechain.com",
+  "repository": "risechain/porto-rise",
   "contributors": [
     "jxom.eth <jake@ithaca.xyz>",
     "awkweb.eth <tom@ithaca.xyz>",
