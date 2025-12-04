@@ -2,7 +2,6 @@ import { Button, LogoMark } from '@porto/apps/components'
 import { cx } from 'cva'
 import type { PropsWithChildren } from 'react'
 
-
 export function Layout(props: PropsWithChildren) {
   return <main className="mx-auto flex h-full max-lg:flex-col" {...props} />
 }
@@ -31,7 +30,7 @@ export namespace Layout {
     leftClassName?: string | undefined
     right?: React.ReactNode | undefined
   }) {
-    const { left, leftClassName, right } = props
+    const { left, leftClassName } = props
     return (
       <div className="flex items-center justify-between">
         {typeof left === 'object' ? (
