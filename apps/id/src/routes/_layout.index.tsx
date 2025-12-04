@@ -12,6 +12,6 @@ function RouteComponent() {
 
   if (!account.isConnected) return <Landing />
 
-  // Redirect to portfolio route when connected
-  return <Navigate to="/portfolio" />
+  // Redirect to assets route when connected
+  return <Navigate to="/assets" />
 }
