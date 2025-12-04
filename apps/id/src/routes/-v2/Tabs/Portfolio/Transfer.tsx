@@ -14,7 +14,7 @@ export type TransferProps = {
   refetch: () => void
 }
 
-export function Transfer(props: TransferProps) {
+export function Transfer(props: Readonly<TransferProps>) {
   const { balance, isOpen, onClose, refetch } = props
 
   const [toAddress, setToAddress] = useState('')
@@ -56,6 +56,7 @@ export function Transfer(props: TransferProps) {
   }
 
   const handleTransfer = async () => {
+    console.log('entering transfer')
     if (!Address.validate(toAddress)) {
       setAddressError('Please enter a valid Ethereum address')
       return
@@ -80,7 +81,7 @@ export function Transfer(props: TransferProps) {
     setAmountError('')
 
     // TODO: expose token address instead of tokenId
-    const tokenAddress = balance?.tokenId.split('-')[1]
+    const tokenAddress = balance?.tokenId.split('-')[1] ?? balance.tokenId
     const parsedAmount = parseUnits(amount, balance.decimals)
 
     if (tokenAddress) {
@@ -121,6 +122,18 @@ export function Transfer(props: TransferProps) {
         refetch()
         handleClose()
       }
+    } else {
+      toast.custom(
+        (t) => (
+          <Toast
+            className={t}
+            description="No available Token Address."
+            kind="error"
+            title="Unable to send!"
+          />
+        ),
+        { duration: 3_500 },
+      )
     }
   }
 

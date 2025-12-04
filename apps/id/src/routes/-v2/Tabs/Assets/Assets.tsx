@@ -36,6 +36,7 @@ export function Assets() {
                 ? true
                 : (feeTokens?.some((token: any) => token.address === address) ??
                   false),
+              isNative,
               metadata: {
                 ...asset.metadata,
                 decimals: isNative ? 18 : asset.metadata!.decimals,
@@ -51,8 +52,6 @@ export function Assets() {
       },
     },
   })
-
-  console.log('assets:: ', assets)
 
   const wallet = assetsToWalletBalances(assets.data ?? [], new Map())
 

@@ -14,6 +14,7 @@ export type Balance = {
   priceSource: string
   balanceFormatted: number
   usdValue: number
+  isNative: boolean
 }
 
 export type Position = {

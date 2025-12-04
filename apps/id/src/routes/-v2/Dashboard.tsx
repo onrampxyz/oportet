@@ -2,7 +2,7 @@ import { useLocation } from '@tanstack/react-router'
 import { useAccount } from 'wagmi'
 import { Landing } from '../-components/Landing'
 import { Layout } from '../-v2/Layout'
-import { Assets, Recovery, Sessions, Transactions } from './Tabs'
+import { Assets, Portfolio, Recovery, Sessions, Transactions } from './Tabs'
 
 // Dashboard with routing-based tabs
 export function Dashboard() {
@@ -22,7 +22,7 @@ export function Dashboard() {
     if (pathname.includes('/assets')) return 'assets'
     if (pathname.includes('/portfolio')) return 'portfolio'
     // return 'portfolio' // default
-    return 'transactions' // default
+    return 'assets' // default
   }
 
   const activeTab = getActiveTab()
@@ -38,8 +38,10 @@ export function Dashboard() {
         return <Recovery />
       case 'sessions':
         return <Sessions />
+      case 'portfolio':
+        return <Portfolio />
       default:
-        return <Transactions />
+        return <Assets />
       // return <Portfolio />
     }
   }

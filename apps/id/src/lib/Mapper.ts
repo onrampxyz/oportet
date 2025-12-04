@@ -30,6 +30,7 @@ export function assetToBalance(
     balance: asset.balance.toString(),
     balanceFormatted,
     decimals,
+    isNative: asset.isNative ?? false,
     price,
     priceSource,
     symbol,
