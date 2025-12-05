@@ -129,7 +129,7 @@ overrides:
   ox: ^0.9.6
   rise-wallet: workspace:*
   viem: ^2.38.2
-  mipd-postmessage: file:../../mipd-postmessage
+  mipd-postmessage: ^0.0.5
   ws@>=8.0.0 <8.17.1: 8.17.1
   nanoid@>=4.0.0 <5.0.9: 5.0.9
   tar-fs@>=3.0.0 <3.0.7: 3.0.7
@@ -175,8 +175,8 @@ importers:
         specifier: ^0.0.7
         version: 0.0.7(typescript@5.9.3)
       mipd-postmessage:
-        specifier: file:../../mipd-postmessage
-        version: file:../../mipd-postmessage(mipd@0.0.7(typescript@5.9.3))(typescript@5.9.3)(zod@4.1.5)
+        specifier: ^0.0.5
+        version: 0.0.5(mipd@0.0.7(typescript@5.9.3))(typescript@5.9.3)(zod@4.1.5)
       ox:
         specifier: ^0.9.6
         version: 0.9.6(typescript@5.9.3)(zod@4.1.5)
@@ -353,8 +353,8 @@ importers:
         specifier: 'catalog:'
         version: 0.0.7(typescript@5.9.3)
       mipd-postmessage:
-        specifier: file:../../../../mipd-postmessage
-        version: file:../../mipd-postmessage(mipd@0.0.7(typescript@5.9.3))(typescript@5.9.3)(zod@4.1.5)
+        specifier: ^0.0.5
+        version: 0.0.5(mipd@0.0.7(typescript@5.9.3))(typescript@5.9.3)(zod@4.1.5)
       ox:
         specifier: ^0.9.6
         version: 0.9.6(typescript@5.9.3)(zod@4.1.5)
@@ -11320,8 +11320,8 @@ packages:
     resolution: {integrity: sha512-oG62iEk+CYt5Xj2YqI5Xi9xWUeZhDI8jjQmC5oThVH5JGCTgIjr7ciJDzC7MBzYd//WvR1OTmP5Q38Q8ShQtVA==}
     engines: {node: '>= 18'}
 
-  mipd-postmessage@file:../../mipd-postmessage:
-    resolution: {directory: ../../mipd-postmessage, type: directory}
+  mipd-postmessage@0.0.5:
+    resolution: {integrity: sha512-a/PGIE7RhUbjJd0S568k1v5E77rivWrAAKNPW16B8llzl4+mbD8rmodVBTjmUxK2jDadXeSyEUCLDN+gMHiH2g==}
     peerDependencies:
       mipd: ^0.0.7
       typescript: ^5
@@ -28649,7 +28649,7 @@ snapshots:
     dependencies:
       minipass: 7.1.2
 
-  mipd-postmessage@file:../../mipd-postmessage(mipd@0.0.7(typescript@5.9.3))(typescript@5.9.3)(zod@4.1.5):
+  mipd-postmessage@0.0.5(mipd@0.0.7(typescript@5.9.3))(typescript@5.9.3)(zod@4.1.5):
     dependencies:
       mipd: 0.0.7(typescript@5.9.3)
       nanoid: 5.1.6
