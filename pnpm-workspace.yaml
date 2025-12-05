@@ -43,7 +43,7 @@ catalog:
   zustand: "^5.0.3"
   "@vitejs/plugin-react": "^4.6.0"
   mipd: "^0.0.7"
-  mipd-postmessage: "^0.0.3"
+  mipd-postmessage: "^0.0.4"
 minimumReleaseAge: 2880 # 48 hours
 minimumReleaseAgeExclude:
   - "@wagmi/connectors"
@@ -55,6 +55,7 @@ minimumReleaseAgeExclude:
   - wagmi
   - zile
   - mipd-postmessage
+  - react-dom
 packages:
   - "."
   - "apps/*"
