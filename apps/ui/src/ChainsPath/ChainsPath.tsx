@@ -1,5 +1,5 @@
-import { Chains } from 'porto'
 import { useMemo } from 'react'
+import { Chains } from 'rise-wallet'
 import { css } from 'styled-system/css'
 import { ChainIcon } from '../ChainIcon/ChainIcon.js'
 

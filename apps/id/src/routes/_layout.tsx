@@ -1,7 +1,5 @@
 import { createFileRoute, Outlet } from '@tanstack/react-router'
-
-import { Intro } from './-components/Intro'
-import { Layout } from './-components/Layout'
+import { Header } from './-v2/Header'
 
 export const Route = createFileRoute('/_layout')({
   component: RouteComponent,
@@ -9,14 +7,9 @@ export const Route = createFileRoute('/_layout')({
 
 function RouteComponent() {
   return (
-    <Layout>
-      <Layout.Hero>
-        <Intro />
-      </Layout.Hero>
-
-      <Layout.Content>
-        <Outlet />
-      </Layout.Content>
-    </Layout>
+    <div className="mx-auto w-full max-w-7xl space-y-8">
+      <Header />
+      <Outlet />
+    </div>
   )
 }

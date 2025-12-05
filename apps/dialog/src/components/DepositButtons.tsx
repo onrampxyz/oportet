@@ -7,8 +7,8 @@ import {
   useQueryClient,
 } from '@tanstack/react-query'
 import { Hex, Value } from 'ox'
-import type * as Quote_schema from 'porto/core/internal/relay/schema/quotes'
 import * as React from 'react'
+import type * as Quote_schema from 'rise-wallet/core/internal/relay/schema/quotes'
 import { encodeFunctionData, erc20Abi, zeroAddress } from 'viem'
 import {
   createConfig,

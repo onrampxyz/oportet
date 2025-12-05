@@ -1,4 +1,4 @@
-import type { LightDarkColor, Theme } from 'porto/theme'
+import type { LightDarkColor, Theme } from 'rise-wallet/theme'
 
 type FullTheme = Theme<'light dark'>
 
@@ -20,18 +20,18 @@ export const portoTheme: PortoTheme = {
   // general
   accent: [
     'Accent color. Used for highlighting text, icons or outline elements.',
-    '#0588f0',
-    '#3b9eff',
+    '#7967E5',
+    '#9B8FE0',
   ],
   focus: [
     'Focus ring color. Used for keyboard navigation and input fields.',
-    '#0090ff',
-    '#0090ff',
+    '#5C48D7',
+    '#5C48D7',
   ],
   link: [
     'Link color. Used for hyperlinks and interactive text elements.',
-    '#0588f0',
-    '#3b9eff',
+    '#7967E5',
+    '#9B8FE0',
   ],
   separator: [
     'Separator color. Used for dividing elements, such as lines between sections or items.',
@@ -152,8 +152,8 @@ export const portoTheme: PortoTheme = {
   ],
   badgeInfoContent: [
     'Content color for info badges. Used over badgeInfoBackground for text and icons.',
-    '#0588f0',
-    '#3b9eff',
+    '#7967E5',
+    '#9B8FE0',
   ],
   badgeNegativeBackground: [
     'Background color for negative badges. Used for badges indicating negative states or values, such as errors or warnings.',
@@ -189,13 +189,13 @@ export const portoTheme: PortoTheme = {
   // primary
   primaryBackground: [
     'Primary background color. Used for primary buttons and important interactive elements.',
-    '#0090ff',
-    '#0090ff',
+    '#5C48D7',
+    '#5C48D7',
   ],
   primaryBorder: [
     'Primary border color. Used around primary surfaces.',
-    '#0090ff',
-    '#0090ff',
+    '#5C48D7',
+    '#5C48D7',
   ],
   primaryContent: [
     'Primary content color. Used over primaryBackground for text and icons.',
@@ -204,13 +204,13 @@ export const portoTheme: PortoTheme = {
   ],
   primaryHoveredBackground: [
     'Primary buttons background color when hovered.',
-    '#058bf0',
-    '#3b9eff',
+    '#7967E5',
+    '#9B8FE0',
   ],
   primaryHoveredBorder: [
     'Primary border color when hovered. Used around primary surfaces.',
-    '#058bf0',
-    '#3b9eff',
+    '#7967E5',
+    '#9B8FE0',
   ],
 
   // secondary

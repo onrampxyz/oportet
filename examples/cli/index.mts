@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
-import { Mode, Porto } from 'porto'
-import { Dialog } from 'porto/cli'
-import { WalletActions } from 'porto/viem'
+import { Mode, Porto } from 'rise-wallet'
+import { Dialog } from 'rise-wallet/cli'
+import { WalletActions } from 'rise-wallet/viem'
 import { createClient, custom } from 'viem'
 
 const porto = Porto.create({

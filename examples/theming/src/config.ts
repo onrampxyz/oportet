@@ -1,5 +1,5 @@
-import { Mode } from 'porto'
-import { porto } from 'porto/wagmi'
+import { Mode } from 'rise-wallet'
+import { porto } from 'rise-wallet/wagmi'
 import { createConfig, http } from 'wagmi'
 import { baseSepolia } from 'wagmi/chains'
 

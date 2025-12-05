@@ -1,7 +1,7 @@
 import 'dotenv/config'
 import cors from 'cors'
 import express from 'express'
-import { Route, Router } from 'porto/server'
+import { Route, Router } from 'rise-wallet/server'
 import ViteExpress from 'vite-express'
 
 const app = express()

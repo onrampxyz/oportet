@@ -25,8 +25,8 @@ type AuthSessionStatus =
 
 export const hostUrls = {
   local: 'http://localhost:5175/dialog/',
-  prod: 'https://rise-wallet-testnet.vercel.app/dialog',
-  stg: 'https://rise-wallet-testnet.vercel.app/dialog',
+  prod: 'https://wallet.risechain.com/dialog',
+  stg: 'https://stg.wallet.risechain.com/dialog',
 } as const
 
 /** Dialog interface. */

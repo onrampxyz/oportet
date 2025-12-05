@@ -1,9 +1,6 @@
 import { Button, LogoMark } from '@porto/apps/components'
-import { Link } from '@tanstack/react-router'
 import { cx } from 'cva'
 import type { PropsWithChildren } from 'react'
-
-import CircleHelp from '~icons/lucide/circle-help'
 
 export function Layout(props: PropsWithChildren) {
   return <main className="mx-auto flex h-full max-lg:flex-col" {...props} />
@@ -33,7 +30,7 @@ export namespace Layout {
     leftClassName?: string | undefined
     right?: React.ReactNode | undefined
   }) {
-    const { left, leftClassName, right } = props
+    const { left, leftClassName } = props
     return (
       <div className="flex items-center justify-between">
         {typeof left === 'object' ? (
@@ -51,7 +48,8 @@ export namespace Layout {
             )}
           </div>
         )}
-        {right ?? (
+        {/* TEMPORARILY HIDE */}
+        {/* {right ?? (
           <Button
             render={<Link aria-label="About RISE Wallet" to="/about" />}
             size="square"
@@ -59,7 +57,7 @@ export namespace Layout {
           >
             <CircleHelp className="size-5 text-gray10" />
           </Button>
-        )}
+        )} */}
       </div>
     )
   }
@@ -75,7 +73,7 @@ export namespace Layout {
           render={
             <a
               aria-label="Learn more about RISE Wallet"
-              href="https://github.com/risechain/porto-rise"
+              href="https://docs.risechain.com/docs/rise-wallet"
               rel="noreferrer"
               target="_blank"
             >

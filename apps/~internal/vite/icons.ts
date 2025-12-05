@@ -54,7 +54,7 @@ function chainIconsPlugin(): PluginOption {
           .map((chain) => `  [Chains.${chain}.id]: Icon${toPascalCase(chain)},`)
           .join('\n')
 
-        return `import { Chains } from 'porto'
+        return `import { Chains } from 'rise-wallet'
 ${imports}
 
 export const icons = {

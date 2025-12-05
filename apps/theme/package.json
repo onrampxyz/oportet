@@ -11,7 +11,7 @@
     "export:docs": "./export-theme.ts --as mdx --out ../docs/pages/sdk/api/theme.mdx --no-confirm"
   },
   "dependencies": {
-    "porto": "workspace:*"
+    "rise-wallet": "workspace:*"
   },
   "devDependencies": {
     "@types/bun": "^1.2.15",

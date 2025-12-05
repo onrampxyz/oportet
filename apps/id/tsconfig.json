@@ -5,7 +5,7 @@
   "compilerOptions": {
     "paths": {
       "~/*": ["./src/*"],
-      "porto/*": ["../../src/*"]
+      "rise-wallet/*": ["../../src/*"]
     },
     "types": ["unplugin-icons/types/react", "typed-query-selector/strict"]
   }

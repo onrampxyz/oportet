@@ -1,11 +1,11 @@
 import * as Query from '@tanstack/react-query'
 import type { Address } from 'ox'
-import * as Tokens from 'porto/core/internal/tokens'
-import { Hooks } from 'porto/remote'
+import * as Tokens from 'rise-wallet/core/internal/tokens'
+import { Hooks } from 'rise-wallet/remote'
 import type { Chain, Client, Transport } from 'viem'
 import { porto } from './Porto.js'
 
-export type { Token } from 'porto/core/internal/tokens'
+export type { Token } from 'rise-wallet/core/internal/tokens'
 
 /**
  * Fetches all supported tokens for a given chain.

@@ -128,12 +128,12 @@
   },
   "size-limit": [
     {
-      "name": "import { Porto } from 'porto'",
+      "name": "import { Porto } from 'rise-wallet'",
       "path": "./dist/index.js",
       "import": "{ Porto }"
     },
     {
-      "name": "import { porto } from 'porto/wagmi/Connector'",
+      "name": "import { porto } from 'rise-wallet/wagmi/Connector'",
       "path": "./dist/wagmi/Connector.js",
       "import": "*"
     }
@@ -181,7 +181,7 @@
   "[!start-pkg]": {},
   "name": "rise-wallet",
   "description": "Next-gen Account for Ethereum",
-  "version": "0.2.29",
+  "version": "0.2.29-1",
   "type": "module",
   "bin": {
     "porto": "./dist/cli/bin/index.js"
@@ -242,8 +242,8 @@
     }
   },
   "license": "MIT",
-  "homepage": "https://ithaca.xyz",
-  "repository": "ithacaxyz/porto",
+  "homepage": "https://wallet.risechain.com",
+  "repository": "risechain/porto-rise",
   "contributors": [
     "jxom.eth <jake@ithaca.xyz>",
     "awkweb.eth <tom@ithaca.xyz>",

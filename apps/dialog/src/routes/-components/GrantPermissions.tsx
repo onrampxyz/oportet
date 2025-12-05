@@ -1,7 +1,7 @@
 import { Button } from '@porto/ui'
 import type { Address } from 'ox'
-import type * as PermissionsRequest from 'porto/core/internal/permissionsRequest'
-import { Hooks } from 'porto/remote'
+import type * as PermissionsRequest from 'rise-wallet/core/internal/permissionsRequest'
+import { Hooks } from 'rise-wallet/remote'
 
 import { porto } from '~/lib/Porto'
 import { Layout } from '~/routes/-components/Layout'

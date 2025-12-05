@@ -5,10 +5,10 @@ import { Link } from '@tanstack/react-router'
 import { Cuer } from 'cuer'
 import { cx } from 'cva'
 import { Address, Hex, Value } from 'ox'
-import { Chains } from 'porto'
-import { riseTestnet } from 'porto/core/Chains'
-import { Hooks } from 'porto/wagmi'
 import * as React from 'react'
+import { Chains } from 'rise-wallet'
+import { riseTestnet } from 'rise-wallet/core/Chains'
+import { Hooks } from 'rise-wallet/wagmi'
 import { toast } from 'sonner'
 import { encodeFunctionData, erc20Abi, formatEther, zeroAddress } from 'viem'
 import {
@@ -98,7 +98,7 @@ export function Dashboard() {
               chainId: Number(chainId),
               feeToken: isNative
                 ? true
-                : (feeTokens?.some((token) => token.address === address) ??
+                : (feeTokens?.some((token: any) => token.address === address) ??
                   false),
               metadata: {
                 ...asset.metadata,
@@ -347,7 +347,7 @@ export function Dashboard() {
                 if (!capabilities.data) return
                 const exp1 = capabilities.data?.[
                   Chains.riseTestnet.id
-                ]?.feeToken?.tokens?.find((t) => t.uid === 'exp1')
+                ]?.feeToken?.tokens?.find((t: any) => t.uid === 'exp1')
                 if (!exp1) return
                 addFunds.mutate({
                   address: account.address,

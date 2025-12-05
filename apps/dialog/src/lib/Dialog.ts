@@ -1,6 +1,6 @@
 import type { Theme } from '@porto/apps'
 import type { Address } from 'ox'
-import type { Messenger } from 'porto'
+import type { Messenger } from 'rise-wallet'
 import * as Zustand from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
 import { useShallow } from 'zustand/shallow'

@@ -1,4 +1,4 @@
-import type { Porto } from 'porto'
+import type { Porto } from 'rise-wallet'
 import { waitForCallsStatus } from 'viem/actions'
 import { afterEach, describe, expect, test } from 'vitest'
 import { getPorto } from '../../../test/src/browser/config.js'
