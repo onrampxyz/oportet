@@ -36,7 +36,7 @@
     "zod": "catalog:",
     "zustand": "catalog:",
     "mipd": "catalog:",
-    "mipd-postmessage": "catalog:"
+    "mipd-postmessage": "file:../../../../mipd-postmessage"
   },
   "devDependencies": {
     "@iconify/json": "catalog:",

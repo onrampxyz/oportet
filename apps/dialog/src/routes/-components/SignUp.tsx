@@ -1,4 +1,5 @@
-import { Button, LightDarkImage, Screen } from '@porto/ui'
+import { Button, LightDarkImage, Screen, Separator } from '@porto/ui'
+import type * as Mipd from 'mipd'
 import { useState } from 'react'
 import * as Dialog from '~/lib/Dialog'
 import { Layout } from '~/routes/-components/Layout'
@@ -7,7 +8,8 @@ import LucideLogIn from '~icons/lucide/log-in'
 import Question from '~icons/mingcute/question-line'
 
 export function SignUp(props: SignUp.Props) {
-  const { enableSignIn, onApprove, onReject, permissions, status } = props
+  const { enableSignIn, onApprove, onReject, permissions, status, providers } =
+    props
 
   const [showLearn, setShowLearn] = useState(false)
 
@@ -47,8 +49,8 @@ export function SignUp(props: SignUp.Props) {
 
       <Permissions title="Permissions requested" {...permissions} />
 
-      <Layout.Footer>
-        <Layout.Footer.Actions>
+      <Layout.Content>
+        <div className="flex gap-2">
           {enableSignIn ? (
             <Button
               data-testid="sign-in"
@@ -73,8 +75,29 @@ export function SignUp(props: SignUp.Props) {
           >
             Sign up
           </Button>
-        </Layout.Footer.Actions>
-      </Layout.Footer>
+        </div>
+        <Separator label="or use an external wallet" size="medium" />
+        <div className="flex w-full gap-[8px]">
+          {providers.map((provider) => (
+            <Button
+              key={provider.info.uuid}
+              onClick={() => {
+                onApprove({ providerRdns: provider.info.rdns })
+              }}
+              title={`Connect with ${provider.info.name}`}
+              variant="secondary"
+              width="grow"
+            >
+              <img
+                alt={provider.info.name}
+                height={24}
+                src={provider.info.icon}
+                width={24}
+              />
+            </Button>
+          ))}
+        </div>
+      </Layout.Content>
     </Screen>
   )
 }
@@ -82,8 +105,13 @@ export function SignUp(props: SignUp.Props) {
 export namespace SignUp {
   export type Props = {
     enableSignIn?: boolean
-    onApprove: (p: { signIn?: boolean; selectAccount?: boolean }) => void
+    onApprove: (p: {
+      signIn?: boolean
+      selectAccount?: boolean
+      providerRdns?: string
+    }) => void
     onReject: () => void
+    providers: Mipd.EIP6963ProviderDetail[]
     permissions?: Permissions.Props
     status?: 'loading' | 'responding' | undefined
   }

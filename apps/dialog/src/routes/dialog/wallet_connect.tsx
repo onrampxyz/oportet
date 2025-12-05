@@ -1,5 +1,7 @@
 import { useMutation } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
+import * as Mipd from 'mipd'
+import * as MipdPostMessage from 'mipd-postmessage/child'
 import * as Provider from 'ox/Provider'
 import * as React from 'react'
 import { Actions, Hooks } from 'rise-wallet/remote'
@@ -11,6 +13,9 @@ import * as Router from '~/lib/Router'
 import { Email } from '../-components/Email'
 import { SignIn } from '../-components/SignIn'
 import { SignUp } from '../-components/SignUp'
+
+const mipdPMStore = MipdPostMessage.createStore()
+const mipdStore = Mipd.createStore()
 
 export const Route = createFileRoute('/dialog/wallet_connect')({
   component: RouteComponent,
@@ -26,6 +31,22 @@ function RouteComponent() {
   const request = Route.useSearch()
   const { params = [] } = request
   const { capabilities } = params[0] ?? {}
+
+  const parentProviders = React.useSyncExternalStore(
+    mipdPMStore.subscribe,
+    mipdPMStore.getProviders,
+  )
+  const selfProviders = React.useSyncExternalStore(
+    mipdStore.subscribe,
+    mipdStore.getProviders,
+  )
+  const providers = React.useMemo(
+    () =>
+      [...parentProviders, ...selfProviders].filter(
+        (provider) => provider.info.rdns !== 'com.risechain.wallet',
+      ),
+    [parentProviders, selfProviders],
+  )
 
   const address = Hooks.usePortoStore(
     porto,
@@ -50,11 +71,13 @@ function RouteComponent() {
       signIn,
       selectAccount,
       reject,
+      providerRdns,
     }: {
       email?: string
       signIn?: boolean
       selectAccount?: boolean
       reject?: boolean
+      providerRdns?: string
     }) {
       if (!request) throw new Error('no request found.')
       if (request.method !== 'wallet_connect')
@@ -109,7 +132,12 @@ function RouteComponent() {
                         : {}),
                       label: email,
                     }
-                  : capabilities?.createAccount || !signIn,
+                  : providerRdns
+                    ? {
+                        rdns: providerRdns,
+                        type: 'provider',
+                      }
+                    : capabilities?.createAccount || !signIn,
                 email: Boolean(email),
                 grantPermissions: grantPermissions?._encoded,
                 selectAccount,
@@ -210,6 +238,7 @@ function RouteComponent() {
         onApprove={(options) => respond.mutate(options)}
         onReject={() => respond.mutate({ reject: true })}
         permissions={grantPermissions?.permissions}
+        providers={providers}
         status={status}
       />
     )
