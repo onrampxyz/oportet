@@ -1,10 +1,12 @@
 import { Input } from '@porto/apps/components'
 import { Button, TextButton } from '@porto/ui'
 import { cx } from 'cva'
+import type * as Mipd from 'mipd'
 import * as React from 'react'
 import { Hooks } from 'rise-wallet/remote'
 import * as Dialog from '~/lib/Dialog'
 import { porto } from '~/lib/Porto'
+import { ExternalWalletPopover } from '~/routes/-components/ExternalWalletPopover'
 import { Layout } from '~/routes/-components/Layout'
 import { Permissions } from '~/routes/-components/Permissions'
 import { StringFormatter } from '~/utils'
@@ -12,7 +14,13 @@ import LucideHaze from '~icons/lucide/haze'
 import IconScanFace from '~icons/porto/scan-face'
 
 export function Email(props: Email.Props) {
-  const { defaultValue = '', onApprove, permissions, status } = props
+  const {
+    defaultValue = '',
+    onApprove,
+    permissions,
+    providers = [],
+    status,
+  } = props
 
   const [actions, setActions] = React.useState<
     readonly ('sign-in' | 'sign-up')[]
@@ -86,23 +94,36 @@ export function Email(props: Email.Props) {
 
       <div className="group flex min-h-[48px] w-full flex-col items-center justify-center space-y-3 px-3 pb-3">
         {actions.includes('sign-in') && (
-          <Button
-            data-testid="sign-in"
-            disabled={status === 'loading' || signingUp}
-            icon={<IconScanFace className="size-5.25" />}
-            loading={signingIn && 'Signing in…'}
-            onClick={() => {
-              setMode('sign-in')
-              onApprove({ signIn: true })
-            }}
-            type="button"
-            variant="primary"
-            width="full"
-          >
-            {actions.includes('sign-up')
-              ? 'Sign in with RISE Wallet'
-              : 'Continue with RISE Wallet'}
-          </Button>
+          <div className="flex w-full gap-0">
+            <Button
+              className={
+                providers.length > 0
+                  ? 'min-w-0 flex-1! rounded-e-none!'
+                  : undefined
+              }
+              data-testid="sign-in"
+              disabled={status === 'loading' || signingUp}
+              icon={<IconScanFace className="size-5.25" />}
+              loading={signingIn && 'Signing in…'}
+              onClick={() => {
+                setMode('sign-in')
+                onApprove({ signIn: true })
+              }}
+              type="button"
+              variant="primary"
+              width={providers.length > 0 ? undefined : 'full'}
+            >
+              {actions.includes('sign-up')
+                ? 'Sign in with RISE Wallet'
+                : 'Continue with RISE Wallet'}
+            </Button>
+            <ExternalWalletPopover
+              disabled={status === 'loading' || signingUp}
+              onSelect={(providerRdns) => onApprove({ providerRdns })}
+              providers={providers}
+              variant="primary"
+            />
+          </div>
         )}
 
         {actions.includes('sign-up') ? (
@@ -141,25 +162,39 @@ export function Email(props: Email.Props) {
                 Optional
               </div>
             </div>
-            <Button
-              data-testid="sign-up"
-              disabled={status === 'loading' || signingIn}
-              loading={signingUp && 'Signing up…'}
-              size="medium"
-              type="submit"
-              variant={actions.includes('sign-in') ? 'secondary' : 'primary'}
-            >
-              {invalid ? (
-                'Invalid email'
-              ) : actions.includes('sign-in') ? (
-                'Create RISE Wallet account'
-              ) : (
-                <div className="flex gap-2">
-                  <IconScanFace className="size-5.25" />
-                  Sign up with RISE Wallet
-                </div>
-              )}
-            </Button>
+            <div className="flex w-full gap-0">
+              <Button
+                className={
+                  providers.length > 0
+                    ? 'min-w-0 flex-1! rounded-e-none!'
+                    : undefined
+                }
+                data-testid="sign-up"
+                disabled={status === 'loading' || signingIn}
+                loading={signingUp && 'Signing up…'}
+                size="medium"
+                type="submit"
+                variant={actions.includes('sign-in') ? 'secondary' : 'primary'}
+                width={providers.length > 0 ? undefined : 'full'}
+              >
+                {invalid ? (
+                  'Invalid email'
+                ) : actions.includes('sign-in') ? (
+                  'Create RISE Wallet account'
+                ) : (
+                  <div className="flex gap-2">
+                    <IconScanFace className="size-5.25" />
+                    Sign up with RISE Wallet
+                  </div>
+                )}
+              </Button>
+              <ExternalWalletPopover
+                disabled={status === 'loading' || signingIn}
+                onSelect={(providerRdns) => onApprove({ providerRdns })}
+                providers={providers}
+                variant={actions.includes('sign-in') ? 'secondary' : 'primary'}
+              />
+            </div>
           </form>
         ) : (
           // If no sign up button, this means the user is already logged in, however
@@ -201,10 +236,12 @@ export namespace Email {
     defaultValue?: string | undefined
     onApprove: (p: {
       email?: string
+      providerRdns?: string
       selectAccount?: boolean
       signIn?: boolean
     }) => void
     permissions?: Permissions.Props
+    providers?: Mipd.EIP6963ProviderDetail[]
     status?: 'loading' | 'responding' | undefined
   }
 }
