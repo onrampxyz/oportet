@@ -635,6 +635,7 @@ export async function signCalls(
       key: keyIndex,
       payload: request.digest,
       replaySafe: false,
+      typedData: request.typedData,
       wrap: isPrecall,
     })
   }
