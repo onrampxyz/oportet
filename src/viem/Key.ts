@@ -883,11 +883,14 @@ export declare namespace fromWebCryptoP256 {
 export function fromEip1193Provider(
   parameters: fromEip1193Provider.Parameters,
 ) {
-  const { account } = parameters
+  const { account, rdns } = parameters
 
   return from({
     publicKey: account,
     type: 'eip1193provider',
+    privateKey: {
+      rdns
+    },
     ...parameters,
   })
 }
@@ -1084,6 +1087,40 @@ export async function sign(key: Key, parameters: sign.Parameters) {
           params: [payload, publicKey],
         })
         return [signature, false]
+      }
+
+      if (typedData.domain.chainId) {
+        try {
+          await provider.request({
+            method: 'wallet_switchEthereumChain',
+            params: [{ chainId: `0x${typedData.domain.chainId.toString(16)}` }]
+          })
+        } catch (error: any) {
+          if ('code' in error && error.code === 4902) {
+            const chains = await import('viem/chains')
+
+            const chain = Object.values(chains).find((chain) => chain.id === typedData.domain.chainId)
+
+            if (!chain) throw new Error(`Not connected to chain ${typedData.domain.chainId}`)
+
+            await provider.request({
+              method: 'wallet_addEthereumChain',
+              params: [{
+                chainId: `0x${chain.id.toString(16)}`,
+                chainName: chain.name,
+                nativeCurrency: {
+                  name: chain.nativeCurrency.name,
+                  symbol: chain.nativeCurrency.symbol,
+                  decimals: chain.nativeCurrency.decimals,
+                },
+                rpcUrls: chain.rpcUrls.default.http,
+                blockExplorerUrls: chain.blockExplorers?.default.url ? [chain.blockExplorers.default.url] : undefined,
+              }]
+            })
+          } else {
+            throw error
+          }
+        }
       }
 
       const signature = await provider.request({
