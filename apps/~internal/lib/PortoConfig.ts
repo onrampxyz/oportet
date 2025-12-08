@@ -81,7 +81,7 @@ export function getDialogHost(env = Env.get()): string {
         'https://' +
         import.meta.env.VITE_VERCEL_BRANCH_URL.replace(
           /(.*)(-git.*)/,
-          'dialogporto$2',
+          'rise-wallet-testnet-dialog$2',
         ) +
         '/dialog/'
       )

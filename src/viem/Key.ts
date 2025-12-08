@@ -13,7 +13,7 @@ import * as TypedData from 'ox/TypedData'
 import * as Value from 'ox/Value'
 import * as WebAuthnP256 from 'ox/WebAuthnP256'
 import * as WebCryptoP256 from 'ox/WebCryptoP256'
-import { zeroAddress } from 'viem'
+import { type Chain, zeroAddress } from 'viem'
 import * as Call from '../core/internal/call.js'
 import type * as RelayKey_schema from '../core/internal/relay/schema/key.js'
 import type * as RelayPermission_schema from '../core/internal/relay/schema/permission.js'
@@ -1097,7 +1097,10 @@ export async function sign(key: Key, parameters: sign.Parameters) {
           })
         } catch (error: any) {
           if ('code' in error && error.code === 4902) {
-            const chains = await import('viem/chains')
+            const chains = (await import('viem/chains')) as unknown as Record<
+              string,
+              Chain
+            >
 
             const chain = Object.values(chains).find(
               (chain) => chain.id === typedData.domain.chainId,
