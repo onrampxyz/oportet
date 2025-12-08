@@ -32,7 +32,7 @@ export const defaultConfig = {
     browser && typeof indexedDB !== 'undefined'
       ? Storage.idb()
       : Storage.memory(),
-  storageKey: 'porto.store',
+  storageKey: 'risewallet.store',
 } as const satisfies ExactPartial<Config>
 
 /**
