@@ -309,16 +309,19 @@ export function relay(parameters: relay.Parameters = {}) {
         )
         if (!adminKey) throw new Error('admin key not found.')
 
-        const { context, digest, typedData } = await RelayActions.prepareCalls(client, {
-          account,
-          authorizeKeys: [authorizeKey],
-          key: adminKey,
-          preCalls: true,
-        })
+        const { context, digest, typedData } = await RelayActions.prepareCalls(
+          client,
+          {
+            account,
+            authorizeKeys: [authorizeKey],
+            key: adminKey,
+            preCalls: true,
+          },
+        )
         const signature = await Key.sign(adminKey, {
           address: null,
           payload: digest,
-          typedData
+          typedData,
         })
         await RelayActions.sendPreparedCalls(client, {
           context,
