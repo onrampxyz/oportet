@@ -1186,7 +1186,7 @@ export declare namespace sign {
      * @default true
      */
     wrap?: boolean | undefined
-    typedData?: prepareCalls.ReturnType['typedData']
+    typedData?: prepareCalls.ReturnType['typedData'] | undefined
   }
 }
 
