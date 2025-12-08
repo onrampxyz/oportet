@@ -227,6 +227,7 @@ function RouteComponent() {
         }
         onApprove={(options) => respond.mutate(options)}
         permissions={grantPermissions?.permissions}
+        providers={providers}
         status={status}
       />
     )
@@ -247,6 +248,7 @@ function RouteComponent() {
     <SignIn
       onApprove={(options) => respond.mutate(options)}
       permissions={grantPermissions?.permissions}
+      providers={providers}
       status={status}
     />
   )
