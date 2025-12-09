@@ -20,7 +20,7 @@ export namespace Button {
 
   export interface Props
     extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'disabled'>,
-      VariantProps<typeof className> {
+    VariantProps<typeof className> {
     render?: React.ReactElement
   }
 
@@ -47,6 +47,7 @@ export namespace Button {
             'border border-th_secondary bg-th_secondary text-th_secondary hover:not-active:border-th_secondary-hovered hover:not-active:bg-th_secondary-hovered',
           destructive:
             'bg-destructive text-destructive hover:not-active:bg-destructiveHover',
+          ghost: 'rounded-md bg-transparent hover:bg-th_secondary',
           invert: 'bg-invert text-invert hover:not-active:bg-invertHover',
           outline:
             'border border-gray6 bg-transparent text-th_base hover:not-active:bg-th_base-hovered',

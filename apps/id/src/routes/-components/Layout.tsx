@@ -2,7 +2,6 @@ import { Button, LogoMark } from '@porto/apps/components'
 import { cx } from 'cva'
 import type { PropsWithChildren } from 'react'
 
-
 export function Layout(props: PropsWithChildren) {
   return <main className="mx-auto flex h-full max-lg:flex-col" {...props} />
 }

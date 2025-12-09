@@ -17,6 +17,7 @@ import { AddressFormatter } from '~/utils'
 import LucideCopy from '~icons/lucide/copy'
 import LucideMoon from '~icons/lucide/moon'
 import LucideSun from '~icons/lucide/sun'
+import { AddFunds } from '../-components/AddFunds'
 
 export function Header() {
   const { isConnected, address } = useAccount()
@@ -200,7 +201,7 @@ export function Header() {
             onClick={toggleTheme}
             size="square"
             title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
-            // variant="outline"
+          // variant="outline"
           >
             {theme === 'light' ? (
               <LucideMoon className="size-5 text-gray11" />
@@ -208,7 +209,7 @@ export function Header() {
               <LucideSun className="size-5 text-gray11" />
             )}
           </Button>
-          <Button
+          {/* <Button
             onClick={(event) => {
               event.preventDefault()
               event.stopPropagation()
@@ -216,7 +217,9 @@ export function Header() {
             }}
           >
             Add Funds
-          </Button>
+          </Button> */}
+
+          <AddFunds />
           <Button
             onClick={() => {
               disconnect()
