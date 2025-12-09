@@ -465,6 +465,7 @@ export namespace wallet_connect {
     ),
     grantPermissions: z.optional(C.grantPermissions.Request),
     preCalls: z.optional(C.preCalls.Request),
+    providerRdns: z.optional(z.string()),
     selectAccount: z.optional(
       z.union([
         z.boolean(),

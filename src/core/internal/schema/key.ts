@@ -23,6 +23,7 @@ export const Base = z.object({
     z.literal('p256'),
     z.literal('secp256k1'),
     z.literal('webauthn-p256'),
+    z.literal('eip1193provider'),
   ]),
 })
 export type Base = z.infer<typeof Base>

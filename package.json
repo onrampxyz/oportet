@@ -144,6 +144,7 @@
       "ox": "catalog:",
       "rise-wallet": "workspace:*",
       "viem": "catalog:",
+      "mipd-postmessage": "catalog:",
       "ws@>=8.0.0 <8.17.1": "8.17.1",
       "nanoid@>=4.0.0 <5.0.9": "5.0.9",
       "tar-fs@>=3.0.0 <3.0.7": "3.0.7",
@@ -200,7 +201,8 @@
     "mipd": "^0.0.7",
     "ox": "^0.9.6",
     "zod": "^4.1.5",
-    "zustand": "^5.0.1"
+    "zustand": "^5.0.1",
+    "mipd-postmessage": "^0.0.6"
   },
   "peerDependencies": {
     "@tanstack/react-query": ">=5.59.0",

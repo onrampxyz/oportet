@@ -1,13 +1,22 @@
 import { Button, LightDarkImage, Screen } from '@porto/ui'
+import type * as Mipd from 'mipd'
 import { useState } from 'react'
 import * as Dialog from '~/lib/Dialog'
+import { ExternalWalletPopover } from '~/routes/-components/ExternalWalletPopover'
 import { Layout } from '~/routes/-components/Layout'
 import { Permissions } from '~/routes/-components/Permissions'
 import LucideLogIn from '~icons/lucide/log-in'
 import Question from '~icons/mingcute/question-line'
 
 export function SignUp(props: SignUp.Props) {
-  const { enableSignIn, onApprove, onReject, permissions, status } = props
+  const {
+    enableSignIn,
+    onApprove,
+    onReject,
+    permissions,
+    providers = [],
+    status,
+  } = props
 
   const [showLearn, setShowLearn] = useState(false)
 
@@ -47,8 +56,8 @@ export function SignUp(props: SignUp.Props) {
 
       <Permissions title="Permissions requested" {...permissions} />
 
-      <Layout.Footer>
-        <Layout.Footer.Actions>
+      <Layout.Content>
+        <div className="flex gap-2">
           {enableSignIn ? (
             <Button
               data-testid="sign-in"
@@ -63,18 +72,31 @@ export function SignUp(props: SignUp.Props) {
             </Button>
           )}
 
-          <Button
-            data-testid="sign-up"
-            disabled={status === 'loading'}
-            loading={status === 'responding' && 'Signing up…'}
-            onClick={() => onApprove({ signIn: false })}
-            variant="primary"
-            width="grow"
-          >
-            Sign up
-          </Button>
-        </Layout.Footer.Actions>
-      </Layout.Footer>
+          <div className="flex min-w-0 flex-1 gap-0">
+            <Button
+              className={
+                providers.length > 0
+                  ? 'min-w-0 flex-1! rounded-e-none!'
+                  : undefined
+              }
+              data-testid="sign-up"
+              disabled={status === 'loading'}
+              loading={status === 'responding' && 'Signing up…'}
+              onClick={() => onApprove({ signIn: false })}
+              variant="primary"
+              width={providers.length > 0 ? undefined : 'grow'}
+            >
+              Sign up
+            </Button>
+            <ExternalWalletPopover
+              disabled={status === 'loading'}
+              onSelect={(providerRdns) => onApprove({ providerRdns })}
+              providers={providers}
+              variant="primary"
+            />
+          </div>
+        </div>
+      </Layout.Content>
     </Screen>
   )
 }
@@ -82,9 +104,14 @@ export function SignUp(props: SignUp.Props) {
 export namespace SignUp {
   export type Props = {
     enableSignIn?: boolean
-    onApprove: (p: { signIn?: boolean; selectAccount?: boolean }) => void
+    onApprove: (p: {
+      signIn?: boolean
+      selectAccount?: boolean
+      providerRdns?: string
+    }) => void
     onReject: () => void
     permissions?: Permissions.Props
+    providers?: Mipd.EIP6963ProviderDetail[]
     status?: 'loading' | 'responding' | undefined
   }
 

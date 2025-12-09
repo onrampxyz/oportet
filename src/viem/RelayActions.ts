@@ -25,6 +25,7 @@ import * as Key from './Key.js'
 
 export {
   addFaucetFunds,
+  getAccount,
   getAssets,
   getAuthorization,
   getCallsStatus,
@@ -517,7 +518,7 @@ export async function sendCalls<
       if (pre.signature) return pre
 
       const { authorizeKeys, key, calls, revokeKeys } = pre
-      const { context, digest } = await prepareCalls(client, {
+      const { context, digest, typedData } = await prepareCalls(client, {
         account: account_,
         authorizeKeys,
         calls,
@@ -530,6 +531,7 @@ export async function sendCalls<
       const signature = await Key.sign(key, {
         address: null,
         payload: digest,
+        typedData,
         webAuthn,
       })
       return { context, signature }
@@ -537,13 +539,16 @@ export async function sendCalls<
   )
 
   // Prepare main bundle.
-  const { capabilities, context, digest } = await prepareCalls(client, {
-    ...parameters,
-    account: account_,
-    chain,
-    key,
-    preCalls,
-  } as never)
+  const { capabilities, context, digest, typedData } = await prepareCalls(
+    client,
+    {
+      ...parameters,
+      account: account_,
+      chain,
+      key,
+      preCalls,
+    } as never,
+  )
 
   // Sign over the bundles.
   const signature = await (async () => {
@@ -551,6 +556,7 @@ export async function sendCalls<
       return await Key.sign(key, {
         address: null,
         payload: digest,
+        typedData,
         webAuthn,
         wrap: false,
       })
@@ -630,6 +636,7 @@ export async function signCalls(
       key: keyIndex,
       payload: request.digest,
       replaySafe: false,
+      typedData: request.typedData,
       wrap: isPrecall,
     })
   }
@@ -637,6 +644,7 @@ export async function signCalls(
     return await Key.sign(key, {
       address: null,
       payload: request.digest,
+      typedData: request.typedData,
       wrap: isPrecall,
     })
   throw new Error('no key or account provided')
@@ -929,6 +937,19 @@ export type Decorator<
     parameters: createAccount.Parameters<chain>,
   ) => Promise<createAccount.ReturnType>
   /**
+   * Gets an account by key hash.
+   *
+   * @example
+   * TODO
+   *
+   * @param client - The client to use.
+   * @param parameters - Parameters.
+   * @returns Result.
+   */
+  getAccount: (
+    parameters: RelayActions.getAccount.Parameters,
+  ) => Promise<RelayActions.getAccount.ReturnType>
+  /**
    * Gets the status of a call bundle.
    *
    * @example
@@ -1065,6 +1086,7 @@ export function decorator<
 >(client: Client<transport, chain, account>): Decorator<chain, account> {
   return {
     createAccount: (parameters) => createAccount(client, parameters),
+    getAccount: (parameters) => RelayActions.getAccount(client, parameters),
     getCallsStatus: (parameters) =>
       RelayActions.getCallsStatus(client, parameters),
     getCapabilities: () => RelayActions.getCapabilities(client),

@@ -231,6 +231,29 @@ export namespace wallet_addFaucetFunds {
   export type Response = z.infer<typeof Response>
 }
 
+export namespace wallet_getAccount {
+  /** Parameters for `wallet_getAccount` request. */
+  export const Parameters = z.object({
+    /** Key hash to look up account by. */
+    keyHash: u.hex(),
+  })
+  export type Parameters = z.infer<typeof Parameters>
+
+  /** Request for `wallet_getAccount`. */
+  export const Request = z.object({
+    method: z.literal('wallet_getAccount'),
+    params: z.readonly(z.tuple([Parameters])),
+  })
+  export type Request = z.infer<typeof Request>
+
+  /** Response for `wallet_getAccount`. */
+  export const Response = z.object({
+    /** Account address. */
+    address: z.nullable(u.address()),
+  })
+  export type Response = z.infer<typeof Response>
+}
+
 export namespace wallet_getAccounts {
   /** Parameters for `wallet_getAccounts` request. */
   export const Parameters = z.object({

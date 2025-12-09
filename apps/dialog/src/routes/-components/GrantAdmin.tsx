@@ -87,7 +87,12 @@ export declare namespace GrantAdmin {
   type Props = {
     authorizeKey: {
       publicKey: Hex.Hex
-      type: 'address' | 'p256' | 'secp256k1' | 'webauthn-p256'
+      type:
+        | 'address'
+        | 'p256'
+        | 'secp256k1'
+        | 'webauthn-p256'
+        | 'eip1193provider'
     }
     feeToken?: Token.Symbol | Address.Address | undefined
     loading: boolean
