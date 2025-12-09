@@ -25,9 +25,9 @@
     "cuer": "^0.0.2",
     "cva": "catalog:",
     "ox": "catalog:",
-    "rise-wallet": "workspace:*",
     "react": "catalog:",
     "react-dom": "catalog:",
+    "rise-wallet": "workspace:*",
     "sonner": "catalog:",
     "valibot": "^1.1.0",
     "wagmi": "catalog:"

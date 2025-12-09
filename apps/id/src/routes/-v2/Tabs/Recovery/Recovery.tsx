@@ -1,10 +1,11 @@
-import { Spinner, Toast } from '@porto/apps/components'
+import { Button, Spinner, Toast } from '@porto/apps/components'
 import { useMemo } from 'react'
 import { riseTestnet } from 'rise-wallet/core/Chains'
 import { Hooks } from 'rise-wallet/wagmi'
 import { toast } from 'sonner'
 import { useAccount } from 'wagmi'
 import { TruncatedAddress } from '~/components/TruncatedAddress'
+import { useModal } from '~/contexts/ModalContext'
 import LucideCheck from '~icons/lucide/check'
 import LucideCopy from '~icons/lucide/copy'
 import LucideShield from '~icons/lucide/shield-alert'
@@ -14,6 +15,7 @@ import { Connectors } from './Connectors'
 // component > internal > core > actions > rpc_method
 export function Recovery() {
   const account = useAccount()
+  const { openModal } = useModal()
 
   const admins = Hooks.useAdmins({
     query: {
@@ -72,6 +74,7 @@ export function Recovery() {
         />
       ))
     } catch (error) {
+      console.error(error)
       toast.custom((t) => (
         <Toast
           className={t}
@@ -185,7 +188,19 @@ export function Recovery() {
               Add backup wallets to ensure you can always recover your account
               if you lose access to your primary device.
             </p>
-            <Connectors label="Add your first Recovery Wallet" />
+            {/* <Connectors label="Add your first Recovery Wallet" /> */}
+            <Button
+              onClick={() => {
+                openModal({
+                  content: <Connectors />,
+                  description: 'Select a wallet to add as recovery method',
+                  title: 'Add Recovery Wallet',
+                })
+              }}
+              type="button"
+            >
+              Add your first Recovery Wallet
+            </Button>
           </div>
         )}
       </div>

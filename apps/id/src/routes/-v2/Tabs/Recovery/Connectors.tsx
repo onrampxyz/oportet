@@ -1,5 +1,5 @@
 import { Toast } from '@porto/apps/components'
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { riseTestnet } from 'rise-wallet/core/Chains'
 import { Hooks } from 'rise-wallet/wagmi'
 import { toast } from 'sonner'
@@ -11,11 +11,11 @@ import {
   useDisconnect,
   useSwitchChain,
 } from 'wagmi'
+import { useModal } from '~/contexts/ModalContext'
 import { mipdConfig } from '~/lib/Wagmi'
-import { GenericModal } from '~/routes/-components/GenericModal'
 import LucideChevronRight from '~icons/lucide/chevron-right'
 
-export function Connectors({ label }: { label?: string }) {
+export function Connectors() {
   const account = useAccount()
 
   const _connectors = useConnectors({ config: mipdConfig })
@@ -24,15 +24,11 @@ export function Connectors({ label }: { label?: string }) {
     return _connectors.filter((c) => !c.id.toLowerCase().includes('porto'))
   }, [_connectors])
 
-  if (!connectors.length) {
-    return null
-  }
-
   const connect = useConnect({ config: mipdConfig })
   const disconnect = useDisconnect({ config: mipdConfig })
   const switchChain = useSwitchChain({ config: mipdConfig })
 
-  const [open, setOpen] = useState(false)
+  const { closeAllModals } = useModal()
 
   const grantAdmin = Hooks.useGrantAdmin()
 
@@ -46,6 +42,10 @@ export function Connectors({ label }: { label?: string }) {
       await disconnect.disconnectAsync()
       return undefined
     }
+  }
+
+  if (!connectors.length) {
+    return null
   }
 
   const disconnectAll = async () =>
@@ -108,54 +108,46 @@ export function Connectors({ label }: { label?: string }) {
       ))
     } finally {
       await disconnectAll()
-      setOpen(false)
+      closeAllModals()
     }
   }
 
   return (
-    <div>
-      <GenericModal
-        description="Select a wallet to add as recovery method"
-        title="Add Recovery Wallet"
-        triggerLabel={label ?? '+ Add Recovery Wallet'}
-      >
-        <div className="space-y-2">
-          {connectors.length === 0 ? (
-            <div className="rounded-lg border border-gray5 bg-gray2 p-8 text-center">
-              <p className="text-gray10 text-sm">
-                No wallet connectors found. Please install a browser extension
-                wallet like MetaMask, Coinbase Wallet, or Rainbow.
-              </p>
-            </div>
-          ) : (
-            connectors.map((connector) => (
-              <button
-                className="flex w-full items-center justify-between rounded-lg border border-gray4 p-4 transition-colors hover:bg-gray3"
-                key={connector.id}
-                onClick={(event) => connectThenGrantAdmin(event, connector)}
-                type="button"
-              >
-                <div className="flex items-center gap-3">
-                  {connector.icon && (
-                    <img
-                      alt={connector.name}
-                      className="size-10 rounded-lg"
-                      src={connector.icon}
-                    />
-                  )}
-                  <div className="text-left">
-                    <p className="font-medium text-gray12 text-sm">
-                      {connector.name}
-                    </p>
-                    <p className="text-gray10 text-xs">{connector.id}</p>
-                  </div>
-                </div>
-                <LucideChevronRight className="size-5 text-gray9" />
-              </button>
-            ))
-          )}
+    <div className="space-y-2">
+      {connectors.length === 0 ? (
+        <div className="rounded-lg border border-gray5 bg-gray2 p-8 text-center">
+          <p className="text-gray10 text-sm">
+            No wallet connectors found. Please install a browser extension
+            wallet like MetaMask, Coinbase Wallet, or Rainbow.
+          </p>
         </div>
-      </GenericModal>
+      ) : (
+        connectors.map((connector) => (
+          <button
+            className="flex w-full items-center justify-between rounded-lg border border-gray4 p-4 transition-colors hover:bg-gray3"
+            key={connector.id}
+            onClick={(event) => connectThenGrantAdmin(event, connector)}
+            type="button"
+          >
+            <div className="flex items-center gap-3">
+              {connector.icon && (
+                <img
+                  alt={connector.name}
+                  className="size-10 rounded-lg"
+                  src={connector.icon}
+                />
+              )}
+              <div className="text-left">
+                <p className="font-medium text-gray12 text-sm">
+                  {connector.name}
+                </p>
+                <p className="text-gray10 text-xs">{connector.id}</p>
+              </div>
+            </div>
+            <LucideChevronRight className="size-5 text-gray9" />
+          </button>
+        ))
+      )}
     </div>
   )
 }

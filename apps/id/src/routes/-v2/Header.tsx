@@ -13,17 +13,19 @@ import {
   useDisconnect,
   useSwitchChain,
 } from 'wagmi'
+import { useModal } from '~/contexts/ModalContext'
 import { AddressFormatter } from '~/utils'
 import LucideCopy from '~icons/lucide/copy'
 import LucideMoon from '~icons/lucide/moon'
 import LucideSun from '~icons/lucide/sun'
-import { AddFunds } from '../-components/AddFunds'
+import { DepositSelection } from '../-components/Modal/DepositSelection'
 
 export function Header() {
   const { isConnected, address } = useAccount()
   const { disconnect } = useDisconnect()
   const { switchChainAsync } = useSwitchChain()
   const { data: balance } = useBalance({ address })
+  const { openModal, closeAllModals } = useModal()
 
   const capabilities = useCapabilities({
     query: { enabled: isConnected },
@@ -126,6 +128,7 @@ export function Header() {
         />
       ))
     } catch (error) {
+      console.info(error)
       toast.custom((t) => (
         <Toast
           className={t}
@@ -209,17 +212,17 @@ export function Header() {
               <LucideSun className="size-5 text-gray11" />
             )}
           </Button>
-          {/* <Button
-            onClick={(event) => {
-              event.preventDefault()
-              event.stopPropagation()
-              return handleAddFunds()
+          <Button
+            onClick={() => {
+              openModal({
+                content: <DepositSelection />,
+                description: 'Deposit funds via Global Deposit or Onramping',
+                title: 'Add Funds',
+              })
             }}
           >
             Add Funds
-          </Button> */}
-
-          <AddFunds />
+          </Button>
           <Button
             onClick={() => {
               disconnect()

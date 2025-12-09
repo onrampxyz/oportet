@@ -1,16 +1,16 @@
 import { cva, type VariantProps } from 'cva'
 import { cloneElement } from 'react'
 
-export function Button(props: Button.Props) {
+export function Button(props: Readonly<Button.Props>) {
   const { className, disabled, size, render, variant, ...rest } = props
   const Element = render
     ? (props: Button.Props) => cloneElement(render, props)
     : 'button'
   return (
     <Element
+      {...rest}
       className={Button.className({ className, disabled, size, variant })}
       disabled={disabled ?? false}
-      {...rest}
     />
   )
 }
@@ -50,7 +50,7 @@ export namespace Button {
           ghost: 'rounded-md bg-transparent hover:bg-th_secondary',
           invert: 'bg-invert text-invert hover:not-active:bg-invertHover',
           outline:
-            'border border-gray6 bg-transparent text-th_base hover:not-active:bg-th_base-hovered',
+            'border border-th_primary bg-none text-th_base hover:not-active:bg-th_base-hovered',
           primary:
             'border border-th_primary bg-th_primary text-th_primary hover:not-active:border-th_primary-hovered hover:not-active:bg-th_primary-hovered',
           success: 'bg-success text-white hover:not-active:bg-successHover',
