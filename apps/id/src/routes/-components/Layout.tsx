@@ -30,7 +30,7 @@ export namespace Layout {
     leftClassName?: string | undefined
     right?: React.ReactNode | undefined
   }) {
-    const { left, leftClassName, right } = props
+    const { left, leftClassName } = props
     return (
       <div className="flex items-center justify-between">
         {typeof left === 'object' ? (
