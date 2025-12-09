@@ -25,6 +25,7 @@ import * as Key from './Key.js'
 
 export {
   addFaucetFunds,
+  getAccount,
   getAssets,
   getAuthorization,
   getCallsStatus,
@@ -936,6 +937,19 @@ export type Decorator<
     parameters: createAccount.Parameters<chain>,
   ) => Promise<createAccount.ReturnType>
   /**
+   * Gets an account by key hash.
+   *
+   * @example
+   * TODO
+   *
+   * @param client - The client to use.
+   * @param parameters - Parameters.
+   * @returns Result.
+   */
+  getAccount: (
+    parameters: RelayActions.getAccount.Parameters,
+  ) => Promise<RelayActions.getAccount.ReturnType>
+  /**
    * Gets the status of a call bundle.
    *
    * @example
@@ -1072,6 +1086,7 @@ export function decorator<
 >(client: Client<transport, chain, account>): Decorator<chain, account> {
   return {
     createAccount: (parameters) => createAccount(client, parameters),
+    getAccount: (parameters) => RelayActions.getAccount(client, parameters),
     getCallsStatus: (parameters) =>
       RelayActions.getCallsStatus(client, parameters),
     getCapabilities: () => RelayActions.getCapabilities(client),

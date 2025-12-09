@@ -158,6 +158,9 @@ export type Mode = {
             /** Public key. */
             publicKey: Hex.Hex
           }
+        | {
+            rdns?: string | undefined
+          }
         | undefined
       /** Internal properties. */
       internal: ActionsInternal
@@ -165,6 +168,7 @@ export type Mode = {
       permissions?: PermissionsRequest.PermissionsRequest | undefined
       /** Adds support for offchain authentication using ERC-4361. */
       signInWithEthereum?: Capabilities.signInWithEthereum.Request | undefined
+      providerRdns?: string | undefined
     }) => Promise<{
       /** Accounts. */
       accounts: readonly (Account.Account & {

@@ -499,7 +499,11 @@ export function from<type extends Key['type']>(
   const publicKey = (() => {
     const publicKey = key.publicKey
     if (publicKey === '0x') return publicKey
-    if (type === 'secp256k1' || type === 'address') {
+    if (
+      type === 'secp256k1' ||
+      type === 'address' ||
+      type === 'eip1193provider'
+    ) {
       const isAddress =
         Hex.size(publicKey) === 20 ||
         Hex.toBigInt(Hex.slice(publicKey, 0, 12)) === 0n
@@ -886,12 +890,12 @@ export function fromEip1193Provider(
   const { account, rdns } = parameters
 
   return from({
+    ...parameters,
     privateKey: {
       rdns,
     },
     publicKey: account,
     type: 'eip1193provider',
-    ...parameters,
   })
 }
 

@@ -309,6 +309,48 @@ export namespace getCallsStatus {
 }
 
 /**
+ * Gets an account by key hash.
+ *
+ * @example
+ * TODO
+ *
+ * @param client - The client to use.
+ * @param parameters - Parameters.
+ * @returns Result.
+ */
+export async function getAccount(
+  client: Client,
+  parameters: getAccount.Parameters,
+): Promise<getAccount.ReturnType> {
+  const { keyHash } = parameters
+
+  try {
+    const method = 'wallet_getAccount' as const
+    type Schema = Extract<RpcSchema.Viem[number], { Method: typeof method }>
+    const result = await client.request<Schema>({
+      method,
+      params: [
+        z.encode(RpcSchema.wallet_getAccount.Parameters, {
+          keyHash,
+        }),
+      ],
+    })
+    return z.decode(RpcSchema.wallet_getAccount.Response, result)
+  } catch (error) {
+    parseSchemaError(error)
+    throw error
+  }
+}
+
+export namespace getAccount {
+  export type Parameters = RpcSchema.wallet_getAccount.Parameters
+
+  export type ReturnType = RpcSchema.wallet_getAccount.Response
+
+  export type ErrorType = parseSchemaError.ErrorType | Errors.GlobalErrorType
+}
+
+/**
  * Gets the keys for a given account.
  *
  * @example
