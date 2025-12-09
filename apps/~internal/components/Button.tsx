@@ -20,7 +20,7 @@ export namespace Button {
 
   export interface Props
     extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'disabled'>,
-    VariantProps<typeof className> {
+      VariantProps<typeof className> {
     render?: React.ReactElement
   }
 
