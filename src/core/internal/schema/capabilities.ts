@@ -16,11 +16,6 @@ export namespace createAccount {
     z.object({
       chainId: z.optional(u.number()),
       label: z.optional(z.string()),
-      type: z.literal('label'),
-    }),
-    z.object({
-      rdns: z.string(),
-      type: z.literal('provider'),
     }),
   ])
   export type Request = z.infer<typeof Request>

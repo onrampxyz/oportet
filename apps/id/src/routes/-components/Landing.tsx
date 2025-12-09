@@ -68,7 +68,7 @@ export function Landing() {
                     event.preventDefault()
                     connect.connect({
                       capabilities: {
-                        createAccount: { label: email, type: 'label' },
+                        createAccount: { label: email },
                         email: true,
                       },
                       connector: connector!,
