@@ -11,8 +11,6 @@ import { porto } from '~/lib/Porto'
 import { useAuthSessionRedirect } from '~/lib/ReactNative'
 import * as Router from '~/lib/Router'
 import { Email } from '../-components/Email'
-import { SignIn } from '../-components/SignIn'
-import { SignUp } from '../-components/SignUp'
 
 const mipdPMStore = MipdPostMessage.createStore()
 const mipdStore = Mipd.createStore()
@@ -211,36 +209,14 @@ function RouteComponent() {
 
   if (respond.isSuccess) return
 
-  if (capabilities?.email ?? true)
-    return (
-      <Email
-        actions={actions}
-        defaultValue={
-          typeof capabilities?.createAccount === 'object'
-            ? capabilities?.createAccount?.label || ''
-            : undefined
-        }
-        onApprove={(options) => respond.mutate(options)}
-        permissions={grantPermissions?.permissions}
-        providers={providers}
-        status={status}
-      />
-    )
-
-  if (actions.includes('sign-up'))
-    return (
-      <SignUp
-        enableSignIn={actions.includes('sign-in')}
-        onApprove={(options) => respond.mutate(options)}
-        onReject={() => respond.mutate({ reject: true })}
-        permissions={grantPermissions?.permissions}
-        providers={providers}
-        status={status}
-      />
-    )
-
   return (
-    <SignIn
+    <Email
+      actions={actions}
+      defaultValue={
+        typeof capabilities?.createAccount === 'object'
+          ? capabilities?.createAccount?.label || ''
+          : undefined
+      }
       onApprove={(options) => respond.mutate(options)}
       permissions={grantPermissions?.permissions}
       providers={providers}

@@ -828,6 +828,17 @@ export function from<
                           publicKey: key.publicKey,
                         },
                       }
+                    if (
+                      key.type === 'eip1193provider' &&
+                      key.role === 'admin' &&
+                      !providerRdns
+                    )
+                      return {
+                        address: account?.address,
+                        key: {
+                          rdns: key.privateKey?.rdns,
+                        },
+                      }
                   }
                   return {
                     address: undefined,
@@ -837,6 +848,7 @@ export function from<
                 const loadAccountsParams = {
                   internal,
                   permissions,
+                  providerRdns,
                   signInWithEthereum,
                 }
                 try {

@@ -10,6 +10,7 @@ import { ExternalWalletPopover } from '~/routes/-components/ExternalWalletPopove
 import { Layout } from '~/routes/-components/Layout'
 import { Permissions } from '~/routes/-components/Permissions'
 import { StringFormatter } from '~/utils'
+import LucideChevronDown from '~icons/lucide/chevron-down'
 import LucideHaze from '~icons/lucide/haze'
 import IconScanFace from '~icons/porto/scan-face'
 
@@ -46,6 +47,8 @@ export function Email(props: Email.Props) {
   const [mode, setMode] = React.useState<'sign-in' | 'sign-up'>('sign-in')
   const signingIn = mode === 'sign-in' && status === 'responding'
   const signingUp = mode === 'sign-up' && status === 'responding'
+
+  const [emailInput, setEmailInput] = React.useState<string | undefined>(email)
 
   const onSignUpSubmit = React.useCallback<
     React.FormEventHandler<HTMLFormElement>
@@ -97,7 +100,7 @@ export function Email(props: Email.Props) {
           <div className="flex w-full gap-0">
             <Button
               className={
-                providers.length > 0
+                actions.includes('sign-up')
                   ? 'min-w-0 flex-1! rounded-e-none!'
                   : undefined
               }
@@ -111,18 +114,22 @@ export function Email(props: Email.Props) {
               }}
               type="button"
               variant="primary"
-              width={providers.length > 0 ? undefined : 'full'}
+              width={actions.includes('sign-up') ? undefined : 'full'}
             >
               {actions.includes('sign-up')
                 ? 'Sign in with RISE Wallet'
                 : 'Continue with RISE Wallet'}
             </Button>
-            <ExternalWalletPopover
-              disabled={status === 'loading' || signingUp}
-              onSelect={(providerRdns) => onApprove({ providerRdns })}
-              providers={providers}
-              variant="primary"
-            />
+            {actions.includes('sign-up') && (
+              <ExternalWalletPopover
+                disabled={status === 'loading' || signingUp}
+                onSelect={(providerRdns) =>
+                  onApprove({ providerRdns, signIn: true })
+                }
+                providers={providers}
+                variant="primary"
+              />
+            )}
           </div>
         )}
 
@@ -154,8 +161,11 @@ export function Email(props: Email.Props) {
                 defaultValue={defaultValue}
                 disabled={status === 'loading' || signingIn}
                 name="email"
-                onChange={() => setInvalid(false)}
-                placeholder="example@ithaca.xyz"
+                onChange={(event) => {
+                  setEmailInput(event.target.value)
+                  setInvalid(false)
+                }}
+                placeholder="example@risechain.com"
                 type="email"
               />
               <div className="-tracking-[2.8%] absolute end-3 text-[12px] text-th_base-secondary leading-normal">
@@ -190,7 +200,9 @@ export function Email(props: Email.Props) {
               </Button>
               <ExternalWalletPopover
                 disabled={status === 'loading' || signingIn}
-                onSelect={(providerRdns) => onApprove({ providerRdns })}
+                onSelect={(providerRdns) =>
+                  onApprove({ email: emailInput, providerRdns, signIn: false })
+                }
                 providers={providers}
                 variant={actions.includes('sign-in') ? 'secondary' : 'primary'}
               />
@@ -213,6 +225,22 @@ export function Email(props: Email.Props) {
               >
                 Switch
               </TextButton>
+              {providers.length > 0 && (
+                <ExternalWalletPopover
+                  onSelect={(providerRdns) =>
+                    onApprove({ providerRdns, signIn: true })
+                  }
+                  providers={providers}
+                  render={
+                    <button
+                      className="cursor-pointer! rounded text-th_link"
+                      type="button"
+                    >
+                      <LucideChevronDown className="size-3.5" />
+                    </button>
+                  }
+                />
+              )}
               <div className="text-th_base-secondary">⋅</div>
               <TextButton
                 color="link"

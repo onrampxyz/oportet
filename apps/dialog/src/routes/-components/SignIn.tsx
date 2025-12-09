@@ -89,7 +89,9 @@ export function SignIn(props: SignIn.Props) {
             </Button>
             <ExternalWalletPopover
               disabled={status === 'loading' || signingUp}
-              onSelect={(providerRdns) => onApprove({ providerRdns })}
+              onSelect={(providerRdns) =>
+                onApprove({ providerRdns, signIn: true })
+              }
               providers={providers}
               variant="primary"
             />
