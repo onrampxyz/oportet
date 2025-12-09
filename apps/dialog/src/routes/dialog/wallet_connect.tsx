@@ -1,5 +1,7 @@
 import { useMutation } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
+import * as Mipd from 'mipd'
+import * as MipdPostMessage from 'mipd-postmessage/child'
 import * as Provider from 'ox/Provider'
 import * as React from 'react'
 import { Actions, Hooks } from 'rise-wallet/remote'
@@ -9,8 +11,9 @@ import { porto } from '~/lib/Porto'
 import { useAuthSessionRedirect } from '~/lib/ReactNative'
 import * as Router from '~/lib/Router'
 import { Email } from '../-components/Email'
-import { SignIn } from '../-components/SignIn'
-import { SignUp } from '../-components/SignUp'
+
+const mipdPMStore = MipdPostMessage.createStore()
+const mipdStore = Mipd.createStore()
 
 export const Route = createFileRoute('/dialog/wallet_connect')({
   component: RouteComponent,
@@ -26,6 +29,22 @@ function RouteComponent() {
   const request = Route.useSearch()
   const { params = [] } = request
   const { capabilities } = params[0] ?? {}
+
+  const parentProviders = React.useSyncExternalStore(
+    mipdPMStore.subscribe,
+    mipdPMStore.getProviders,
+  )
+  const selfProviders = React.useSyncExternalStore(
+    mipdStore.subscribe,
+    mipdStore.getProviders,
+  )
+  const providers = React.useMemo(
+    () =>
+      [...parentProviders, ...selfProviders].filter(
+        (provider) => provider.info.rdns !== 'com.risechain.wallet',
+      ),
+    [parentProviders, selfProviders],
+  )
 
   const address = Hooks.usePortoStore(
     porto,
@@ -50,11 +69,13 @@ function RouteComponent() {
       signIn,
       selectAccount,
       reject,
+      providerRdns,
     }: {
       email?: string
       signIn?: boolean
       selectAccount?: boolean
       reject?: boolean
+      providerRdns?: string
     }) {
       if (!request) throw new Error('no request found.')
       if (request.method !== 'wallet_connect')
@@ -112,6 +133,7 @@ function RouteComponent() {
                   : capabilities?.createAccount || !signIn,
                 email: Boolean(email),
                 grantPermissions: grantPermissions?._encoded,
+                providerRdns,
                 selectAccount,
                 ...(capabilities?.signInWithEthereum && {
                   signInWithEthereum: {
@@ -187,36 +209,17 @@ function RouteComponent() {
 
   if (respond.isSuccess) return
 
-  if (capabilities?.email ?? true)
-    return (
-      <Email
-        actions={actions}
-        defaultValue={
-          typeof capabilities?.createAccount === 'object'
-            ? capabilities?.createAccount?.label || ''
-            : undefined
-        }
-        onApprove={(options) => respond.mutate(options)}
-        permissions={grantPermissions?.permissions}
-        status={status}
-      />
-    )
-
-  if (actions.includes('sign-up'))
-    return (
-      <SignUp
-        enableSignIn={actions.includes('sign-in')}
-        onApprove={(options) => respond.mutate(options)}
-        onReject={() => respond.mutate({ reject: true })}
-        permissions={grantPermissions?.permissions}
-        status={status}
-      />
-    )
-
   return (
-    <SignIn
+    <Email
+      actions={actions}
+      defaultValue={
+        typeof capabilities?.createAccount === 'object'
+          ? capabilities?.createAccount?.label || ''
+          : undefined
+      }
       onApprove={(options) => respond.mutate(options)}
       permissions={grantPermissions?.permissions}
+      providers={providers}
       status={status}
     />
   )
