@@ -132,14 +132,10 @@ function RouteComponent() {
                         : {}),
                       label: email,
                     }
-                  : providerRdns
-                    ? {
-                        rdns: providerRdns,
-                        type: 'provider',
-                      }
-                    : capabilities?.createAccount || !signIn,
+                  : capabilities?.createAccount || !signIn,
                 email: Boolean(email),
                 grantPermissions: grantPermissions?._encoded,
+                providerRdns,
                 selectAccount,
                 ...(capabilities?.signInWithEthereum && {
                   signInWithEthereum: {
@@ -220,8 +216,7 @@ function RouteComponent() {
       <Email
         actions={actions}
         defaultValue={
-          typeof capabilities?.createAccount === 'object' &&
-          capabilities.createAccount.type === 'label'
+          typeof capabilities?.createAccount === 'object'
             ? capabilities?.createAccount?.label || ''
             : undefined
         }
