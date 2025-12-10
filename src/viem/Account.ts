@@ -213,7 +213,7 @@ export async function sign(
     types: {
       ERC1271Sign: [{ name: 'digest', type: 'bytes32' }],
     },
-  } as const
+  } as TypedData.Definition
 
   const payload = (() => {
     if (!replaySafe) return parameters.payload
@@ -232,7 +232,7 @@ export async function sign(
         address: null,
         payload: hash,
         storage,
-        typedData: typedDataPayload as never,
+        typedData: typedDataPayload,
         webAuthn,
         wrap,
       })
@@ -288,6 +288,9 @@ export declare namespace sign {
           getFn?: WebAuthnP256.sign.Options['getFn'] | undefined
         }
       | undefined
-    typedData?: prepareCalls.ReturnType['typedData'] | undefined
+    typedData?:
+      | prepareCalls.ReturnType['typedData']
+      | TypedData.Definition
+      | undefined
   }
 }
