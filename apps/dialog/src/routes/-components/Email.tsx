@@ -228,7 +228,11 @@ export function Email(props: Email.Props) {
               {providers.length > 0 && (
                 <ExternalWalletPopover
                   onSelect={(providerRdns) =>
-                    onApprove({ providerRdns, signIn: true })
+                    onApprove({
+                      providerRdns,
+                      selectAccount: true,
+                      signIn: true,
+                    })
                   }
                   providers={providers}
                   render={
