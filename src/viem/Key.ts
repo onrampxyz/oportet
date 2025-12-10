@@ -1093,7 +1093,8 @@ export async function sign(key: Key, parameters: sign.Parameters) {
         return [signature, false]
       }
 
-      if (typedData.domain.chainId) {
+      if (typedData.domain?.chainId) {
+        const chainId = typedData.domain.chainId
         try {
           await provider.request({
             method: 'wallet_switchEthereumChain',
@@ -1107,7 +1108,7 @@ export async function sign(key: Key, parameters: sign.Parameters) {
             >
 
             const chain = Object.values(chains).find(
-              (chain) => chain.id === typedData.domain.chainId,
+              (chain) => chain.id === chainId,
             )
 
             if (!chain)
@@ -1201,7 +1202,10 @@ export declare namespace sign {
      * @default true
      */
     wrap?: boolean | undefined
-    typedData?: prepareCalls.ReturnType['typedData'] | undefined
+    typedData?:
+      | prepareCalls.ReturnType['typedData']
+      | TypedData.Definition
+      | undefined
   }
 }
 
