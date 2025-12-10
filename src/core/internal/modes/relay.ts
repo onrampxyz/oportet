@@ -513,7 +513,7 @@ export function relay(parameters: relay.Parameters = {}) {
                 if (key.type === 'address' && providerRdns)
                   return Key.fromEip1193Provider({
                     ...key,
-                    account: address,
+                    account: key.publicKey,
                     rdns: providerRdns,
                   })
               }
@@ -904,6 +904,7 @@ export function relay(parameters: relay.Parameters = {}) {
           payload: TypedData.getSignPayload(data),
           // If the domain is the Orchestrator, we don't need to replay-safe sign.
           replaySafe: !isOrchestrator,
+          typedData: data,
           webAuthn,
         })
 

@@ -204,19 +204,23 @@ export async function sign(
 
   const key = getKey(account, parameters)
 
+  const wrapped = {
+    domain: { verifyingContract: account.address },
+    message: {
+      digest: parameters.payload,
+    },
+    primaryType: 'ERC1271Sign',
+    types: {
+      ERC1271Sign: [{ name: 'digest', type: 'bytes32' }],
+    },
+  } as TypedData.Definition
+
   const payload = (() => {
     if (!replaySafe) return parameters.payload
-    return TypedData.getSignPayload({
-      domain: { verifyingContract: account.address },
-      message: {
-        digest: parameters.payload,
-      },
-      primaryType: 'ERC1271Sign',
-      types: {
-        ERC1271Sign: [{ name: 'digest', type: 'bytes32' }],
-      },
-    })
+    return TypedData.getSignPayload(wrapped)
   })()
+
+  const typedDataPayload = !replaySafe ? typedData : wrapped
 
   const sign = (() => {
     if (!key) {
@@ -228,7 +232,7 @@ export async function sign(
         address: null,
         payload: hash,
         storage,
-        typedData,
+        typedData: typedDataPayload,
         webAuthn,
         wrap,
       })
@@ -284,6 +288,9 @@ export declare namespace sign {
           getFn?: WebAuthnP256.sign.Options['getFn'] | undefined
         }
       | undefined
-    typedData?: prepareCalls.ReturnType['typedData'] | undefined
+    typedData?:
+      | prepareCalls.ReturnType['typedData']
+      | TypedData.Definition
+      | undefined
   }
 }

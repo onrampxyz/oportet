@@ -13,7 +13,7 @@ import * as TypedData from 'ox/TypedData'
 import * as Value from 'ox/Value'
 import * as WebAuthnP256 from 'ox/WebAuthnP256'
 import * as WebCryptoP256 from 'ox/WebCryptoP256'
-import { type Chain, zeroAddress } from 'viem'
+import { type Chain, getTypesForEIP712Domain, zeroAddress } from 'viem'
 import * as Call from '../core/internal/call.js'
 import type * as RelayKey_schema from '../core/internal/relay/schema/key.js'
 import type * as RelayPermission_schema from '../core/internal/relay/schema/permission.js'
@@ -1093,7 +1093,8 @@ export async function sign(key: Key, parameters: sign.Parameters) {
         return [signature, false]
       }
 
-      if (typedData.domain.chainId) {
+      if (typedData.domain?.chainId) {
+        const chainId = typedData.domain.chainId
         try {
           await provider.request({
             method: 'wallet_switchEthereumChain',
@@ -1107,7 +1108,7 @@ export async function sign(key: Key, parameters: sign.Parameters) {
             >
 
             const chain = Object.values(chains).find(
-              (chain) => chain.id === typedData.domain.chainId,
+              (chain) => chain.id === chainId,
             )
 
             if (!chain)
@@ -1141,7 +1142,18 @@ export async function sign(key: Key, parameters: sign.Parameters) {
 
       const signature = await provider.request({
         method: 'eth_signTypedData_v4',
-        params: [publicKey, JSON.stringify(typedData)],
+        params: [
+          publicKey,
+          JSON.stringify({
+            ...typedData,
+            types: {
+              EIP712Domain: getTypesForEIP712Domain({
+                domain: typedData.domain,
+              }),
+              ...typedData.types,
+            },
+          }),
+        ],
       })
 
       return [signature, false]
@@ -1190,7 +1202,10 @@ export declare namespace sign {
      * @default true
      */
     wrap?: boolean | undefined
-    typedData?: prepareCalls.ReturnType['typedData'] | undefined
+    typedData?:
+      | prepareCalls.ReturnType['typedData']
+      | TypedData.Definition
+      | undefined
   }
 }
 
