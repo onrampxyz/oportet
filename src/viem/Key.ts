@@ -1139,8 +1139,6 @@ export async function sign(key: Key, parameters: sign.Parameters) {
         }
       }
 
-      console.log(typedData)
-
       const signature = await provider.request({
         method: 'eth_signTypedData_v4',
         params: [
