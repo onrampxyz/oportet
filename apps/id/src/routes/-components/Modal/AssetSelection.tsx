@@ -86,12 +86,14 @@ export default function AssetSelection(props: Readonly<AssetProps>) {
         return (
           <Button
             // TODO: Fix why variant outline bg does not take effect
-            className="flex w-full items-center justify-start rounded-lg bg-white p-4 transition-colors dark:bg-black"
+            className="flex w-full items-center justify-start rounded-lg"
+            data-selected={selectedAsset === asset.label}
             key={asset.label}
             onClick={() => {
               setSelectedAsset(asset.label)
             }}
             type="button"
+            variant="outline"
           >
             {/* {chain.logo} */}
             {asset.label}

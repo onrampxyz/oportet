@@ -19,6 +19,7 @@ export type ModalConfig = {
   className?: string
   showCloseButton?: boolean
   closeOnOverlayClick?: boolean
+  closePreviousModal?: boolean
 }
 
 type ModalContextValue = {
@@ -50,16 +51,30 @@ export function ModalProvider({
 
   const openModal = useCallback((config: ModalConfig) => {
     const id = config.id || `modal-${Date.now()}-${Math.random()}`
-    setModals((prev) => [
-      ...prev,
-      {
-        ...config,
-        closeOnOverlayClick: config.closeOnOverlayClick ?? true,
-        id,
-        isOpen: true,
-        showCloseButton: config.showCloseButton ?? true,
-      },
-    ])
+    setModals((prev) => {
+      // Close previous modal(s) if flag is set
+      const updatedModals = config.closePreviousModal ? [] : prev
+
+      // Call onClose for closed modals if they exist
+      if (config.closePreviousModal && prev.length > 0) {
+        for (const modal of prev) {
+          if (modal.onClose) {
+            modal.onClose()
+          }
+        }
+      }
+
+      return [
+        ...updatedModals,
+        {
+          ...config,
+          closeOnOverlayClick: config.closeOnOverlayClick ?? true,
+          id,
+          isOpen: true,
+          showCloseButton: config.showCloseButton ?? true,
+        },
+      ]
+    })
     return id
   }, [])
 

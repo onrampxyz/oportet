@@ -19,12 +19,14 @@ export default function NetworkSelection() {
         return (
           <Button
             // TODO: Fix why variant outline bg does not take effect
-            className="flex w-full items-center justify-start rounded-lg bg-white p-4 transition-colors dark:bg-black"
+            className="flex w-full items-center justify-start rounded-lg"
+            data-selected={selectedChain === chain.label}
             key={chain.label}
             onClick={() => {
               setSelectedChain(chain.label)
             }}
             type="button"
+            variant="outline"
           >
             {/* {chain.logo} */}
             {chain.label}
@@ -35,6 +37,7 @@ export default function NetworkSelection() {
         className="flex w-full items-center rounded-lg"
         onClick={() => {
           openModal({
+            closePreviousModal: true,
             content: <AssetSelection chain={selectedChain} />,
             description: 'Choose an Asset',
             title: 'Select Token to be deposited to RISE',

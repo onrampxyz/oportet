@@ -112,7 +112,21 @@ export function Recovery() {
               Manage backup wallets that can be used to recover your account
             </p>
           </div>
-          {!admins?.isPending && <Connectors />}
+          {!admins?.isPending && (
+            <Button
+              onClick={() => {
+                openModal({
+                  content: <Connectors />,
+                  description: 'Select a wallet to add as recovery method',
+                  title: 'Add Recovery Wallet',
+                })
+              }}
+              type="button"
+              variant="primary"
+            >
+              Add Recovery Wallet
+            </Button>
+          )}
         </div>
 
         {/* Loading State */}

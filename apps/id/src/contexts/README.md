@@ -59,6 +59,7 @@ Opens a modal and returns its unique ID.
 | `className` | `string` | `undefined` | Additional CSS classes for modal container |
 | `showCloseButton` | `boolean` | `true` | Whether to show the close button |
 | `closeOnOverlayClick` | `boolean` | `true` | Whether clicking overlay closes the modal |
+| `closePreviousModal` | `boolean` | `false` | Whether to close all previous modals when opening this one |
 
 ##### `closeModal(id: string): void`
 
@@ -234,6 +235,61 @@ function CustomStyledModal() {
 6. **Consider accessibility** - the modal already handles focus management through Ariakit
 
 ## Advanced Usage
+
+### Replace Previous Modal
+
+Use `closePreviousModal: true` to automatically close all existing modals when opening a new one. This is useful for navigation flows where you want to replace the current modal with a new one:
+
+```tsx
+import { useModal } from '~/contexts/ModalContext'
+import { Button } from '@porto/apps/components'
+
+function StepByStepNavigation() {
+  const { openModal } = useModal()
+
+  const openStep1 = () => {
+    openModal({
+      title: 'Step 1',
+      content: (
+        <div>
+          <p>This is the first step</p>
+          <Button onClick={openStep2}>Next</Button>
+        </div>
+      ),
+    })
+  }
+
+  const openStep2 = () => {
+    openModal({
+      title: 'Step 2',
+      closePreviousModal: true, // Closes Step 1 modal
+      content: (
+        <div>
+          <p>This is the second step</p>
+          <Button onClick={openStep3}>Next</Button>
+        </div>
+      ),
+    })
+  }
+
+  const openStep3 = () => {
+    openModal({
+      title: 'Step 3',
+      closePreviousModal: true, // Closes Step 2 modal
+      content: (
+        <div>
+          <p>This is the final step</p>
+          <Button onClick={() => {}}>Finish</Button>
+        </div>
+      ),
+    })
+  }
+
+  return <Button onClick={openStep1}>Start Process</Button>
+}
+```
+
+**Note:** When `closePreviousModal` is `true`, the `onClose` callbacks of all previous modals will be called before they are closed.
 
 ### Conditional Modal Content
 

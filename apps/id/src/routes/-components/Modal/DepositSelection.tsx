@@ -11,6 +11,7 @@ export function DepositSelection() {
         className="flex w-full items-center justify-between rounded-lg border border-gray4 p-4 transition-colors hover:bg-gray3"
         onClick={() => {
           openModal({
+            closePreviousModal: true,
             content: <NetworkSelection />,
             description: 'Deposit token from this chain',
             title: 'Choose a Network',
