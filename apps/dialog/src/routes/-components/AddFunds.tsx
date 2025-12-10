@@ -9,7 +9,7 @@ import { Hooks } from 'rise-wallet/wagmi'
 import { zeroAddress, zeroHash } from 'viem'
 import { useWatchBlockNumber } from 'wagmi'
 import { DepositButtons } from '~/components/DepositButtons'
-import { useOnrampOrder, useShowApplePay } from '~/lib/onramp'
+import { useOnrampOrder } from '~/lib/onramp'
 import { porto } from '~/lib/Porto'
 import * as Tokens from '~/lib/Tokens'
 import { Layout } from '~/routes/-components/Layout'
@@ -20,7 +20,7 @@ import { SetupApplePay } from './SetupApplePay'
 // const presetAmounts = ['30', '50', '100', '250'] as const
 // const maxAmount = 500
 
-type View = 'default' | 'error' | 'onramp' | 'setup-onramp'
+type View = 'default' | 'error' | 'onramp' | 'setup-onramp' | 'bridge'
 
 export function AddFunds(props: AddFunds.Props) {
   const { chainId, onApprove, onReject, value } = props
@@ -31,7 +31,8 @@ export function AddFunds(props: AddFunds.Props) {
   const address = props.address ?? account?.address
   const chain = RemoteHooks.useChain(porto, { chainId })
 
-  const showApplePay = useShowApplePay()
+  // const showApplePay = useShowApplePay()
+  const showApplePay = false
   const client = RemoteHooks.useRelayClient(porto)
   const { data: onrampStatus } = useQuery({
     enabled: Boolean(showApplePay && address),
@@ -206,13 +207,22 @@ export function AddFunds(props: AddFunds.Props) {
       />
     )
 
+  if (view === 'bridge')
+    return (
+      <BridgeFromChain
+        address={address!}
+        onBack={() => setView('default')}
+        onSuccess={() => onApprove?.({ id: zeroHash })}
+      />
+    )
+
   return (
     <Layout>
       <Layout.Header>
         <Layout.Header.Default title="Add funds" variant="default" />
       </Layout.Header>
 
-      <Layout.Content>
+      <Layout.Content >
         <div className="flex flex-col gap-3">
           <Separator label="Select deposit method" size="medium" spacing={0} />
           {/*{showFaucet && (
@@ -225,8 +235,8 @@ export function AddFunds(props: AddFunds.Props) {
           {showApplePay &&
             address &&
             (onrampStatus?.email &&
-            onrampStatus.phone &&
-            !onrampStatus.reverifyPhone ? (
+              onrampStatus.phone &&
+              !onrampStatus.reverifyPhone ? (
               <div className="flex w-full flex-col">
                 {createOrder.isSuccess && createOrder.data?.url && (
                   <ApplePayIframe
@@ -238,10 +248,10 @@ export function AddFunds(props: AddFunds.Props) {
                 )}
                 {(!iframeLoaded ||
                   lastOrderEvent?.eventName ===
-                    'onramp_api.apple_pay_button_pressed' ||
+                  'onramp_api.apple_pay_button_pressed' ||
                   lastOrderEvent?.eventName === 'onramp_api.polling_start') && (
-                  <ApplePayButton label="Buy with" loading />
-                )}
+                    <ApplePayButton label="Buy with" loading />
+                  )}
               </div>
             ) : (
               <ApplePayButton
@@ -250,11 +260,20 @@ export function AddFunds(props: AddFunds.Props) {
               />
             ))}
           {view !== 'onramp' && (
-            <DepositButtons
-              address={address ?? ''}
-              chainId={chain?.id}
-              nativeTokenName={chain?.nativeCurrency?.symbol}
-            />
+            <>
+              <DepositButtons
+                address={address ?? ''}
+                chainId={chain?.id}
+                nativeTokenName={chain?.nativeCurrency?.symbol}
+              />
+              <Button
+                onClick={() => setView('bridge')}
+                variant="positive"
+                width="full"
+              >
+                Bridge from other chains
+              </Button>
+            </>
           )}
         </div>
       </Layout.Content>
