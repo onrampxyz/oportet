@@ -1,13 +1,9 @@
 import { Button } from '@porto/ui'
-import type { View } from '../AddFunds'
+import { useFundsContext } from '~/routes/contexts'
 import { Layout } from '../Layout'
 
-export type DepositProps = {
-  setView: (view: View) => void
-}
-
-export function DepositSelection(props: DepositProps) {
-  const { setView } = props
+export function DepositSelection() {
+  const { setView } = useFundsContext()
 
   return (
     <Layout>
@@ -19,7 +15,7 @@ export function DepositSelection(props: DepositProps) {
         />
       </Layout.Header>
       <Layout.Content>
-        <div className="space-y-2 pt-4">
+        <div className="space-y-2 pt-3">
           <Button
             className="w-full"
             onClick={() => {
@@ -30,7 +26,7 @@ export function DepositSelection(props: DepositProps) {
           >
             Global Deposit
           </Button>
-          <Button className="w-full" type="button" variant="primary"  >
+          <Button className="w-full" type="button" variant="primary">
             On Ramp
           </Button>
         </div>

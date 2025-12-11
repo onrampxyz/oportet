@@ -1,7 +1,6 @@
 import { Button, DiscIcon } from '@porto/ui'
-import { useState } from 'react'
 import { Chains } from 'rise-wallet'
-import type { View } from '../AddFunds'
+import { useFundsContext } from '~/routes/contexts'
 import { Layout } from '../Layout'
 
 export type Chain = {
@@ -10,7 +9,7 @@ export type Chain = {
   icon: string
 }
 
-export const SupportedChains = [
+export const SupportedChains: Chain[] = [
   {
     icon: '/chains/rise.svg',
     id: Chains.riseTestnet.id,
@@ -23,42 +22,34 @@ export const SupportedChains = [
   },
 ]
 
-export type ChainProps = {
-  setView: (view: View) => void
-}
-
-export function ChainSelection(props: ChainProps) {
-  const { setView } = props
-
-  const [selectedChain, setSelectedChain] = useState('')
+export function ChainSelection() {
+  const { selectedChain, setSelectedChain, setView } = useFundsContext()
 
   return (
     <Layout>
       <Layout.Header>
         <Layout.Header.Default
-          subContent="Deposit token from this chain"
+          subContent="Deposit token from these chains"
           title="Choose a Network"
           variant="default"
         />
       </Layout.Header>
       <Layout.Content>
-        <div className="space-y-2 pt-4">
+        <div className="space-y-2 pt-3">
           {SupportedChains.map((chain) => {
             return (
               <Button
-                className='justify-start! flex w-full items-center gap-2 rounded-lg'
-                data-selected={selectedChain === chain.name}
+                className="justify-start! flex w-full items-center gap-2 rounded-lg"
+                data-selected={selectedChain?.name === chain.name}
                 key={chain.name}
                 onClick={() => {
-                  setSelectedChain(chain.name)
+                  setSelectedChain(chain)
                   setView('selection-asset')
                 }}
                 type="button"
                 variant="secondary"
               >
-                <DiscIcon
-                  src={chain.icon}
-                />
+                <DiscIcon src={chain.icon} />
                 <span className="pt-0.5">{chain.name}</span>
               </Button>
             )

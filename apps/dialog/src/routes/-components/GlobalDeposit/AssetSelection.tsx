@@ -1,7 +1,6 @@
 import { Button, DiscIcon } from '@porto/ui'
 import type { Address } from 'ox'
-import { useState } from 'react'
-import type { View } from '../AddFunds'
+import { useFundsContext } from '~/routes/contexts'
 import { Layout } from '../Layout'
 
 export type Asset = {
@@ -22,13 +21,8 @@ export const SupportedAssets: Asset[] = [
   },
 ]
 
-export type AssetProps = {
-  setView: (view: View) => void
-}
-
-export function AssetSelection(props: Readonly<AssetProps>) {
-  const { setView } = props
-  const [selectedAsset, setSelectedAsset] = useState('')
+export function AssetSelection() {
+  const { selectedAsset, setSelectedAsset, setView } = useFundsContext()
 
   return (
     <Layout>
@@ -40,23 +34,21 @@ export function AssetSelection(props: Readonly<AssetProps>) {
         />
       </Layout.Header>
       <Layout.Content>
-        <div className="space-y-2 pt-4">
+        <div className="space-y-2 pt-3">
           {SupportedAssets.map((asset) => {
             return (
               <Button
-                className='justify-start! flex w-full items-center gap-2 rounded-lg'
-                data-selected={selectedAsset === asset.symbol}
+                className="justify-start! flex w-full items-center gap-2 rounded-lg"
+                data-selected={selectedAsset?.symbol === asset.symbol}
                 key={asset.name}
                 onClick={() => {
-                  setSelectedAsset(asset.symbol)
+                  setSelectedAsset(asset)
                   setView('onramp')
                 }}
                 type="button"
                 variant="secondary"
               >
-                <DiscIcon
-                  src={asset.icon}
-                />
+                <DiscIcon src={asset.icon} />
                 <span className="pt-0.5">{asset.symbol}</span>
               </Button>
             )

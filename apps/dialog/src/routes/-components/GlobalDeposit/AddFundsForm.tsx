@@ -1,35 +1,43 @@
 import { Button } from '@porto/ui'
 import * as React from 'react'
+import { useFundsContext } from '~/routes/contexts'
 import {
-  type Asset,
-  type Chain,
   DropdownSelector,
   SupportedAssets,
   SupportedChains,
 } from '../GlobalDeposit'
 
 export function AddFundsForm() {
-  const [selectedSource, setSelectedSource] = React.useState<Chain | undefined>(
-    SupportedChains[0],
-  )
+  const {
+    selectedChain,
+    setSelectedChain,
+    selectedAsset,
+    setSelectedAsset,
+    amount,
+    setAmount,
+  } = useFundsContext()
 
-  const [selectedTokenSymbol, setSelectedTokenSymbol] = React.useState<
-    Asset | undefined
-  >(SupportedAssets[0])
-
-  const [amount, setAmount] = React.useState<string>('0.00')
+  // Initialize with defaults if not set
+  React.useEffect(() => {
+    if (!selectedChain && SupportedChains[0]) {
+      setSelectedChain(SupportedChains[0])
+    }
+    if (!selectedAsset && SupportedAssets[0]) {
+      setSelectedAsset(SupportedAssets[0])
+    }
+  }, [selectedChain, setSelectedChain, selectedAsset, setSelectedAsset])
 
   return (
-    <div className="flex flex-col gap-2 pt-4">
+    <div className="flex flex-col gap-2 pt-3">
       <div className="flex gap-2">
         <div className="flex-1 space-y-2 rounded-lg bg-[var(--background-color-th_base-alt)] p-2">
           <p className="text-[var(--text-color-th_base)]">Source</p>
           <DropdownSelector
             items={SupportedChains}
             onSelect={(item) => {
-              setSelectedSource(item)
+              setSelectedChain(item)
             }}
-            selectedItem={selectedSource}
+            selectedItem={selectedChain}
           />
         </div>
         <div className="flex-1 space-y-2 rounded-lg bg-[var(--background-color-th_base-alt)] p-2">
@@ -44,9 +52,9 @@ export function AddFundsForm() {
         <DropdownSelector
           items={SupportedAssets}
           onSelect={(item) => {
-            setSelectedTokenSymbol(item)
+            setSelectedAsset(item)
           }}
-          selectedItem={selectedTokenSymbol}
+          selectedItem={selectedAsset}
         />
       </div>
       <div className="space-y-2 rounded-lg bg-[var(--background-color-th_base-alt)] p-2">

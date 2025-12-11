@@ -1,7 +1,6 @@
 import { Button, DropdownMenu } from '@porto/ui'
 import type * as React from 'react'
 import { css } from 'styled-system/css'
-import type { Asset } from '../GlobalDeposit'
 
 export function DropdownSelector<T extends { name: string }>(
   props: DropdownSelector.Props<T>,
@@ -45,9 +44,9 @@ export function DropdownSelector<T extends { name: string }>(
                 className={
                   isSelected
                     ? css({
-                      backgroundColor: 'var(--background-color-th_primary)!',
-                      color: 'var(--text-color-th_primary)!',
-                    })
+                        backgroundColor: 'var(--background-color-th_primary)!',
+                        color: 'var(--text-color-th_primary)!',
+                      })
                     : undefined
                 }
                 key={item.name}
@@ -79,7 +78,7 @@ export function DropdownSelector<T extends { name: string }>(
 }
 
 export declare namespace DropdownSelector {
-  export type Props<T extends Asset> = {
+  export type Props<T extends { name: string }> = {
     /** Array of items to display in the dropdown */
     items: T[]
     /** Currently selected item */

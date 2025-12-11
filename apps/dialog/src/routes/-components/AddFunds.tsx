@@ -12,6 +12,7 @@ import { useOnrampOrder } from '~/lib/onramp'
 import { porto } from '~/lib/Porto'
 import * as Tokens from '~/lib/Tokens'
 import { Layout } from '~/routes/-components/Layout'
+import { FundsProvider, useFundsContext } from '~/routes/contexts'
 import TriangleAlertIcon from '~icons/lucide/triangle-alert'
 import {
   AddFundsForm,
@@ -33,12 +34,10 @@ export type View =
   | 'selection-asset'
   | 'selection-deposit'
 
-export function AddFunds(props: AddFunds.Props) {
-  const { chainId, onApprove, onReject, value, view: initialView } = props
+function AddFundsContent(props: AddFunds.Props) {
+  const { chainId, onApprove, onReject, value } = props
 
-  const [view, setView] = React.useState<View>(
-    (initialView as View) ?? 'default',
-  )
+  const { view, setView } = useFundsContext()
 
   const account = RemoteHooks.useAccount(porto)
   const address = props.address ?? account?.address
@@ -221,15 +220,15 @@ export function AddFunds(props: AddFunds.Props) {
     )
 
   if (view === 'selection-deposit') {
-    return <DepositSelection setView={setView} />
+    return <DepositSelection />
   }
 
   if (view === 'selection-network') {
-    return <ChainSelection setView={setView} />
+    return <ChainSelection />
   }
 
   if (view === 'selection-asset') {
-    return <AssetSelection setView={setView} />
+    return <AssetSelection />
   }
 
   return (
@@ -252,11 +251,18 @@ export function AddFunds(props: AddFunds.Props) {
             <Button onClick={onReject} variant="secondary">
               Back
             </Button>
-
           </Layout.Footer.Actions>
         </Layout.Footer>
       )}
     </Layout>
+  )
+}
+
+export function AddFunds(props: AddFunds.Props) {
+  return (
+    <FundsProvider initialView={(props.view as View) ?? 'default'}>
+      <AddFundsContent {...props} />
+    </FundsProvider>
   )
 }
 
