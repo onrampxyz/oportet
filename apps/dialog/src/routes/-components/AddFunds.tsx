@@ -8,11 +8,11 @@ import { RelayActions } from 'rise-wallet/viem'
 import { Hooks } from 'rise-wallet/wagmi'
 import { zeroAddress, zeroHash } from 'viem'
 import { useWatchBlockNumber } from 'wagmi'
+import { FundsProvider, useFundsContext } from '~/contexts'
 import { useOnrampOrder } from '~/lib/onramp'
 import { porto } from '~/lib/Porto'
 import * as Tokens from '~/lib/Tokens'
 import { Layout } from '~/routes/-components/Layout'
-import { FundsProvider, useFundsContext } from '~/routes/contexts'
 import TriangleAlertIcon from '~icons/lucide/triangle-alert'
 import {
   AddFundsForm,

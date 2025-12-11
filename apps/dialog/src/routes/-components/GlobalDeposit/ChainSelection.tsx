@@ -1,6 +1,6 @@
 import { Button, DiscIcon } from '@porto/ui'
 import { Chains } from 'rise-wallet'
-import { useFundsContext } from '~/routes/contexts'
+import { useFundsContext } from '~/contexts'
 import { Layout } from '../Layout'
 
 export type Chain = {

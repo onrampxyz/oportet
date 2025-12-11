@@ -1,6 +1,6 @@
 import { Button } from '@porto/ui'
 import * as React from 'react'
-import { useFundsContext } from '~/routes/contexts'
+import { useFundsContext } from '~/contexts'
 import {
   DropdownSelector,
   SupportedAssets,

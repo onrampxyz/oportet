@@ -13,7 +13,6 @@
 import { Route as rootRoute } from './routes/__root'
 import { Route as IndexImport } from './routes/index'
 import { Route as DialogIndexImport } from './routes/dialog/index'
-import { Route as ContextsIndexImport } from './routes/contexts/index'
 import { Route as DialogWalletsendCallsImport } from './routes/dialog/wallet_sendCalls'
 import { Route as DialogWalletrevokePermissionsImport } from './routes/dialog/wallet_revokePermissions'
 import { Route as DialogWalletrevokeAdminImport } from './routes/dialog/wallet_revokeAdmin'
@@ -31,7 +30,6 @@ import { Route as DialogEthsendTransactionImport } from './routes/dialog/eth_sen
 import { Route as DialogEthrequestAccountsImport } from './routes/dialog/eth_requestAccounts'
 import { Route as DialogAccountverifyEmailImport } from './routes/dialog/account_verifyEmail'
 import { Route as DialogSplatImport } from './routes/dialog/$'
-import { Route as ContextsFundsContextImport } from './routes/contexts/FundsContext'
 
 // Create/Update Routes
 
@@ -44,12 +42,6 @@ const IndexRoute = IndexImport.update({
 const DialogIndexRoute = DialogIndexImport.update({
   id: '/dialog/',
   path: '/dialog/',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const ContextsIndexRoute = ContextsIndexImport.update({
-  id: '/contexts/',
-  path: '/contexts/',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -158,12 +150,6 @@ const DialogSplatRoute = DialogSplatImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const ContextsFundsContextRoute = ContextsFundsContextImport.update({
-  id: '/contexts/FundsContext',
-  path: '/contexts/FundsContext',
-  getParentRoute: () => rootRoute,
-} as any)
-
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
@@ -173,13 +159,6 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexImport
-      parentRoute: typeof rootRoute
-    }
-    '/contexts/FundsContext': {
-      id: '/contexts/FundsContext'
-      path: '/contexts/FundsContext'
-      fullPath: '/contexts/FundsContext'
-      preLoaderRoute: typeof ContextsFundsContextImport
       parentRoute: typeof rootRoute
     }
     '/dialog/$': {
@@ -301,13 +280,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DialogWalletsendCallsImport
       parentRoute: typeof rootRoute
     }
-    '/contexts/': {
-      id: '/contexts/'
-      path: '/contexts'
-      fullPath: '/contexts'
-      preLoaderRoute: typeof ContextsIndexImport
-      parentRoute: typeof rootRoute
-    }
     '/dialog/': {
       id: '/dialog/'
       path: '/dialog'
@@ -322,7 +294,6 @@ declare module '@tanstack/react-router' {
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/contexts/FundsContext': typeof ContextsFundsContextRoute
   '/dialog/$': typeof DialogSplatRoute
   '/dialog/account_verifyEmail': typeof DialogAccountverifyEmailRoute
   '/dialog/eth_requestAccounts': typeof DialogEthrequestAccountsRoute
@@ -340,13 +311,11 @@ export interface FileRoutesByFullPath {
   '/dialog/wallet_revokeAdmin': typeof DialogWalletrevokeAdminRoute
   '/dialog/wallet_revokePermissions': typeof DialogWalletrevokePermissionsRoute
   '/dialog/wallet_sendCalls': typeof DialogWalletsendCallsRoute
-  '/contexts': typeof ContextsIndexRoute
   '/dialog': typeof DialogIndexRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/contexts/FundsContext': typeof ContextsFundsContextRoute
   '/dialog/$': typeof DialogSplatRoute
   '/dialog/account_verifyEmail': typeof DialogAccountverifyEmailRoute
   '/dialog/eth_requestAccounts': typeof DialogEthrequestAccountsRoute
@@ -364,14 +333,12 @@ export interface FileRoutesByTo {
   '/dialog/wallet_revokeAdmin': typeof DialogWalletrevokeAdminRoute
   '/dialog/wallet_revokePermissions': typeof DialogWalletrevokePermissionsRoute
   '/dialog/wallet_sendCalls': typeof DialogWalletsendCallsRoute
-  '/contexts': typeof ContextsIndexRoute
   '/dialog': typeof DialogIndexRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
-  '/contexts/FundsContext': typeof ContextsFundsContextRoute
   '/dialog/$': typeof DialogSplatRoute
   '/dialog/account_verifyEmail': typeof DialogAccountverifyEmailRoute
   '/dialog/eth_requestAccounts': typeof DialogEthrequestAccountsRoute
@@ -389,7 +356,6 @@ export interface FileRoutesById {
   '/dialog/wallet_revokeAdmin': typeof DialogWalletrevokeAdminRoute
   '/dialog/wallet_revokePermissions': typeof DialogWalletrevokePermissionsRoute
   '/dialog/wallet_sendCalls': typeof DialogWalletsendCallsRoute
-  '/contexts/': typeof ContextsIndexRoute
   '/dialog/': typeof DialogIndexRoute
 }
 
@@ -397,7 +363,6 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/contexts/FundsContext'
     | '/dialog/$'
     | '/dialog/account_verifyEmail'
     | '/dialog/eth_requestAccounts'
@@ -415,12 +380,10 @@ export interface FileRouteTypes {
     | '/dialog/wallet_revokeAdmin'
     | '/dialog/wallet_revokePermissions'
     | '/dialog/wallet_sendCalls'
-    | '/contexts'
     | '/dialog'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/contexts/FundsContext'
     | '/dialog/$'
     | '/dialog/account_verifyEmail'
     | '/dialog/eth_requestAccounts'
@@ -438,12 +401,10 @@ export interface FileRouteTypes {
     | '/dialog/wallet_revokeAdmin'
     | '/dialog/wallet_revokePermissions'
     | '/dialog/wallet_sendCalls'
-    | '/contexts'
     | '/dialog'
   id:
     | '__root__'
     | '/'
-    | '/contexts/FundsContext'
     | '/dialog/$'
     | '/dialog/account_verifyEmail'
     | '/dialog/eth_requestAccounts'
@@ -461,14 +422,12 @@ export interface FileRouteTypes {
     | '/dialog/wallet_revokeAdmin'
     | '/dialog/wallet_revokePermissions'
     | '/dialog/wallet_sendCalls'
-    | '/contexts/'
     | '/dialog/'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  ContextsFundsContextRoute: typeof ContextsFundsContextRoute
   DialogSplatRoute: typeof DialogSplatRoute
   DialogAccountverifyEmailRoute: typeof DialogAccountverifyEmailRoute
   DialogEthrequestAccountsRoute: typeof DialogEthrequestAccountsRoute
@@ -486,13 +445,11 @@ export interface RootRouteChildren {
   DialogWalletrevokeAdminRoute: typeof DialogWalletrevokeAdminRoute
   DialogWalletrevokePermissionsRoute: typeof DialogWalletrevokePermissionsRoute
   DialogWalletsendCallsRoute: typeof DialogWalletsendCallsRoute
-  ContextsIndexRoute: typeof ContextsIndexRoute
   DialogIndexRoute: typeof DialogIndexRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  ContextsFundsContextRoute: ContextsFundsContextRoute,
   DialogSplatRoute: DialogSplatRoute,
   DialogAccountverifyEmailRoute: DialogAccountverifyEmailRoute,
   DialogEthrequestAccountsRoute: DialogEthrequestAccountsRoute,
@@ -511,7 +468,6 @@ const rootRouteChildren: RootRouteChildren = {
   DialogWalletrevokeAdminRoute: DialogWalletrevokeAdminRoute,
   DialogWalletrevokePermissionsRoute: DialogWalletrevokePermissionsRoute,
   DialogWalletsendCallsRoute: DialogWalletsendCallsRoute,
-  ContextsIndexRoute: ContextsIndexRoute,
   DialogIndexRoute: DialogIndexRoute,
 }
 
@@ -526,7 +482,6 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
-        "/contexts/FundsContext",
         "/dialog/$",
         "/dialog/account_verifyEmail",
         "/dialog/eth_requestAccounts",
@@ -544,15 +499,11 @@ export const routeTree = rootRoute
         "/dialog/wallet_revokeAdmin",
         "/dialog/wallet_revokePermissions",
         "/dialog/wallet_sendCalls",
-        "/contexts/",
         "/dialog/"
       ]
     },
     "/": {
       "filePath": "index.tsx"
-    },
-    "/contexts/FundsContext": {
-      "filePath": "contexts/FundsContext.tsx"
     },
     "/dialog/$": {
       "filePath": "dialog/$.tsx"
@@ -604,9 +555,6 @@ export const routeTree = rootRoute
     },
     "/dialog/wallet_sendCalls": {
       "filePath": "dialog/wallet_sendCalls.tsx"
-    },
-    "/contexts/": {
-      "filePath": "contexts/index.ts"
     },
     "/dialog/": {
       "filePath": "dialog/index.tsx"

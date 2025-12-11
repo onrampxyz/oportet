@@ -1,8 +1,8 @@
 import type { ReactNode } from 'react'
 import { createContext, useContext, useState } from 'react'
-import type { View } from '../-components/AddFunds'
-import type { Asset } from '../-components/GlobalDeposit/AssetSelection'
-import type { Chain } from '../-components/GlobalDeposit/ChainSelection'
+import type { View } from '../routes/-components/AddFunds'
+import type { Asset } from '../routes/-components/GlobalDeposit/AssetSelection'
+import type { Chain } from '../routes/-components/GlobalDeposit/ChainSelection'
 
 type FundsContextValue = {
   // View state

@@ -1,6 +1,6 @@
 import { Button, DiscIcon } from '@porto/ui'
 import type { Address } from 'ox'
-import { useFundsContext } from '~/routes/contexts'
+import { useFundsContext } from '~/contexts'
 import { Layout } from '../Layout'
 
 export type Asset = {

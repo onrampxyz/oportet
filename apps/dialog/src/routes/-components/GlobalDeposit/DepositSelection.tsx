@@ -1,5 +1,5 @@
 import { Button } from '@porto/ui'
-import { useFundsContext } from '~/routes/contexts'
+import { useFundsContext } from '~/contexts'
 import { Layout } from '../Layout'
 
 export function DepositSelection() {
