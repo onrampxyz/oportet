@@ -58,19 +58,27 @@ export function Header() {
   const handleAddFunds = async () => {
     // if url has testnet search param
     const urlHasTestnet = window.location.search.includes('testnet')
+    console.log("urlHasTestnet:: ", urlHasTestnet)
+
     if (!urlHasTestnet) {
       addFunds.mutate({
         address,
+        view: 'selection-network',
       })
       return
     }
+
     await switchChainAsync({
       chainId: Chains.riseTestnet.id,
     }).catch()
+    console.log("capabilities.data:: ", capabilities.data)
+
     if (!capabilities.data) return
     const exp1 = capabilities.data?.[
       Chains.riseTestnet.id
     ]?.feeToken?.tokens?.find((t: any) => t.uid === 'exp1')
+    console.log("exp1:: ", exp1)
+
     if (!exp1) return
     addFunds.mutate({
       address,
@@ -78,6 +86,7 @@ export function Header() {
       token: exp1?.address as Address.Address,
       // @ts-expect-error TODO: fix type
       tokenAddress: exp1?.address as Address.Address,
+      view: 'selection-network',
     })
   }
 

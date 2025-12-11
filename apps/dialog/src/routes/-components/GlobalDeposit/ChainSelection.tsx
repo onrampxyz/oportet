@@ -23,7 +23,7 @@ export const SupportedChain = [
 ]
 
 export type ChainProps = {
-  setView: (view: View) => {}
+  setView: (view: View) => void
 }
 
 export default function ChainSelection(props: ChainProps) {

@@ -13,7 +13,7 @@ export const SupportedAssets = [
 ]
 
 export type AssetProps = {
-  setView: (view: View) => {}
+  setView: (view: View) => void
 }
 
 export default function AssetSelection(props: Readonly<AssetProps>) {

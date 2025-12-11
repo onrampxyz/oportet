@@ -1,5 +1,5 @@
 import { usePrevious } from '@porto/apps/hooks'
-import { Button, Separator } from '@porto/ui'
+import { Button } from '@porto/ui'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import type { Address, Hex } from 'ox'
 import * as React from 'react'
@@ -8,24 +8,34 @@ import { RelayActions } from 'rise-wallet/viem'
 import { Hooks } from 'rise-wallet/wagmi'
 import { zeroAddress, zeroHash } from 'viem'
 import { useWatchBlockNumber } from 'wagmi'
-import { DepositButtons } from '~/components/DepositButtons'
 import { useOnrampOrder } from '~/lib/onramp'
 import { porto } from '~/lib/Porto'
 import * as Tokens from '~/lib/Tokens'
 import { Layout } from '~/routes/-components/Layout'
 import TriangleAlertIcon from '~icons/lucide/triangle-alert'
-import { ApplePayButton, ApplePayIframe } from './ActionPreview'
+import { AddFundsForm } from './GlobalDeposit/AddFundsForm'
+import AssetSelection from './GlobalDeposit/AssetSelection'
+import ChainSelection from './GlobalDeposit/ChainSelection'
 import { SetupApplePay } from './SetupApplePay'
 
 // const presetAmounts = ['30', '50', '100', '250'] as const
 // const maxAmount = 500
 
-type View = 'default' | 'error' | 'onramp' | 'setup-onramp' | 'bridge'
+export type View =
+  | 'default'
+  | 'error'
+  | 'onramp'
+  | 'setup-onramp'
+  | 'bridge'
+  | 'selection-network'
+  | 'selection-asset'
 
 export function AddFunds(props: AddFunds.Props) {
-  const { chainId, onApprove, onReject, value } = props
+  const { chainId, onApprove, onReject, value, view: initialView } = props
 
-  const [view, setView] = React.useState<View>('default')
+  const [view, setView] = React.useState<View>(
+    (initialView as View) ?? 'default',
+  )
 
   const account = RemoteHooks.useAccount(porto)
   const address = props.address ?? account?.address
@@ -146,15 +156,6 @@ export function AddFunds(props: AddFunds.Props) {
     }
   }, [balanceMap, onApprove, previousBalanceMap])
 
-  // const showFaucet = React.useMemo(() => {
-  //   if (import.meta.env.MODE === 'test') return true
-  //   // Don't show faucet if not on "default" view.
-  //   if (view !== 'default') return false
-  //   // Show faucet if on a testnet.
-  //   if (chain?.testnet) return true
-  //   return false
-  // }, [chain, view])
-
   if (view === 'error')
     return (
       <Layout>
@@ -216,72 +217,36 @@ export function AddFunds(props: AddFunds.Props) {
       />
     )
 
+  if (view === 'selection-network') {
+    return <ChainSelection setView={setView} />
+  }
+
+  if (view === 'selection-asset') {
+    return <AssetSelection setView={setView} />
+  }
+
   return (
     <Layout>
       <Layout.Header>
-        <Layout.Header.Default title="Add funds" variant="default" />
+        <Layout.Header.Default
+          subContent="Deposit to your RISE Wallet"
+          title="Global Deposit"
+          variant="default"
+        />
       </Layout.Header>
 
-      <Layout.Content >
-        <div className="flex flex-col gap-3">
-          <Separator label="Select deposit method" size="medium" spacing={0} />
-          {/*{showFaucet && (
-            <Faucet
-              address={address}
-              chainId={chain?.id}
-              onApprove={onApprove}
-            />
-          )}*/}
-          {showApplePay &&
-            address &&
-            (onrampStatus?.email &&
-              onrampStatus.phone &&
-              !onrampStatus.reverifyPhone ? (
-              <div className="flex w-full flex-col">
-                {createOrder.isSuccess && createOrder.data?.url && (
-                  <ApplePayIframe
-                    lastOrderEvent={lastOrderEvent}
-                    loaded={iframeLoaded}
-                    setLoaded={setIframeLoaded}
-                    src={createOrder.data.url}
-                  />
-                )}
-                {(!iframeLoaded ||
-                  lastOrderEvent?.eventName ===
-                  'onramp_api.apple_pay_button_pressed' ||
-                  lastOrderEvent?.eventName === 'onramp_api.polling_start') && (
-                    <ApplePayButton label="Buy with" loading />
-                  )}
-              </div>
-            ) : (
-              <ApplePayButton
-                label="Set up"
-                onClick={() => setView('setup-onramp')}
-              />
-            ))}
-          {view !== 'onramp' && (
-            <>
-              <DepositButtons
-                address={address ?? ''}
-                chainId={chain?.id}
-                nativeTokenName={chain?.nativeCurrency?.symbol}
-              />
-              <Button
-                onClick={() => setView('bridge')}
-                variant="positive"
-                width="full"
-              >
-                Bridge from other chains
-              </Button>
-            </>
-          )}
-        </div>
+      <Layout.Content>
+        <AddFundsForm />
       </Layout.Content>
+
       {onReject && view !== 'onramp' && (
         <Layout.Footer>
           <Layout.Footer.Actions>
-            <Button onClick={onReject} variant="secondary" width="full">
+            <Button onClick={onReject} variant="secondary">
               Back
+            </Button>
+            <Button className="flex-1" variant="primary">
+              Approve Global Deposit
             </Button>
           </Layout.Footer.Actions>
         </Layout.Footer>
@@ -297,83 +262,6 @@ export declare namespace AddFunds {
     onApprove: (result: { id: Hex.Hex }) => void
     onReject?: () => void
     value?: string | undefined
+    view?: string
   }
 }
-
-// function Faucet(props: {
-//   address: Address.Address | undefined
-//   chainId: number | undefined
-//   onApprove: (result: { id: Hex.Hex }) => void
-// }) {
-//   const { address, chainId, onApprove } = props
-
-//   const [amount, setAmount] = React.useState<string>(presetAmounts[0])
-
-//   const client = RemoteHooks.useRelayClient(porto)
-//   const faucet = useMutation({
-//     async mutationFn(e: React.FormEvent<HTMLFormElement>) {
-//       e.preventDefault()
-//       e.stopPropagation()
-
-//       if (!address) throw new Error('address is required')
-//       if (!chainId) throw new Error('chainId is required')
-
-//       const value = Value.from(amount, 18)
-
-//       const data = await RelayActions.addFaucetFunds(client, {
-//         address,
-//         chain: { id: chainId },
-//         tokenAddress: exp1Address[chainId as never],
-//         value,
-//       })
-//       return data
-//     },
-//     onSuccess(data) {
-//       onApprove({ id: data.transactionHash })
-//     },
-//   })
-
-//   return (
-//     <form
-//       className="grid h-min grid-flow-row auto-rows-min grid-cols-1 space-y-3"
-//       onSubmit={(e) => faucet.mutate(e)}
-//     >
-//       <div className="col-span-1 row-span-1">
-//         <PresetsInput
-//           adornments={{
-//             end: {
-//               label: `Max. $${maxAmount}`,
-//               type: 'fill',
-//               value: String(maxAmount),
-//             },
-//             start: '$',
-//           }}
-//           inputMode="decimal"
-//           max={maxAmount}
-//           min={0}
-//           onChange={setAmount}
-//           placeholder="Enter amount"
-//           presets={presetAmounts.map((value) => ({
-//             label: `$${value}`,
-//             value,
-//           }))}
-//           type="number"
-//           value={amount}
-//         />
-//       </div>
-//       <div className="col-span-1 row-span-1 space-y-3.5">
-//         <Button
-//           className="w-full flex-1"
-//           data-testid="buy"
-//           disabled={!address || !amount || Number(amount) === 0}
-//           loading={faucet.isPending && 'Adding funds…'}
-//           type="submit"
-//           variant="primary"
-//           width="grow"
-//         >
-//           Add faucet funds
-//         </Button>
-//       </div>
-//     </form>
-//   )
-// }
