@@ -19,16 +19,10 @@ export const Route = createFileRoute('/dialog/wallet_addFunds')({
 function RouteComponent() {
   const request = Route.useSearch()
 
-  console.log("params:: ", request._decoded.params)
-
   const { address, chainId, value, view } =
     request._decoded.method === 'wallet_addFunds'
       ? request._decoded.params[0]
       : {}
-
-  console.log("address:: ", address)
-  console.log("chainId:: ", chainId)
-  console.log("value:: ", value)
 
   const respond = useMutation({
     async mutationFn(
@@ -44,8 +38,6 @@ function RouteComponent() {
   })
 
   useAuthSessionRedirect(respond)
-
-  console.info("initial-view:: ", view)
 
   return (
     <AddFunds

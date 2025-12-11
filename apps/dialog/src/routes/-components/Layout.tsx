@@ -36,7 +36,7 @@ export namespace Layout {
     export function Default(props: Default.Props) {
       const { icon: Icon, title, content, subContent, variant } = props
       return (
-        <div className="flex flex-col gap-3 pb-1">
+        <div className="flex flex-col gap-1 pb-1">
           <div className="flex items-center gap-2">
             {Icon && (
               <div className={Default.className({ variant })}>
@@ -53,7 +53,7 @@ export namespace Layout {
                 </div>
               )}
               {subContent && (
-                <div className="text-[15px] text-th_base-secondary leading-[20px]">
+                <div className="text-[14px] text-th_base-secondary leading-none">
                   {subContent}
                 </div>
               )}

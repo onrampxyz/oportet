@@ -77,7 +77,7 @@ export namespace Button {
 
   export interface Props
     extends ButtonHTMLAttributes<HTMLButtonElement>,
-      BaseProps {}
+    BaseProps { }
 
   export function useResolvedSize(
     size?: Size | Record<Frame.ModeName, Size>,
@@ -354,7 +354,7 @@ export namespace Button {
   export namespace Anchor {
     export interface Props
       extends AnchorHTMLAttributes<HTMLAnchorElement>,
-        BaseProps {
+      BaseProps {
       external?: boolean
       href: string
     }

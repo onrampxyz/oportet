@@ -1,8 +1,9 @@
 import { Button, DropdownMenu } from '@porto/ui'
 import type * as React from 'react'
 import { css } from 'styled-system/css'
+import type { Asset } from '../GlobalDeposit'
 
-export function DropdownSelector<T extends { label: string }>(
+export function DropdownSelector<T extends { name: string }>(
   props: DropdownSelector.Props<T>,
 ) {
   const {
@@ -32,27 +33,27 @@ export function DropdownSelector<T extends { label: string }>(
           {selectedItem
             ? renderItem
               ? renderItem(selectedItem, true)
-              : selectedItem.label
+              : selectedItem.name
             : null}
         </DropdownMenu.Trigger>
 
         <DropdownMenu.Content align="start">
           {items.map((item, index) => {
-            const isSelected = selectedItem?.label === item.label
+            const isSelected = selectedItem?.name === item.name
             return (
               <DropdownMenu.Item
                 className={
                   isSelected
                     ? css({
-                        backgroundColor: 'var(--background-color-th_primary)!',
-                        color: 'var(--text-color-th_primary)!',
-                      })
+                      backgroundColor: 'var(--background-color-th_primary)!',
+                      color: 'var(--text-color-th_primary)!',
+                    })
                     : undefined
                 }
-                key={item.label}
+                key={item.name}
                 onClick={() => handleSelect(item, index)}
               >
-                {renderItem ? renderItem(item, isSelected) : item.label}
+                {renderItem ? renderItem(item, isSelected) : item.name}
               </DropdownMenu.Item>
             )
           })}
@@ -78,7 +79,7 @@ export function DropdownSelector<T extends { label: string }>(
 }
 
 export declare namespace DropdownSelector {
-  export type Props<T extends { label: string }> = {
+  export type Props<T extends Asset> = {
     /** Array of items to display in the dropdown */
     items: T[]
     /** Currently selected item */

@@ -13,11 +13,13 @@ import { porto } from '~/lib/Porto'
 import * as Tokens from '~/lib/Tokens'
 import { Layout } from '~/routes/-components/Layout'
 import TriangleAlertIcon from '~icons/lucide/triangle-alert'
-import { AddFundsForm } from './GlobalDeposit/AddFundsForm'
-import AssetSelection from './GlobalDeposit/AssetSelection'
-import ChainSelection from './GlobalDeposit/ChainSelection'
+import {
+  AddFundsForm,
+  AssetSelection,
+  ChainSelection,
+  DepositSelection,
+} from './GlobalDeposit'
 import { SetupApplePay } from './SetupApplePay'
-
 // const presetAmounts = ['30', '50', '100', '250'] as const
 // const maxAmount = 500
 
@@ -29,6 +31,7 @@ export type View =
   | 'bridge'
   | 'selection-network'
   | 'selection-asset'
+  | 'selection-deposit'
 
 export function AddFunds(props: AddFunds.Props) {
   const { chainId, onApprove, onReject, value, view: initialView } = props
@@ -217,6 +220,10 @@ export function AddFunds(props: AddFunds.Props) {
       />
     )
 
+  if (view === 'selection-deposit') {
+    return <DepositSelection setView={setView} />
+  }
+
   if (view === 'selection-network') {
     return <ChainSelection setView={setView} />
   }
@@ -245,9 +252,7 @@ export function AddFunds(props: AddFunds.Props) {
             <Button onClick={onReject} variant="secondary">
               Back
             </Button>
-            <Button className="flex-1" variant="primary">
-              Approve Global Deposit
-            </Button>
+
           </Layout.Footer.Actions>
         </Layout.Footer>
       )}

@@ -1,32 +1,40 @@
-import { Button } from '@porto/apps/components'
+import { Button } from '@porto/ui'
 import type { View } from '../AddFunds'
+import { Layout } from '../Layout'
 
 export type DepositProps = {
-  setView: (view: View) => {}
+  setView: (view: View) => void
 }
 
 export function DepositSelection(props: DepositProps) {
   const { setView } = props
 
   return (
-    <div className="space-y-2">
-      <Button
-        className="flex w-full items-center justify-between rounded-lg border border-gray4 p-4 transition-colors hover:bg-gray3"
-        onClick={() => {
-          setView('selection-network')
-        }}
-        type="button"
-        variant="primary"
-      >
-        Global Deposit
-      </Button>
-      <Button
-        className="flex w-full items-center justify-between rounded-lg border border-gray4 p-4 transition-colors hover:bg-gray3"
-        type="button"
-        variant="primary"
-      >
-        On Ramp
-      </Button>
-    </div>
+    <Layout>
+      <Layout.Header>
+        <Layout.Header.Default
+          subContent="Deposit to your RISE Wallet via Global Deposit and Onramp"
+          title="Global Deposit"
+          variant="default"
+        />
+      </Layout.Header>
+      <Layout.Content>
+        <div className="space-y-2 pt-4">
+          <Button
+            className="w-full"
+            onClick={() => {
+              setView('selection-network')
+            }}
+            type="button"
+            variant="primary"
+          >
+            Global Deposit
+          </Button>
+          <Button className="w-full" type="button" variant="primary"  >
+            On Ramp
+          </Button>
+        </div>
+      </Layout.Content>
+    </Layout>
   )
 }
