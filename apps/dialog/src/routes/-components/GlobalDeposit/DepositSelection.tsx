@@ -12,7 +12,9 @@ export function DepositSelection(props: DepositProps) {
     <div className="space-y-2">
       <Button
         className="flex w-full items-center justify-between rounded-lg border border-gray4 p-4 transition-colors hover:bg-gray3"
-        onClick={() => { setView("selection-network") }}
+        onClick={() => {
+          setView('selection-network')
+        }}
         type="button"
         variant="primary"
       >

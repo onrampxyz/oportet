@@ -13,19 +13,16 @@ import {
   useDisconnect,
   useSwitchChain,
 } from 'wagmi'
-import { useModal } from '~/contexts/ModalContext'
 import { AddressFormatter } from '~/utils'
 import LucideCopy from '~icons/lucide/copy'
 import LucideMoon from '~icons/lucide/moon'
 import LucideSun from '~icons/lucide/sun'
-import { DepositSelection } from '../-components/Modal/DepositSelection'
 
 export function Header() {
   const { isConnected, address } = useAccount()
   const { disconnect } = useDisconnect()
   const { switchChainAsync } = useSwitchChain()
   const { data: balance } = useBalance({ address })
-  const { openModal, closeAllModals } = useModal()
 
   const capabilities = useCapabilities({
     query: { enabled: isConnected },
@@ -204,7 +201,7 @@ export function Header() {
             onClick={toggleTheme}
             size="square"
             title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
-            // variant="outline"
+          // variant="outline"
           >
             {theme === 'light' ? (
               <LucideMoon className="size-5 text-gray11" />
@@ -213,12 +210,10 @@ export function Header() {
             )}
           </Button>
           <Button
-            onClick={() => {
-              openModal({
-                content: <DepositSelection />,
-                description: 'Deposit funds via Global Deposit or Onramping',
-                title: 'Add Funds',
-              })
+            onClick={(event) => {
+              event.stopPropagation()
+              event.preventDefault()
+              return handleAddFunds()
             }}
           >
             Add Funds

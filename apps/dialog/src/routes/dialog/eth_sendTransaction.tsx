@@ -59,8 +59,8 @@ function RouteComponent() {
       const { id } = await RelayActions.sendPreparedCalls(client, {
         capabilities: capabilities.feeSignature
           ? {
-            feeSignature: capabilities.feeSignature,
-          }
+              feeSignature: capabilities.feeSignature,
+            }
           : undefined,
         context,
         key,
@@ -76,11 +76,11 @@ function RouteComponent() {
         const error =
           status === 'success'
             ? new Provider.UnknownBundleIdError({
-              message: 'Call bundle with id: ' + id + ' not found.',
-            })
+                message: 'Call bundle with id: ' + id + ' not found.',
+              })
             : new RpcResponse.TransactionRejectedError({
-              message: 'Transaction failed under call bundle id: ' + id + '.',
-            })
+                message: 'Transaction failed under call bundle id: ' + id + '.',
+              })
         return Actions.respond(porto, request, {
           error,
         })

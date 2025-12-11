@@ -46,7 +46,7 @@ export default function AssetSelection(props: Readonly<AssetProps>) {
       <Button
         className="flex w-full items-center rounded-lg"
         onClick={() => {
-          setView("onramp")
+          setView('onramp')
         }}
         type="button"
         variant="primary"

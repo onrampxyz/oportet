@@ -41,7 +41,7 @@ export default function ChainSelection(props: ChainProps) {
             key={chain.label}
             onClick={() => {
               setSelectedChain(chain.label)
-              setView("selection-asset")
+              setView('selection-asset')
             }}
             type="button"
             variant="outline"
