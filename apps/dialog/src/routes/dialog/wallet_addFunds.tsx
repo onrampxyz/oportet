@@ -18,7 +18,7 @@ export const Route = createFileRoute('/dialog/wallet_addFunds')({
 
 function RouteComponent() {
   const request = Route.useSearch()
-  const { address, chainId, value } =
+  const { address, chainId, value, view } =
     request._decoded.method === 'wallet_addFunds'
       ? request._decoded.params[0]
       : {}
@@ -45,6 +45,7 @@ function RouteComponent() {
       onApprove={(result) => respond.mutate(result)}
       onReject={() => respond.mutate({ reject: true })}
       value={value}
+      view={view}
     />
   )
 }

@@ -135,11 +135,11 @@ export namespace DropdownMenu {
             },
           })({ size: resolvedSize }),
           disabled &&
-          css({
-            backgroundColor: 'var(--background-color-th_disabled)',
-            borderColor: 'var(--border-color-th_disabled)',
-            color: 'var(--text-color-th_disabled)',
-          }),
+            css({
+              backgroundColor: 'var(--background-color-th_disabled)',
+              borderColor: 'var(--border-color-th_disabled)',
+              color: 'var(--text-color-th_disabled)',
+            }),
           className,
         )}
         disabled={disabled}
@@ -228,7 +228,7 @@ export namespace DropdownMenu {
             }),
             align === 'start' && css({ left: 0 }),
             align === 'center' &&
-            css({ left: '50%', transform: 'translateX(-50%)' }),
+              css({ left: '50%', transform: 'translateX(-50%)' }),
             align === 'end' && css({ right: 0 }),
             className,
           )}

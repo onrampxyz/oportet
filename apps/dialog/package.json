@@ -27,16 +27,17 @@
     "@tanstack/react-router": "catalog:",
     "@wagmi/core": "catalog:",
     "cva": "catalog:",
+    "lucide-react": "^0.556.0",
+    "mipd": "catalog:",
+    "mipd-postmessage": "catalog:",
     "ox": "catalog:",
-    "rise-wallet": "workspace:*",
     "react": "catalog:",
     "react-dom": "catalog:",
     "react-intersection-observer": "^9.16.0",
+    "rise-wallet": "workspace:*",
     "wagmi": "catalog:",
     "zod": "catalog:",
-    "zustand": "catalog:",
-    "mipd": "catalog:",
-    "mipd-postmessage": "catalog:"
+    "zustand": "catalog:"
   },
   "devDependencies": {
     "@iconify/json": "catalog:",
