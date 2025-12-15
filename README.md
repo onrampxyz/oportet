@@ -55,11 +55,11 @@ bun add rise-wallet wagmi viem @tanstack/react-query
 
 ```tsx
 import { Chains, RiseWallet } from 'rise-wallet'
-import { risewallet } from 'rise-wallet/wagmi'
+import { riseWallet } from 'rise-wallet/wagmi'
 import { createConfig, http } from 'wagmi'
 
 // Export the connector for advanced usage
-export const rwConnector = risewallet(RiseWallet.defaultConfig)
+export const rwConnector = riseWallet(RiseWallet.defaultConfig)
 
 // Create wagmi config
 export const config = createConfig({
