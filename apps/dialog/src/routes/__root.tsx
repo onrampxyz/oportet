@@ -102,7 +102,7 @@ function RouteComponent() {
           <UI.ButtonArea.Anchor
             className="flex h-full items-center bg-transparent px-[4px] focus-visible:outline-[2px] focus-visible:outline-th_focus focus-visible:outline-offset-[-2px]"
             external
-            href="mailto:support@ithaca.xyz"
+            href="https://discord.com/invite/qhKnePXdSM"
             title="Report Bug"
           >
             <LucideBug className="size-[16px] text-th_frame" />
