@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { createContext, useContext, useState } from 'react'
+import { createContext, useContext, useMemo, useState } from 'react'
 import type { View } from '../routes/-components/AddFunds'
 import type { Asset } from '../routes/-components/GlobalDeposit/AssetSelection'
 import type { Chain } from '../routes/-components/GlobalDeposit/ChainSelection'
@@ -44,16 +44,18 @@ export function FundsProvider({
   const [selectedAsset, setSelectedAsset] = useState<Asset | undefined>()
   const [amount, setAmount] = useState<string>('0.00')
 
-  const value: FundsContextValue = {
-    amount,
-    selectedAsset,
-    selectedChain,
-    setAmount,
-    setSelectedAsset,
-    setSelectedChain,
-    setView,
-    view,
-  }
+  const value = useMemo(() => {
+    return {
+      amount,
+      selectedAsset,
+      selectedChain,
+      setAmount,
+      setSelectedAsset,
+      setSelectedChain,
+      setView,
+      view,
+    };
+  }, [amount, selectedAsset, selectedChain, view]);
 
   return <FundsContext.Provider value={value}>{children}</FundsContext.Provider>
 }

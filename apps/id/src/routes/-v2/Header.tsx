@@ -2,7 +2,7 @@ import * as Ariakit from '@ariakit/react'
 import { Button, Toast } from '@porto/apps/components'
 import type { Address } from 'ox'
 import { useEffect, useState } from 'react'
-import { Chains } from 'rise-wallet'
+import { Chains, Dialog } from 'rise-wallet'
 import { Hooks } from 'rise-wallet/wagmi'
 import { toast } from 'sonner'
 import { formatEther } from 'viem'
@@ -90,9 +90,12 @@ export function Header() {
     })
   }
 
+  const themeController = Dialog.createThemeController()
+
   const initialTheme = () => {
     // Check localStorage first
     const savedTheme = localStorage.getItem('__porto_theme')
+
     if (savedTheme === 'dark') {
       return 'dark'
     }
@@ -110,6 +113,9 @@ export function Header() {
       document.documentElement.classList.remove('scheme-light')
       document.documentElement.classList.add('scheme-light-dark')
       localStorage.setItem('__porto_theme', 'dark')
+      themeController.setTheme({
+        colorScheme: "dark"
+      })
     } else {
       document.documentElement.classList.remove(
         'scheme-light-dark',
@@ -117,6 +123,9 @@ export function Header() {
       )
       document.documentElement.classList.add('scheme-light')
       localStorage.setItem('__porto_theme', 'light')
+      themeController.setTheme({
+        colorScheme: "light"
+      })
     }
   }
 

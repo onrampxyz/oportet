@@ -1,8 +1,9 @@
 import { PortoConfig } from '@porto/apps'
-import { Mode, type RiseWallet, Storage } from 'rise-wallet'
+import { Dialog, Mode, type RiseWallet, Storage } from 'rise-wallet'
 import 'rise-wallet/register'
 
 const theme = localStorage.getItem('__porto_theme') ?? 'light'
+const themeController = Dialog.createThemeController()
 
 const host = (() => {
   const url = new URL(PortoConfig.getDialogHost())
@@ -24,6 +25,7 @@ export const config = {
       // secondaryBackground: '#e6e8ec',
       // secondaryContent: '#bcc4',
     },
+    themeController,
   }),
   storage: Storage.combine(Storage.cookie(), Storage.localStorage()),
 } as const satisfies RiseWallet.Config
