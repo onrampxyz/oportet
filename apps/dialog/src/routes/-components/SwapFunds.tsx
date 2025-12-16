@@ -96,9 +96,9 @@ export function SwapFunds(props: SwapFunds.Props) {
   const [selectedToToken, setSelectedToToken] = useState<SelectedToken | null>(
     initialToToken,
   )
-  const [selectingToken, setSelectingToken] = useState<
-    'from' | 'to' | null
-  >(null)
+  const [selectingToken, setSelectingToken] = useState<'from' | 'to' | null>(
+    null,
+  )
 
   // Get available tokens and user's assets
   const { data: tokens } = Tokens.getTokens.useQuery()
@@ -222,7 +222,10 @@ export function SwapFunds(props: SwapFunds.Props) {
       return
     }
 
-    if (selectedFromToken && amountNumber > selectedFromToken.balanceFormatted) {
+    if (
+      selectedFromToken &&
+      amountNumber > selectedFromToken.balanceFormatted
+    ) {
       setAmountError(
         `Insufficient balance. You only have ${selectedFromToken.balanceFormatted} ${selectedFromToken.symbol}!`,
       )
@@ -255,8 +258,8 @@ export function SwapFunds(props: SwapFunds.Props) {
       setIsSwapping(false)
       setAmountError(
         (error as any)?.shortMessage ??
-        (error as any)?.message ??
-        'Swap failed',
+          (error as any)?.message ??
+          'Swap failed',
       )
     }
   }
@@ -359,7 +362,9 @@ export function SwapFunds(props: SwapFunds.Props) {
                 Max
               </Button>
             </div>
-            {amountError && <p className="text-red-500 text-xs">{amountError}</p>}
+            {amountError && (
+              <p className="text-red-500 text-xs">{amountError}</p>
+            )}
           </div>
         </div>
       </Layout.Content>

@@ -56,16 +56,16 @@ export function TransferFunds(props: TransferFunds.Props) {
   // Initialize selectedToken from props.token if provided
   const initialToken = props.token
     ? {
-      address:
-        props.token.address ??
-        // Fallback: extract address from tokenId (format: chainId-address)
-        ((props.token.tokenId?.split('-')[1] ??
-          zeroAddress) as Address.Address),
-      balance: BigInt(props.token.balance ?? 0),
-      balanceFormatted: props.token.balanceFormatted ?? 0,
-      decimals: props.token.decimals,
-      symbol: props.token.symbol,
-    }
+        address:
+          props.token.address ??
+          // Fallback: extract address from tokenId (format: chainId-address)
+          ((props.token.tokenId?.split('-')[1] ??
+            zeroAddress) as Address.Address),
+        balance: BigInt(props.token.balance ?? 0),
+        balanceFormatted: props.token.balanceFormatted ?? 0,
+        decimals: props.token.decimals,
+        symbol: props.token.symbol,
+      }
     : null
 
   const [selectedToken, setSelectedToken] = useState<SelectedToken | null>(
@@ -232,8 +232,8 @@ export function TransferFunds(props: TransferFunds.Props) {
       setIsTransferring(false)
       setAmountError(
         (error as any)?.shortMessage ??
-        (error as any)?.message ??
-        'Transfer failed',
+          (error as any)?.message ??
+          'Transfer failed',
       )
     }
   }
@@ -262,7 +262,8 @@ export function TransferFunds(props: TransferFunds.Props) {
             <p className="text-sm text-th_base-secondary">Available Balance</p>
             <div className="w-full bg-th_field p-2">
               <p className="font-semibold text-gray12 text-sm">
-                {selectedToken.balanceFormatted.toFixed(4)} {selectedToken.symbol}
+                {selectedToken.balanceFormatted.toFixed(4)}{' '}
+                {selectedToken.symbol}
               </p>
             </div>
           </div>
@@ -313,9 +314,7 @@ export function TransferFunds(props: TransferFunds.Props) {
           <Button onClick={onReject} variant="secondary">
             Back
           </Button>
-          <Button className="flex-1!">
-            Approve
-          </Button>
+          <Button className="flex-1!">Approve</Button>
         </Layout.Footer.Actions>
       </Layout.Footer>
     </Layout>

@@ -915,6 +915,17 @@ export function dialog(parameters: dialog.Parameters = {}) {
         return await provider.request(request)
       },
 
+      async swapFunds(parameters) {
+        const { internal } = parameters
+        const { request, store } = internal
+
+        if (request.method !== 'wallet_swapFunds')
+          throw new Error('Cannot swap funds for method: ' + request.method)
+
+        const provider = getProvider(store)
+        return await provider.request(request)
+      },
+
       async switchChain(parameters) {
         const { internal } = parameters
         const { store, request } = internal
@@ -923,17 +934,6 @@ export function dialog(parameters: dialog.Parameters = {}) {
           throw new Error('Cannot switch chain for method: ' + request.method)
 
         if (!renderer.supportsHeadless) return
-
-        const provider = getProvider(store)
-        return await provider.request(request)
-      },
-
-      async swapFunds(parameters) {
-        const { internal } = parameters
-        const { request, store } = internal
-
-        if (request.method !== 'wallet_swapFunds')
-          throw new Error('Cannot swap funds for method: ' + request.method)
 
         const provider = getProvider(store)
         return await provider.request(request)

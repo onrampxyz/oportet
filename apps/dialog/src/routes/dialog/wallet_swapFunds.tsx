@@ -26,9 +26,7 @@ function RouteComponent() {
 
   const respond = useMutation({
     async mutationFn(
-      result:
-        | Parameters<SwapFunds.Props['onApprove']>[0]
-        | { reject: true },
+      result: Parameters<SwapFunds.Props['onApprove']>[0] | { reject: true },
     ) {
       // Handle rejection through mutation to support React Native redirect
       if ('reject' in result && result.reject) {
