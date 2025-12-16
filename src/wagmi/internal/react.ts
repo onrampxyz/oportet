@@ -2,8 +2,8 @@
 
 import {
   skipToken,
-  type UseMutationResult,
   useMutation,
+  type UseMutationResult,
   useQuery,
   useQueryClient,
 } from '@tanstack/react-query'
@@ -33,6 +33,8 @@ import {
   grantPermissions,
   revokeAdmin,
   revokePermissions,
+  swapFunds,
+  transferFunds,
   upgradeAccount,
   verifyEmail,
 } from './core.js'
@@ -84,6 +86,92 @@ export declare namespace useAddFunds {
     addFunds.ReturnType,
     addFunds.ErrorType,
     addFunds.Parameters<config>,
+    context
+  >
+}
+
+export function useTransferFunds<
+  config extends Config = ResolvedRegister['config'],
+  context = unknown,
+>(
+  parameters: useTransferFunds.Parameters<config, context> = {},
+): useTransferFunds.ReturnType<config, context> {
+  const { mutation } = parameters
+  const config = useConfig(parameters)
+  return useMutation({
+    ...mutation,
+    async mutationFn(variables) {
+      return transferFunds(config, variables)
+    },
+    mutationKey: ['transferFunds'],
+  })
+}
+
+export declare namespace useTransferFunds {
+  type Parameters<
+    config extends Config = Config,
+    context = unknown,
+  > = ConfigParameter<config> & {
+    mutation?:
+      | UseMutationParameters<
+          transferFunds.ReturnType,
+          transferFunds.ErrorType,
+          transferFunds.Parameters<config>,
+          context
+        >
+      | undefined
+  }
+
+  type ReturnType<
+    config extends Config = Config,
+    context = unknown,
+  > = UseMutationResult<
+    transferFunds.ReturnType,
+    transferFunds.ErrorType,
+    transferFunds.Parameters<config>,
+    context
+  >
+}
+
+export function useSwapFunds<
+  config extends Config = ResolvedRegister['config'],
+  context = unknown,
+>(
+  parameters: useSwapFunds.Parameters<config, context> = {},
+): useSwapFunds.ReturnType<config, context> {
+  const { mutation } = parameters
+  const config = useConfig(parameters)
+  return useMutation({
+    ...mutation,
+    async mutationFn(variables) {
+      return swapFunds(config, variables)
+    },
+    mutationKey: ['swapFunds'],
+  })
+}
+
+export declare namespace useSwapFunds {
+  type Parameters<
+    config extends Config = Config,
+    context = unknown,
+  > = ConfigParameter<config> & {
+    mutation?:
+      | UseMutationParameters<
+          swapFunds.ReturnType,
+          swapFunds.ErrorType,
+          swapFunds.Parameters<config>,
+          context
+        >
+      | undefined
+  }
+
+  type ReturnType<
+    config extends Config = Config,
+    context = unknown,
+  > = UseMutationResult<
+    swapFunds.ReturnType,
+    swapFunds.ErrorType,
+    swapFunds.Parameters<config>,
     context
   >
 }

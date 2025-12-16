@@ -163,6 +163,95 @@ export namespace wallet_addFunds {
   export type Response = z.infer<typeof Response>
 }
 
+export namespace wallet_transferFunds {
+  export const Parameters = z.object({
+    address: z.optional(u.address()),
+    amount: z.optional(z.string()),
+    chainId: z.optional(z.number()),
+    recipientAddress: z.optional(u.address()),
+    token: z.optional(
+      z.object({
+        address: z.optional(u.address()),
+        balance: z.optional(z.string()),
+        balanceFormatted: z.optional(z.number()),
+        decimals: u.number(),
+        isNative: z.optional(z.boolean()),
+        name: z.optional(z.string()),
+        price: z.optional(z.number()),
+        priceSource: z.optional(z.string()),
+        symbol: z.string(),
+        tokenId: z.optional(z.string()),
+        updatedAt: z.optional(z.string()),
+        usdValue: z.optional(z.number()),
+      }),
+    ),
+  })
+  export type Parameters = z.infer<typeof Parameters>
+
+  export const Request = z.object({
+    method: z.literal('wallet_transferFunds'),
+    params: z.readonly(z.tuple([Parameters])),
+  })
+  export type Request = z.infer<typeof Request>
+
+  export const Response = z.object({
+    success: z.boolean(),
+  })
+  export type Response = z.infer<typeof Response>
+}
+
+export namespace wallet_swapFunds {
+  export const Parameters = z.object({
+    address: z.optional(u.address()),
+    amount: z.optional(z.string()),
+    chainId: z.optional(z.number()),
+    fromToken: z.optional(
+      z.object({
+        address: z.optional(u.address()),
+        balance: z.optional(z.string()),
+        balanceFormatted: z.optional(z.number()),
+        decimals: u.number(),
+        isNative: z.optional(z.boolean()),
+        name: z.optional(z.string()),
+        price: z.optional(z.number()),
+        priceSource: z.optional(z.string()),
+        symbol: z.string(),
+        tokenId: z.optional(z.string()),
+        updatedAt: z.optional(z.string()),
+        usdValue: z.optional(z.number()),
+      }),
+    ),
+    toToken: z.optional(
+      z.object({
+        address: z.optional(u.address()),
+        balance: z.optional(z.string()),
+        balanceFormatted: z.optional(z.number()),
+        decimals: u.number(),
+        isNative: z.optional(z.boolean()),
+        name: z.optional(z.string()),
+        price: z.optional(z.number()),
+        priceSource: z.optional(z.string()),
+        symbol: z.string(),
+        tokenId: z.optional(z.string()),
+        updatedAt: z.optional(z.string()),
+        usdValue: z.optional(z.number()),
+      }),
+    ),
+  })
+  export type Parameters = z.infer<typeof Parameters>
+
+  export const Request = z.object({
+    method: z.literal('wallet_swapFunds'),
+    params: z.readonly(z.tuple([Parameters])),
+  })
+  export type Request = z.infer<typeof Request>
+
+  export const Response = z.object({
+    success: z.boolean(),
+  })
+  export type Response = z.infer<typeof Response>
+}
+
 export namespace eth_accounts {
   export const Request = z.object({
     method: z.literal('eth_accounts'),

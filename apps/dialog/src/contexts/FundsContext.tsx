@@ -54,8 +54,8 @@ export function FundsProvider({
       setSelectedChain,
       setView,
       view,
-    };
-  }, [amount, selectedAsset, selectedChain, view]);
+    }
+  }, [amount, selectedAsset, selectedChain, view])
 
   return <FundsContext.Provider value={value}>{children}</FundsContext.Provider>
 }

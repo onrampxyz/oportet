@@ -16,10 +16,10 @@ export namespace Input {
 
   export interface Props
     extends Omit<
-      React.InputHTMLAttributes<HTMLInputElement>,
-      'disabled' | 'size'
-    >,
-    VariantProps<typeof className> { }
+        React.InputHTMLAttributes<HTMLInputElement>,
+        'disabled' | 'size'
+      >,
+      VariantProps<typeof className> {}
 
   export const className = cva(
     'inline-flex items-center justify-center rounded-default border border-gray3 font-medium ring-blue6 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50',
@@ -36,7 +36,8 @@ export namespace Input {
           default: '-tracking-[2.8%] h-10 px-3 text-[15px]',
         },
         variant: {
-          default: 'border-th_base bg-th_field text-gray12 placeholder:text-gray8',
+          default:
+            'border-th_base bg-th_field text-gray12 placeholder:text-gray8',
         },
       },
     },

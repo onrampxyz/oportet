@@ -622,7 +622,9 @@ export function authSession(options: authSession.Options = {}) {
           wallet_revokePermissions: 'wallet_revokePermissions',
           wallet_sendCalls: 'wallet_sendCalls',
           wallet_sendPreparedCalls: 'wallet_sendPreparedCalls',
+          wallet_swapFunds: 'wallet_swapFunds',
           wallet_switchEthereumChain: 'wallet_switchEthereumChain',
+          wallet_transferFunds: 'wallet_transferFunds',
           wallet_verifySignature: 'wallet_verifySignature',
         } as const satisfies Record<string, string>
 

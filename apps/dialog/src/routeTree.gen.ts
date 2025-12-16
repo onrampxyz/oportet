@@ -13,6 +13,8 @@
 import { Route as rootRoute } from './routes/__root'
 import { Route as IndexImport } from './routes/index'
 import { Route as DialogIndexImport } from './routes/dialog/index'
+import { Route as DialogWallettransferFundsImport } from './routes/dialog/wallet_transferFunds'
+import { Route as DialogWalletswapFundsImport } from './routes/dialog/wallet_swapFunds'
 import { Route as DialogWalletsendCallsImport } from './routes/dialog/wallet_sendCalls'
 import { Route as DialogWalletrevokePermissionsImport } from './routes/dialog/wallet_revokePermissions'
 import { Route as DialogWalletrevokeAdminImport } from './routes/dialog/wallet_revokeAdmin'
@@ -42,6 +44,18 @@ const IndexRoute = IndexImport.update({
 const DialogIndexRoute = DialogIndexImport.update({
   id: '/dialog/',
   path: '/dialog/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const DialogWallettransferFundsRoute = DialogWallettransferFundsImport.update({
+  id: '/dialog/wallet_transferFunds',
+  path: '/dialog/wallet_transferFunds',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const DialogWalletswapFundsRoute = DialogWalletswapFundsImport.update({
+  id: '/dialog/wallet_swapFunds',
+  path: '/dialog/wallet_swapFunds',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -280,6 +294,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DialogWalletsendCallsImport
       parentRoute: typeof rootRoute
     }
+    '/dialog/wallet_swapFunds': {
+      id: '/dialog/wallet_swapFunds'
+      path: '/dialog/wallet_swapFunds'
+      fullPath: '/dialog/wallet_swapFunds'
+      preLoaderRoute: typeof DialogWalletswapFundsImport
+      parentRoute: typeof rootRoute
+    }
+    '/dialog/wallet_transferFunds': {
+      id: '/dialog/wallet_transferFunds'
+      path: '/dialog/wallet_transferFunds'
+      fullPath: '/dialog/wallet_transferFunds'
+      preLoaderRoute: typeof DialogWallettransferFundsImport
+      parentRoute: typeof rootRoute
+    }
     '/dialog/': {
       id: '/dialog/'
       path: '/dialog'
@@ -311,6 +339,8 @@ export interface FileRoutesByFullPath {
   '/dialog/wallet_revokeAdmin': typeof DialogWalletrevokeAdminRoute
   '/dialog/wallet_revokePermissions': typeof DialogWalletrevokePermissionsRoute
   '/dialog/wallet_sendCalls': typeof DialogWalletsendCallsRoute
+  '/dialog/wallet_swapFunds': typeof DialogWalletswapFundsRoute
+  '/dialog/wallet_transferFunds': typeof DialogWallettransferFundsRoute
   '/dialog': typeof DialogIndexRoute
 }
 
@@ -333,6 +363,8 @@ export interface FileRoutesByTo {
   '/dialog/wallet_revokeAdmin': typeof DialogWalletrevokeAdminRoute
   '/dialog/wallet_revokePermissions': typeof DialogWalletrevokePermissionsRoute
   '/dialog/wallet_sendCalls': typeof DialogWalletsendCallsRoute
+  '/dialog/wallet_swapFunds': typeof DialogWalletswapFundsRoute
+  '/dialog/wallet_transferFunds': typeof DialogWallettransferFundsRoute
   '/dialog': typeof DialogIndexRoute
 }
 
@@ -356,6 +388,8 @@ export interface FileRoutesById {
   '/dialog/wallet_revokeAdmin': typeof DialogWalletrevokeAdminRoute
   '/dialog/wallet_revokePermissions': typeof DialogWalletrevokePermissionsRoute
   '/dialog/wallet_sendCalls': typeof DialogWalletsendCallsRoute
+  '/dialog/wallet_swapFunds': typeof DialogWalletswapFundsRoute
+  '/dialog/wallet_transferFunds': typeof DialogWallettransferFundsRoute
   '/dialog/': typeof DialogIndexRoute
 }
 
@@ -380,6 +414,8 @@ export interface FileRouteTypes {
     | '/dialog/wallet_revokeAdmin'
     | '/dialog/wallet_revokePermissions'
     | '/dialog/wallet_sendCalls'
+    | '/dialog/wallet_swapFunds'
+    | '/dialog/wallet_transferFunds'
     | '/dialog'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -401,6 +437,8 @@ export interface FileRouteTypes {
     | '/dialog/wallet_revokeAdmin'
     | '/dialog/wallet_revokePermissions'
     | '/dialog/wallet_sendCalls'
+    | '/dialog/wallet_swapFunds'
+    | '/dialog/wallet_transferFunds'
     | '/dialog'
   id:
     | '__root__'
@@ -422,6 +460,8 @@ export interface FileRouteTypes {
     | '/dialog/wallet_revokeAdmin'
     | '/dialog/wallet_revokePermissions'
     | '/dialog/wallet_sendCalls'
+    | '/dialog/wallet_swapFunds'
+    | '/dialog/wallet_transferFunds'
     | '/dialog/'
   fileRoutesById: FileRoutesById
 }
@@ -445,6 +485,8 @@ export interface RootRouteChildren {
   DialogWalletrevokeAdminRoute: typeof DialogWalletrevokeAdminRoute
   DialogWalletrevokePermissionsRoute: typeof DialogWalletrevokePermissionsRoute
   DialogWalletsendCallsRoute: typeof DialogWalletsendCallsRoute
+  DialogWalletswapFundsRoute: typeof DialogWalletswapFundsRoute
+  DialogWallettransferFundsRoute: typeof DialogWallettransferFundsRoute
   DialogIndexRoute: typeof DialogIndexRoute
 }
 
@@ -468,6 +510,8 @@ const rootRouteChildren: RootRouteChildren = {
   DialogWalletrevokeAdminRoute: DialogWalletrevokeAdminRoute,
   DialogWalletrevokePermissionsRoute: DialogWalletrevokePermissionsRoute,
   DialogWalletsendCallsRoute: DialogWalletsendCallsRoute,
+  DialogWalletswapFundsRoute: DialogWalletswapFundsRoute,
+  DialogWallettransferFundsRoute: DialogWallettransferFundsRoute,
   DialogIndexRoute: DialogIndexRoute,
 }
 
@@ -499,6 +543,8 @@ export const routeTree = rootRoute
         "/dialog/wallet_revokeAdmin",
         "/dialog/wallet_revokePermissions",
         "/dialog/wallet_sendCalls",
+        "/dialog/wallet_swapFunds",
+        "/dialog/wallet_transferFunds",
         "/dialog/"
       ]
     },
@@ -555,6 +601,12 @@ export const routeTree = rootRoute
     },
     "/dialog/wallet_sendCalls": {
       "filePath": "dialog/wallet_sendCalls.tsx"
+    },
+    "/dialog/wallet_swapFunds": {
+      "filePath": "dialog/wallet_swapFunds.tsx"
+    },
+    "/dialog/wallet_transferFunds": {
+      "filePath": "dialog/wallet_transferFunds.tsx"
     },
     "/dialog/": {
       "filePath": "dialog/index.tsx"

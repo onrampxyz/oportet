@@ -114,7 +114,7 @@ export function Header() {
       document.documentElement.classList.add('scheme-light-dark')
       localStorage.setItem('__porto_theme', 'dark')
       themeController.setTheme({
-        colorScheme: "dark"
+        colorScheme: 'dark',
       })
     } else {
       document.documentElement.classList.remove(
@@ -124,7 +124,7 @@ export function Header() {
       document.documentElement.classList.add('scheme-light')
       localStorage.setItem('__porto_theme', 'light')
       themeController.setTheme({
-        colorScheme: "light"
+        colorScheme: 'light',
       })
     }
   }

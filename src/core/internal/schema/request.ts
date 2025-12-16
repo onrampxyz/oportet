@@ -9,6 +9,8 @@ export * from './rpc.js'
 export const Request = z.discriminatedUnion('method', [
   RpcRequest.account_verifyEmail.Request,
   RpcRequest.wallet_addFunds.Request,
+  RpcRequest.wallet_transferFunds.Request,
+  RpcRequest.wallet_swapFunds.Request,
   RpcRequest.eth_accounts.Request,
   RpcRequest.eth_chainId.Request,
   RpcRequest.eth_requestAccounts.Request,

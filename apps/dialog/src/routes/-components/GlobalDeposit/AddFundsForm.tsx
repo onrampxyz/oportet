@@ -52,7 +52,7 @@ export function AddFundsForm() {
         <DropdownSelector
           items={SupportedChains}
           onSelect={(item) => {
-            setAmount("0")
+            setAmount('0')
             setSelectedChain(item)
           }}
           selectedItem={selectedChain}
@@ -64,7 +64,7 @@ export function AddFundsForm() {
         <DropdownSelector
           items={SupportedAssets}
           onSelect={(item) => {
-            setAmount("0")
+            setAmount('0')
             setSelectedAsset(item)
           }}
           selectedItem={selectedAsset}

@@ -74,6 +74,50 @@ export declare namespace addFunds {
   type ReturnType = RpcSchema.wallet_addFunds.Response
 }
 
+export async function transferFunds(
+  client: Client,
+  parameters: transferFunds.Parameters,
+): Promise<transferFunds.ReturnType> {
+  const method = 'wallet_transferFunds' as const
+  type Method = typeof method
+  const response = await client.request<
+    Extract<RpcSchema_viem.Wallet[number], { Method: Method }>
+  >({
+    method,
+    params: [z.encode(RpcSchema.wallet_transferFunds.Parameters, parameters)],
+  })
+
+  return z.decode(RpcSchema.wallet_transferFunds.Response, response)
+}
+
+export declare namespace transferFunds {
+  type Parameters = RpcSchema.wallet_transferFunds.Parameters
+
+  type ReturnType = RpcSchema.wallet_transferFunds.Response
+}
+
+export async function swapFunds(
+  client: Client,
+  parameters: swapFunds.Parameters,
+): Promise<swapFunds.ReturnType> {
+  const method = 'wallet_swapFunds' as const
+  type Method = typeof method
+  const response = await client.request<
+    Extract<RpcSchema_viem.Wallet[number], { Method: Method }>
+  >({
+    method,
+    params: [z.encode(RpcSchema.wallet_swapFunds.Parameters, parameters)],
+  })
+
+  return z.decode(RpcSchema.wallet_swapFunds.Response, response)
+}
+
+export declare namespace swapFunds {
+  type Parameters = RpcSchema.wallet_swapFunds.Parameters
+
+  type ReturnType = RpcSchema.wallet_swapFunds.Response
+}
+
 export async function getAssets<
   chain extends Chain | undefined,
   account extends Account.Account | undefined,

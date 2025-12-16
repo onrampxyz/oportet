@@ -928,6 +928,28 @@ export function dialog(parameters: dialog.Parameters = {}) {
         return await provider.request(request)
       },
 
+      async swapFunds(parameters) {
+        const { internal } = parameters
+        const { request, store } = internal
+
+        if (request.method !== 'wallet_swapFunds')
+          throw new Error('Cannot swap funds for method: ' + request.method)
+
+        const provider = getProvider(store)
+        return await provider.request(request)
+      },
+
+      async transferFunds(parameters) {
+        const { internal } = parameters
+        const { request, store } = internal
+
+        if (request.method !== 'wallet_transferFunds')
+          throw new Error('Cannot transfer funds for method: ' + request.method)
+
+        const provider = getProvider(store)
+        return await provider.request(request)
+      },
+
       async upgradeAccount(parameters) {
         const { account, internal } = parameters
         const { store, request } = internal

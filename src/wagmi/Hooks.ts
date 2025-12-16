@@ -9,6 +9,8 @@ export {
   usePermissions,
   useRevokeAdmin,
   useRevokePermissions,
+  useSwapFunds,
+  useTransferFunds,
   useUpgradeAccount,
   useVerifyEmail,
 } from './internal/react.js'
