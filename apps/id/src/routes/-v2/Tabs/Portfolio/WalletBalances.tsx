@@ -6,6 +6,7 @@ import type { Balance } from '~/types/wallet'
 import { ValueFormatter } from '~/utils'
 import LucideSend from '~icons/lucide/send'
 import { Transfer } from './Transfer'
+import LucideArrowDownUp from '~icons/lucide/arrow-down-up'
 
 export type WalletBalancesProps = {
   balances?: Balance[]
@@ -18,7 +19,7 @@ export function WalletBalances(props: Readonly<WalletBalancesProps>) {
 
   const chains = useChains()
 
-  const [openTransferId, setOpenTransferId] = useState<string | null>(null)
+  const [isPanelOpen, setIsPanelOpen] = useState<string | null>(null)
 
   const hasBalance = balances && balances?.length !== 0
 
@@ -27,16 +28,13 @@ export function WalletBalances(props: Readonly<WalletBalancesProps>) {
     return `$${ValueFormatter.formatToPrice(value)}`
   }
 
-  const handleTransfer = (balance: Balance) => {
-    const balanceId = `${balance.tokenId}-${balance.symbol}`
-    // Toggle: if clicking the same balance, close it; otherwise open the new one
-    setOpenTransferId((prev) => (prev === balanceId ? null : balanceId))
+const  handleOpenPanel = (id: string) =>{
+  setIsPanelOpen((prev) => (prev === id ? null : id))
   }
 
-  const handleCloseTransfer = (balance: Balance) => {
-    const balanceId = `${balance.tokenId}-${balance.symbol}`
-    if (openTransferId === balanceId) {
-      setOpenTransferId(null)
+  const handleClosePanel = (id: string) => {
+    if (isPanelOpen === id) {
+      setIsPanelOpen(null)
     }
   }
 
@@ -77,9 +75,12 @@ export function WalletBalances(props: Readonly<WalletBalancesProps>) {
 
             <div className="space-y-2">
               {balances.map((balance) => {
-                console.log("balance:: ", balance)
-                const balanceId = `${balance.tokenId}-${balance.symbol}`
-                const isOpen = openTransferId === balanceId
+                console.log('balance:: ', balance)
+                const balanceId = `${chain.id}-${balance.tokenId}-${balance.symbol}`
+
+                const transferId = `transfer-${balanceId}`
+                const swapId = `swap-${balanceId}`
+                const isOpen = isPanelOpen === transferId || isPanelOpen === swapId
 
                 return (
                   <div key={balanceId}>
@@ -104,7 +105,7 @@ export function WalletBalances(props: Readonly<WalletBalancesProps>) {
                           </p>
                         </div>
                       </div>
-                      <div className="flex items-center gap-5">
+                      <div className="flex items-center gap-3">
                         <div className="text-right">
                           <p className="font-semibold text-gray12 text-sm">
                             {balance.balanceFormatted.toFixed(4)}{' '}
@@ -117,7 +118,14 @@ export function WalletBalances(props: Readonly<WalletBalancesProps>) {
                           </p>
                         </div>
                         <Button
-                          onClick={() => handleTransfer(balance)}
+                          onClick={() => handleOpenPanel(transferId)}
+                          size="small"
+                          title="Swap"
+                        >
+                          <LucideArrowDownUp className="size-4" />
+                        </Button>
+                        <Button
+                          onClick={() => handleOpenPanel(transferId)}
                           size="small"
                           title="Transfer"
                         >
@@ -127,8 +135,14 @@ export function WalletBalances(props: Readonly<WalletBalancesProps>) {
                     </div>
                     <Transfer
                       balance={balance}
-                      isOpen={isOpen}
-                      onClose={() => handleCloseTransfer(balance)}
+                      isOpen={isPanelOpen === transferId}
+                      onClose={() => handleClosePanel(transferId)}
+                      refetch={refetch}
+                    />
+                    <Transfer
+                      balance={balance}
+                      isOpen={isPanelOpen === swapId}
+                      onClose={() => handleClosePanel(swapId)}
                       refetch={refetch}
                     />
                   </div>
