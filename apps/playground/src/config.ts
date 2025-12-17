@@ -162,6 +162,8 @@ export const client = RelayClient.fromPorto(porto)
 
 export function getRelayUrl(): string {
   const env = Env.get()
-  return Transport.relayUrls[env as keyof typeof Transport.relayUrls]?.http ||
+  return (
+    Transport.relayUrls[env as keyof typeof Transport.relayUrls]?.http ||
     Transport.relayUrls.prod.http
+  )
 }
