@@ -1,7 +1,9 @@
 import { Button, DiscIcon } from '@porto/ui'
 import type { Address } from 'ox'
+import * as React from 'react'
 import { useFundsContext } from '~/contexts'
 import { Layout } from '../Layout'
+import { BRIDGE_TOKENS } from './BridgeFromChain'
 
 export type Asset = {
   name: string
@@ -11,18 +13,23 @@ export type Asset = {
   address: Address.Address
 }
 
-export const SupportedAssets: Asset[] = [
-  {
-    address: '0x0000000000000000000000000000000000000000',
-    decimals: 18,
-    icon: '/icons/eth.svg',
-    name: 'Ethereum',
-    symbol: 'ETH',
-  },
-]
+export function getAssets(id?: number) {
+  if (!id) return []
+
+  const tokens = BRIDGE_TOKENS[id] ?? []
+  console.log('tokens::', tokens)
+
+  return tokens
+}
 
 export function AssetSelection() {
-  const { selectedAsset, setSelectedAsset, setView } = useFundsContext()
+  const { selectedAsset, selectedChain, setSelectedAsset, setView } =
+    useFundsContext()
+
+  // Get tokens based on selected chain ID from BRIDGE_TOKENS
+  const supportedAssets = React.useMemo(() => {
+    return getAssets(selectedChain?.id)
+  }, [selectedChain])
 
   return (
     <Layout>
@@ -35,15 +42,15 @@ export function AssetSelection() {
       </Layout.Header>
       <Layout.Content>
         <div className="space-y-2 pt-3">
-          {SupportedAssets.map((asset) => {
+          {supportedAssets.map((asset) => {
             return (
               <Button
                 className="justify-start! flex w-full items-center gap-2 rounded-lg"
                 data-selected={selectedAsset?.symbol === asset.symbol}
-                key={asset.name}
+                key={asset.symbol}
                 onClick={() => {
                   setSelectedAsset(asset)
-                  setView('onramp')
+                  setView('global-deposit')
                 }}
                 type="button"
                 variant="secondary"

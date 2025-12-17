@@ -5,20 +5,19 @@ import { useEffect, useMemo } from 'react'
 import { formatUnits } from 'viem'
 import { useBalance } from 'wagmi'
 import { useFundsContext } from '~/contexts'
-import {
-  DropdownSelector,
-  SupportedAssets,
-  SupportedChains,
-} from '../GlobalDeposit'
+import { useMintToken } from '~/hooks'
+import { DropdownSelector, getAssets, SupportedChains } from '../GlobalDeposit'
+import { Layout } from '../Layout'
 
 export function AddFundsForm() {
   const {
-    selectedChain,
-    setSelectedChain,
-    selectedAsset,
-    setSelectedAsset,
+    address,
     amount,
+    selectedAsset,
+    selectedChain,
     setAmount,
+    setSelectedAsset,
+    setSelectedChain,
   } = useFundsContext()
 
   const balance = useBalance({
@@ -26,6 +25,8 @@ export function AddFundsForm() {
     chainId: selectedChain?.id,
   })
   console.log('balance:: ', balance.data)
+
+  const assets = getAssets(11155931)
 
   const amountBalance = useMemo(() => {
     if (balance.data) {
@@ -35,79 +36,125 @@ export function AddFundsForm() {
     return '0.00'
   }, [balance.data])
 
+  const { mintToken } = useMintToken({
+    address: address ?? '0x',
+    chainId: selectedChain?.id,
+    tokenAddress: selectedAsset?.address,
+  })
+
+  const isBalanceZero = useMemo(() => {
+    return balance.data?.value === 0n || !balance.data
+  }, [balance.data])
+
   // Initialize with defaults if not set
   useEffect(() => {
     if (!selectedChain && SupportedChains[0]) {
       setSelectedChain(SupportedChains[0])
     }
-    if (!selectedAsset && SupportedAssets[0]) {
-      setSelectedAsset(SupportedAssets[0])
+
+    if (!selectedAsset && assets[0]) {
+      setSelectedAsset(assets[0])
     }
-  }, [selectedChain, setSelectedChain, selectedAsset, setSelectedAsset])
+  }, [
+    selectedChain,
+    setSelectedChain,
+    selectedAsset,
+    setSelectedAsset,
+    assets[0],
+  ])
 
   return (
-    <div className="flex flex-col gap-2 pt-3">
-      <div className="flex-1 space-y-2 rounded-lg bg-th_base-alt p-2">
-        <p className="text-sm text-th_base-secondary">Source</p>
-        <DropdownSelector
-          items={SupportedChains}
-          onSelect={(item) => {
-            setAmount('0')
-            setSelectedChain(item)
-          }}
-          selectedItem={selectedChain}
+    <Layout>
+      <Layout.Header>
+        <Layout.Header.Default
+          subContent="Deposit to your RISE Wallet"
+          title="Global Deposit"
+          variant="default"
         />
-      </div>
+      </Layout.Header>
+      <Layout.Content>
+        <div className="flex flex-col gap-2 pt-3">
+          <div className="flex-1 space-y-2 rounded-lg bg-th_base-alt p-2">
+            <p className="text-sm text-th_base-secondary">Source</p>
+            <DropdownSelector
+              items={SupportedChains}
+              onSelect={(item) => {
+                setAmount('0')
+                setSelectedChain(item)
+              }}
+              selectedItem={selectedChain}
+            />
+          </div>
 
-      <div className="space-y-2 rounded-lg bg-th_base-alt p-2">
-        <p className="text-sm text-th_base-secondary">Token</p>
-        <DropdownSelector
-          items={SupportedAssets}
-          onSelect={(item) => {
-            setAmount('0')
-            setSelectedAsset(item)
-          }}
-          selectedItem={selectedAsset}
-        />
-      </div>
+          <div className="space-y-2 rounded-lg bg-th_base-alt p-2">
+            <p className="text-sm text-th_base-secondary">Token</p>
+            <DropdownSelector
+              items={assets}
+              onSelect={(item) => {
+                setAmount('0')
+                setSelectedAsset(item)
+              }}
+              selectedItem={selectedAsset}
+            />
+          </div>
 
-      <div className="space-y-2 rounded-lg bg-th_base-alt p-2">
-        <div className="flex items-center justify-between gap-2">
-          <p className="text-sm text-th_base-secondary">Amount</p>
-          <div className="flex gap-2">
-            <p className="text-sm text-th_base-secondary">Balance:</p>
-            <p className="text-sm text-th_base-secondary">
-              {Number(amountBalance).toFixed(4)}{' '}
-              <span className="font-bold">{selectedAsset?.symbol}</span>
-            </p>
+          <div className="space-y-2 rounded-lg bg-th_base-alt p-2">
+            <div className="flex items-center justify-between gap-2">
+              <p className="text-sm text-th_base-secondary">Amount</p>
+              <div className="flex gap-2">
+                <p className="text-sm text-th_base-secondary">Balance:</p>
+                <p className="text-sm text-th_base-secondary">
+                  {Number(amountBalance).toFixed(4)}{' '}
+                  <span className="font-bold">{selectedAsset?.symbol}</span>
+                </p>
+              </div>
+            </div>
+            <div className="flex gap-2">
+              <Input
+                className={cx('w-full bg-th_field')}
+                name="Amount"
+                onChange={(event) => {
+                  const value = event.target.value
+                  setAmount(value)
+                }}
+                placeholder="0.00"
+                value={amount}
+              />
+              {isBalanceZero ? (
+                <Button
+                  className="border border-th_base"
+                  onClick={async () => {
+                    await mintToken()
+                    // Refetch balance after minting
+                    balance.refetch()
+                  }}
+                  variant="primary"
+                >
+                  Mint
+                </Button>
+              ) : (
+                <Button
+                  className="border border-th_base"
+                  onClick={() => {
+                    console.log('amountBalance:: ', amountBalance)
+                    setAmount(amountBalance)
+                  }}
+                  variant="primary"
+                >
+                  Max
+                </Button>
+              )}
+            </div>
           </div>
         </div>
-        <div className="flex gap-2">
-          <Input
-            className={cx('w-full bg-th_field')}
-            name="Amount"
-            onChange={(event) => {
-              const value = event.target.value
-              setAmount(value)
-            }}
-            placeholder="0.00"
-            value={amount}
-          />
-          <Button
-            className="border border-th_base"
-            onClick={() => {
-              console.log('amountBalance:: ', amountBalance)
-              setAmount(amountBalance)
-            }}
-            variant="primary"
-          >
-            Max
+      </Layout.Content>
+      <Layout.Footer>
+        <Layout.Footer.Actions>
+          <Button className="flex-1" variant="primary">
+            Approve Global Deposit
           </Button>
-        </div>
-      </div>
-      <Button className="flex-1" variant="primary">
-        Approve Global Deposit
-      </Button>
-    </div>
+        </Layout.Footer.Actions>
+      </Layout.Footer>
+    </Layout>
   )
 }

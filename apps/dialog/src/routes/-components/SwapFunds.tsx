@@ -1,7 +1,7 @@
 import { Input } from '@porto/apps/components'
 import { Button } from '@porto/ui'
 import { cx } from 'cva'
-import { Address } from 'ox'
+import type { Address } from 'ox'
 import { useMemo, useState } from 'react'
 import { Hooks as RemoteHooks } from 'rise-wallet/remote'
 import { Hooks as WagmiHooks } from 'rise-wallet/wagmi'

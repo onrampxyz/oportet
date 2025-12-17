@@ -1,5 +1,5 @@
 import { usePrevious } from '@porto/apps/hooks'
-import { Button } from '@porto/ui'
+import { Button, Separator } from '@porto/ui'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import type { Address, Hex } from 'ox'
 import * as React from 'react'
@@ -8,19 +8,24 @@ import { RelayActions } from 'rise-wallet/viem'
 import { Hooks } from 'rise-wallet/wagmi'
 import { zeroAddress, zeroHash } from 'viem'
 import { useWatchBlockNumber } from 'wagmi'
+import { DepositButtons } from '~/components/DepositButtons'
 import { FundsProvider, useFundsContext } from '~/contexts'
 import { useOnrampOrder } from '~/lib/onramp'
 import { porto } from '~/lib/Porto'
 import * as Tokens from '~/lib/Tokens'
 import { Layout } from '~/routes/-components/Layout'
-import TriangleAlertIcon from '~icons/lucide/triangle-alert'
+import Star from '~icons/ph/star-four-bold'
+import { ApplePayButton, ApplePayIframe } from './ActionPreview'
 import {
   AddFundsForm,
   AssetSelection,
   ChainSelection,
   DepositSelection,
 } from './GlobalDeposit'
+import { BridgeFromChain } from './GlobalDeposit/BridgeFromChain'
+import { DepositError } from './GlobalDeposit/DepositError'
 import { SetupApplePay } from './SetupApplePay'
+
 // const presetAmounts = ['30', '50', '100', '250'] as const
 // const maxAmount = 500
 
@@ -33,6 +38,7 @@ export type View =
   | 'selection-network'
   | 'selection-asset'
   | 'selection-deposit'
+  | 'global-deposit'
 
 function AddFundsContent(props: AddFunds.Props) {
   const { chainId, onApprove, onReject, value } = props
@@ -41,6 +47,8 @@ function AddFundsContent(props: AddFunds.Props) {
 
   const account = RemoteHooks.useAccount(porto)
   const address = props.address ?? account?.address
+
+  console.log('address:: ', address)
   const chain = RemoteHooks.useChain(porto, { chainId })
 
   // const showApplePay = useShowApplePay()
@@ -158,44 +166,7 @@ function AddFundsContent(props: AddFunds.Props) {
     }
   }, [balanceMap, onApprove, previousBalanceMap])
 
-  if (view === 'error')
-    return (
-      <Layout>
-        <Layout.Header>
-          <Layout.Header.Default
-            icon={TriangleAlertIcon}
-            title="Deposit failed"
-            variant="destructive"
-          />
-        </Layout.Header>
-
-        <Layout.Content className="px-1">
-          <p className="text-th_base">Your deposit was cancelled or failed.</p>
-          <p className="text-th_base-secondary">
-            No funds have been deposited.
-          </p>
-        </Layout.Content>
-
-        <Layout.Footer>
-          <Layout.Footer.Actions>
-            <Button
-              className="flex-grow"
-              onClick={() => onReject?.()}
-              variant="secondary"
-            >
-              Close
-            </Button>
-            <Button
-              className="flex-grow"
-              onClick={() => setView('default')}
-              variant="primary"
-            >
-              Try again
-            </Button>
-          </Layout.Footer.Actions>
-        </Layout.Footer>
-      </Layout>
-    )
+  if (view === 'error') return <DepositError />
 
   if (view === 'setup-onramp')
     return (
@@ -231,24 +202,72 @@ function AddFundsContent(props: AddFunds.Props) {
     return <AssetSelection />
   }
 
+  if (view === 'global-deposit') {
+    return <AddFundsForm />
+  }
+
   return (
     <Layout>
       <Layout.Header>
         <Layout.Header.Default
-          subContent="Deposit to your RISE Wallet"
-          title="Global Deposit"
+          icon={Star}
+          title="Add funds"
           variant="default"
         />
       </Layout.Header>
 
       <Layout.Content>
-        <AddFundsForm />
+        <div className="flex flex-col gap-3">
+          <Separator label="Select deposit method" size="medium" spacing={0} />
+          {showApplePay &&
+            address &&
+            (onrampStatus?.email &&
+            onrampStatus.phone &&
+            !onrampStatus.reverifyPhone ? (
+              <div className="flex w-full flex-col">
+                {createOrder.isSuccess && createOrder.data?.url && (
+                  <ApplePayIframe
+                    lastOrderEvent={lastOrderEvent}
+                    loaded={iframeLoaded}
+                    setLoaded={setIframeLoaded}
+                    src={createOrder.data.url}
+                  />
+                )}
+                {(!iframeLoaded ||
+                  lastOrderEvent?.eventName ===
+                    'onramp_api.apple_pay_button_pressed' ||
+                  lastOrderEvent?.eventName === 'onramp_api.polling_start') && (
+                  <ApplePayButton label="Buy with" loading />
+                )}
+              </div>
+            ) : (
+              <ApplePayButton
+                label="Set up"
+                onClick={() => setView('setup-onramp')}
+              />
+            ))}
+          {view !== 'onramp' && (
+            <>
+              <DepositButtons
+                address={address ?? ''}
+                chainId={chain?.id}
+                nativeTokenName={chain?.nativeCurrency?.symbol}
+              />
+              <Button
+                onClick={() => setView('bridge')}
+                variant="positive"
+                width="full"
+              >
+                Bridge from other chains
+              </Button>
+            </>
+          )}
+        </div>
       </Layout.Content>
-
       {onReject && view !== 'onramp' && (
         <Layout.Footer>
           <Layout.Footer.Actions>
-            <Button onClick={onReject} variant="secondary">
+            <Button onClick={onReject} variant="secondary" width="full">
               Back
             </Button>
           </Layout.Footer.Actions>
@@ -259,8 +278,14 @@ function AddFundsContent(props: AddFunds.Props) {
 }
 
 export function AddFunds(props: AddFunds.Props) {
+  const account = RemoteHooks.useAccount(porto)
+  const address = props.address ?? account?.address
+
   return (
-    <FundsProvider initialView={(props.view as View) ?? 'default'}>
+    <FundsProvider
+      address={address}
+      initialView={(props.view as View) ?? 'default'}
+    >
       <AddFundsContent {...props} />
     </FundsProvider>
   )
