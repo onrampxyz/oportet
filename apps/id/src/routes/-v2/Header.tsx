@@ -220,7 +220,7 @@ export function Header() {
             onClick={toggleTheme}
             size="square"
             title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
-          // variant="outline"
+            // variant="outline"
           >
             {theme === 'light' ? (
               <LucideMoon className="size-5 text-gray11" />

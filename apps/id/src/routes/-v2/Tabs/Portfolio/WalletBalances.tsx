@@ -124,23 +124,24 @@ export function WalletBalances(props: Readonly<WalletBalancesProps>) {
                             {formatValue(balance.usdValue)}
                           </p>
                         </div>
-                        {isTransactionSupported && <div className="flex gap-2">
-                          <Button
-                            onClick={() => handleOpenPanel(swapId)}
-                            size="small"
-                            title="Swap"
-                          >
-                            <LucideArrowDownUp className="size-4" />
-                          </Button>
-                          <Button
-                            onClick={() => handleOpenPanel(transferId)}
-                            size="small"
-                            title="Transfer"
-                          >
-                            <LucideSend className="size-4" />
-                          </Button>
-                        </div>}
-
+                        {isTransactionSupported && (
+                          <div className="flex gap-2">
+                            <Button
+                              onClick={() => handleOpenPanel(swapId)}
+                              size="small"
+                              title="Swap"
+                            >
+                              <LucideArrowDownUp className="size-4" />
+                            </Button>
+                            <Button
+                              onClick={() => handleOpenPanel(transferId)}
+                              size="small"
+                              title="Transfer"
+                            >
+                              <LucideSend className="size-4" />
+                            </Button>
+                          </div>
+                        )}
                       </div>
                     </div>
                     <Transfer

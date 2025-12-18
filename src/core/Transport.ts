@@ -1,6 +1,6 @@
 import { createTransport, type Transport } from 'viem'
 
-export { fallback, http, webSocket, type Transport } from 'viem'
+export { fallback, http, type Transport, webSocket } from 'viem'
 
 export const relayUrls = {
   anvil: { http: 'http://localhost:9119' },

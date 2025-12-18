@@ -151,7 +151,7 @@ export function AddFundsForm() {
       <Layout.Footer>
         <Layout.Footer.Actions>
           <Button
-            className='w-full flex-1'
+            className="w-full flex-1"
             disabled={Number(amountBalance) === 0}
             variant="primary"
           >
