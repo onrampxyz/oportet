@@ -61,6 +61,7 @@ export function Assets() {
       <WalletBalances
         balances={wallet.balances}
         isLoading={assets.isLoading || assets.isPending}
+        isTransactionSupported={false}
         refetch={assets.refetch}
       />
     </div>

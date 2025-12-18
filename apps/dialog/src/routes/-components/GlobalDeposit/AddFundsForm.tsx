@@ -87,7 +87,16 @@ export function AddFundsForm() {
           </div>
 
           <div className="space-y-2 rounded-lg bg-th_base-alt p-2">
-            <p className="text-sm text-th_base-secondary">Token</p>
+            <div className="flex items-center justify-between gap-2">
+              <p className="text-sm text-th_base-secondary">Token</p>
+              <div className="flex gap-2">
+                <p className="text-sm text-th_base-secondary">Balance:</p>
+                <p className="text-sm text-th_base-secondary">
+                  {Number(amountBalance).toFixed(4)}{' '}
+                  <span className="font-bold">{selectedAsset?.symbol}</span>
+                </p>
+              </div>
+            </div>
             <DropdownSelector
               items={assets}
               onSelect={(item) => {
@@ -99,16 +108,7 @@ export function AddFundsForm() {
           </div>
 
           <div className="space-y-2 rounded-lg bg-th_base-alt p-2">
-            <div className="flex items-center justify-between gap-2">
-              <p className="text-sm text-th_base-secondary">Amount</p>
-              <div className="flex gap-2">
-                <p className="text-sm text-th_base-secondary">Balance:</p>
-                <p className="text-sm text-th_base-secondary">
-                  {Number(amountBalance).toFixed(4)}{' '}
-                  <span className="font-bold">{selectedAsset?.symbol}</span>
-                </p>
-              </div>
-            </div>
+            <p className="text-sm text-th_base-secondary">Amount</p>
             <div className="flex gap-2">
               <Input
                 className={cx('w-full bg-th_field')}
@@ -150,7 +150,11 @@ export function AddFundsForm() {
       </Layout.Content>
       <Layout.Footer>
         <Layout.Footer.Actions>
-          <Button className="flex-1" variant="primary">
+          <Button
+            className='w-full flex-1'
+            disabled={Number(amountBalance) === 0}
+            variant="primary"
+          >
             Approve Global Deposit
           </Button>
         </Layout.Footer.Actions>

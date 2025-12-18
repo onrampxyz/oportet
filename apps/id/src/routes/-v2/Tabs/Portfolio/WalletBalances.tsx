@@ -3,19 +3,21 @@ import { cx } from 'cva'
 import { useState } from 'react'
 import { useChains } from 'wagmi'
 import type { Balance } from '~/types/wallet'
-import { ValueFormatter } from '~/utils'
-import LucideSend from '~icons/lucide/send'
-import { Transfer } from './Transfer'
+import { AddressFormatter, ValueFormatter } from '~/utils'
 import LucideArrowDownUp from '~icons/lucide/arrow-down-up'
+import LucideSend from '~icons/lucide/send'
+import { Swap } from './Swap'
+import { Transfer } from './Transfer'
 
 export type WalletBalancesProps = {
   balances?: Balance[]
   isLoading: boolean
   refetch: () => void
+  isTransactionSupported?: boolean // TODO: Fix this -- add a check per token
 }
 
 export function WalletBalances(props: Readonly<WalletBalancesProps>) {
-  const { balances, isLoading, refetch } = props
+  const { balances, isLoading, refetch, isTransactionSupported = true } = props
 
   const chains = useChains()
 
@@ -28,8 +30,8 @@ export function WalletBalances(props: Readonly<WalletBalancesProps>) {
     return `$${ValueFormatter.formatToPrice(value)}`
   }
 
-const  handleOpenPanel = (id: string) =>{
-  setIsPanelOpen((prev) => (prev === id ? null : id))
+  const handleOpenPanel = (id: string) => {
+    setIsPanelOpen((prev) => (prev === id ? null : id))
   }
 
   const handleClosePanel = (id: string) => {
@@ -80,7 +82,10 @@ const  handleOpenPanel = (id: string) =>{
 
                 const transferId = `transfer-${balanceId}`
                 const swapId = `swap-${balanceId}`
-                const isOpen = isPanelOpen === transferId || isPanelOpen === swapId
+                const isOpen =
+                  isPanelOpen === transferId || isPanelOpen === swapId
+
+                console.log('swapId:: ', swapId)
 
                 return (
                   <div key={balanceId}>
@@ -101,11 +106,13 @@ const  handleOpenPanel = (id: string) =>{
                             {balance.symbol}
                           </p>
                           <p className="text-gray10 text-xs capitalize">
-                            {balance.tokenId.replace(`${chain.id}-`, '')}
+                            {AddressFormatter.mask(
+                              balance.tokenId.replace(`${chain.id}-`, ''),
+                            )}
                           </p>
                         </div>
                       </div>
-                      <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-6">
                         <div className="text-right">
                           <p className="font-semibold text-gray12 text-sm">
                             {balance.balanceFormatted.toFixed(4)}{' '}
@@ -117,20 +124,23 @@ const  handleOpenPanel = (id: string) =>{
                             {formatValue(balance.usdValue)}
                           </p>
                         </div>
-                        <Button
-                          onClick={() => handleOpenPanel(transferId)}
-                          size="small"
-                          title="Swap"
-                        >
-                          <LucideArrowDownUp className="size-4" />
-                        </Button>
-                        <Button
-                          onClick={() => handleOpenPanel(transferId)}
-                          size="small"
-                          title="Transfer"
-                        >
-                          <LucideSend className="size-4" />
-                        </Button>
+                        {isTransactionSupported && <div className="flex gap-2">
+                          <Button
+                            onClick={() => handleOpenPanel(swapId)}
+                            size="small"
+                            title="Swap"
+                          >
+                            <LucideArrowDownUp className="size-4" />
+                          </Button>
+                          <Button
+                            onClick={() => handleOpenPanel(transferId)}
+                            size="small"
+                            title="Transfer"
+                          >
+                            <LucideSend className="size-4" />
+                          </Button>
+                        </div>}
+
                       </div>
                     </div>
                     <Transfer
@@ -139,7 +149,7 @@ const  handleOpenPanel = (id: string) =>{
                       onClose={() => handleClosePanel(transferId)}
                       refetch={refetch}
                     />
-                    <Transfer
+                    <Swap
                       balance={balance}
                       isOpen={isPanelOpen === swapId}
                       onClose={() => handleClosePanel(swapId)}

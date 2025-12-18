@@ -139,30 +139,20 @@ export function Transfer(props: Readonly<TransferProps>) {
 
   return (
     <div
-      className={`overflow-hidden rounded-lg rounded-t-none border border-gray5 border-t-0 transition-all duration-300 ease-in-out ${
-        isOpen ? 'max-h-[600px] p-4 opacity-100' : 'max-h-0 p-0 opacity-0'
-      }`}
+      className={`overflow-hidden rounded-lg rounded-t-none border border-gray5 border-t-0 transition-all duration-300 ease-in-out ${isOpen ? 'max-h-[600px] p-4 opacity-100' : 'max-h-0 p-0 opacity-0'
+        }`}
     >
       <div className="space-y-3">
-        {/* Balance Info */}
-        <div className="rounded-lg border border-gray5 bg-gray2 px-3 py-2">
-          <p className="text-gray10 text-xs">Available Balance</p>
-          <p className="font-semibold text-gray12 text-sm">
-            {balance.balanceFormatted} {balance.symbol}
-          </p>
-        </div>
-
         {/* Address Input */}
         <div className="space-y-2">
           <label className="font-medium text-gray12 text-sm" htmlFor="address">
             Recipient Address
           </label>
           <input
-            className={`w-full rounded-lg border p-3 text-sm focus:outline-none ${
-              addressError
-                ? 'border-red-500 focus:border-red-500'
-                : 'border-gray5 focus:border-violet9'
-            }`}
+            className={`w-full rounded-lg border p-3 text-sm focus:outline-none ${addressError
+              ? 'border-red-500 focus:border-red-500'
+              : 'border-gray5 focus:border-violet9'
+              }`}
             id="address"
             onChange={(e) => {
               setToAddress(e.target.value)
@@ -184,9 +174,8 @@ export function Transfer(props: Readonly<TransferProps>) {
             Amount
           </label>
           <div
-            className={`flex gap-1 rounded-lg border px-3 py-2 ${
-              amountError ? 'border-red-500' : 'border-gray5'
-            }`}
+            className={`flex gap-1 rounded-lg border px-3 py-2 ${amountError ? 'border-red-500' : 'border-gray5'
+              }`}
           >
             <input
               className="flex-1 text-sm focus:border-violet9 focus:outline-none"
@@ -204,7 +193,6 @@ export function Transfer(props: Readonly<TransferProps>) {
               className="pt-1"
               onClick={handleMaxAmount}
               size="small"
-              variant="outline"
             >
               Max
             </Button>

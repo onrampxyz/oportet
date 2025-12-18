@@ -145,6 +145,9 @@ export function useBridge(params: UseBridgeParams) {
 
   // Mint token function
   const mintToken = async () => {
+    console.log('selectedChainId:: ', selectedChainId)
+    console.log('selectedTokenAddress:: ', selectedTokenAddress)
+
     if (!selectedTokenAddress || !selectedChainId) return
 
     const { id } = await porto.provider.request({
@@ -174,6 +177,8 @@ export function useBridge(params: UseBridgeParams) {
     })
 
     console.log('mint call:', status)
+
+    return status
   }
 
   return {

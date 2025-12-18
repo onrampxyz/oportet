@@ -13,6 +13,10 @@ export function useMintToken(params: UseMintTokenParams) {
   const { address, chainId, tokenAddress } = params
 
   const mintToken = async () => {
+    console.log('address To:: ', address)
+    console.log('selectedTokenAddress:: ', tokenAddress)
+    console.log('selectedChainId:: ', chainId)
+
     if (!tokenAddress || !chainId) return
 
     const { id } = await porto.provider.request({
@@ -25,7 +29,7 @@ export function useMintToken(params: UseMintTokenParams) {
                 abi: [
                   parseAbiItem('function mint(address to, uint256 amount)'),
                 ],
-                args: [address, Value.from('10', 18)],
+                args: [address, Value.from('1', 18)],
                 functionName: 'mint',
               }),
               to: tokenAddress,

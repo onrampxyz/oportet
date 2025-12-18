@@ -1,26 +1,26 @@
 // UniswapV2 Router ABI for swapping
 export const UniswapV2RouterABI = [
   {
-    type: "function",
-    name: "swapExactTokensForTokens",
     inputs: [
-      { name: "amountIn", type: "uint256" },
-      { name: "amountOutMin", type: "uint256" },
-      { name: "path", type: "address[]" },
-      { name: "to", type: "address" },
-      { name: "deadline", type: "uint256" },
+      { name: 'amountIn', type: 'uint256' },
+      { name: 'amountOutMin', type: 'uint256' },
+      { name: 'path', type: 'address[]' },
+      { name: 'to', type: 'address' },
+      { name: 'deadline', type: 'uint256' },
     ],
-    outputs: [{ name: "amounts", type: "uint256[]" }],
-    stateMutability: "nonpayable",
+    name: 'swapExactTokensForTokens',
+    outputs: [{ name: 'amounts', type: 'uint256[]' }],
+    stateMutability: 'nonpayable',
+    type: 'function',
   },
   {
-    type: "function",
-    name: "getAmountsOut",
     inputs: [
-      { name: "amountIn", type: "uint256" },
-      { name: "path", type: "address[]" },
+      { name: 'amountIn', type: 'uint256' },
+      { name: 'path', type: 'address[]' },
     ],
-    outputs: [{ name: "amounts", type: "uint256[]" }],
-    stateMutability: "view",
+    name: 'getAmountsOut',
+    outputs: [{ name: 'amounts', type: 'uint256[]' }],
+    stateMutability: 'view',
+    type: 'function',
   },
-] as const;
+] as const
