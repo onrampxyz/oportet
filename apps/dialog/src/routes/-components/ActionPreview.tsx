@@ -1,29 +1,18 @@
-import { Query, UserAgent } from '@porto/apps'
-import { exp1Address, exp2Address } from '@porto/apps/contracts'
-import { Button, Separator } from '@porto/ui'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { UserAgent } from '@porto/apps'
+import { Button } from '@porto/ui'
 import { cx } from 'cva'
 import { Value } from 'ox'
 import type * as Address from 'ox/Address'
 import * as React from 'react'
 import type * as Quote_schema from 'rise-wallet/core/internal/relay/schema/quotes'
-import { Hooks as RemoteHooks } from 'rise-wallet/remote'
-import { RelayActions } from 'rise-wallet/viem'
 import { useWatchBlockNumber } from 'wagmi'
 import { DepositButtons } from '~/components/DepositButtons'
-import {
-  type CbPostMessageSchema,
-  useOnrampOrder,
-  useShowApplePay,
-} from '~/lib/onramp'
+import type { CbPostMessageSchema } from '~/lib/onramp'
 import { porto } from '~/lib/Porto'
 import { ValueFormatter } from '~/utils'
 import LucideInfo from '~icons/lucide/info'
 import { AddFunds } from './AddFunds'
 import { Layout } from './Layout'
-import { SetupApplePay } from './SetupApplePay'
-
-type View = 'default' | 'setup-onramp'
 
 export function ActionPreview(props: ActionPreview.Props) {
   const {
@@ -40,20 +29,8 @@ export function ActionPreview(props: ActionPreview.Props) {
 
   const deficit = useDeficit(quotes, error, queryParams)
   const [showAddFunds, setShowAddFunds] = React.useState(false)
-  const [view, setView] = React.useState<View>('default')
 
   const depositAddress = deficit?.address || account
-  const fiatDepositValue = React.useMemo(() => {
-    if (deficit?.amount?.fiat) return deficit.amount.fiat
-    const [amount, symbol] = deficit?.amount?.rounded.split(' ') ?? []
-    if (amount && symbol) {
-      if (symbol !== 'USDC' && symbol !== 'USDT') return
-      const value = Number.parseFloat(amount)
-      if (!value) return
-      return value < 5 ? '5' : Math.ceil(value).toString()
-    }
-    return
-  }, [deficit])
 
   useWatchBlockNumber({
     chainId: deficit?.chainId as never,
@@ -62,92 +39,6 @@ export function ActionPreview(props: ActionPreview.Props) {
       onQuotesRefetch?.()
     },
   })
-
-  const showApplePay = useShowApplePay()
-  const client = RemoteHooks.useRelayClient(porto)
-  const { data: onrampStatus } = useQuery({
-    enabled: Boolean(showApplePay && depositAddress),
-    async queryFn() {
-      if (!depositAddress) throw new Error('address required')
-      return await RelayActions.onrampStatus(client, {
-        address: depositAddress,
-      })
-    },
-    queryKey: ['onrampStatus', depositAddress],
-    select(data) {
-      const reverifyPhone = (() => {
-        if (!data.phone) return false
-        const timestampDate = new Date(data.phone * 1000)
-        const currentDate = new Date()
-        const diffInMs = currentDate.getTime() - timestampDate.getTime()
-        const diffInDays = diffInMs / (1000 * 60 * 60 * 24)
-        return diffInDays > 60
-      })()
-      return { ...data, reverifyPhone }
-    },
-  })
-  const onApprove = React.useCallback(() => {
-    onQuotesRefetch?.()
-  }, [onQuotesRefetch])
-  const { createOrder, lastOrderEvent } = useOnrampOrder({
-    onApprove,
-    // TODO(onramp): Flip to `false`
-    sandbox: true,
-  })
-  const [iframeLoaded, setIframeLoaded] = React.useState(false)
-
-  const queryClient = useQueryClient()
-  // biome-ignore lint/correctness/useExhaustiveDependencies: explanation
-  const onCompleteOnrampSetup = React.useCallback(() => {
-    if (!depositAddress) throw new Error('address is required')
-    if (!fiatDepositValue) throw new Error('amount is required')
-    const timestamp = Math.floor(Date.now() / 1000)
-    queryClient.setQueryData(
-      ['onrampStatus', depositAddress],
-      {
-        email: onrampStatus?.email ?? timestamp,
-        phone: onrampStatus?.phone ?? timestamp,
-      },
-      {},
-    )
-    createOrder.mutate(
-      { address: depositAddress, amount: fiatDepositValue },
-      {
-        onSuccess() {
-          setView('default')
-        },
-      },
-    )
-  }, [depositAddress, fiatDepositValue, onrampStatus])
-
-  // create onramp order if onramp status is valid
-  // biome-ignore lint/correctness/useExhaustiveDependencies: keep stable
-  React.useEffect(() => {
-    if (!depositAddress) return
-    if (!fiatDepositValue) return
-    if (
-      onrampStatus?.email &&
-      onrampStatus.phone &&
-      !onrampStatus.reverifyPhone &&
-      !createOrder.isPending
-    ) {
-      setIframeLoaded(false)
-      createOrder.mutate({ address: depositAddress, amount: fiatDepositValue })
-    }
-  }, [depositAddress, fiatDepositValue, onrampStatus])
-
-  if (view === 'setup-onramp')
-    return (
-      <SetupApplePay
-        address={depositAddress!}
-        onBack={() => {
-          setView('default')
-        }}
-        onComplete={onCompleteOnrampSetup}
-        showEmail={!onrampStatus?.email}
-        showPhone={!onrampStatus?.phone || onrampStatus?.reverifyPhone}
-      />
-    )
 
   if (showAddFunds && deficit)
     return (
@@ -178,15 +69,6 @@ export function ActionPreview(props: ActionPreview.Props) {
             deficit={deficit}
             onAddFunds={() => setShowAddFunds(true)}
             onReject={onReject}
-            onramp={{
-              iframeLoaded,
-              lastOrderEvent,
-              setIframeLoaded,
-              setView,
-              status: onrampStatus,
-              url: createOrder.data?.url,
-            }}
-            showApplePay={showApplePay}
           />
         ) : (
           actions
@@ -358,23 +240,8 @@ function FundsNeededSection(props: {
   account?: Address.Address
   onReject: () => void
   onAddFunds: () => void
-  showApplePay: boolean
-  onramp: {
-    iframeLoaded: boolean
-    lastOrderEvent?: CbPostMessageSchema | undefined
-    setIframeLoaded: (iframeLoaded: boolean) => void
-    setView: (view: View) => void
-    status?:
-      | {
-          email?: number | undefined
-          phone?: number | undefined
-          reverifyPhone?: boolean | undefined
-        }
-      | undefined
-    url?: string | undefined
-  }
 }) {
-  const { deficit, account, onReject, onramp, onAddFunds, showApplePay } = props
+  const { deficit, account, onReject, onAddFunds } = props
 
   const depositAddress = deficit.address || account
 
@@ -397,103 +264,8 @@ function FundsNeededSection(props: {
       </div>
     )
 
-  const client = RemoteHooks.useRelayClient(porto)
-
-  const showFaucet = React.useMemo(() => {
-    if (import.meta.env.MODE !== 'test' && !chain?.testnet) return false
-
-    if (
-      !deficit.assetDeficits?.length ||
-      !deficit.chainId ||
-      !deficit.assetDeficits[0]?.address
-    )
-      return false
-
-    const tokenAddr = deficit.assetDeficits[0].address.toLowerCase()
-
-    const isExp1 =
-      tokenAddr ===
-      exp1Address[deficit.chainId as keyof typeof exp1Address]?.toLowerCase()
-
-    const isExp2 =
-      tokenAddr ===
-      exp2Address[deficit.chainId as keyof typeof exp2Address]?.toLowerCase()
-
-    return (isExp1 || isExp2) && deficit.amount !== undefined
-  }, [deficit, chain])
-
-  const faucet = useMutation({
-    async mutationFn() {
-      if (!depositAddress) throw new Error('address is required')
-      if (!deficit.chainId) throw new Error('chainId is required')
-      if (!deficit.amount) throw new Error('deficit amount is required')
-      if (!deficit.assetDeficits?.[0]?.address)
-        throw new Error('deficit asset is required')
-
-      const response = await RelayActions.addFaucetFunds(client, {
-        address: depositAddress,
-        chain: { id: deficit.chainId },
-        tokenAddress: deficit.assetDeficits[0].address,
-        value: deficit.amount.needed,
-      })
-
-      await Query.client.invalidateQueries({
-        queryKey: ['prepareCalls'], // see Calls.prepareCalls.queryOptions.queryKey()
-      })
-
-      return response
-    },
-  })
-
   return (
     <div className="flex w-full flex-col gap-[10px] px-3">
-      {showFaucet ? (
-        <div className="flex w-full gap-[8px]">
-          <Button
-            data-testid="buy"
-            loading={faucet.isPending && 'Adding funds…'}
-            onClick={() => faucet.mutate()}
-            variant="primary"
-            width="grow"
-          >
-            Faucet
-          </Button>
-        </div>
-      ) : (
-        showApplePay &&
-        account &&
-        (onramp.status?.email &&
-        onramp.status.phone &&
-        !onramp.status.reverifyPhone ? (
-          <div className="flex w-full flex-col">
-            {onramp.url && (
-              <ApplePayIframe
-                lastOrderEvent={onramp.lastOrderEvent}
-                loaded={onramp.iframeLoaded}
-                setLoaded={onramp.setIframeLoaded}
-                src={onramp.url}
-              />
-            )}
-            {(!onramp.iframeLoaded ||
-              onramp.lastOrderEvent?.eventName ===
-                'onramp_api.apple_pay_button_pressed' ||
-              onramp.lastOrderEvent?.eventName ===
-                'onramp_api.polling_start') && (
-              <ApplePayButton label="Buy with" loading />
-            )}
-          </div>
-        ) : (
-          <ApplePayButton
-            label="Set up"
-            onClick={() => onramp.setView('setup-onramp')}
-          />
-        ))
-      )}
-
-      {(showApplePay || showFaucet) && depositAddress && (
-        <Separator label="or" position="center" size="small" spacing={0} />
-      )}
-
       {depositAddress && (
         <DepositButtons
           address={depositAddress}
