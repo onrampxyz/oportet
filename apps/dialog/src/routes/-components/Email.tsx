@@ -134,7 +134,7 @@ export function Email(props: Email.Props) {
                 disabled={status === 'loading' || signingIn}
                 name="email"
                 onChange={() => setInvalid(false)}
-                placeholder="example@ithaca.xyz"
+                placeholder="example@risechain.com"
                 type="email"
               />
               <div className="-tracking-[2.8%] absolute end-3 text-[12px] text-th_base-secondary leading-normal">
