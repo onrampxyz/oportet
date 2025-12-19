@@ -39,7 +39,7 @@ export const BRIDGE_TOKENS: Record<number, BridgeToken[]> = {
       bridgeType: 'hyperlane',
       bridgeWrapper: zeroAddress,
       decimals: 18,
-      icon: '/icons/eth.svg',
+      icon: '/icons/usdc.svg',
       minDeposit: Value.from('0.1', 18), // 0.1 USDC
       name: 'USDC', // TODO: fix this
       symbol: 'USDC',
@@ -54,7 +54,7 @@ export const BRIDGE_TOKENS: Record<number, BridgeToken[]> = {
       bridgeType: 'hyperlane',
       bridgeWrapper: '0x9Fe63D450edC97D700fA1D0081b84569102e5C1D',
       decimals: 18,
-      icon: '/icons/eth.svg',
+      icon: '/icons/usdc.svg',
       minDeposit: Value.from('0.1', 18), // 0.1 USDC
       name: 'USDC', // TODO: fix this
       symbol: 'USDC',

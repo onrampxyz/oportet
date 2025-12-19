@@ -87,16 +87,17 @@ export function Bridge(props: BridgeProps) {
                 {bridgeState.status === 'source-confirmed' && (
                   <CheckCircle className="size-5 text-th_positive" />
                 )}
-                {bridgeState.status === 'source-failed' && (
+                {(bridgeState.status === 'source-failed' || bridgeState.status === 'failed') && (
                   <XCircle className="size-5" color="red" />
                 )}
                 <CircleDashed
-                  className='block size-5 data-[hidden=true]:hidden'
+                  className="block size-5 data-[hidden=true]:hidden"
                   color="gray"
                   data-hidden={
                     bridgeState.status === 'source-pending' ||
                     bridgeState.status === 'source-confirmed' ||
-                    bridgeState.status === 'source-failed'
+                    bridgeState.status === 'source-failed' ||
+                    bridgeState.status === 'failed'
                   }
                 />
               </div>
@@ -142,7 +143,7 @@ export function Bridge(props: BridgeProps) {
                 )}
 
                 <CircleDashed
-                  className='block size-5 data-[hidden=true]:hidden'
+                  className="block size-5 data-[hidden=true]:hidden"
                   color="gray"
                   data-hidden={
                     bridgeState.status === 'destination-pending' ||
