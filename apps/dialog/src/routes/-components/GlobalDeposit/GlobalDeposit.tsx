@@ -1,15 +1,21 @@
 import { Input } from '@porto/apps/components'
 import { Button } from '@porto/ui'
 import { cx } from 'cva'
-import { useEffect, useMemo } from 'react'
-import { formatUnits } from 'viem'
-import { useBalance } from 'wagmi'
+import { Value } from 'ox'
+import { useEffect, useMemo, useState } from 'react'
+import { parseUnits } from 'viem'
 import { useFundsContext } from '~/contexts'
-import { useMintToken } from '~/hooks'
-import { DropdownSelector, getAssets, SupportedChains } from '../GlobalDeposit'
+import {
+  useBridge,
+  useDestinationAsset,
+  useMintToken,
+  useWalletAsset,
+} from '~/hooks'
+import { DropdownSelector, getAssets, SupportedChains } from '.'
 import { Layout } from '../Layout'
+import { Bridge, type BridgeState } from './Bridge'
 
-export function AddFundsForm() {
+export function GlobalDeposit() {
   const {
     address,
     amount,
@@ -20,21 +26,20 @@ export function AddFundsForm() {
     setSelectedChain,
   } = useFundsContext()
 
-  const balance = useBalance({
-    address: selectedAsset?.address ?? '0x',
-    chainId: selectedChain?.id,
+  // Track initial balance before bridge
+  const [initialRiseBalance, setInitialRiseBalance] = useState<
+    bigint | undefined
+  >()
+
+  const [bridgeState, setBridgeState] = useState<BridgeState>({
+    status: 'idle',
   })
-  console.log('balance:: ', balance.data)
 
-  const assets = getAssets(11155931)
-
-  const amountBalance = useMemo(() => {
-    if (balance.data) {
-      return formatUnits(balance.data.value, balance.data.decimals)
-    }
-
-    return '0.00'
-  }, [balance.data])
+  const { balance, refetch: refetchBalance } = useWalletAsset({
+    address: address ?? '0x',
+    chainId: selectedChain?.id,
+    tokenAddress: selectedAsset?.address ?? '0x',
+  })
 
   const { mintToken } = useMintToken({
     address: address ?? '0x',
@@ -42,9 +47,47 @@ export function AddFundsForm() {
     tokenAddress: selectedAsset?.address,
   })
 
+  const tokens = getAssets(selectedChain?.id)
+  // Default to RISE, add handling when on mainnet
+  const destinationToken = getAssets(11155931)
+
+  const { balance: riseBalance, refetch: refetchRiseBalance } =
+    useDestinationAsset({
+      address: address ?? '0x',
+      destinationChainId: 11155931, // Default to RISE, add handling when on mainnet
+      destinationTokenAddress: destinationToken[0]?.address,
+      enabled:
+        bridgeState.status === 'source-confirmed' ||
+        bridgeState.status === 'destination-pending',
+      refetchInterval:
+        bridgeState.status === 'destination-pending' ? 2000 : false,
+    })
+
+  const selectedToken = useMemo(() => {
+    return tokens.find(
+      (t) => t.address.toLowerCase() === selectedAsset?.address?.toLowerCase(),
+    )
+  }, [tokens, selectedAsset?.address])
+
+  const { bridge, chains, targetChainId } = useBridge({
+    amount: parseUnits(amount, selectedAsset?.decimals ?? 18),
+    selectedChainId: selectedChain?.id,
+    selectedToken,
+    setBridgeState,
+    tokenBalance: balance,
+  })
+
+  const amountBalance = useMemo(() => {
+    if (balance) {
+      return Value.format(balance, selectedAsset?.decimals)
+    }
+
+    return '0.00'
+  }, [balance, selectedAsset?.decimals])
+
   const isBalanceZero = useMemo(() => {
-    return balance.data?.value === 0n || !balance.data
-  }, [balance.data])
+    return balance === 0n || !balance
+  }, [balance])
 
   // Initialize with defaults if not set
   useEffect(() => {
@@ -52,16 +95,42 @@ export function AddFundsForm() {
       setSelectedChain(SupportedChains[0])
     }
 
-    if (!selectedAsset && assets[0]) {
-      setSelectedAsset(assets[0])
+    if (!selectedAsset && tokens[0]) {
+      setSelectedAsset(tokens[0])
     }
   }, [
     selectedChain,
     setSelectedChain,
     selectedAsset,
     setSelectedAsset,
-    assets[0],
+    tokens[0],
   ])
+
+  useEffect(() => {
+    setInitialRiseBalance(riseBalance ?? 0n)
+  }, [riseBalance])
+
+  // Show bridge progress view
+  if (bridgeState.status !== 'idle') {
+    return (
+      <Bridge
+        amount={parseUnits(amount, selectedToken?.decimals ?? 18)}
+        bridgeError={null}
+        bridgeState={bridgeState}
+        chains={chains}
+        onRetry={() => {
+          bridge()
+        }}
+        onSuccess={() => {
+          setBridgeState({ status: 'idle' })
+          refetchBalance()
+          refetchRiseBalance()
+        }}
+        selectedToken={selectedToken}
+        targetChainId={targetChainId}
+      />
+    )
+  }
 
   return (
     <Layout>
@@ -92,13 +161,13 @@ export function AddFundsForm() {
               <div className="flex gap-2">
                 <p className="text-sm text-th_base-secondary">Balance:</p>
                 <p className="text-sm text-th_base-secondary">
-                  {Number(amountBalance).toFixed(4)}{' '}
+                  {amountBalance}{' '}
                   <span className="font-bold">{selectedAsset?.symbol}</span>
                 </p>
               </div>
             </div>
             <DropdownSelector
-              items={assets}
+              items={tokens}
               onSelect={(item) => {
                 setAmount('0')
                 setSelectedAsset(item)
@@ -125,8 +194,6 @@ export function AddFundsForm() {
                   className="border border-th_base"
                   onClick={async () => {
                     await mintToken()
-                    // Refetch balance after minting
-                    balance.refetch()
                   }}
                   variant="primary"
                 >
@@ -136,7 +203,6 @@ export function AddFundsForm() {
                 <Button
                   className="border border-th_base"
                   onClick={() => {
-                    console.log('amountBalance:: ', amountBalance)
                     setAmount(amountBalance)
                   }}
                   variant="primary"
@@ -152,7 +218,8 @@ export function AddFundsForm() {
         <Layout.Footer.Actions>
           <Button
             className="w-full flex-1"
-            disabled={Number(amountBalance) === 0}
+            disabled={Number(amountBalance) === 0 || Number(amount) === 0}
+            onClick={bridge}
             variant="primary"
           >
             Approve Global Deposit

@@ -77,15 +77,12 @@ export function WalletBalances(props: Readonly<WalletBalancesProps>) {
 
             <div className="space-y-2">
               {balances.map((balance) => {
-                console.log('balance:: ', balance)
                 const balanceId = `${chain.id}-${balance.tokenId}-${balance.symbol}`
 
                 const transferId = `transfer-${balanceId}`
                 const swapId = `swap-${balanceId}`
                 const isOpen =
                   isPanelOpen === transferId || isPanelOpen === swapId
-
-                console.log('swapId:: ', swapId)
 
                 return (
                   <div key={balanceId}>

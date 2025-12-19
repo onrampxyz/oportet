@@ -1,24 +1,19 @@
 import { Env } from '@porto/apps'
-import {
-  Button,
-  CopyButton,
-  Deposit,
-  Details,
-  Separator,
-  Spinner,
-} from '@porto/ui'
-import { useQuery } from '@tanstack/react-query'
+import { Button, Deposit, Separator } from '@porto/ui'
 import { type Address, type Hex, Value } from 'ox'
 import * as React from 'react'
 import { zeroAddress } from 'viem'
 import { riseTestnet } from 'viem/chains'
 import { useSendCallsSync, useWatchBlockNumber } from 'wagmi'
-import { useBridge } from '~/hooks'
-import { porto } from '~/lib/Porto'
+import {
+  useBridge,
+  useDestinationAsset,
+  useMintToken,
+  useWalletAsset,
+} from '~/hooks'
 import { Layout } from '~/routes/-components/Layout'
-import CheckCircle from '~icons/lucide/check-circle'
-import ExternalLink from '~icons/lucide/external-link'
 import Star from '~icons/ph/star-four-bold'
+import { Bridge } from './Bridge'
 
 export type BridgeToken = {
   symbol: string
@@ -79,6 +74,7 @@ export function BridgeFromChain(props: {
   const [selectedTokenAddress, setSelectedTokenAddress] = React.useState<
     Address.Address | undefined
   >()
+
   const [bridgeState, setBridgeState] = React.useState<{
     status:
       | 'idle'
@@ -99,43 +95,10 @@ export function BridgeFromChain(props: {
     )
   }, [selectedChainId])
 
-  const { data: tokenBalance, refetch: refetchBalance } = useQuery({
-    enabled: Boolean(selectedChainId && selectedTokenAddress && address),
-    async queryFn() {
-      if (!selectedChainId || !selectedTokenAddress) return 0n
-
-      const hexChainId = `0x${selectedChainId.toString(16)}` as Hex.Hex
-      const isNative =
-        selectedTokenAddress.toLowerCase() === zeroAddress.toLowerCase()
-      const response = await porto.provider.request({
-        method: 'wallet_getAssets',
-        params: [
-          {
-            account: address,
-            assetFilter: {
-              [hexChainId]: [
-                {
-                  address: isNative
-                    ? ('native' as const)
-                    : selectedTokenAddress,
-                  type: isNative ? 'native' : 'erc20',
-                },
-              ],
-            },
-            chainFilter: [hexChainId],
-          },
-        ],
-      })
-      const assets = response[hexChainId] ?? []
-      const asset = assets[0]
-      return asset ? BigInt(asset.balance) : 0n
-    },
-    queryKey: [
-      'bridge-token-balance',
-      selectedChainId,
-      selectedTokenAddress,
-      address,
-    ],
+  const { balance: tokenBalance, refetch: refetchBalance } = useWalletAsset({
+    address,
+    chainId: selectedChainId,
+    tokenAddress: selectedTokenAddress,
   })
 
   useWatchBlockNumber({
@@ -161,22 +124,29 @@ export function BridgeFromChain(props: {
     )
   }, [selectedToken])
 
-  const {
-    bridge,
-    chains,
-    destBalance,
-    mintToken,
-    refetchDestBalance,
-    targetChainId,
-  } = useBridge({
-    address,
-    bridgeState,
-    destinationToken,
+  const { bridge, chains, targetChainId } = useBridge({
     selectedChainId,
     selectedToken,
-    selectedTokenAddress,
     setBridgeState,
     tokenBalance,
+  })
+
+  const { balance: destBalance, refetch: refetchDestBalance } =
+    useDestinationAsset({
+      address,
+      destinationChainId: targetChainId,
+      destinationTokenAddress: destinationToken?.address,
+      enabled:
+        bridgeState.status === 'source-confirmed' ||
+        bridgeState.status === 'destination-pending',
+      refetchInterval:
+        bridgeState.status === 'destination-pending' ? 2000 : false,
+    })
+
+  const { mintToken } = useMintToken({
+    address,
+    chainId: selectedChainId,
+    tokenAddress: selectedTokenAddress,
   })
 
   const canBridge = React.useMemo(() => {
@@ -259,145 +229,20 @@ export function BridgeFromChain(props: {
 
   // Show bridge progress view
   if (bridgeState.status !== 'idle') {
-    const sourceChain = chains?.find((c) => c.id === bridgeState.sourceChainId)
-    const allChains = [...(chains ?? []), ...porto._internal.config.chains]
-    const destChain = allChains.find((c: any) => c.id === targetChainId)
-
     return (
-      <Layout>
-        <Layout.Header>
-          <Layout.Header.Default
-            icon={bridgeState.status === 'completed' ? CheckCircle : Star}
-            title={
-              bridgeState.status === 'completed'
-                ? 'Bridge completed'
-                : 'Bridging in progress'
-            }
-            variant={bridgeState.status === 'completed' ? 'success' : 'default'}
-          />
-        </Layout.Header>
-
-        <Layout.Content>
-          <div className="flex flex-col gap-3">
-            <Separator label="Bridge status" size="medium" spacing={0} />
-            {bridgeError && (
-              <div className="flex flex-col gap-3">
-                <div className="flex items-start gap-2">
-                  <div className="flex-1">
-                    <div className="font-medium text-sm text-th_base">
-                      Bridge error
-                    </div>
-                    <div className="text-sm text-th_base-secondary">
-                      {bridgeError.message}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            <div className="flex flex-col gap-3">
-              {/* Source Chain Status */}
-              <div className="flex items-start gap-2">
-                <div className="mt-1">
-                  {bridgeState.status === 'source-pending' ? (
-                    <Spinner size="small" />
-                  ) : (
-                    <CheckCircle className="size-5 text-th_positive" />
-                  )}
-                </div>
-                <div className="flex-1">
-                  <div className="font-medium text-sm text-th_base">
-                    Source chain transaction
-                  </div>
-                  <div className="text-sm text-th_base-secondary">
-                    {sourceChain?.name}
-                  </div>
-                  {bridgeState.sourceTxHash && (
-                    <div className="mt-1 flex items-center gap-2">
-                      <a
-                        className="flex items-center gap-1 text-sm text-th_primary hover:underline"
-                        href={`${sourceChain?.blockExplorers?.default?.url}/tx/${bridgeState.sourceTxHash}`}
-                        rel="noopener noreferrer"
-                        target="_blank"
-                      >
-                        View on explorer
-                        <ExternalLink className="size-3" />
-                      </a>
-                      <CopyButton
-                        size="mini"
-                        value={bridgeState.sourceTxHash}
-                        variant="content"
-                      />
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* Destination Chain Status */}
-              <div className="flex items-start gap-2">
-                <div className="mt-1">
-                  {bridgeState.status === 'completed' ? (
-                    <CheckCircle className="size-5 text-th_positive" />
-                  ) : bridgeState.status === 'destination-pending' ? (
-                    <Spinner size="small" />
-                  ) : (
-                    <div className="size-5 rounded-full border-2 border-th_base-secondary" />
-                  )}
-                </div>
-                <div className="flex-1">
-                  <div className="font-medium text-sm text-th_base">
-                    Destination chain receipt
-                  </div>
-                  <div className="text-sm text-th_base-secondary">
-                    {destChain?.name}
-                  </div>
-                  {bridgeState.status === 'destination-pending' && (
-                    <div className="mt-1 text-sm text-th_base-secondary">
-                      Waiting for bridge to complete...
-                    </div>
-                  )}
-                  {bridgeState.status === 'completed' && (
-                    <div className="mt-1 text-sm text-th_positive">
-                      Tokens received successfully
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-
-            {selectedToken && tokenBalance !== undefined && (
-              <Details opened>
-                <Details.Item
-                  label="Amount"
-                  value={`${Value.format(tokenBalance, selectedToken.decimals)} ${selectedToken.symbol}`}
-                />
-                <Details.Item
-                  label="Bridge type"
-                  value={selectedToken.bridgeType.toUpperCase()}
-                />
-              </Details>
-            )}
-          </div>
-        </Layout.Content>
-
-        <Layout.Footer>
-          <Layout.Footer.Actions>
-            {bridgeState.status === 'completed' ? (
-              <Button
-                onClick={() => onSuccess()}
-                variant="primary"
-                width="full"
-              >
-                Done
-              </Button>
-            ) : (
-              <Button disabled variant="secondary" width="full">
-                Bridge in progress...
-              </Button>
-            )}
-          </Layout.Footer.Actions>
-        </Layout.Footer>
-      </Layout>
+      <Bridge
+        amount={tokenBalance}
+        bridge={bridge}
+        bridgeError={bridgeError}
+        bridgeState={bridgeState}
+        chains={chains}
+        onRetry={() => {
+          setBridgeState({ status: 'idle' })
+        }}
+        onSuccess={onSuccess}
+        selectedToken={selectedToken}
+        targetChainId={targetChainId}
+      />
     )
   }
 

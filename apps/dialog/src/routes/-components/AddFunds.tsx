@@ -17,10 +17,10 @@ import { Layout } from '~/routes/-components/Layout'
 import Star from '~icons/ph/star-four-bold'
 import { ApplePayButton, ApplePayIframe } from './ActionPreview'
 import {
-  AddFundsForm,
   AssetSelection,
   ChainSelection,
   DepositSelection,
+  GlobalDeposit,
 } from './GlobalDeposit'
 import { BridgeFromChain } from './GlobalDeposit/BridgeFromChain'
 import { DepositError } from './GlobalDeposit/DepositError'
@@ -48,7 +48,6 @@ function AddFundsContent(props: AddFunds.Props) {
   const account = RemoteHooks.useAccount(porto)
   const address = props.address ?? account?.address
 
-  console.log('address:: ', address)
   const chain = RemoteHooks.useChain(porto, { chainId })
 
   // const showApplePay = useShowApplePay()
@@ -203,7 +202,7 @@ function AddFundsContent(props: AddFunds.Props) {
   }
 
   if (view === 'global-deposit') {
-    return <AddFundsForm />
+    return <GlobalDeposit />
   }
 
   return (
