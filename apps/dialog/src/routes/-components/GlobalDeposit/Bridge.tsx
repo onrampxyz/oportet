@@ -10,13 +10,13 @@ import type { BridgeToken } from './BridgeFromChain'
 
 export type BridgeState = {
   status:
-  | 'idle'
-  | 'source-pending'
-  | 'source-confirmed'
-  | 'source-failed'
-  | 'destination-pending'
-  | 'completed'
-  | 'failed'
+    | 'idle'
+    | 'source-pending'
+    | 'source-confirmed'
+    | 'source-failed'
+    | 'destination-pending'
+    | 'completed'
+    | 'failed'
   sourceChainId?: number
   sourceTxHash?: Hex.Hex
   destinationTxHash?: Hex.Hex
@@ -87,7 +87,8 @@ export function Bridge(props: BridgeProps) {
                 {bridgeState.status === 'source-confirmed' && (
                   <CheckCircle className="size-5 text-th_positive" />
                 )}
-                {(bridgeState.status === 'source-failed' || bridgeState.status === 'failed') && (
+                {(bridgeState.status === 'source-failed' ||
+                  bridgeState.status === 'failed') && (
                   <XCircle className="size-5" color="red" />
                 )}
                 <CircleDashed
