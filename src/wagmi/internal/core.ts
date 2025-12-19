@@ -171,60 +171,6 @@ export declare namespace addFunds {
   type ErrorType = BaseError
 }
 
-export async function transferFunds<config extends Config>(
-  config: config,
-  parameters: transferFunds.Parameters<config>,
-): Promise<transferFunds.ReturnType> {
-  const { address, chainId, connector } = parameters
-
-  const client = await getConnectorClient(config, {
-    account: address,
-    assertChainId: false,
-    chainId,
-    connector,
-  })
-
-  return WalletActions.transferFunds(client, parameters)
-}
-
-export declare namespace transferFunds {
-  type Parameters<config extends Config = Config> = ChainIdParameter<config> &
-    ConnectorParameter &
-    WalletActions.transferFunds.Parameters
-
-  type ReturnType = WalletActions.transferFunds.ReturnType
-
-  // TODO: Exhaustive ErrorType
-  type ErrorType = BaseError
-}
-
-export async function swapFunds<config extends Config>(
-  config: config,
-  parameters: swapFunds.Parameters<config>,
-): Promise<swapFunds.ReturnType> {
-  const { address, chainId, connector } = parameters
-
-  const client = await getConnectorClient(config, {
-    account: address,
-    assertChainId: false,
-    chainId,
-    connector,
-  })
-
-  return WalletActions.swapFunds(client, parameters)
-}
-
-export declare namespace swapFunds {
-  type Parameters<config extends Config = Config> = ChainIdParameter<config> &
-    ConnectorParameter &
-    WalletActions.swapFunds.Parameters
-
-  type ReturnType = WalletActions.swapFunds.ReturnType
-
-  // TODO: Exhaustive ErrorType
-  type ErrorType = BaseError
-}
-
 export async function getAdmins<config extends Config>(
   config: config,
   parameters: getAdmins.Parameters<config>,

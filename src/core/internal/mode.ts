@@ -46,34 +46,6 @@ export type Mode = {
       value?: string | undefined
     }) => Promise<{ id: Hex.Hex }>
 
-    transferFunds: (parameters: {
-      /** Address to transfer funds to. */
-      address: Address.Address
-      /** Internal properties. */
-      internal: ActionsInternal
-      /** Token to transfer. */
-      token?: Address.Address | undefined
-      /** Amount to transfer. */
-      value?: string | undefined
-      /** Chain the token will be sourced from. */
-      chainId?: number | undefined
-    }) => Promise<{ id: Hex.Hex }>
-
-    swapFunds: (parameters: {
-      /** Address initiating the swap. */
-      address: Address.Address
-      /** Internal properties. */
-      internal: ActionsInternal
-      /** Token to swap from. */
-      fromToken?: Address.Address | undefined
-      /** Token to swap to. */
-      toToken?: Address.Address | undefined
-      /** Amount to swap. */
-      value?: string | undefined
-      /** Chain the swap will occur on. */
-      chainId?: number | undefined
-    }) => Promise<{ id: Hex.Hex }>
-
     createAccount: (parameters: {
       /** Admins to grant. */
       admins?: readonly Pick<Key.Key, 'publicKey' | 'type'>[] | undefined

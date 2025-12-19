@@ -36,18 +36,6 @@ export type Schema =
           ReturnType: z.input<typeof Rpc.wallet_addFunds.Response>
         }
       | {
-          Request: z.input<typeof Rpc.wallet_transferFunds.Request>
-          ReturnType: z.input<typeof Rpc.wallet_transferFunds.Response>
-        }
-      | {
-          Request: z.input<typeof Rpc.wallet_transferFunds.Request>
-          ReturnType: z.input<typeof Rpc.wallet_transferFunds.Response>
-        }
-      | {
-          Request: z.input<typeof Rpc.wallet_swapFunds.Request>
-          ReturnType: z.input<typeof Rpc.wallet_swapFunds.Response>
-        }
-      | {
           Request: z.input<typeof Rpc.porto_ping.Request>
           ReturnType: z.input<typeof Rpc.porto_ping.Response>
         }
