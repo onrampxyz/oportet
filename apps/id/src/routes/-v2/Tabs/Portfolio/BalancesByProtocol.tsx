@@ -1,6 +1,6 @@
-import { Spinner } from '@porto/apps/components'
 import { cx } from 'cva'
 import type { FormattedPosition } from '~/types/protocol'
+import { BalancesByProtocolSkeleton } from './BalancesByProtocolSkeleton'
 
 export type ProtocolPositionProps = {
   positions?: FormattedPosition[]
@@ -10,7 +10,11 @@ export type ProtocolPositionProps = {
 export function BalancesByProtocol(props: ProtocolPositionProps) {
   const { positions, isLoading } = props
 
-  const hasBalance = !isLoading && positions && positions?.length !== 0
+  if (isLoading) {
+    return <BalancesByProtocolSkeleton />
+  }
+
+  const hasBalance = positions && positions?.length !== 0
 
   return (
     <div className="rounded-lg border border-gray5 bg-white p-6 dark:bg-gray1">
@@ -18,13 +22,6 @@ export function BalancesByProtocol(props: ProtocolPositionProps) {
       <p className="mb-4 text-gray10 text-sm">
         Your deposits and positions across DeFi protocols
       </p>
-
-      {/* Loading State */}
-      {isLoading && (
-        <div className="flex items-center justify-center pt-6">
-          <Spinner className="size-6!" />
-        </div>
-      )}
 
       <div className="overflow-x-auto">
         <table className="w-full">
@@ -45,11 +42,13 @@ export function BalancesByProtocol(props: ProtocolPositionProps) {
           </thead>
           <tbody>
             {!hasBalance && (
-              <div className="">
-                <p className="pt-6 font-medium text-gray10 text-sm">
-                  You have no available balance!
-                </p>
-              </div>
+              <tr>
+                <td className="pt-6" colSpan={5}>
+                  <p className="font-medium text-gray10 text-sm">
+                    You have no available balance!
+                  </p>
+                </td>
+              </tr>
             )}
 
             {positions?.map((position) => (

@@ -1,4 +1,4 @@
-import { Button, Spinner } from '@porto/apps/components'
+import { Button } from '@porto/apps/components'
 import { cx } from 'cva'
 import { useState } from 'react'
 import { useChains } from 'wagmi'
@@ -8,6 +8,7 @@ import LucideArrowDownUp from '~icons/lucide/arrow-down-up'
 import LucideSend from '~icons/lucide/send'
 import { Swap } from './Swap'
 import { Transfer } from './Transfer'
+import { WalletBalancesSkeleton } from './WalletBalancesSkeleton'
 
 export type WalletBalancesProps = {
   balances?: Balance[]
@@ -40,17 +41,15 @@ export function WalletBalances(props: Readonly<WalletBalancesProps>) {
     }
   }
 
+  if (isLoading) {
+    return <WalletBalancesSkeleton />
+  }
+
   return (
     <div className="space-y-4 rounded-lg border border-gray5 bg-white p-6 dark:bg-gray1">
       <h2 className="font-semibold text-lg">Wallet Balances By Chain</h2>
-      {/* Loading State */}
-      {isLoading && (
-        <div className="flex items-center justify-center py-4">
-          <Spinner className="size-6!" />
-        </div>
-      )}
 
-      {!hasBalance && !isLoading && (
+      {!hasBalance && (
         <div className="">
           <p className="font-medium text-gray10 text-sm">
             You have no available balance in your wallet!

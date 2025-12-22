@@ -1,7 +1,8 @@
-import { Spinner } from '@porto/apps/components'
 import { cx } from 'cva'
+import { Skeleton } from '~/components/Skeleton'
 import type { WalletSummary } from '~/types/wallet'
 import { ValueFormatter } from '~/utils'
+import { SummarySkeleton } from './SummarySkeleton'
 
 export type SummaryProps = {
   summary?: WalletSummary
@@ -24,7 +25,9 @@ export function SummaryCard(props: SummaryCardProps) {
       <p className="mb-1 text-gray10 text-xs">{title}</p>
 
       {isLoading ? (
-        <Spinner className="size-6!" />
+        <div className="flex justify-center">
+          <Skeleton className="h-8 w-24" />
+        </div>
       ) : (
         <p className={cx('text-2xl', className)}>{value}</p>
       )}
@@ -34,6 +37,10 @@ export function SummaryCard(props: SummaryCardProps) {
 
 export function Summary(props: SummaryProps) {
   const { summary, isLoading, transactionCount } = props
+
+  if (isLoading) {
+    return <SummarySkeleton />
+  }
 
   const formatValue = (value: number | undefined) => {
     if (value === undefined || value === 0) return '$0.00'
@@ -50,27 +57,20 @@ export function Summary(props: SummaryProps) {
 
       <div className="grid grid-cols-4 gap-4">
         <SummaryCard
-          isLoading={isLoading}
           title="Total Change"
           value={formatValue(summary?.totalValue)}
         />
         <SummaryCard
           className="text-green-600"
-          isLoading={isLoading}
           title="Wallet"
           value={formatValue(summary?.breakdown?.tokens.value)}
         />
         <SummaryCard
           className="text-green-600"
-          isLoading={isLoading}
           title="Protocols"
           value={formatValue(summary?.breakdown?.protocols.value)}
         />
-        <SummaryCard
-          isLoading={isLoading}
-          title="Transactions"
-          value={transactionCount}
-        />
+        <SummaryCard title="Transactions" value={transactionCount} />
       </div>
     </div>
   )

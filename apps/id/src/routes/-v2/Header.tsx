@@ -63,8 +63,8 @@ export function Header() {
     if (!urlHasTestnet) {
       addFunds.mutate({
         address,
-        view: 'selection-deposit',
-        // view: 'bridge'
+        view: 'selection-network',
+        // view: 'selection-deposit'
       })
       return
     }

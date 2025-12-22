@@ -4,16 +4,16 @@ import { cx } from 'cva'
 import type { PropsWithChildren } from 'react'
 
 export const TabItems = [
-  {
-    id: 'assets',
-    name: 'Assets',
-    path: '/assets',
-  },
   // {
-  //   id: 'portfolio',
-  //   name: 'Portfolio',
-  //   path: '/portfolio',
+  //   id: 'assets',
+  //   name: 'Assets',
+  //   path: '/assets',
   // },
+  {
+    id: 'portfolio',
+    name: 'Portfolio',
+    path: '/portfolio',
+  },
   {
     id: 'transactions',
     name: 'Transactions',

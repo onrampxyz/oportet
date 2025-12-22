@@ -21,8 +21,8 @@ export function Dashboard() {
     if (pathname.includes('/sessions')) return 'sessions'
     if (pathname.includes('/assets')) return 'assets'
     if (pathname.includes('/portfolio')) return 'portfolio'
-    // return 'portfolio' // default
-    return 'assets' // default
+    return 'portfolio' // default
+    // return 'assets' // default
   }
 
   const activeTab = getActiveTab()
