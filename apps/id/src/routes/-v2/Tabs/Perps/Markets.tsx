@@ -22,7 +22,7 @@ export function Markets(props: Readonly<MarketsProps>) {
 
   return (
     <div className="rounded-lg border border-gray5 bg-white p-4 dark:bg-gray1">
-      <div className='mb-4 flex flex-col gap-2'>
+      <div className="mb-4 flex flex-col gap-2">
         <h3 className="font-semibold">Markets</h3>
         <div className="relative mb-2">
           <LucideSearch className="-translate-y-1/2 absolute top-1/2 left-3 size-4 text-gray10" />

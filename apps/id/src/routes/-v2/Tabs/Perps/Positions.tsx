@@ -35,7 +35,7 @@ export function Positions() {
               <th className="pb-2 font-normal text-xs">Mark</th>
               <th className="pb-2 font-normal text-xs">Leverage</th>
               <th className="pb-2 font-normal text-xs">PnL</th>
-              <th className='pb-2 text-right text-xs' />
+              <th className="pb-2 text-right text-xs" />
             </tr>
           </thead>
           <tbody>

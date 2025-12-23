@@ -1,5 +1,3 @@
-
-
 import { cx } from 'cva'
 import ArrowDownIcon from '~icons/lucide/arrow-down'
 import ArrowUpIcon from '~icons/lucide/arrow-up'
@@ -32,7 +30,7 @@ export function PortfolioValueTiles(props: PortfolioValueTilesProps) {
   return (
     <div className="grid gap-3 lg:grid-cols-[1fr_300px]">
       {/* Main Tile - Total Portfolio Value */}
-      <div className="space-y-4 rounded-lg border border-gray6 bg-gray2 p-6 dark:border-gray5 dark:bg-gray3">
+      <div className="space-y-4 rounded-lg border border-gray6 bg-white p-6 dark:border-gray5 dark:bg-gray1">
         <div>
           <div className="mb-1 font-medium text-gray11 text-sm">
             Total Portfolio Value
@@ -85,7 +83,7 @@ export function PortfolioValueTiles(props: PortfolioValueTilesProps) {
       {/* Right Side - Profit/Loss Tiles */}
       <div className="grid gap-3">
         {/* Total Profit */}
-        <div className="space-y-1 rounded-lg border border-gray6 bg-gray2 p-4 dark:border-gray5 dark:bg-gray3">
+        <div className="space-y-1 rounded-lg border border-gray6 bg-white p-4 dark:border-gray5 dark:bg-gray1">
           <div className="flex items-center justify-between">
             <div className="font-medium text-gray11 text-sm">Total Profit</div>
             <div className="rounded-full bg-green-600/10 p-1.5">
@@ -98,7 +96,7 @@ export function PortfolioValueTiles(props: PortfolioValueTilesProps) {
         </div>
 
         {/* Total Loss */}
-        <div className="space-y-1 rounded-lg border border-gray6 bg-gray2 p-4 dark:border-gray5 dark:bg-gray3">
+        <div className="space-y-1 rounded-lg border border-gray6 bg-white p-4 dark:border-gray5 dark:bg-gray1">
           <div className="flex items-center justify-between">
             <div className="font-medium text-gray11 text-sm">Total Loss</div>
             <div className="rounded-full bg-red-600/10 p-1.5">
