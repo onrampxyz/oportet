@@ -20,6 +20,7 @@ import { Route as LayoutSessionsImport } from './routes/_layout.sessions'
 import { Route as LayoutRecoveryV1Import } from './routes/_layout.recovery-v1'
 import { Route as LayoutRecoveryImport } from './routes/_layout.recovery'
 import { Route as LayoutPortfolioImport } from './routes/_layout.portfolio'
+import { Route as LayoutPerpsImport } from './routes/_layout.perps'
 import { Route as LayoutAssetsImport } from './routes/_layout.assets'
 import { Route as LayoutAboutImport } from './routes/_layout.about'
 import { Route as LayoutEmailVerifyImport } from './routes/_layout.email.verify'
@@ -75,6 +76,12 @@ const LayoutRecoveryRoute = LayoutRecoveryImport.update({
 const LayoutPortfolioRoute = LayoutPortfolioImport.update({
   id: '/portfolio',
   path: '/portfolio',
+  getParentRoute: () => LayoutRoute,
+} as any)
+
+const LayoutPerpsRoute = LayoutPerpsImport.update({
+  id: '/perps',
+  path: '/perps',
   getParentRoute: () => LayoutRoute,
 } as any)
 
@@ -135,6 +142,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutAssetsImport
       parentRoute: typeof LayoutImport
     }
+    '/_layout/perps': {
+      id: '/_layout/perps'
+      path: '/perps'
+      fullPath: '/perps'
+      preLoaderRoute: typeof LayoutPerpsImport
+      parentRoute: typeof LayoutImport
+    }
     '/_layout/portfolio': {
       id: '/_layout/portfolio'
       path: '/portfolio'
@@ -192,6 +206,7 @@ declare module '@tanstack/react-router' {
 interface LayoutRouteChildren {
   LayoutAboutRoute: typeof LayoutAboutRoute
   LayoutAssetsRoute: typeof LayoutAssetsRoute
+  LayoutPerpsRoute: typeof LayoutPerpsRoute
   LayoutPortfolioRoute: typeof LayoutPortfolioRoute
   LayoutRecoveryRoute: typeof LayoutRecoveryRoute
   LayoutRecoveryV1Route: typeof LayoutRecoveryV1Route
@@ -204,6 +219,7 @@ interface LayoutRouteChildren {
 const LayoutRouteChildren: LayoutRouteChildren = {
   LayoutAboutRoute: LayoutAboutRoute,
   LayoutAssetsRoute: LayoutAssetsRoute,
+  LayoutPerpsRoute: LayoutPerpsRoute,
   LayoutPortfolioRoute: LayoutPortfolioRoute,
   LayoutRecoveryRoute: LayoutRecoveryRoute,
   LayoutRecoveryV1Route: LayoutRecoveryV1Route,
@@ -221,6 +237,7 @@ export interface FileRoutesByFullPath {
   '/playground': typeof PlaygroundRoute
   '/about': typeof LayoutAboutRoute
   '/assets': typeof LayoutAssetsRoute
+  '/perps': typeof LayoutPerpsRoute
   '/portfolio': typeof LayoutPortfolioRoute
   '/recovery': typeof LayoutRecoveryRoute
   '/recovery-v1': typeof LayoutRecoveryV1Route
@@ -235,6 +252,7 @@ export interface FileRoutesByTo {
   '/playground': typeof PlaygroundRoute
   '/about': typeof LayoutAboutRoute
   '/assets': typeof LayoutAssetsRoute
+  '/perps': typeof LayoutPerpsRoute
   '/portfolio': typeof LayoutPortfolioRoute
   '/recovery': typeof LayoutRecoveryRoute
   '/recovery-v1': typeof LayoutRecoveryV1Route
@@ -251,6 +269,7 @@ export interface FileRoutesById {
   '/playground': typeof PlaygroundRoute
   '/_layout/about': typeof LayoutAboutRoute
   '/_layout/assets': typeof LayoutAssetsRoute
+  '/_layout/perps': typeof LayoutPerpsRoute
   '/_layout/portfolio': typeof LayoutPortfolioRoute
   '/_layout/recovery': typeof LayoutRecoveryRoute
   '/_layout/recovery-v1': typeof LayoutRecoveryV1Route
@@ -267,6 +286,7 @@ export interface FileRouteTypes {
     | '/playground'
     | '/about'
     | '/assets'
+    | '/perps'
     | '/portfolio'
     | '/recovery'
     | '/recovery-v1'
@@ -280,6 +300,7 @@ export interface FileRouteTypes {
     | '/playground'
     | '/about'
     | '/assets'
+    | '/perps'
     | '/portfolio'
     | '/recovery'
     | '/recovery-v1'
@@ -294,6 +315,7 @@ export interface FileRouteTypes {
     | '/playground'
     | '/_layout/about'
     | '/_layout/assets'
+    | '/_layout/perps'
     | '/_layout/portfolio'
     | '/_layout/recovery'
     | '/_layout/recovery-v1'
@@ -336,6 +358,7 @@ export const routeTree = rootRoute
       "children": [
         "/_layout/about",
         "/_layout/assets",
+        "/_layout/perps",
         "/_layout/portfolio",
         "/_layout/recovery",
         "/_layout/recovery-v1",
@@ -357,6 +380,10 @@ export const routeTree = rootRoute
     },
     "/_layout/assets": {
       "filePath": "_layout.assets.tsx",
+      "parent": "/_layout"
+    },
+    "/_layout/perps": {
+      "filePath": "_layout.perps.tsx",
       "parent": "/_layout"
     },
     "/_layout/portfolio": {

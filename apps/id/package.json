@@ -27,6 +27,7 @@
     "ox": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
+    "recharts": "^3.6.0",
     "rise-wallet": "workspace:*",
     "sonner": "catalog:",
     "valibot": "^1.1.0",

@@ -2,7 +2,14 @@ import { useLocation } from '@tanstack/react-router'
 import { useAccount } from 'wagmi'
 import { Landing } from '../-components/Landing'
 import { Layout } from '../-v2/Layout'
-import { Assets, Portfolio, Recovery, Sessions, Transactions } from './Tabs'
+import {
+  Assets,
+  Perps,
+  Portfolio,
+  Recovery,
+  Sessions,
+  Transactions,
+} from './Tabs'
 
 // Dashboard with routing-based tabs
 export function Dashboard() {
@@ -16,13 +23,13 @@ export function Dashboard() {
   // Determine active tab from current pathname
   const getActiveTab = () => {
     const pathname = location.pathname
+    if (pathname.includes('/perps')) return 'perps'
     if (pathname.includes('/transactions')) return 'transactions'
     if (pathname.includes('/recovery')) return 'recovery'
     if (pathname.includes('/sessions')) return 'sessions'
     if (pathname.includes('/assets')) return 'assets'
     if (pathname.includes('/portfolio')) return 'portfolio'
-    return 'portfolio' // default
-    // return 'assets' // default
+    return 'perps' // default
   }
 
   const activeTab = getActiveTab()
@@ -30,6 +37,8 @@ export function Dashboard() {
   // Render the appropriate tab content
   const renderTabContent = () => {
     switch (activeTab) {
+      case 'perps':
+        return <Perps />
       case 'assets':
         return <Assets />
       case 'transactions':
@@ -41,8 +50,7 @@ export function Dashboard() {
       case 'portfolio':
         return <Portfolio />
       default:
-        return <Assets />
-      // return <Portfolio />
+        return <Perps />
     }
   }
 

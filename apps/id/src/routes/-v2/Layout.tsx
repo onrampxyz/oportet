@@ -10,6 +10,11 @@ export const TabItems = [
   //   path: '/assets',
   // },
   {
+    id: 'perps',
+    name: 'Perps',
+    path: '/perps',
+  },
+  {
     id: 'portfolio',
     name: 'Portfolio',
     path: '/portfolio',
@@ -26,7 +31,7 @@ export const TabItems = [
   },
   {
     id: 'sessions',
-    name: 'Sessions',
+    name: 'Manage Sessions',
     path: '/sessions',
   },
 ]

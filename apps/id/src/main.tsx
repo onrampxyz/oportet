@@ -6,6 +6,7 @@ import { createRoot } from 'react-dom/client'
 import * as Router from '~/lib/Router.js'
 import { App } from './App.js'
 import './styles.css'
+// import './styles/globals.css'
 
 if (import.meta.env.PROD) {
   Sentry.init({
