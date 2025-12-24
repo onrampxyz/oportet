@@ -42,4 +42,7 @@ export const hostnames = [
   'www.bungee.exchange',
   'wallet.risechain.com',
   'risechain.com',
+  'testnet.rise.trade',
+  'dev.rise.trade',
+  'rise.trade',
 ]
