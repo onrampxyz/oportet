@@ -6,7 +6,6 @@ import { porto } from '~/lib/Porto'
 import { useAuthSessionRedirect } from '~/lib/ReactNative'
 import * as Router from '~/lib/Router'
 import { AddFunds } from '../-components/AddFunds'
-import { AddFundsV1 } from '../-components/AddFundsV1'
 
 export const Route = createFileRoute('/dialog/wallet_addFunds')({
   component: RouteComponent,
@@ -39,19 +38,6 @@ function RouteComponent() {
   })
 
   useAuthSessionRedirect(respond)
-
-  const version = '2'
-  if (version === '1') {
-    return (
-      <AddFundsV1
-        address={address}
-        chainId={chainId}
-        onApprove={(result) => respond.mutate(result)}
-        onReject={() => respond.mutate({ reject: true })}
-        value={value}
-      />
-    )
-  }
 
   return (
     <AddFunds

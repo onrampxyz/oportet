@@ -11,8 +11,8 @@ import {
   useMintToken,
   useWalletAsset,
 } from '~/hooks'
-import { Layout } from '../Layout'
 import { DropdownSelector, getAssets, SupportedChains } from '.'
+import { Layout } from '../Layout'
 import { Bridge, type BridgeState } from './Bridge'
 
 export function GlobalDeposit() {
@@ -30,6 +30,7 @@ export function GlobalDeposit() {
   const [initialRiseBalance, setInitialRiseBalance] = useState<
     bigint | undefined
   >()
+  console.log("initialRiseBalance:: ", initialRiseBalance)
 
   const [bridgeState, setBridgeState] = useState<BridgeState>({
     status: 'idle',

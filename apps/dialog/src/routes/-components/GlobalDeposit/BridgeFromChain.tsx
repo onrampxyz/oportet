@@ -13,7 +13,7 @@ import {
 } from '~/hooks'
 import { Layout } from '~/routes/-components/Layout'
 import Star from '~icons/ph/star-four-bold'
-import { Bridge } from './Bridge'
+import { Bridge, type BridgeStatus } from './Bridge'
 
 export type BridgeToken = {
   symbol: string
@@ -76,12 +76,7 @@ export function BridgeFromChain(props: {
   >()
 
   const [bridgeState, setBridgeState] = React.useState<{
-    status:
-      | 'idle'
-      | 'source-pending'
-      | 'source-confirmed'
-      | 'destination-pending'
-      | 'completed'
+    status: BridgeStatus
     sourceChainId?: number
     sourceTxHash?: Hex.Hex
     destinationTxHash?: Hex.Hex
@@ -232,7 +227,6 @@ export function BridgeFromChain(props: {
     return (
       <Bridge
         amount={tokenBalance}
-        bridge={bridge}
         bridgeError={bridgeError}
         bridgeState={bridgeState}
         chains={chains}
@@ -262,11 +256,10 @@ export function BridgeFromChain(props: {
           <div className="flex flex-col gap-2">
             {chains?.map((chain) => (
               <button
-                className={`flex h-9 w-full items-center justify-between rounded-md px-2 ${
-                  selectedChainId === chain.id
-                    ? 'bg-th_primary text-th_primary-contrast'
-                    : 'bg-th_secondary hover:bg-th_tertiary'
-                }`}
+                className={`flex h-9 w-full items-center justify-between rounded-md px-2 ${selectedChainId === chain.id
+                  ? 'bg-th_primary text-th_primary-contrast'
+                  : 'bg-th_secondary hover:bg-th_tertiary'
+                  }`}
                 key={chain.id}
                 onClick={() => {
                   setSelectedChainId(chain.id)
@@ -285,12 +278,11 @@ export function BridgeFromChain(props: {
               <div className="flex flex-col gap-2">
                 {tokens.map((token) => (
                   <button
-                    className={`flex h-9 w-full items-center justify-between rounded-md px-2 ${
-                      selectedTokenAddress?.toLowerCase() ===
+                    className={`flex h-9 w-full items-center justify-between rounded-md px-2 ${selectedTokenAddress?.toLowerCase() ===
                       token.address.toLowerCase()
-                        ? 'bg-th_primary text-th_primary-contrast'
-                        : 'bg-th_secondary hover:bg-th_tertiary'
-                    }`}
+                      ? 'bg-th_primary text-th_primary-contrast'
+                      : 'bg-th_secondary hover:bg-th_tertiary'
+                      }`}
                     key={token.address}
                     onClick={() => setSelectedTokenAddress(token.address)}
                     type="button"

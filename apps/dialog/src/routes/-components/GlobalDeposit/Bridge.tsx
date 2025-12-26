@@ -8,15 +8,17 @@ import XCircle from '~icons/lucide/circle-x'
 import ExternalLink from '~icons/lucide/external-link'
 import type { BridgeToken } from './BridgeFromChain'
 
+export type BridgeStatus =
+  | 'idle'
+  | 'source-pending'
+  | 'source-confirmed'
+  | 'source-failed'
+  | 'destination-pending'
+  | 'completed'
+  | 'failed'
+
 export type BridgeState = {
-  status:
-    | 'idle'
-    | 'source-pending'
-    | 'source-confirmed'
-    | 'source-failed'
-    | 'destination-pending'
-    | 'completed'
-    | 'failed'
+  status: BridgeStatus
   sourceChainId?: number
   sourceTxHash?: Hex.Hex
   destinationTxHash?: Hex.Hex
@@ -33,7 +35,7 @@ export type BridgeProps = {
   onRetry?: () => void | Promise<void>
 }
 
-export function Bridge(props: BridgeProps) {
+export function Bridge(props: Readonly<BridgeProps>) {
   const {
     bridgeState,
     bridgeError,
@@ -89,8 +91,8 @@ export function Bridge(props: BridgeProps) {
                 )}
                 {(bridgeState.status === 'source-failed' ||
                   bridgeState.status === 'failed') && (
-                  <XCircle className="size-5" color="red" />
-                )}
+                    <XCircle className="size-5" color="red" />
+                  )}
                 <CircleDashed
                   className="block size-5 data-[hidden=true]:hidden"
                   color="gray"
