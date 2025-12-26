@@ -17,17 +17,13 @@ export type SwapProps = {
 type TokenSymbol = keyof typeof TOKENS
 
 export function Swap(props: Readonly<SwapProps>) {
-  const { balance, isOpen, onClose, refetch } = props
+  const { isOpen, onClose } = props
 
   const { address } = useAccount()
 
   const {
-    isApproved,
     onSwap,
     isPending: isSwapping,
-    data: result,
-    errorMessage,
-    isSuccess,
     reset,
   } = useSwap()
 
@@ -47,7 +43,7 @@ export function Swap(props: Readonly<SwapProps>) {
     token: fromConfig.address,
   })
 
-  const { data: toBalance, refetch: refetchToBalance } = useBalance({
+  const { refetch: refetchToBalance } = useBalance({
     address,
     query: { refetchInterval: 10000 },
     token: toConfig.address,
@@ -57,8 +53,6 @@ export function Swap(props: Readonly<SwapProps>) {
   const {
     data: allowance,
     refetch: refetchAllowance,
-    isLoading: isAllowanceLoading,
-    error: allowanceError,
   } = useReadContract({
     abi: erc20Abi,
     address: fromConfig.address,
@@ -111,7 +105,7 @@ export function Swap(props: Readonly<SwapProps>) {
   } = useReadContract({
     abi: UniswapV2RouterABI,
     address: UNISWAP_CONTRACTS_ROUTER,
-    args: contractArgs,
+    args: [amountInBigInt ?? 0n, [fromConfig.address, toConfig.address]],
     functionName: 'getAmountsOut',
     query: {
       enabled:
@@ -184,13 +178,6 @@ export function Swap(props: Readonly<SwapProps>) {
     }
   }
 
-  const handleTokenSwitch = () => {
-    setFromToken(toToken)
-    setToToken(fromToken)
-    setFromAmount('')
-    setToAmount('')
-    setError('')
-  }
 
   const handleMaxClick = () => {
     if (fromBalance) {
@@ -199,18 +186,17 @@ export function Swap(props: Readonly<SwapProps>) {
     }
   }
 
-  const isDisabled =
-    !fromAmount ||
-    !toAmount ||
-    !!error ||
-    isAllowanceLoading ||
-    !!allowanceError
+  // const isDisabled =
+  //   !fromAmount ||
+  //   !toAmount ||
+  //   !!error ||
+  //   isAllowanceLoading ||
+  //   !!allowanceError
 
   return (
     <div
-      className={`overflow-hidden rounded-lg rounded-t-none border border-gray5 border-t-0 transition-all duration-300 ease-in-out ${
-        isOpen ? 'max-h-[600px] p-4 opacity-100' : 'max-h-0 p-0 opacity-0'
-      }`}
+      className={`overflow-hidden rounded-lg rounded-t-none border border-gray5 border-t-0 transition-all duration-300 ease-in-out ${isOpen ? 'max-h-[600px] p-4 opacity-100' : 'max-h-0 p-0 opacity-0'
+        }`}
     >
       <div className="space-y-3">
         {/* From Section */}
@@ -224,9 +210,8 @@ export function Swap(props: Readonly<SwapProps>) {
                 Amount
               </label>
               <div
-                className={`flex flex-1 items-center gap-4 rounded-lg border px-3 py-2 ${
-                  error ? 'border-red-500' : 'border-gray5'
-                }`}
+                className={`flex flex-1 items-center gap-4 rounded-lg border px-3 py-2 ${error ? 'border-red-500' : 'border-gray5'
+                  }`}
               >
                 <input
                   className="flex-1 text-sm focus:border-violet9 focus:outline-none"
@@ -252,9 +237,8 @@ export function Swap(props: Readonly<SwapProps>) {
                 To
               </label>
               <div
-                className={`flex gap-1 rounded-lg border px-3 py-2 ${
-                  error ? 'border-red-500' : 'border-gray5'
-                }`}
+                className={`flex gap-1 rounded-lg border px-3 py-2 ${error ? 'border-red-500' : 'border-gray5'
+                  }`}
               >
                 <input
                   className="flex-1 text-sm focus:border-violet9 focus:outline-none"

@@ -3,12 +3,12 @@ import { cx } from 'cva'
 export type SkeletonProps = {
   className?: string
   variant?: 'text' | 'circular' | 'rectangular'
-  width?: string
-  height?: string
+  width?: number
+  height?: number
   animation?: 'pulse' | 'wave' | 'none'
 }
 
-export function Skeleton(props: SkeletonProps) {
+export function Skeleton(props: Readonly<SkeletonProps>) {
   const {
     className,
     variant = 'rectangular',

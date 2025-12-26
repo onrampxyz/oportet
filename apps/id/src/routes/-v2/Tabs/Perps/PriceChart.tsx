@@ -38,7 +38,7 @@ function generateMockData(timeframe: string) {
     case '1W':
       intervals = 7
       timeFormat = (index: number) =>
-        ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'][index]
+        ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'][index] ?? ""
       break
   }
 
@@ -54,7 +54,7 @@ function generateMockData(timeframe: string) {
   return dataPoints
 }
 
-export function PriceChart(props: PriceChartProps) {
+export function PriceChart(props: Readonly<PriceChartProps>) {
   const { activeTimeframe, onTimeframeChange } = props
 
   const timeframes = ['1H', '4H', '1D', '1W']

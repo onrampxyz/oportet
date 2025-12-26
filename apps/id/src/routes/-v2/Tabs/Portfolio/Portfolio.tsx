@@ -29,7 +29,7 @@ export function Portfolio() {
 
   // Calculate portfolio metrics from available data
   const totalValue = summary.data?.totalValue ?? 0
-  const tokensValue = summary.data?.breakdown?.tokens.value ?? 0
+  // const tokensValue = summary.data?.breakdown?.tokens.value ?? 0
   const protocolsValue = summary.data?.breakdown?.protocols.value ?? 0
 
   // Mock data for metrics not yet available from API
