@@ -2,6 +2,7 @@ import { Button } from '@porto/apps/components'
 import { cx } from 'cva'
 import { useState } from 'react'
 import { useChains } from 'wagmi'
+import type { TOKENS } from '~/mock/tokens'
 import type { Balance } from '~/types/wallet'
 import { AddressFormatter, ValueFormatter } from '~/utils'
 import LucideArrowDownUp from '~icons/lucide/arrow-down-up'
@@ -17,12 +18,15 @@ export type WalletBalancesProps = {
   isTransactionSupported?: boolean // TODO: Fix this -- add a check per token
 }
 
+export type TokenSymbol = keyof typeof TOKENS
+
 export function WalletBalances(props: Readonly<WalletBalancesProps>) {
   const { balances, isLoading, refetch, isTransactionSupported = true } = props
 
   const chains = useChains()
 
   const [isPanelOpen, setIsPanelOpen] = useState<string | null>(null)
+  const [fromToken, setFromToken] = useState<TokenSymbol>('mockUSD')
 
   const hasBalance = balances && balances?.length !== 0
 
@@ -66,7 +70,7 @@ export function WalletBalances(props: Readonly<WalletBalancesProps>) {
                 <h3 className="font-semibold">{chain.id}</h3>
                 <p className="text-gray10 text-sm">
                   {balances.length} token
-                  {balances.length !== 1 ? 's' : ''}
+                  {balances.length === 1 ? '' : 's'}
                 </p>
               </div>
               <div className="rounded-full bg-violet9/10 px-3 py-1">
@@ -123,7 +127,10 @@ export function WalletBalances(props: Readonly<WalletBalancesProps>) {
                         {isTransactionSupported && (
                           <div className="flex gap-2">
                             <Button
-                              onClick={() => handleOpenPanel(swapId)}
+                              onClick={() => {
+                                handleOpenPanel(swapId)
+                                setFromToken(balance.symbol as TokenSymbol)
+                              }}
                               size="small"
                               title="Swap"
                             >
@@ -148,6 +155,7 @@ export function WalletBalances(props: Readonly<WalletBalancesProps>) {
                     />
                     <Swap
                       balance={balance}
+                      fromToken={fromToken}
                       isOpen={isPanelOpen === swapId}
                       onClose={() => handleClosePanel(swapId)}
                       refetch={refetch}

@@ -6,29 +6,29 @@ import { UniswapV2RouterABI } from '~/abi/uniswap'
 import { UNISWAP_CONTRACTS_ROUTER, useSwap } from '~/hooks/useSwap'
 import { TOKENS } from '~/mock/tokens'
 import type { Balance } from '~/types/wallet'
+import type { TokenSymbol } from './WalletBalances'
 
 export type SwapProps = {
   balance?: Balance
   isOpen: boolean
   onClose: () => void
   refetch: () => void
+  fromToken: TokenSymbol
 }
 
-type TokenSymbol = keyof typeof TOKENS
-
 export function Swap(props: Readonly<SwapProps>) {
-  const { isOpen, onClose } = props
+  const { balance, isOpen, onClose, fromToken } = props
+
+  console.log("balance:: ", balance)
 
   const { address } = useAccount()
+  const { onSwap, isPending: isSwapping, reset } = useSwap()
 
-  const {
-    onSwap,
-    isPending: isSwapping,
-    reset,
-  } = useSwap()
+  const initialToToken = Object.keys(TOKENS).filter((token) => {
+    return token !== fromToken
+  })
 
-  const [fromToken, setFromToken] = useState<TokenSymbol>('MockUSD')
-  const [toToken, setToToken] = useState<TokenSymbol>('MockToken')
+  const [toToken, setToToken] = useState<TokenSymbol>(initialToToken[0] as TokenSymbol)
   const [fromAmount, setFromAmount] = useState('')
   const [toAmount, setToAmount] = useState('')
   const [error, setError] = useState('')
@@ -36,10 +36,11 @@ export function Swap(props: Readonly<SwapProps>) {
   const fromConfig = TOKENS[fromToken]
   const toConfig = TOKENS[toToken]
 
+
   // Get balances
   const { data: fromBalance, refetch: refetchFromBalance } = useBalance({
     address,
-    query: { refetchInterval: 10000 },
+    query: { enabled: isOpen, refetchInterval: 10000 },
     token: fromConfig.address,
   })
 
@@ -50,31 +51,22 @@ export function Swap(props: Readonly<SwapProps>) {
   })
 
   // Check allowance
-  const {
-    data: allowance,
-    refetch: refetchAllowance,
-  } = useReadContract({
+  const { data: allowance, refetch: refetchAllowance } = useReadContract({
     abi: erc20Abi,
     address: fromConfig.address,
     args: [address ?? '0x', UNISWAP_CONTRACTS_ROUTER],
     functionName: 'allowance',
     query: {
-      enabled: !!address,
+      enabled: !!address && isOpen,
     },
   })
 
   const shouldApprove = useMemo(() => {
-    console.log('from:: ', fromConfig)
-    console.log('allowance:: ', allowance)
-
     if (!fromAmount || Number.parseFloat(fromAmount) <= 0) return false
     if (allowance === undefined || allowance === null) return true
 
     const requiredAmount = parseUnits(fromAmount, fromConfig.decimals)
 
-    console.log('requiredAmount:: ', requiredAmount)
-    console.log('shouldApprove-allowance:: ', allowance < requiredAmount)
-    console.log('-------------------------')
     return allowance < requiredAmount
   }, [allowance, fromAmount, fromConfig])
 
@@ -119,32 +111,6 @@ export function Swap(props: Readonly<SwapProps>) {
     },
   })
 
-  // TODO: Clean this
-  // Update quote amount
-  useEffect(() => {
-    if (quoteData && Array.isArray(quoteData) && quoteData.length >= 2) {
-      try {
-        const outputAmount = formatUnits(quoteData[1], toConfig.decimals)
-        const formattedAmount = Number.parseFloat(outputAmount).toFixed(6)
-        setToAmount(formattedAmount)
-        setError('')
-      } catch (formatError) {
-        console.log('❌ Quote Format Error:', formatError)
-        setToAmount('')
-        setError('Error formatting quote')
-      }
-    } else if (quoteIsError || quoteError) {
-      setToAmount('')
-      setError(
-        quoteError?.message?.includes('INSUFFICIENT_OUTPUT_AMOUNT')
-          ? 'Insufficient liquidity'
-          : 'Quote failed - check liquidity',
-      )
-    } else if (!fromAmount || fromAmount.trim() === '') {
-      setToAmount('')
-      setError('')
-    }
-  }, [quoteData, quoteIsError, quoteError, fromAmount, toConfig.decimals])
 
   const handleSwap = async () => {
     reset() // TODO debounce this
@@ -178,7 +144,6 @@ export function Swap(props: Readonly<SwapProps>) {
     }
   }
 
-
   const handleMaxClick = () => {
     if (fromBalance) {
       const maxAmount = formatUnits(fromBalance.value, fromBalance.decimals)
@@ -186,12 +151,38 @@ export function Swap(props: Readonly<SwapProps>) {
     }
   }
 
-  // const isDisabled =
-  //   !fromAmount ||
-  //   !toAmount ||
-  //   !!error ||
-  //   isAllowanceLoading ||
-  //   !!allowanceError
+  // biome-ignore lint/correctness/useExhaustiveDependencies: listen only when fromToken has changed
+  useEffect(() => {
+    setToToken(initialToToken[0] as TokenSymbol)
+  }, [fromToken])
+
+  // TODO: Clean this
+  // Update quote amount
+  useEffect(() => {
+    if (quoteData && Array.isArray(quoteData) && quoteData.length >= 2) {
+      try {
+        const outputAmount = formatUnits(quoteData[1], toConfig.decimals)
+        const formattedAmount = Number.parseFloat(outputAmount).toFixed(6)
+        setToAmount(formattedAmount)
+        setError('')
+      } catch (formatError) {
+        console.log('❌ Quote Format Error:', formatError)
+        setToAmount('')
+        setError('Error formatting quote')
+      }
+    } else if (quoteIsError || quoteError) {
+      setToAmount('')
+      setError(
+        quoteError?.message?.includes('INSUFFICIENT_OUTPUT_AMOUNT')
+          ? 'Insufficient liquidity'
+          : 'Quote failed - check liquidity',
+      )
+    } else if (!fromAmount || fromAmount.trim() === '') {
+      setToAmount('')
+      setError('')
+    }
+  }, [quoteData, quoteIsError, quoteError, fromAmount, toConfig.decimals])
+
 
   return (
     <div

@@ -123,8 +123,8 @@ function ChartTooltipContent({
     nameKey?: string
     labelKey?: string
   } & {
-    payload?: ReadonlyArray<any>;
-    label?: string | number;
+    payload?: ReadonlyArray<any>
+    label?: string | number
   }) {
   const { config } = useChart()
 
@@ -263,7 +263,7 @@ function ChartLegendContent({
     hideIcon?: boolean
     nameKey?: string
   } & {
-    payload: ReadonlyArray<any>;
+    payload: ReadonlyArray<any>
   }) {
   const { config } = useChart()
 
@@ -322,8 +322,8 @@ function getPayloadConfigFromPayload(
 
   const payloadPayload =
     'payload' in payload &&
-      typeof payload.payload === 'object' &&
-      payload.payload !== null
+    typeof payload.payload === 'object' &&
+    payload.payload !== null
       ? payload.payload
       : undefined
 
@@ -355,5 +355,5 @@ export {
   ChartLegendContent,
   ChartStyle,
   ChartTooltip,
-  ChartTooltipContent
+  ChartTooltipContent,
 }

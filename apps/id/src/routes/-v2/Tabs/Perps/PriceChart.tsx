@@ -38,7 +38,7 @@ function generateMockData(timeframe: string) {
     case '1W':
       intervals = 7
       timeFormat = (index: number) =>
-        ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'][index] ?? ""
+        ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'][index] ?? ''
       break
   }
 
