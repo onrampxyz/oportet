@@ -7,7 +7,6 @@ import { riseTestnet } from 'viem/chains'
 import { useFundsContext } from '~/contexts'
 import { Layout } from '../Layout'
 import type { BridgeToken } from './Bridge'
-// import { BRIDGE_TOKENS } from './BridgeFromChain'
 
 export type Asset = {
   name: string

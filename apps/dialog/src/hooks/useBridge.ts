@@ -5,8 +5,10 @@ import { parseAbiItem } from 'viem'
 import { riseTestnet } from 'viem/chains'
 import { useSendCallsSync } from 'wagmi'
 import { porto } from '~/lib/Porto'
-import type { BridgeState } from '~/routes/-components/GlobalDeposit'
-import type { BridgeToken } from '~/routes/-components/GlobalDeposit/AssetSelection'
+import type {
+  BridgeState,
+  BridgeToken,
+} from '~/routes/-components/GlobalDeposit'
 
 export type UseBridgeParams = {
   selectedChainId?: number
