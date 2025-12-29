@@ -6,6 +6,7 @@ import { zeroAddress } from 'viem'
 import { riseTestnet } from 'viem/chains'
 import { useFundsContext } from '~/contexts'
 import { Layout } from '../Layout'
+import type { BridgeToken } from './Bridge'
 // import { BRIDGE_TOKENS } from './BridgeFromChain'
 
 export type Asset = {
@@ -14,18 +15,6 @@ export type Asset = {
   symbol: string
   decimals: number
   address: Address.Address
-}
-
-export type BridgeToken = {
-  symbol: string
-  address: Address.Address
-  bridgeContract: Address.Address
-  bridgeType: 'hyperlane' | 'layerzero'
-  minDeposit: bigint
-  decimals: number
-  bridgeWrapper: Address.Address
-  icon: string
-  name: string
 }
 
 // Hardcoded token configurations for bridging
