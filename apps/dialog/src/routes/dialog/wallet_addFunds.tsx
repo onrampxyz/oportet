@@ -39,7 +39,7 @@ function RouteComponent() {
 
   useAuthSessionRedirect(respond)
 
-  console.log("view:: ", view)
+  console.log('view:: ', view)
 
   return (
     <AddFunds

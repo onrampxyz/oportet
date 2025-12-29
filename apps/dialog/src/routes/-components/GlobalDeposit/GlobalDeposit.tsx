@@ -1,5 +1,5 @@
 import { Input } from '@porto/apps/components'
-import { Button } from '@porto/ui'
+import { Button, Deposit, Separator } from '@porto/ui'
 import { cx } from 'cva'
 import { Value } from 'ox'
 import { useEffect, useMemo, useState } from 'react'
@@ -224,6 +224,17 @@ export function GlobalDeposit() {
               )}
             </div>
           </div>
+
+          <Separator
+            label="Or deposit to this address"
+            size="medium"
+            spacing={0}
+          />
+          <Deposit
+            address={address ?? ''}
+            chainId={selectedChain?.id}
+            label="Send tokens to this address"
+          />
         </div>
       </Layout.Content>
       <Layout.Footer>

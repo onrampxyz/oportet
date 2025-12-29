@@ -52,9 +52,9 @@ export namespace CopyButton {
   export type Label =
     | ReactNode
     | {
-      normal: ReactNode
-      copied: ReactNode
-    }
+        normal: ReactNode
+        copied: ReactNode
+      }
 
   export function getLabel(label: Label, notifying: boolean) {
     return label && typeof label === 'object' && 'normal' in label
@@ -74,9 +74,7 @@ export namespace CopyButton {
 
     const Icon = notifying ? LucideCopyCheck : LucideCopy
     const icon = (
-      <Icon
-        className='h-[14px]! w-[14px]! text-th_base-secondary!'
-      />
+      <Icon className="h-[14px]! w-[14px]! text-th_base-secondary!" />
     )
     const label_ = getLabel(label, notifying)
 

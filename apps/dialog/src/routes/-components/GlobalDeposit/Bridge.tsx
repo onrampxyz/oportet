@@ -47,16 +47,16 @@ export type BridgeProps = {
   onRetry?: () => void | Promise<void>
 }
 
-export function ErrorDisplay(props: Readonly<{ message: string, hidden: boolean }>) {
+export function ErrorDisplay(
+  props: Readonly<{ message: string; hidden: boolean }>,
+) {
   const { message, hidden } = props
 
   if (hidden) {
     return null
   }
 
-  return (<div className="text-destructive text-sm">
-    {message}
-  </div>)
+  return <div className="text-destructive text-sm">{message}</div>
 }
 
 export function Bridge(props: Readonly<BridgeProps>) {
@@ -102,8 +102,8 @@ export function Bridge(props: Readonly<BridgeProps>) {
                 )}
                 {(bridgeState.status === 'source-failed' ||
                   bridgeState.status === 'failed') && (
-                    <XCircle className="size-5" color="red" />
-                  )}
+                  <XCircle className="size-5" color="red" />
+                )}
                 <CircleDashed
                   className="block size-5 data-[hidden=true]:hidden"
                   color="gray"
@@ -122,7 +122,10 @@ export function Bridge(props: Readonly<BridgeProps>) {
                 <div className="text-sm text-th_base-secondary">
                   {sourceChain?.name}
                 </div>
-                <ErrorDisplay hidden={bridgeState.status !== 'source-failed'} message={bridgeState.message ?? ""} />
+                <ErrorDisplay
+                  hidden={bridgeState.status !== 'source-failed'}
+                  message={bridgeState.message ?? ''}
+                />
                 {bridgeState.sourceTxHash && (
                   <div className="flex items-center gap-2">
                     <a
@@ -141,7 +144,6 @@ export function Bridge(props: Readonly<BridgeProps>) {
                     />
                   </div>
                 )}
-
               </div>
             </div>
 
@@ -185,7 +187,10 @@ export function Bridge(props: Readonly<BridgeProps>) {
                     Tokens received successfully
                   </div>
                 )}
-                <ErrorDisplay hidden={bridgeState.status !== 'failed'} message={bridgeState.message ?? ""} />
+                <ErrorDisplay
+                  hidden={bridgeState.status !== 'failed'}
+                  message={bridgeState.message ?? ''}
+                />
               </div>
             </div>
           </div>

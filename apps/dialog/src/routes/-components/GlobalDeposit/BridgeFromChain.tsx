@@ -61,11 +61,13 @@ export const BRIDGE_TOKENS: Record<number, BridgeToken[]> = {
   ],
 }
 
-export function BridgeFromChain(props: Readonly<{
-  address: Address.Address
-  onBack: () => void
-  onSuccess: () => void
-}>) {
+export function BridgeFromChain(
+  props: Readonly<{
+    address: Address.Address
+    onBack: () => void
+    onSuccess: () => void
+  }>,
+) {
   const { address, onBack, onSuccess } = props
 
   const [selectedChainId, setSelectedChainId] = React.useState<
@@ -220,8 +222,8 @@ export function BridgeFromChain(props: Readonly<{
     }
   }, [bridgeState.status, initialDestBalance, destBalance])
 
-  console.log("data::", data)
-  console.log("error::", error)
+  console.log('data::', data)
+  console.log('error::', error)
 
   // Show bridge progress view
   if (bridgeState.status !== 'idle') {
@@ -257,10 +259,11 @@ export function BridgeFromChain(props: Readonly<{
           <div className="flex flex-col gap-2">
             {chains?.map((chain) => (
               <button
-                className={`flex h-9 w-full items-center justify-between rounded-md px-2 ${selectedChainId === chain.id
-                  ? 'bg-th_primary text-th_primary-contrast'
-                  : 'bg-th_secondary hover:bg-th_tertiary'
-                  }`}
+                className={`flex h-9 w-full items-center justify-between rounded-md px-2 ${
+                  selectedChainId === chain.id
+                    ? 'bg-th_primary text-th_primary-contrast'
+                    : 'bg-th_secondary hover:bg-th_tertiary'
+                }`}
                 key={chain.id}
                 onClick={() => {
                   setSelectedChainId(chain.id)
@@ -279,11 +282,12 @@ export function BridgeFromChain(props: Readonly<{
               <div className="flex flex-col gap-2">
                 {tokens.map((token) => (
                   <button
-                    className={`flex h-9 w-full items-center justify-between rounded-md px-2 ${selectedTokenAddress?.toLowerCase() ===
+                    className={`flex h-9 w-full items-center justify-between rounded-md px-2 ${
+                      selectedTokenAddress?.toLowerCase() ===
                       token.address.toLowerCase()
-                      ? 'bg-th_primary text-th_primary-contrast'
-                      : 'bg-th_secondary hover:bg-th_tertiary'
-                      }`}
+                        ? 'bg-th_primary text-th_primary-contrast'
+                        : 'bg-th_secondary hover:bg-th_tertiary'
+                    }`}
                     key={token.address}
                     onClick={() => setSelectedTokenAddress(token.address)}
                     type="button"
