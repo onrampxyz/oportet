@@ -46,19 +46,17 @@ export function GlobalDeposit() {
   // Default to RISE, add handling when on mainnet
   const destinationToken = getAssets(11155931)
 
-  const { balance: riseBalance, refetch: refetchRiseBalance } =
-    useDestinationAsset({
-      address: address ?? '0x',
-      destinationChainId: 11155931, // Default to RISE, add handling when on mainnet
-      destinationTokenAddress: destinationToken[0]?.address,
-      enabled:
-        bridgeState.status === 'source-confirmed' ||
-        bridgeState.status === 'destination-pending',
-      refetchInterval:
-        bridgeState.status === 'destination-pending' ? 2000 : false,
-    })
-
-  console.log('riseBalance:: ', riseBalance)
+  //TODO: add balance: riseBalance,
+  const { refetch: refetchRiseBalance } = useDestinationAsset({
+    address: address ?? '0x',
+    destinationChainId: 11155931, // Default to RISE, add handling when on mainnet
+    destinationTokenAddress: destinationToken[0]?.address,
+    enabled:
+      bridgeState.status === 'source-confirmed' ||
+      bridgeState.status === 'destination-pending',
+    refetchInterval:
+      bridgeState.status === 'destination-pending' ? 2000 : false,
+  })
 
   const selectedToken = useMemo(() => {
     return tokens.find(
@@ -89,7 +87,12 @@ export function GlobalDeposit() {
   const shouldExceedMinDeposit = useMemo(() => {
     if (!amount || !selectedToken) return false
 
-    return Number(amount) >= Number(selectedToken.minDeposit)
+    const minDeposit = formatUnits(
+      selectedToken?.minDeposit,
+      selectedToken?.decimals,
+    )
+
+    return Number(amount) <= Number(minDeposit)
   }, [amount, selectedToken])
 
   // Initialize with defaults if not set
@@ -225,12 +228,7 @@ export function GlobalDeposit() {
             </div>
           </div>
 
-          <Separator
-            label="OR"
-            position="center"
-            size="medium"
-            spacing={0}
-          />
+          <Separator label="OR" position="center" size="medium" spacing={0} />
           <Deposit
             address={address ?? ''}
             chainId={selectedChain?.id}
