@@ -226,7 +226,8 @@ export function GlobalDeposit() {
           </div>
 
           <Separator
-            label="Or deposit to this address"
+            label="OR"
+            position="center"
             size="medium"
             spacing={0}
           />
