@@ -1,7 +1,6 @@
 import { Env } from '@porto/apps'
 import { useQuery } from '@tanstack/react-query'
-import type { Hex } from 'ox'
-import type { Dispatch, SetStateAction } from 'react'
+import { type Dispatch, type SetStateAction, useState } from 'react'
 import { parseAbiItem } from 'viem'
 import { riseTestnet } from 'viem/chains'
 import { useSendCallsSync } from 'wagmi'
@@ -22,6 +21,9 @@ export function useBridge(params: UseBridgeParams) {
 
   const targetChainId = Env.get() === 'prod' ? riseTestnet.id : riseTestnet.id // TODO: mainnet release switch chain id for prod
 
+  const [data, setData] = useState<any>()
+  const [error, setError] = useState<Error | undefined>()
+
   // Get available chains
   const { data: chains } = useQuery({
     queryFn: () => {
@@ -36,6 +38,9 @@ export function useBridge(params: UseBridgeParams) {
   // Bridge function
   const bridge = async () => {
     if (!selectedChainId || !selectedToken || !amount) return
+
+    setData(undefined)
+    setError(undefined)
 
     setBridgeState({
       sourceChainId: selectedChainId,
@@ -70,15 +75,15 @@ export function useBridge(params: UseBridgeParams) {
       })
 
       // Get transaction hash from receipts
-      const sourceTxHash = response.receipts?.[1]?.transactionHash as
-        | Hex.Hex
-        | undefined
+      const sourceTxHash = response.receipts?.[0]?.transactionHash
 
       console.log('response-bridging::', response)
+      console.log('response-sourceTxHash::', sourceTxHash)
 
       if (response.status === 'failure') {
         setBridgeState((prev) => ({
           ...prev,
+          message: `Status: ${response.status} with code ${response.statusCode}`,
           sourceTxHash,
           status: 'source-failed',
         }))
@@ -90,11 +95,16 @@ export function useBridge(params: UseBridgeParams) {
         }))
       }
 
+      setData(response)
       return response
-    } catch (error) {
+    } catch (e) {
+      const error = e as Error
       console.log('error-bridging::', error)
+
+      setError(error)
       setBridgeState((prev) => ({
         ...prev,
+        message: typeof error.cause === 'string' ? error.cause : error.message,
         status: 'failed',
       }))
     }
@@ -103,6 +113,8 @@ export function useBridge(params: UseBridgeParams) {
   return {
     bridge,
     chains,
+    data,
+    error,
     targetChainId,
   }
 }

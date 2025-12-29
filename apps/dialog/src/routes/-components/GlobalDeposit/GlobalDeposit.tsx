@@ -3,7 +3,7 @@ import { Button } from '@porto/ui'
 import { cx } from 'cva'
 import { Value } from 'ox'
 import { useEffect, useMemo, useState } from 'react'
-import { parseUnits } from 'viem'
+import { formatUnits, parseUnits } from 'viem'
 import { useFundsContext } from '~/contexts'
 import {
   useBridge,
@@ -25,12 +25,6 @@ export function GlobalDeposit() {
     setSelectedAsset,
     setSelectedChain,
   } = useFundsContext()
-
-  // Track initial balance before bridge
-  const [initialRiseBalance, setInitialRiseBalance] = useState<
-    bigint | undefined
-  >()
-  console.log("initialRiseBalance:: ", initialRiseBalance)
 
   const [bridgeState, setBridgeState] = useState<BridgeState>({
     status: 'idle',
@@ -64,6 +58,8 @@ export function GlobalDeposit() {
         bridgeState.status === 'destination-pending' ? 2000 : false,
     })
 
+  console.log('riseBalance:: ', riseBalance)
+
   const selectedToken = useMemo(() => {
     return tokens.find(
       (t) => t.address.toLowerCase() === selectedAsset?.address?.toLowerCase(),
@@ -90,6 +86,12 @@ export function GlobalDeposit() {
     return balance === 0n || !balance
   }, [balance])
 
+  const shouldExceedMinDeposit = useMemo(() => {
+    if (!amount || !selectedToken) return false
+
+    return Number(amount) >= Number(selectedToken.minDeposit)
+  }, [amount, selectedToken])
+
   // Initialize with defaults if not set
   useEffect(() => {
     if (!selectedChain && SupportedChains[0]) {
@@ -106,10 +108,6 @@ export function GlobalDeposit() {
     setSelectedAsset,
     tokens[0],
   ])
-
-  useEffect(() => {
-    setInitialRiseBalance(riseBalance ?? 0n)
-  }, [riseBalance])
 
   // Show bridge progress view
   if (bridgeState.status !== 'idle') {
@@ -178,7 +176,19 @@ export function GlobalDeposit() {
           </div>
 
           <div className="space-y-2 rounded-lg bg-th_base-alt p-2">
-            <p className="text-sm text-th_base-secondary">Amount</p>
+            <div className="flex items-center justify-between gap-2">
+              <p className="text-sm text-th_base-secondary">Amount</p>
+              {selectedToken && (
+                <p className="text-th_base-secondary text-xs">
+                  Minimum Deposit:{' '}
+                  {formatUnits(
+                    selectedToken?.minDeposit,
+                    selectedToken?.decimals,
+                  )}{' '}
+                  {selectedToken?.symbol}
+                </p>
+              )}
+            </div>
             <div className="flex gap-2">
               <Input
                 className={cx('w-full bg-th_field')}
@@ -188,6 +198,7 @@ export function GlobalDeposit() {
                   setAmount(value)
                 }}
                 placeholder="0.00"
+                type="number"
                 value={amount}
               />
               {isBalanceZero ? (
@@ -219,11 +230,15 @@ export function GlobalDeposit() {
         <Layout.Footer.Actions>
           <Button
             className="w-full flex-1"
-            disabled={Number(amountBalance) === 0 || Number(amount) === 0}
+            disabled={
+              Number(amountBalance) === 0 ||
+              Number(amount) === 0 ||
+              shouldExceedMinDeposit
+            }
             onClick={bridge}
             variant="primary"
           >
-            Approve Global Deposit
+            Deposit to RISE
           </Button>
         </Layout.Footer.Actions>
       </Layout.Footer>

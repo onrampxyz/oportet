@@ -6,7 +6,6 @@ import CheckCircle from '~icons/lucide/check-circle'
 import CircleDashed from '~icons/lucide/circle-dashed'
 import XCircle from '~icons/lucide/circle-x'
 import ExternalLink from '~icons/lucide/external-link'
-import type { BridgeToken } from './BridgeFromChain'
 
 export type BridgeStatus =
   | 'idle'
@@ -22,6 +21,19 @@ export type BridgeState = {
   sourceChainId?: number
   sourceTxHash?: Hex.Hex
   destinationTxHash?: Hex.Hex
+  message?: string
+}
+
+export type BridgeToken = {
+  symbol: string
+  address: Hex.Hex
+  bridgeContract: Hex.Hex
+  bridgeType: 'hyperlane' | 'layerzero'
+  minDeposit: bigint
+  decimals: number
+  bridgeWrapper: Hex.Hex
+  icon: string
+  name: string
 }
 
 export type BridgeProps = {
@@ -35,10 +47,21 @@ export type BridgeProps = {
   onRetry?: () => void | Promise<void>
 }
 
+export function ErrorDisplay(props: Readonly<{ message: string, hidden: boolean }>) {
+  const { message, hidden } = props
+
+  if (hidden) {
+    return null
+  }
+
+  return (<div className="text-destructive text-sm">
+    {message}
+  </div>)
+}
+
 export function Bridge(props: Readonly<BridgeProps>) {
   const {
     bridgeState,
-    bridgeError,
     chains,
     targetChainId,
     selectedToken,
@@ -53,32 +76,20 @@ export function Bridge(props: Readonly<BridgeProps>) {
   const allChains = [...(chains ?? []), ...porto._internal.config.chains]
   const destChain = allChains.find((c: any) => c.id === targetChainId)
 
+  const isFailed =
+    bridgeState.status === 'source-failed' || bridgeState.status === 'failed'
+
   return (
     <Layout>
       <Layout.Header>
         <Layout.Header.Default
           title="Bridge Status"
-          variant={bridgeState.status === 'completed' ? 'success' : 'default'}
+          variant={isFailed ? 'destructive' : 'default'}
         />
       </Layout.Header>
 
       <Layout.Content>
         <div className="flex flex-col gap-3">
-          {bridgeError && (
-            <div className="flex flex-col gap-3">
-              <div className="flex items-start gap-2">
-                <div className="flex-1">
-                  <div className="font-medium text-sm text-th_base">
-                    Bridge error
-                  </div>
-                  <div className="text-sm text-th_base-secondary">
-                    {bridgeError.message}
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-
           <div className="flex flex-col gap-3">
             {/* Source Chain Status */}
             <div className="flex items-start gap-2">
@@ -111,10 +122,11 @@ export function Bridge(props: Readonly<BridgeProps>) {
                 <div className="text-sm text-th_base-secondary">
                   {sourceChain?.name}
                 </div>
+                <ErrorDisplay hidden={bridgeState.status !== 'source-failed'} message={bridgeState.message ?? ""} />
                 {bridgeState.sourceTxHash && (
-                  <div className="mt-1 flex items-center gap-2">
+                  <div className="flex items-center gap-2">
                     <a
-                      className="flex items-center gap-1 text-sm text-th_primary hover:underline"
+                      className="flex items-center gap-1 text-sm text-th_base-secondary hover:underline"
                       href={`${sourceChain?.blockExplorers?.default?.url}/tx/${bridgeState.sourceTxHash}`}
                       rel="noopener noreferrer"
                       target="_blank"
@@ -129,6 +141,7 @@ export function Bridge(props: Readonly<BridgeProps>) {
                     />
                   </div>
                 )}
+
               </div>
             </div>
 
@@ -172,17 +185,13 @@ export function Bridge(props: Readonly<BridgeProps>) {
                     Tokens received successfully
                   </div>
                 )}
+                <ErrorDisplay hidden={bridgeState.status !== 'failed'} message={bridgeState.message ?? ""} />
               </div>
             </div>
           </div>
 
           {selectedToken && amount !== undefined && (
             <Details opened>
-              {/* <Details.Item
-                label="Amount"
-                value={`${Value.format(amount, selectedToken.decimals)} ${selectedToken.symbol}`}
-              /> */}
-              {/* TODO: Fix this */}
               <div className="flex items-center justify-between gap-2">
                 <p className="text-th_base">Amount</p>
                 <p className="text-th_base">
@@ -193,10 +202,6 @@ export function Bridge(props: Readonly<BridgeProps>) {
                   {selectedToken.symbol}
                 </p>
               </div>
-              {/* <Details.Item
-                label="Bridge type"
-                value={selectedToken.bridgeType.toUpperCase()}
-              /> */}
               <div className="flex items-center justify-between gap-2">
                 <p className="text-th_base">Bridge type</p>
                 <p className="text-th_base">

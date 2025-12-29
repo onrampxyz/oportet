@@ -1,4 +1,4 @@
-import { Button, DiscIcon } from '@porto/ui'
+import { Button } from '@porto/ui'
 import { Chains } from 'rise-wallet'
 import { useFundsContext } from '~/contexts'
 import { Layout } from '../Layout'
@@ -10,13 +10,13 @@ export type Chain = {
 }
 
 export const SupportedChains: Chain[] = [
+  // {
+  //   icon: '/ui/chains/rise.svg',
+  //   id: Chains.riseTestnet.id,
+  //   name: Chains.riseTestnet.name,
+  // },
   {
-    icon: '/ui/chains/rise.svg',
-    id: Chains.riseTestnet.id,
-    name: Chains.riseTestnet.name,
-  },
-  {
-    icon: '/ui/chains/sepolia.svg',
+    icon: '/icons/chains/sepolia.svg',
     id: Chains.baseSepolia.id,
     name: Chains.baseSepolia.name,
   },
@@ -49,7 +49,12 @@ export function ChainSelection() {
                 type="button"
                 variant="secondary"
               >
-                <DiscIcon src={chain.icon} />
+                <img
+                  alt={`${chain.name}-icon`}
+                  height={20}
+                  src={chain.icon}
+                  width={20}
+                />
                 <span className="pt-0.5">{chain.name}</span>
               </Button>
             )

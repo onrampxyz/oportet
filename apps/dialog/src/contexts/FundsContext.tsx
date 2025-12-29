@@ -48,7 +48,7 @@ export function FundsProvider({
   const [view, setView] = useState<View>(initialView)
   const [selectedChain, setSelectedChain] = useState<Chain | undefined>()
   const [selectedAsset, setSelectedAsset] = useState<BridgeToken | undefined>()
-  const [amount, setAmount] = useState<string>('0.00')
+  const [amount, setAmount] = useState<string>('')
 
   const value = useMemo(() => {
     return {

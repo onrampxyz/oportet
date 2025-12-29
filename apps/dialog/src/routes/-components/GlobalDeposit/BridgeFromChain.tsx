@@ -30,20 +30,20 @@ export type BridgeToken = {
 // Hardcoded token configurations for bridging
 export const BRIDGE_TOKENS: Record<number, BridgeToken[]> = {
   // Rise Testnet
-  [riseTestnet.id]: [
-    {
-      address: '0x212Ee1EE02203e279c23bC8aB52c5b4428A3eCc7' as Address.Address,
-      bridgeContract:
-        '0x212Ee1EE02203e279c23bC8aB52c5b4428A3eCc7' as Address.Address,
-      bridgeType: 'hyperlane',
-      bridgeWrapper: zeroAddress,
-      decimals: 18,
-      icon: '/icons/eth.svg',
-      minDeposit: Value.from('0.1', 18), // 0.1 USDC
-      name: 'USDC', // TODO: fix this
-      symbol: 'USDC',
-    },
-  ],
+  // [riseTestnet.id]: [
+  //   {
+  //     address: '0x212Ee1EE02203e279c23bC8aB52c5b4428A3eCc7' as Address.Address,
+  //     bridgeContract:
+  //       '0x212Ee1EE02203e279c23bC8aB52c5b4428A3eCc7' as Address.Address,
+  //     bridgeType: 'hyperlane',
+  //     bridgeWrapper: zeroAddress,
+  //     decimals: 18,
+  //     icon: '/icons/eth.svg',
+  //     minDeposit: Value.from('0.1', 18), // 0.1 USDC
+  //     name: 'USDC', // TODO: fix this
+  //     symbol: 'USDC',
+  //   },
+  // ],
   // Base Sepolia
   84532: [
     {
@@ -61,11 +61,11 @@ export const BRIDGE_TOKENS: Record<number, BridgeToken[]> = {
   ],
 }
 
-export function BridgeFromChain(props: {
+export function BridgeFromChain(props: Readonly<{
   address: Address.Address
   onBack: () => void
   onSuccess: () => void
-}) {
+}>) {
   const { address, onBack, onSuccess } = props
 
   const [selectedChainId, setSelectedChainId] = React.useState<
@@ -119,7 +119,7 @@ export function BridgeFromChain(props: {
     )
   }, [selectedToken])
 
-  const { bridge, chains, targetChainId } = useBridge({
+  const { bridge, chains, targetChainId, data, error } = useBridge({
     selectedChainId,
     selectedToken,
     setBridgeState,
@@ -174,13 +174,11 @@ export function BridgeFromChain(props: {
   React.useEffect(() => {
     if (!isSendCallsSuccess) return
     if (!bridgeData) return
-    if (!(bridgeData.status === 'success')) return
+    if (bridgeData.status !== 'success') return
     if (bridgeState.status !== 'source-pending') return
 
     // Get transaction hash from receipts
-    const sourceTxHash = bridgeData.receipts?.[1]?.transactionHash as
-      | Hex.Hex
-      | undefined
+    const sourceTxHash = bridgeData.receipts?.[1]?.transactionHash
 
     setBridgeState((prev) => ({
       ...prev,
@@ -221,6 +219,9 @@ export function BridgeFromChain(props: {
       }))
     }
   }, [bridgeState.status, initialDestBalance, destBalance])
+
+  console.log("data::", data)
+  console.log("error::", error)
 
   // Show bridge progress view
   if (bridgeState.status !== 'idle') {
@@ -348,7 +349,7 @@ export function BridgeFromChain(props: {
               variant="primary"
               width="grow"
             >
-              Bridge to Rise
+              Bridge to RISE
             </Button>
           )}
         </Layout.Footer.Actions>

@@ -12,7 +12,7 @@ export function CopyButton({
   size = 'small',
   value,
   variant = 'content',
-}: CopyButton.Props) {
+}: Readonly<CopyButton.Props>) {
   const { copy, notifying } = CopyButton.useCopy()
 
   const Icon = notifying ? LucideCopyCheck : LucideCopy
@@ -52,9 +52,9 @@ export namespace CopyButton {
   export type Label =
     | ReactNode
     | {
-        normal: ReactNode
-        copied: ReactNode
-      }
+      normal: ReactNode
+      copied: ReactNode
+    }
 
   export function getLabel(label: Label, notifying: boolean) {
     return label && typeof label === 'object' && 'normal' in label
@@ -73,7 +73,11 @@ export namespace CopyButton {
     const { copy, notifying } = CopyButton.useCopy()
 
     const Icon = notifying ? LucideCopyCheck : LucideCopy
-    const icon = <Icon className={css({ height: 14, width: 14 })} />
+    const icon = (
+      <Icon
+        className='h-[14px]! w-[14px]! text-th_base-secondary!'
+      />
+    )
     const label_ = getLabel(label, notifying)
 
     return (
