@@ -20,6 +20,17 @@ export type WalletBalancesProps = {
 
 export type TokenSymbol = keyof typeof TOKENS
 
+/**
+ * Checks if a chain has tokens based on the tokenId format.
+ * TokenId format: "{chainId}-{tokenAddress}"
+ * @param tokenId - The token identifier (e.g., "11155931-0x6166a6e02b4cf0e1e0397082de1b4fc9cc9d6ced")
+ * @param chainId - The chain identifier to check against
+ * @returns true if the tokenId belongs to the specified chain
+ */
+function chainHasToken(tokenId: string, chainId: number): boolean {
+  return tokenId.startsWith(`${chainId}-`)
+}
+
 export function WalletBalances(props: Readonly<WalletBalancesProps>) {
   const { balances, isLoading, refetch, isTransactionSupported = true } = props
 
@@ -45,6 +56,8 @@ export function WalletBalances(props: Readonly<WalletBalancesProps>) {
     }
   }
 
+  console.log("balances:: ", balances)
+
   if (isLoading) {
     return <WalletBalancesSkeleton />
   }
@@ -63,31 +76,40 @@ export function WalletBalances(props: Readonly<WalletBalancesProps>) {
 
       {hasBalance &&
         !isLoading &&
-        chains?.map((chain) => (
-          <div className="" key={chain.id}>
-            <div className="mb-4 flex items-center justify-between">
-              <div>
-                <h3 className="font-semibold">{chain.id}</h3>
-                <p className="text-gray10 text-sm">
-                  {balances.length} token
-                  {balances.length === 1 ? '' : 's'}
-                </p>
+        chains?.map((chain) => {
+          const chainBalances = balances.filter((balance) =>
+            chainHasToken(balance.tokenId, chain.id),
+          )
+
+          if (chainBalances.length === 0) {
+            return null
+          }
+
+          return (
+            <div className="" key={chain.id}>
+              <div className="mb-4 flex items-center justify-between">
+                <div>
+                  <h3 className="font-semibold">{chain.id}</h3>
+                  <p className="text-gray10 text-sm">
+                    {chainBalances.length} token
+                    {chainBalances.length === 1 ? '' : 's'}
+                  </p>
+                </div>
+                <div className="rounded-full bg-violet9/10 px-3 py-1">
+                  <p className="font-mono text-violet9 text-xs">{chain.name}</p>
+                </div>
               </div>
-              <div className="rounded-full bg-violet9/10 px-3 py-1">
-                <p className="font-mono text-violet9 text-xs">{chain.name}</p>
-              </div>
-            </div>
 
-            <div className="space-y-2">
-              {balances.map((balance) => {
-                const balanceId = `${chain.id}-${balance.tokenId}-${balance.symbol}`
+              <div className="space-y-2">
+                {chainBalances.map((balance) => {
+                  const balanceId = `${chain.id}-${balance.tokenId}-${balance.symbol}`
 
-                const transferId = `transfer-${balanceId}`
-                const swapId = `swap-${balanceId}`
-                const isOpen =
-                  isPanelOpen === transferId || isPanelOpen === swapId
+                  const transferId = `transfer-${balanceId}`
+                  const swapId = `swap-${balanceId}`
+                  const isOpen =
+                    isPanelOpen === transferId || isPanelOpen === swapId
 
-                return (
+                  return (
                   <div key={balanceId}>
                     <div
                       className={cx(
@@ -161,11 +183,12 @@ export function WalletBalances(props: Readonly<WalletBalancesProps>) {
                       refetch={refetch}
                     />
                   </div>
-                )
-              })}
+                  )
+                })}
+              </div>
             </div>
-          </div>
-        ))}
+          )
+        })}
     </div>
   )
 }
