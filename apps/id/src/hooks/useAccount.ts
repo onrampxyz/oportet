@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import type { Address } from 'ox'
 import type { AccountBalance } from '~/types/rise'
 
-const API_BASE_URL = process.env.API_BASE_URL
+const API_BASE_URL = process.env.VITE_API_BASE_URL
 
 /**
  * Fetches account balance for a given address

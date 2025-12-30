@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import type { Stats } from '~/types/rise'
 
-const API_BASE_URL = process.env.API_BASE_URL
+const API_BASE_URL = process.env.VITE_API_BASE_URL
 /**
  * Fetches platform statistics
  *

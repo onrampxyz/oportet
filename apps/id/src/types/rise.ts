@@ -1,17 +1,49 @@
 import type { Address } from 'ox'
 
 // Market Types
-export type Market = {
-  id: string
+
+export type MarketConfig = {
   name: string
-  base_asset: string
-  quote_asset: string
-  status: 'active' | 'inactive'
-  min_order_size: string
-  max_order_size: string
-  tick_size: string
-  created_at: string
-  updated_at: string
+  quote: string // address
+  step_size: string // big number (int as string)
+  step_price: string // big number (int as string)
+  maintenance_margin_factor: string // big number
+  max_leverage: string // big number
+  min_order_size: string // big number
+  unlocked: boolean
+  open_interest_limit: string // big number
+}
+
+export type Market = {
+  market_id: string
+  config: MarketConfig
+  available: boolean
+  base_asset_symbol: string
+  quote_asset_symbol: string
+  underlying: string
+  display_name: string
+  quote_volume_24h: string // decimal as string
+  change_24h: string // decimal as string
+  high_24h: string // decimal as string
+  low_24h: string // decimal as string
+  last_price: string // decimal as string
+  mark_price: string // decimal as string
+  index_price: string // decimal as string
+  max_position_size: string // big number
+  open_interest: string // decimal as string
+  funding_interval: string // nanoseconds?
+  next_funding_time: string // timestamp as string
+  post_only: boolean
+  last_cumulative_funding: string // decimal as string
+  predicted_funding_rate: string // decimal as string
+  visible: boolean
+  display_base_asset_symbol: string
+}
+
+export type MarketResponse = {
+  data: {
+    markets: Market[]
+  }
 }
 
 export type Trade = {

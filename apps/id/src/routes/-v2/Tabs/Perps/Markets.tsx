@@ -1,16 +1,6 @@
 import { cx } from 'cva'
+import type { Market } from '~/types/rise'
 import LucideSearch from '~icons/lucide/search'
-
-export type Market = {
-  symbol: string
-  name: string
-  price: string
-  change: string
-  isPositive: boolean
-  volume: string
-  high: string
-  low: string
-}
 
 export type MarketsProps = {
   markets: Market[]
@@ -47,34 +37,34 @@ export function Markets(props: Readonly<MarketsProps>) {
             {markets.map((market) => (
               <tr
                 className="cursor-pointer border-gray3 border-b last:border-0 hover:bg-gray2"
-                key={market.symbol}
+                key={market.base_asset_symbol}
                 onClick={() => onMarketSelect(market)}
               >
                 <td className="py-3">
                   <div className="flex items-center gap-2">
                     <div className="flex size-6 items-center justify-center rounded-full bg-violet9">
                       <span className="font-semibold text-white text-xs">
-                        {market.symbol.charAt(0)}
+                        {market.base_asset_symbol.charAt(0)}
                       </span>
                     </div>
                     <div>
-                      <p className="font-medium text-sm">{market.symbol}</p>
-                      <p className="text-gray10 text-xs">{market.name}</p>
+                      <p className="font-medium text-sm">{market.base_asset_symbol}</p>
+
                     </div>
                   </div>
                 </td>
-                <td className="py-3 font-medium text-sm">{market.price}</td>
+                <td className="py-3 font-medium text-sm">{market.mark_price}</td>
                 <td className="py-3">
                   <span
                     className={cx(
                       'font-medium text-sm',
-                      market.isPositive ? 'text-green-600' : 'text-red-600',
+                      Number(market?.change_24h) > 0 ? 'text-green-600' : 'text-red-600',
                     )}
                   >
-                    {market.change}
+                    {market.change_24h}
                   </span>
                 </td>
-                <td className="py-3 text-sm">{market.volume}</td>
+                <td className="py-3 text-sm">{market.quote_volume_24h}</td>
               </tr>
             ))}
           </tbody>

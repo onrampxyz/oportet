@@ -109,6 +109,40 @@ export namespace ValueFormatter {
       typeof num === 'bigint' ? Number(Value.format(num, units)) : Number(num),
     )
   }
+
+  const dollarIntl = new Intl.NumberFormat('en-US', {
+    maximumFractionDigits: 2,
+    minimumFractionDigits: 0,
+  })
+
+  /**
+   * Formats a number as a dollar amount with commas and up to 2 decimal places.
+   * Shows decimals only if they exist and are non-zero.
+   * @param num - The number to format (can be string, bigint, or number)
+   * @param units - The number of decimal units (default: 18 for wei)
+   * @returns Formatted dollar string (e.g., "1,234.56" or "1,234")
+   *
+   * @example
+   * ValueFormatter.formatDollar(1234.56)
+   * // Returns: "1,234.56"
+   *
+   * @example
+   * ValueFormatter.formatDollar(1234)
+   * // Returns: "1,234"
+   *
+   * @example
+   * ValueFormatter.formatDollar("1234.567")
+   * // Returns: "1,234.57"
+   */
+  export function formatDollar(
+    num: string | bigint | number | undefined,
+    units = 18,
+  ) {
+    if (!num) return '0'
+    const value =
+      typeof num === 'bigint' ? Number(Value.format(num, units)) : Number(num)
+    return dollarIntl.format(value)
+  }
 }
 
 export namespace PercentFormatter {

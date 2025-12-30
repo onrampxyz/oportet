@@ -8,7 +8,7 @@ import type {
   PlaceOrderResponse,
 } from '~/types/rise'
 
-const API_BASE_URL = process.env.API_BASE_URL
+const API_BASE_URL = process.env.VITE_API_BASE_URL
 
 /**
  * Places a new order

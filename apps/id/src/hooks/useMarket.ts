@@ -1,7 +1,10 @@
 import { useQuery } from '@tanstack/react-query'
-import type { Market, Orderbook, Trade } from '~/types/rise'
+import type { MarketResponse, Orderbook, Trade } from '~/types/rise'
 
-const API_BASE_URL = process.env.API_BASE_URL
+const API_BASE_URL =
+  process.env.VITE_API_BASE_URL ?? 'https://api.testnet.rise.trade'
+
+console.log('API_BASE_URL:: ', API_BASE_URL)
 
 /**
  * Fetches all markets
@@ -17,11 +20,13 @@ export function useMarkets({ enabled = true }: { enabled?: boolean } = {}) {
   return useQuery({
     enabled,
     queryFn: async () => {
-      const response = await fetch(`${API_BASE_URL}/v1/markets`)
+      const response = await fetch(`${API_BASE_URL}/v1/markets`, {
+        headers: { accept: 'application/json' },
+      })
       if (!response.ok) {
         throw new Error(`Failed to fetch markets: ${response.statusText}`)
       }
-      return response.json() as Promise<Market[]>
+      return response.json() as Promise<MarketResponse>
     },
     queryKey: ['markets'],
     refetchInterval: 30_000, // Refetch every 30 seconds
@@ -211,8 +216,8 @@ export function useMarket({
       marketTradeHistory.isLoading ||
       tradeHistory.isLoading ||
       orderbook.isLoading,
-    marketTradeHistory,
     markets,
+    marketTradeHistory,
     orderbook,
     tradeHistory,
   }

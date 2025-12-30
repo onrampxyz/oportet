@@ -1,29 +1,5 @@
-import type { Market } from '~/routes/-v2/Tabs/Perps/Markets'
 import type { Order } from '~/routes/-v2/Tabs/Perps/OrderBook'
 import type { Position } from '~/routes/-v2/Tabs/Perps/Positions'
-
-export const MarketsData: Market[] = [
-  {
-    change: '+2.45%',
-    high: '99,123.00',
-    isPositive: true,
-    low: '95,890.00',
-    name: 'Bitcoin',
-    price: '98,245.5',
-    symbol: 'BTC-PERP',
-    volume: '1.23B',
-  },
-  {
-    change: '-1.23%',
-    high: '',
-    isPositive: false,
-    low: '',
-    name: 'Ethereum',
-    price: '3,598.23',
-    symbol: 'ETH-PERP',
-    volume: '$567.89M',
-  },
-]
 
 export const PositionsData: Position[] = [
   {
