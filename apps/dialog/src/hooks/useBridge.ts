@@ -1,7 +1,7 @@
 import { Env } from '@porto/apps'
 import { useQuery } from '@tanstack/react-query'
 import { type Dispatch, type SetStateAction, useState } from 'react'
-import { parseAbiItem } from 'viem'
+import { type Address, parseAbiItem } from 'viem'
 import { riseTestnet } from 'viem/chains'
 import { useSendCallsSync } from 'wagmi'
 import { porto } from '~/lib/Porto'
@@ -16,10 +16,12 @@ export type UseBridgeParams = {
   tokenBalance?: bigint
   amount?: bigint
   setBridgeState: Dispatch<SetStateAction<BridgeState>>
+  account: Address
 }
 
 export function useBridge(params: UseBridgeParams) {
-  const { selectedChainId, selectedToken, setBridgeState, amount } = params
+  const { selectedChainId, selectedToken, setBridgeState, amount, account } =
+    params
 
   const targetChainId = Env.get() === 'prod' ? riseTestnet.id : riseTestnet.id // TODO: mainnet release switch chain id for prod
 
@@ -58,18 +60,18 @@ export function useBridge(params: UseBridgeParams) {
             abi: [
               parseAbiItem('function approve(address spender, uint256 amount)'),
             ],
-            args: [selectedToken.bridgeContract, amount],
+            args: [selectedToken.bridgeWrapper, amount],
             functionName: 'approve',
             to: selectedToken.address,
           },
           {
             abi: [
               parseAbiItem(
-                'function bridgeHyperlane(address _bridge, uint256 _amount)',
+                'function bridgeAllLayerZero(address _bridge, address _recipient)',
               ),
             ],
-            args: [selectedToken.bridgeContract, amount],
-            functionName: 'bridgeHyperlane',
+            args: [selectedToken.bridgeContract, account],
+            functionName: 'bridgeAllLayerZero',
             to: selectedToken.bridgeWrapper,
           },
         ],

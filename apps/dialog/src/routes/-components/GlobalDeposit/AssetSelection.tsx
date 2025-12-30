@@ -21,10 +21,10 @@ export const BRIDGE_TOKENS: Record<number, BridgeToken[]> = {
   // Rise Testnet
   [riseTestnet.id]: [
     {
-      address: '0x212Ee1EE02203e279c23bC8aB52c5b4428A3eCc7' as Address.Address,
+      address: '0x52b0b93aa1818359257149E005eC1AC2BCc3Eb1E' as Address.Address,
       bridgeContract:
-        '0x212Ee1EE02203e279c23bC8aB52c5b4428A3eCc7' as Address.Address,
-      bridgeType: 'hyperlane',
+        '0x52b0b93aa1818359257149E005eC1AC2BCc3Eb1E' as Address.Address,
+      bridgeType: 'layerzero',
       bridgeWrapper: zeroAddress,
       decimals: 18,
       icon: '/icons/usdc.svg',
@@ -32,20 +32,44 @@ export const BRIDGE_TOKENS: Record<number, BridgeToken[]> = {
       name: 'USDC', // TODO: fix this
       symbol: 'USDC',
     },
-  ],
-  // Base Sepolia
-  84532: [
     {
-      address: '0xc966f296d1735EbD224a537D2A3C1EE8be09eAe0' as Address.Address,
+      address: '0x57BfEf022E97Ad3877381a72b7E32F019596919e' as Address.Address,
       bridgeContract:
-        '0x372bBdbEf8Da9fcfE058D4C7Cc6756ee6B4133B9' as Address.Address,
-      bridgeType: 'hyperlane',
-      bridgeWrapper: '0x9Fe63D450edC97D700fA1D0081b84569102e5C1D',
+        '0x57BfEf022E97Ad3877381a72b7E32F019596919e' as Address.Address,
+      bridgeType: 'layerzero',
+      bridgeWrapper: zeroAddress,
+      decimals: 18,
+      icon: '/icons/usdt.svg',
+      minDeposit: Value.from('0.1', 18), // 0.1 USDC
+      name: 'USDT', // TODO: fix this
+      symbol: 'USDT',
+    },
+  ],
+  // Eth Sepolia
+  11155111: [
+    {
+      address: '0x28Cd50d58f80Da33B16542cdF8ce59717F66b957' as Address.Address,
+      bridgeContract:
+        '0x8421D6445915b251bE303475dfCdD083e4aCBA0f' as Address.Address,
+      bridgeType: 'layerzero',
+      bridgeWrapper: '0xCc5F8e7D2318DA052d63A0FCaE341D8aebDEdD9D',
       decimals: 18,
       icon: '/icons/usdc.svg',
       minDeposit: Value.from('0.1', 18), // 0.1 USDC
       name: 'USDC', // TODO: fix this
       symbol: 'USDC',
+    },
+    {
+      address: '0x9Fe63D450edC97D700fA1D0081b84569102e5C1D' as Address.Address,
+      bridgeContract:
+        '0x046832405512D508b873E65174E51613291083bC' as Address.Address,
+      bridgeType: 'layerzero',
+      bridgeWrapper: '0xCc5F8e7D2318DA052d63A0FCaE341D8aebDEdD9D',
+      decimals: 18,
+      icon: '/icons/usdt.svg',
+      minDeposit: Value.from('0.1', 18), // 0.1 USDC
+      name: 'USDT', // TODO: fix this
+      symbol: 'USDT',
     },
   ],
 }

@@ -65,6 +65,7 @@ export function GlobalDeposit() {
   }, [tokens, selectedAsset?.address])
 
   const { bridge, chains, targetChainId } = useBridge({
+    account: address ?? '0x',
     amount: parseUnits(amount, selectedAsset?.decimals ?? 18),
     selectedChainId: selectedChain?.id,
     selectedToken,

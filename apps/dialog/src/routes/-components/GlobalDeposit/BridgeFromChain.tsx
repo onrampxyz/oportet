@@ -122,6 +122,7 @@ export function BridgeFromChain(
   }, [selectedToken])
 
   const { bridge, chains, targetChainId, data, error } = useBridge({
+    account: address ?? '0x',
     selectedChainId,
     selectedToken,
     setBridgeState,
