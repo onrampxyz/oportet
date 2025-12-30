@@ -211,8 +211,8 @@ export function useMarket({
       marketTradeHistory.isLoading ||
       tradeHistory.isLoading ||
       orderbook.isLoading,
-    marketTradeHistory,
     markets,
+    marketTradeHistory,
     orderbook,
     tradeHistory,
   }
