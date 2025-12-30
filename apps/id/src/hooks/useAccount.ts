@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import type { Address } from 'ox'
-import type { AccountBalance } from '~/types/rise'
+import type { AccountBalance } from '~/types/market'
 
 const API_BASE_URL = process.env.VITE_API_BASE_URL
 

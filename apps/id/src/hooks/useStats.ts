@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import type { Stats } from '~/types/rise'
+import type { Stats } from '~/types/market'
 
 const API_BASE_URL = process.env.VITE_API_BASE_URL
 /**

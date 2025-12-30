@@ -6,7 +6,7 @@ import type {
   Order,
   PlaceOrderRequest,
   PlaceOrderResponse,
-} from '~/types/rise'
+} from '~/types/market'
 
 const API_BASE_URL = process.env.VITE_API_BASE_URL
 

@@ -1,5 +1,5 @@
 import type { Order } from '~/routes/-v2/Tabs/Perps/OrderBook'
-import type { Position } from '~/routes/-v2/Tabs/Perps/Positions'
+import type { Position, UserOrder } from '~/routes/-v2/Tabs/Perps/Positions'
 
 export const PositionsData: Position[] = [
   {
@@ -25,6 +25,36 @@ export const PositionsData: Position[] = [
     pnlPercent: '-4.88',
     side: 'SHORT',
     size: '3.2',
+  },
+]
+
+export const OrdersData: UserOrder[] = [
+  {
+    filled: '0%',
+    market: 'BTC-PERP',
+    price: '$99,500',
+    side: 'LONG',
+    size: '0.25',
+    status: 'Open',
+    type: 'Limit',
+  },
+  {
+    filled: '60%',
+    market: 'ETH-PERP',
+    price: '$3,700',
+    side: 'SHORT',
+    size: '2.0',
+    status: 'Partial',
+    type: 'Limit',
+  },
+  {
+    filled: '100%',
+    market: 'SOL-PERP',
+    price: 'Market',
+    side: 'LONG',
+    size: '10.0',
+    status: 'Filled',
+    type: 'Market',
   },
 ]
 

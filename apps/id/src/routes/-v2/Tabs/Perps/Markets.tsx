@@ -1,5 +1,6 @@
 import { cx } from 'cva'
-import type { Market } from '~/types/rise'
+import type { Market } from '~/types/market'
+import { ValueFormatter } from '~/utils'
 import LucideSearch from '~icons/lucide/search'
 
 export type MarketsProps = {
@@ -48,23 +49,30 @@ export function Markets(props: Readonly<MarketsProps>) {
                       </span>
                     </div>
                     <div>
-                      <p className="font-medium text-sm">{market.base_asset_symbol}</p>
-
+                      <p className="font-medium text-sm">
+                        {market.base_asset_symbol}
+                      </p>
                     </div>
                   </div>
                 </td>
-                <td className="py-3 font-medium text-sm">{market.mark_price}</td>
+                <td className="py-3 font-medium text-sm">
+                  ${ValueFormatter.formatDollar(market.mark_price)}
+                </td>
                 <td className="py-3">
                   <span
                     className={cx(
                       'font-medium text-sm',
-                      Number(market?.change_24h) > 0 ? 'text-green-600' : 'text-red-600',
+                      Number(market?.change_24h) > 0
+                        ? 'text-green-600'
+                        : 'text-red-600',
                     )}
                   >
                     {market.change_24h}
                   </span>
                 </td>
-                <td className="py-3 text-sm">{market.quote_volume_24h}</td>
+                <td className="py-3 text-sm">
+                  ${ValueFormatter.formatDollar(market.quote_volume_24h)}
+                </td>
               </tr>
             ))}
           </tbody>

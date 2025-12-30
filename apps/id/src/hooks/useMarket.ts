@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import type { MarketResponse, Orderbook, Trade } from '~/types/rise'
+import type { MarketResponse, Orderbook, Trade } from '~/types/market'
 
 const API_BASE_URL =
   process.env.VITE_API_BASE_URL ?? 'https://api.testnet.rise.trade'
