@@ -1,7 +1,7 @@
 import { Mode, Transport } from 'rise-wallet'
 import type { Porto } from 'rise-wallet/remote'
 import { http, type ValueOf } from 'viem'
-import { baseSepolia, riseTestnet, sepolia } from 'viem/chains'
+import { riseTestnet, sepolia } from 'viem/chains'
 
 import * as Env from './Env'
 
@@ -9,7 +9,7 @@ const mock = import.meta.env.MODE === 'test'
 
 const config = {
   anvil: {
-    chains: [riseTestnet, baseSepolia],
+    chains: [riseTestnet, sepolia],
     feeToken: 'ETH',
     mode: Mode.relay({
       mock,
@@ -18,7 +18,7 @@ const config = {
     relay: http(Transport.relayUrls.anvil.http),
     transports: {
       [riseTestnet.id]: http(),
-      [baseSepolia.id]: http(),
+      [sepolia.id]: http(),
     },
   },
   prod: {
