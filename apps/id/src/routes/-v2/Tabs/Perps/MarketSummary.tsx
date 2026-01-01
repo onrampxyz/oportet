@@ -80,7 +80,7 @@ export function MarketSummary(props: MarketSummaryProps) {
                     className={cx(
                       'flex w-full items-center justify-between rounded-md px-3 py-2 text-left text-sm transition-colors hover:bg-gray2',
                       selectedMarket?.base_asset_symbol ===
-                      market.base_asset_symbol && 'bg-gray3 dark:bg-gray4',
+                        market.base_asset_symbol && 'bg-gray3 dark:bg-gray4',
                     )}
                     key={market.base_asset_symbol}
                     onClick={() => handleMarketSelect(market)}

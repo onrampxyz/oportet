@@ -1,6 +1,6 @@
 import { Button } from '@porto/ui'
-import { Chains } from 'rise-wallet'
 import { useFundsContext } from '~/contexts'
+import { baseSepolia } from 'viem/chains'
 import { Layout } from '../Layout'
 
 export type Chain = {
@@ -17,8 +17,8 @@ export const SupportedChains: Chain[] = [
   // },
   {
     icon: '/icons/chains/sepolia.svg',
-    id: Chains.baseSepolia.id,
-    name: Chains.baseSepolia.name,
+    id: baseSepolia.id,
+    name: baseSepolia.name,
   },
 ]
 

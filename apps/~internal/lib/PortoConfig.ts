@@ -1,7 +1,7 @@
 import { Mode, Transport } from 'rise-wallet'
 import type { Porto } from 'rise-wallet/remote'
 import { http, type ValueOf } from 'viem'
-import { riseTestnet, sepolia } from 'viem/chains'
+import { baseSepolia, riseTestnet, sepolia } from 'viem/chains'
 
 import * as Env from './Env'
 
