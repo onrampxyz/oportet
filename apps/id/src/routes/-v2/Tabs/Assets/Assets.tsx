@@ -1,7 +1,7 @@
 import { Hooks } from 'rise-wallet/wagmi'
 import { zeroAddress } from 'viem'
 import { useAccount, useCapabilities } from 'wagmi'
-import { assetsToWalletBalances } from '~/lib/Mapper'
+import { assetsToWalletBalances } from '~/lib/utils/mapper'
 import type { Asset } from '~/types/asset'
 import { WalletBalances } from '../Portfolio/WalletBalances'
 

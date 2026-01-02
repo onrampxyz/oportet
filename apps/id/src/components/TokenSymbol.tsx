@@ -1,6 +1,6 @@
 import type { Address } from 'ox'
-import { useErc20Info, useErc721Info } from '~/hooks/useTokenInfo'
-import { useTokenStandard } from '~/hooks/useTokenStandard'
+import { useErc20Info, useErc721Info } from '~/hooks/onchain/useTokenInfo'
+import { useTokenStandard } from '~/hooks/onchain/useTokenStandard'
 import { StringFormatter } from '~/utils'
 
 export function TokenSymbol({

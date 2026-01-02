@@ -7,7 +7,7 @@ import {
   parseUnits,
 } from 'viem'
 import { useSendCalls } from 'wagmi'
-import { UniswapV2RouterABI } from './../abi/uniswap'
+import { UniswapV2RouterABI } from '../../abi/uniswap'
 
 export type TokenConfig = {
   address: Address

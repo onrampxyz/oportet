@@ -54,7 +54,7 @@ export async function decodeSelector(
  * React hook to decode multiple function selectors in parallel
  * Uses TanStack Query with infinite staleTime for permanent caching
  */
-export function useSelector({
+export function useSignatureSelector({
   enabled,
   selectors,
 }: {

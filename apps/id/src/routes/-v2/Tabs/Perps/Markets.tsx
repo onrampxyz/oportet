@@ -1,12 +1,7 @@
 import { cx } from 'cva'
-import type { Market } from '~/types/market'
 import { ValueFormatter } from '~/utils'
 import LucideSearch from '~icons/lucide/search'
-
-export type MarketsProps = {
-  markets: Market[]
-  onMarketSelect: (market: Market) => void
-}
+import type { MarketsProps } from './Perps'
 
 export function Markets(props: Readonly<MarketsProps>) {
   const { markets, onMarketSelect } = props
@@ -38,19 +33,19 @@ export function Markets(props: Readonly<MarketsProps>) {
             {markets.map((market) => (
               <tr
                 className="cursor-pointer border-gray3 border-b last:border-0 hover:bg-gray2"
-                key={market.base_asset_symbol}
+                key={market.productId}
                 onClick={() => onMarketSelect(market)}
               >
                 <td className="py-3">
                   <div className="flex items-center gap-2">
                     <div className="flex size-6 items-center justify-center rounded-full bg-violet9">
                       <span className="font-semibold text-white text-xs">
-                        {market.base_asset_symbol.charAt(0)}
+                        {market.productId.charAt(0)}
                       </span>
                     </div>
                     <div>
                       <p className="font-medium text-sm">
-                        {market.base_asset_symbol}
+                        {market.productId}
                       </p>
                     </div>
                   </div>

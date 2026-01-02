@@ -1,7 +1,10 @@
-import { useEffect, useMemo, useState } from 'react'
-import { useMarkets } from '~/hooks'
+import { useEffect, useState } from 'react'
+import {
+  type FilteredMarket,
+  useFilteredMarkets,
+  useMarkets
+} from '~/hooks'
 import { OrderbookData } from '~/mock/perps'
-import type { Market } from '~/types/api/trade'
 import { MarketSummary } from './MarketSummary'
 import { Markets } from './Markets'
 import { OrderBook } from './OrderBook'
@@ -9,31 +12,33 @@ import { Positions } from './Positions'
 import { PriceChart } from './PriceChart'
 import { TradingForm } from './TradingForm'
 
+export type MarketsProps = {
+  markets: FilteredMarket[]
+  onMarketSelect: (market: FilteredMarket) => void
+}
+
 export function Perps() {
   const [orderType, setOrderType] = useState<'long' | 'short'>('long')
   const [activeTimeframe, setActiveTimeframe] = useState('1D')
+  const [selectedMarket, setSelectedMarket] = useState<FilteredMarket | null>()
 
   const { data: markets } = useMarkets()
 
-  const marketList = useMemo(() => {
-    return markets?.data.markets
-  }, [markets])
-  console.log('marketList:: ', marketList)
+  const filteredMarkets = useFilteredMarkets(markets?.data.markets ?? [])
 
-  const [selectedMarket, setSelectedMarket] = useState<Market | null>()
-
+  // biome-ignore lint/correctness/useExhaustiveDependencies: Avoid unnecessary re-render
   useEffect(() => {
-    if (marketList && marketList?.length !== 0) {
-      setSelectedMarket(marketList[0])
+    if (markets && markets?.data.markets?.length !== 0) {
+      setSelectedMarket(filteredMarkets[0])
     }
-  }, [marketList])
+  }, [markets])
 
   return (
     <div className="space-y-4">
       {/* Market Summary */}
-      {marketList && selectedMarket && (
+      {filteredMarkets && selectedMarket && (
         <MarketSummary
-          markets={marketList}
+          markets={filteredMarkets}
           onMarketSelect={setSelectedMarket}
           selectedMarket={selectedMarket}
         />
@@ -48,8 +53,8 @@ export function Perps() {
             onTimeframeChange={setActiveTimeframe}
           />
           <Positions />
-          {marketList && (
-            <Markets markets={marketList} onMarketSelect={setSelectedMarket} />
+          {filteredMarkets && (
+            <Markets markets={filteredMarkets} onMarketSelect={setSelectedMarket} />
           )}
         </div>
 

@@ -1,4 +1,4 @@
-import type { MarketInfo } from '~/types/component/trade'
+import type { MarketInfo } from '~/types/perps/order'
 
 export const ORDER_STATUS = {
   CANCELED: 'CANCELED',

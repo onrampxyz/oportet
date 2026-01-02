@@ -2,7 +2,7 @@ import { Spinner } from '@porto/apps/components'
 import { cx } from 'cva'
 import { formatEther } from 'viem'
 import { useAccount } from 'wagmi'
-import { useSelector, useWallet } from '~/hooks'
+import { useSignatureSelector, useWallet } from '~/hooks'
 import { AddressFormatter } from '~/utils'
 
 type TransactionStatus = 'pending' | 'completed' | 'failed'
@@ -69,7 +69,7 @@ export function Transactions() {
   }
   const uniqueSelectors = getUniqueSelectors()
 
-  const selectorQueries = useSelector({
+  const selectorQueries = useSignatureSelector({
     enabled: uniqueSelectors.length > 0,
     selectors: uniqueSelectors,
   })

@@ -11,4 +11,4 @@ export type {
   PlaceOrderResponse,
   Stats,
   Trade,
-} from './api/trade'
+} from './perps/market'

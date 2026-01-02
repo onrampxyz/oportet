@@ -1,18 +1,18 @@
 import { cx } from 'cva'
 import { useRef, useState } from 'react'
 import { useClickOutside } from '~/hooks'
-import type { Market } from '~/types/market'
+import type { FilteredMarket } from '~/hooks/perps/useFilteredMarkets'
 import { ValueFormatter } from '~/utils'
 import LucideChevronDown from '~icons/lucide/chevron-down'
+import type { MarketsProps } from './Perps'
 
-export type MarketSummaryProps = {
-  markets: Market[]
-  onMarketSelect: (market: Market) => void
-  selectedMarket: Market | null | undefined
+export type MarketSummaryProps = MarketsProps & {
+  selectedMarket?: FilteredMarket
 }
 
-export function MarketSummary(props: MarketSummaryProps) {
+export function MarketSummary(props: Readonly<MarketSummaryProps>) {
   const { markets, onMarketSelect, selectedMarket } = props
+
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
 
@@ -20,7 +20,7 @@ export function MarketSummary(props: MarketSummaryProps) {
     setIsDropdownOpen(false)
   })
 
-  const handleMarketSelect = (market: Market) => {
+  const handleMarketSelect = (market: FilteredMarket) => {
     onMarketSelect(market)
     setIsDropdownOpen(false)
   }
@@ -32,13 +32,13 @@ export function MarketSummary(props: MarketSummaryProps) {
         <div className="relative flex items-center gap-2" ref={dropdownRef}>
           <div className="flex size-8 items-center justify-center rounded-full bg-gradient-to-br from-orange-400 to-orange-600">
             <span className="font-semibold text-sm text-white">
-              {selectedMarket?.base_asset_symbol.charAt(0)}
+              {selectedMarket?.productId.charAt(0)}
             </span>
           </div>
           <div>
             <div className="flex items-center gap-2">
               <h2 className="font-semibold text-lg">
-                {selectedMarket?.base_asset_symbol}
+                {selectedMarket?.productId}
               </h2>
               <button
                 className="text-gray10 hover:text-gray12"
@@ -79,22 +79,20 @@ export function MarketSummary(props: MarketSummaryProps) {
                   <button
                     className={cx(
                       'flex w-full items-center justify-between rounded-md px-3 py-2 text-left text-sm transition-colors hover:bg-gray2',
-                      selectedMarket?.base_asset_symbol ===
-                        market.base_asset_symbol && 'bg-gray3 dark:bg-gray4',
+                      selectedMarket?.base_asset_symbol === market.productId &&
+                      'bg-gray3 dark:bg-gray4',
                     )}
-                    key={market.base_asset_symbol}
+                    key={market.productId}
                     onClick={() => handleMarketSelect(market)}
                     type="button"
                   >
                     <div className="flex items-center gap-2">
                       <div className="flex size-6 items-center justify-center rounded-full bg-violet9">
                         <span className="font-semibold text-white text-xs">
-                          {market.base_asset_symbol.charAt(0)}
+                          {market?.productId?.charAt(0)}
                         </span>
                       </div>
-                      <div className="font-medium">
-                        {market.base_asset_symbol}
-                      </div>
+                      <div className="font-medium">{market.productId}</div>
                     </div>
                     <div className="text-right">
                       <div className="font-medium">
