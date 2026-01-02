@@ -143,6 +143,81 @@ export namespace ValueFormatter {
       typeof num === 'bigint' ? Number(Value.format(num, units)) : Number(num)
     return dollarIntl.format(value)
   }
+
+  /**
+   * Formats a number with suffix notation (B for Billion, M for Million, K for Thousand).
+   * Automatically determines the appropriate suffix based on the number's magnitude.
+   * @param num - The number to format (can be string, bigint, or number)
+   * @param units - The number of decimal units (default: 18 for wei)
+   * @param options - Formatting options
+   * @param options.decimals - Number of decimal places to show (default: 2)
+   * @returns Formatted number with suffix (e.g., "1.23B", "456.78M", "12.34K")
+   *
+   * @example
+   * ValueFormatter.formatWithSuffix(1234567890)
+   * // Returns: "1.23B"
+   *
+   * @example
+   * ValueFormatter.formatWithSuffix(1234567)
+   * // Returns: "1.23M"
+   *
+   * @example
+   * ValueFormatter.formatWithSuffix(12345)
+   * // Returns: "12.35K"
+   *
+   * @example
+   * ValueFormatter.formatWithSuffix(123)
+   * // Returns: "123"
+   *
+   * @example
+   * ValueFormatter.formatWithSuffix(1234567890, 18, { decimals: 1 })
+   * // Returns: "1.2B"
+   */
+  export function formatWithSuffix(
+    num: string | bigint | number | undefined,
+    units = 18,
+    { decimals = 2 }: { decimals?: number } = {},
+  ) {
+    if (!num) return '0'
+
+    const value =
+      typeof num === 'bigint' ? Number(Value.format(num, units)) : Number(num)
+
+    if (Number.isNaN(value)) return '0'
+
+    const absValue = Math.abs(value)
+    const sign = value < 0 ? '-' : ''
+
+    // Trillion (1,000,000,000,000)
+    if (absValue >= 1_000_000_000_000) {
+      return `${sign}${(absValue / 1_000_000_000_000).toFixed(decimals)}T`
+    }
+
+    // Billion (1,000,000,000)
+    if (absValue >= 1_000_000_000) {
+      return `${sign}${(absValue / 1_000_000_000).toFixed(decimals)}B`
+    }
+
+    // Million (1,000,000)
+    if (absValue >= 1_000_000) {
+      return `${sign}${(absValue / 1_000_000).toFixed(decimals)}M`
+    }
+
+    // Thousand (1,000)
+    if (absValue >= 1_000) {
+      return `${sign}${(absValue / 1_000).toFixed(decimals)}K`
+    }
+
+    // Less than 1,000 - show as is with decimals
+    return `${sign}${absValue.toFixed(decimals)}`
+  }
+
+  export const anyToFloat = (value: any, fallback: any = 0) => {
+    const calcValue = value?.toString?.().replace(',', '')
+
+    if (Number.isNaN(calcValue) || !calcValue) return fallback
+    return Number.parseFloat(calcValue)
+  }
 }
 
 export namespace PercentFormatter {

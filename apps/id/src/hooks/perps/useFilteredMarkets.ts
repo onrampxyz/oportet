@@ -5,6 +5,7 @@ import type { Market } from '~/types/market'
 export function useFilteredMarkets(markets: Market[]) {
   const supportedMarkets = Object.values(MARKETS_CONFIG)
 
+  console.log('markets:: ', markets)
   console.log('supportedMarkets:: ', supportedMarkets)
 
   const filteredMarkets = useMemo(() => {
@@ -21,7 +22,8 @@ export function useFilteredMarkets(markets: Market[]) {
 
         return {
           ...market,
-          productId: supported?.productId ?? '',
+          base_asset: supported?.baseAssetSymbol,
+          product_id: supported?.productId,
         }
       })
   }, [markets, supportedMarkets])
@@ -32,5 +34,6 @@ export function useFilteredMarkets(markets: Market[]) {
 }
 
 export type FilteredMarket = Market & {
-  productId: string
+  product_id?: string
+  base_asset?: string
 }

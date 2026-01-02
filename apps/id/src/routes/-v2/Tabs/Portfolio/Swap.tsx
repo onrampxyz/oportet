@@ -185,8 +185,9 @@ export function Swap(props: Readonly<SwapProps>) {
 
   return (
     <div
-      className={`overflow-hidden rounded-lg rounded-t-none border border-gray5 border-t-0 transition-all duration-300 ease-in-out ${isOpen ? 'max-h-[600px] p-4 opacity-100' : 'max-h-0 p-0 opacity-0'
-        }`}
+      className={`overflow-hidden rounded-lg rounded-t-none border border-gray5 border-t-0 transition-all duration-300 ease-in-out ${
+        isOpen ? 'max-h-[600px] p-4 opacity-100' : 'max-h-0 p-0 opacity-0'
+      }`}
     >
       <div className="space-y-3">
         {/* From Section */}
@@ -200,8 +201,9 @@ export function Swap(props: Readonly<SwapProps>) {
                 Amount
               </label>
               <div
-                className={`flex flex-1 items-center gap-4 rounded-lg border px-3 py-2 ${error ? 'border-red-500' : 'border-gray5'
-                  }`}
+                className={`flex flex-1 items-center gap-4 rounded-lg border px-3 py-2 ${
+                  error ? 'border-red-500' : 'border-gray5'
+                }`}
               >
                 <input
                   className="flex-1 text-sm focus:border-violet9 focus:outline-none"
@@ -227,8 +229,9 @@ export function Swap(props: Readonly<SwapProps>) {
                 To
               </label>
               <div
-                className={`flex gap-1 rounded-lg border px-3 py-2 ${error ? 'border-red-500' : 'border-gray5'
-                  }`}
+                className={`flex gap-1 rounded-lg border px-3 py-2 ${
+                  error ? 'border-red-500' : 'border-gray5'
+                }`}
               >
                 <input
                   className="flex-1 text-sm focus:border-violet9 focus:outline-none"

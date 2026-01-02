@@ -1,9 +1,5 @@
 import { useEffect, useState } from 'react'
-import {
-  type FilteredMarket,
-  useFilteredMarkets,
-  useMarkets
-} from '~/hooks'
+import { type FilteredMarket, useFilteredMarkets, useMarkets } from '~/hooks'
 import { OrderbookData } from '~/mock/perps'
 import { MarketSummary } from './MarketSummary'
 import { Markets } from './Markets'
@@ -54,7 +50,10 @@ export function Perps() {
           />
           <Positions />
           {filteredMarkets && (
-            <Markets markets={filteredMarkets} onMarketSelect={setSelectedMarket} />
+            <Markets
+              markets={filteredMarkets}
+              onMarketSelect={setSelectedMarket}
+            />
           )}
         </div>
 

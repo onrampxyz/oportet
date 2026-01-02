@@ -15,6 +15,12 @@ export enum MarketId {
   SOL = '4',
   DOGE = '5',
   kPEPE = '6',
+  SPY = '7',
+  TSLA = '8',
+  COIN = '9',
+  HOOD = '10',
+  NVDA = '11',
+  LIT = '12',
 }
 
 export const MARKETS_CONFIG: Record<MarketId, MarketInfo> = {
@@ -113,5 +119,101 @@ export const MARKETS_CONFIG: Record<MarketId, MarketInfo> = {
     quoteIncrement: '0.000001',
     stepPrice: '0.000001',
     stepSize: '1',
+  },
+  [MarketId.SPY]: {
+    baseAssetSymbol: 'SPY',
+    baseIncrement: '0.001',
+    decimalQuote: 2,
+    id: MarketId.SPY,
+    maintenanceMargin: '75', // rate = 0.01(3)
+    maxLeverage: '50', // x50
+    minOrderSize: '0.001',
+    name: 'SPY/USD',
+    productId: 'SPY-PERP',
+    quote: '0x774E23c66BA53cFBE1b8C7a5e4dBc01766AE9393',
+    quoteAssetSymbol: 'USD',
+    quoteIncrement: '0.001',
+    stepPrice: '0.001',
+    stepSize: '0.001',
+  },
+  [MarketId.TSLA]: {
+    baseAssetSymbol: 'TSLA',
+    baseIncrement: '0.001',
+    decimalQuote: 3,
+    id: MarketId.TSLA,
+    maintenanceMargin: '75', // rate = 0.01(3)
+    maxLeverage: '50', // x50
+    minOrderSize: '0.001',
+    name: 'TSLA/USD',
+    productId: 'TSLA-PERP',
+    quote: '0x774E23c66BA53cFBE1b8C7a5e4dBc01766AE9393',
+    quoteAssetSymbol: 'USD',
+    quoteIncrement: '0.001',
+    stepPrice: '0.001',
+    stepSize: '0.001',
+  },
+  [MarketId.COIN]: {
+    baseAssetSymbol: 'COIN',
+    baseIncrement: '0.001',
+    decimalQuote: 3,
+    id: MarketId.COIN,
+    maintenanceMargin: '75', // rate = 0.01(3)
+    maxLeverage: '50', // x50
+    minOrderSize: '0.001',
+    name: 'COIN/USD',
+    productId: 'COIN-PERP',
+    quote: '0x774E23c66BA53cFBE1b8C7a5e4dBc01766AE9393',
+    quoteAssetSymbol: 'USD',
+    quoteIncrement: '0.001',
+    stepPrice: '0.001',
+    stepSize: '0.001',
+  },
+  [MarketId.HOOD]: {
+    baseAssetSymbol: 'HOOD',
+    baseIncrement: '0.001',
+    decimalQuote: 3,
+    id: MarketId.HOOD,
+    maintenanceMargin: '75', // rate = 0.01(3)
+    maxLeverage: '50', // x50
+    minOrderSize: '0.001',
+    name: 'HOOD/USD',
+    productId: 'HOOD-PERP',
+    quote: '0x774E23c66BA53cFBE1b8C7a5e4dBc01766AE9393',
+    quoteAssetSymbol: 'USD',
+    quoteIncrement: '0.001',
+    stepPrice: '0.001',
+    stepSize: '0.001',
+  },
+  [MarketId.NVDA]: {
+    baseAssetSymbol: 'NVDA',
+    baseIncrement: '0.001',
+    decimalQuote: 3,
+    id: MarketId.NVDA,
+    maintenanceMargin: '75', // rate = 0.01(3)
+    maxLeverage: '50', // x50
+    minOrderSize: '0.001',
+    name: 'NVDA/USD',
+    productId: 'NVDA-PERP',
+    quote: '0x774E23c66BA53cFBE1b8C7a5e4dBc01766AE9393',
+    quoteAssetSymbol: 'USD',
+    quoteIncrement: '0.001',
+    stepPrice: '0.001',
+    stepSize: '0.001',
+  },
+  [MarketId.LIT]: {
+    baseAssetSymbol: 'LIT',
+    baseIncrement: '0.1',
+    decimalQuote: 4,
+    id: MarketId.LIT,
+    maintenanceMargin: '75', // rate = 0.01(3)
+    maxLeverage: '50', // x50
+    minOrderSize: '0.1',
+    name: 'LIT/USD',
+    productId: 'LIT-PERP',
+    quote: '0x774E23c66BA53cFBE1b8C7a5e4dBc01766AE9393',
+    quoteAssetSymbol: 'USD',
+    quoteIncrement: '0.0001',
+    stepPrice: '0.0001',
+    stepSize: '0.01',
   },
 }
