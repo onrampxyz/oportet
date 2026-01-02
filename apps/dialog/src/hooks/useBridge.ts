@@ -52,8 +52,6 @@ export function useBridge(params: UseBridgeParams) {
     })
 
     try {
-      // TODO: get bridge quotes and include in value field
-      // TODO: switch bridge calls based on bridge type
       const response = await sendCallsSyncAsync({
         calls: [
           {

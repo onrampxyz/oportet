@@ -2,4 +2,5 @@
 export {
   baseSepolia,
   riseTestnet,
-} from 'viem/chains'
+  sepolia
+} from 'viem/chains';

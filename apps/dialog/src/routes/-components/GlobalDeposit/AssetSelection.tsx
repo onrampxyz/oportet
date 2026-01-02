@@ -81,6 +81,7 @@ export function getAssets(id?: number) {
     (token) => token.address.toLowerCase() !== zeroAddress.toLowerCase(),
   )
 
+  console.log('tokens:: ', tokens)
   return tokens
 }
 
