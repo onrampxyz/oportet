@@ -1,4 +1,5 @@
 import { Button } from '@porto/ui'
+import { Chains } from 'rise-wallet/index'
 import { useFundsContext } from '~/contexts'
 import { Layout } from '../Layout'
 
@@ -9,10 +10,15 @@ export type Chain = {
 }
 
 export const SupportedChains: Chain[] = [
+  // {
+  //   icon: '/ui/chains/rise.svg',
+  //   id: Chains.riseTestnet.id,
+  //   name: Chains.riseTestnet.name,
+  // },
   {
     icon: '/icons/chains/sepolia.svg',
-    id: 11155111,
-    name: 'Eth Sepolia',
+    id: Chains.sepolia.id,
+    name: Chains.sepolia.name,
   },
 ]
 
