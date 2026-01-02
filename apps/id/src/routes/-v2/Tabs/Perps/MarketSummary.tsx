@@ -50,7 +50,7 @@ function MarketSelector({
         />
       </div>
 
-      <div className='my-2 flex items-center justify-between gap-2'>
+      <div className="my-2 flex items-center justify-between gap-2">
         <p className="ml-2 text-sm">Market</p>
         <p className="mr-6 text-sm">Price</p>
       </div>
@@ -81,11 +81,7 @@ function MarketSelector({
                 type="button"
               >
                 <div className="flex items-center gap-2">
-                  <div className="flex size-6 items-center justify-center rounded-full bg-violet9">
-                    <span className="font-semibold text-white text-xs">
-                      {market?.product_id?.charAt(0)}
-                    </span>
-                  </div>
+                  <img alt="coin" className="size-6" src={`/icons/crypto/${market.base_asset?.toLowerCase()}.svg`} />
                   <div className="font-medium">{market.product_id}</div>
                 </div>
                 <div className="text-right">
@@ -118,8 +114,8 @@ export function MarketSummary(props: Readonly<MarketSummaryProps>) {
   const { openModal, closeAllModals } = useModal()
 
   const changePercent = getChangePercent(
-    selectedMarket?.mark_price ?? "",
-    selectedMarket?.change_24h ?? "",
+    selectedMarket?.mark_price ?? '',
+    selectedMarket?.change_24h ?? '',
   )
 
   const handleOpenMarketSelector = () => {
@@ -149,11 +145,7 @@ export function MarketSummary(props: Readonly<MarketSummaryProps>) {
           onClick={handleOpenMarketSelector}
           type="button"
         >
-          <div className="flex size-8 items-center justify-center rounded-full bg-gradient-to-br from-orange-400 to-orange-600">
-            <span className="font-semibold text-sm text-white">
-              {selectedMarket?.product_id?.charAt(0)}
-            </span>
-          </div>
+          <img alt="coin" className="size-8" src={`/icons/crypto/${selectedMarket?.base_asset?.toLowerCase()}.svg`} />
           <div className="text-left">
             <div className="flex items-center gap-2">
               <h2 className="font-semibold text-lg">
@@ -171,8 +163,8 @@ export function MarketSummary(props: Readonly<MarketSummaryProps>) {
                     : 'text-red-600',
                 )}
               >
-                {ValueFormatter.formatWithSuffix(selectedMarket?.change_24h)}{" "}
-                ({ValueFormatter.formatWithSuffix(changePercent)}%)
+                {ValueFormatter.formatWithSuffix(selectedMarket?.change_24h)} (
+                {ValueFormatter.formatWithSuffix(changePercent)}%)
               </span>
             </p>
           </div>
