@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import { type FilteredMarket, useFilteredMarkets, useMarkets } from '~/hooks'
-import { OrderbookData } from '~/mock/perps'
 import { MarketSummary } from './MarketSummary'
 import { Markets } from './Markets'
 import { OrderBook } from './OrderBook'
@@ -59,10 +58,7 @@ export function Perps() {
 
         {/* Right Column - Order Book & Trading Form */}
         <div className="space-y-4">
-          <OrderBook
-            marketId={selectedMarket?.market_id ?? ""}
-            orders={OrderbookData}
-          />
+          <OrderBook selectedMarket={selectedMarket} />
           <TradingForm onOrderTypeChange={setOrderType} orderType={orderType} />
         </div>
       </div>
