@@ -1,4 +1,6 @@
 import { cx } from 'cva'
+import { useEffect } from 'react'
+import { createSocket } from '~/services/websocket'
 
 export type Order = {
   price: string
@@ -11,8 +13,54 @@ export type OrderBookProps = {
   orders: Order[]
 }
 
-export function OrderBook(props: OrderBookProps) {
+function subscribeToMarkets() {
+  const ws = createSocket({
+    onMessage: (event) => {
+      const data = JSON.parse(event.data)
+
+      console.log("web-socket-data:: ", data)
+
+      // Handle different message types
+      switch (data.type) {
+        case 'market_update':
+          console.log('Market update:', data)
+          break
+        case 'trade':
+          console.log('New trade:', data)
+          break
+        case 'orderbook':
+          console.log('Orderbook update:', data)
+          break
+        default:
+          console.log('Unknown message type:', data)
+      }
+    },
+    onOpen: () => {
+      // Subscribe to multiple channels
+      // ws.send({ channel: 'orderbook', market_id: '1', type: 'subscribe' })
+      ws.send({
+        method: 'subscribe',
+        params: {
+          channel: 'orderbook',
+          market_ids: [1],
+        },
+      })
+    },
+  })
+
+  ws.connect()
+  return ws
+}
+
+export function OrderBook(props: Readonly<OrderBookProps>) {
   const { orders } = props
+
+  console.log("Entering Orderbook")
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: avoid rerender
+  useEffect(() => {
+    subscribeToMarkets()
+  }, [])
 
   return (
     <div className="rounded-lg border border-gray5 bg-white p-4 dark:bg-gray1">

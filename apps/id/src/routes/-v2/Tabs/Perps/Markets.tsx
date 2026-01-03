@@ -63,8 +63,6 @@ export function Markets(props: Readonly<MarketsProps>) {
                   market?.change_24h ?? '',
                 )
 
-                console.log("market.base_asset:: ", market.base_asset)
-
                 return (
                   <tr
                     className="cursor-pointer border-gray3 border-b last:border-0 hover:bg-gray2"
@@ -73,7 +71,11 @@ export function Markets(props: Readonly<MarketsProps>) {
                   >
                     <td className="py-1">
                       <div className="flex items-center gap-3">
-                        <img alt="coin" className="size-5" src={`/icons/crypto/${market.base_asset?.toLowerCase()}.svg`} />
+                        <img
+                          alt="coin"
+                          className="size-5"
+                          src={`/icons/crypto/${market.base_asset?.toLowerCase()}.svg`}
+                        />
                         <div>
                           <p className="font-medium text-xs">
                             {market.product_id}
@@ -95,7 +97,7 @@ export function Markets(props: Readonly<MarketsProps>) {
                       >
                         {Number(market.change_24h) > 0 ? '+' : ''}
                         {ValueFormatter.formatWithSuffix(market?.change_24h)}{' '}
-                        <span className="text-[10px]">
+                        <span className="text-xs">
                           ({ValueFormatter.formatWithSuffix(changePercent)}%)
                         </span>
                       </p>

@@ -74,14 +74,18 @@ function MarketSelector({
                 className={cx(
                   'flex w-full items-center justify-between rounded-md px-3 py-2 text-left text-sm transition-colors hover:bg-gray2',
                   selectedMarket?.product_id === market.product_id &&
-                  'bg-gray3 dark:bg-gray4',
+                    'bg-gray3 dark:bg-gray4',
                 )}
                 key={market.product_id}
                 onClick={() => onMarketSelect(market)}
                 type="button"
               >
                 <div className="flex items-center gap-2">
-                  <img alt="coin" className="size-6" src={`/icons/crypto/${market.base_asset?.toLowerCase()}.svg`} />
+                  <img
+                    alt="coin"
+                    className="size-6"
+                    src={`/icons/crypto/${market.base_asset?.toLowerCase()}.svg`}
+                  />
                   <div className="font-medium">{market.product_id}</div>
                 </div>
                 <div className="text-right">
@@ -145,7 +149,11 @@ export function MarketSummary(props: Readonly<MarketSummaryProps>) {
           onClick={handleOpenMarketSelector}
           type="button"
         >
-          <img alt="coin" className="size-8" src={`/icons/crypto/${selectedMarket?.base_asset?.toLowerCase()}.svg`} />
+          <img
+            alt="coin"
+            className="size-8"
+            src={`/icons/crypto/${selectedMarket?.base_asset?.toLowerCase()}.svg`}
+          />
           <div className="text-left">
             <div className="flex items-center gap-2">
               <h2 className="font-semibold text-lg">
