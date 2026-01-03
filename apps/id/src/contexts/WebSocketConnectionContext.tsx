@@ -63,11 +63,11 @@ export function WebSocketConnectionProvider({
     onOpen: () => {
       console.log('Perps WebSocket connected')
       // TODO: positions and orders need to authenticate first before subscription
-      send({ method: 'subscribe', params: { channel: 'positions' } })
-      send({ method: 'subscribe', params: { channel: 'orders' } })
+      // send({ method: 'subscribe', params: { channel: 'positions' } })
+      // send({ method: 'subscribe', params: { channel: 'orders' } })
 
       // No authentication required for orderbook channel
-      send({ method: 'subscribe', params: { channel: 'orderbook' } })
+      // send({ method: 'subscribe', params: { channel: 'orderbook' } })
     },
   })
 

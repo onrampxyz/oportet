@@ -59,7 +59,10 @@ export function Perps() {
 
         {/* Right Column - Order Book & Trading Form */}
         <div className="space-y-4">
-          <OrderBook orders={OrderbookData} />
+          <OrderBook
+            marketId={selectedMarket?.market_id ?? ""}
+            orders={OrderbookData}
+          />
           <TradingForm onOrderTypeChange={setOrderType} orderType={orderType} />
         </div>
       </div>

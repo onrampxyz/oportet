@@ -1,4 +1,6 @@
 import { cx } from 'cva'
+import { useEffect } from 'react'
+import { useOrderbook } from '~/contexts/OrderbookContext'
 
 export type Order = {
   price: string
@@ -9,15 +11,22 @@ export type Order = {
 
 export type OrderBookProps = {
   orders: Order[]
+  marketId: string
 }
 
 export function OrderBook(props: Readonly<OrderBookProps>) {
-  const { orders } = props
+  const { orders, marketId } = props
 
-  // const { isConnected, orderbook } = usePerps()
+  const { orderbook, subscribeToOrderBook, unsubscribeFromOrderBook } = useOrderbook()
+  console.log('Websocket-orderbook:: ', orderbook)
 
-  // console.log('Websocket-isConnected:: ', isConnected)
-  // console.log('Websocket-orderbook:: ', orderbook)
+  useEffect(() => {
+    subscribeToOrderBook(marketId);
+
+    return () => {
+      unsubscribeFromOrderBook(marketId);
+    };
+  }, [marketId, subscribeToOrderBook, unsubscribeFromOrderBook]);
 
   return (
     <div className="rounded-lg border border-gray5 bg-white p-4 dark:bg-gray1">
@@ -34,7 +43,7 @@ export function OrderBook(props: Readonly<OrderBookProps>) {
             <span
               className={cx(
                 !order.isMid &&
-                  Number.parseFloat(order.price.replace(/[$,]/g, '')) > 98244
+                  Number.parseFloat(order.price.replaceAll(/[$,]/g, '')) > 98244
                   ? 'text-red-600'
                   : order.isMid
                     ? 'text-gray12'
