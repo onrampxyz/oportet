@@ -5,6 +5,7 @@ import { WagmiProvider } from 'wagmi'
 import { ModalProvider } from '~/contexts/ModalContext.tsx'
 import * as Router from '~/lib/Router.tsx'
 import * as Wagmi from '~/lib/Wagmi.ts'
+import { PerpsProvider } from './contexts/PerpsProvider'
 
 export function App() {
   return (
@@ -13,9 +14,11 @@ export function App() {
         client={Query.client}
         persistOptions={{ persister: Query.persister }}
       >
-        <ModalProvider>
-          <RouterProvider router={Router.router} />
-        </ModalProvider>
+        <PerpsProvider autoConnect={true}>
+          <ModalProvider>
+            <RouterProvider router={Router.router} />
+          </ModalProvider>
+        </PerpsProvider>
       </PersistQueryClientProvider>
     </WagmiProvider>
   )

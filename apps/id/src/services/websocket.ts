@@ -51,7 +51,10 @@ export class WebSocketService {
    * Connect to the WebSocket server
    */
   connect(): void {
-    if (this.socket?.readyState === WebSocket.OPEN) {
+    if (
+      this.socket?.readyState === WebSocket.OPEN ||
+      this.socket?.readyState === WebSocket.CONNECTING
+    ) {
       console.warn('WebSocket is already connected')
       return
     }

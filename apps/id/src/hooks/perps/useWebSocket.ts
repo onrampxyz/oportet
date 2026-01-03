@@ -50,27 +50,72 @@ export function useWebSocket(
 
   const { autoConnect = true, ...wsOptions } = options
 
+  // Store callback refs to avoid recreating WebSocket on every prop change
+  const onMessageRef = useRef(wsOptions.onMessage)
+  const onOpenRef = useRef(wsOptions.onOpen)
+  const onCloseRef = useRef(wsOptions.onClose)
+  const onErrorRef = useRef(wsOptions.onError)
+
+  // Update refs and WebSocket handlers when callbacks change
+  useEffect(() => {
+    onMessageRef.current = wsOptions.onMessage
+    onOpenRef.current = wsOptions.onOpen
+    onCloseRef.current = wsOptions.onClose
+    onErrorRef.current = wsOptions.onError
+
+    // Update WebSocket handlers if already connected
+    if (wsRef.current) {
+      wsRef.current.updateHandlers({
+        onClose: (event) => {
+          setIsConnected(false)
+          setReadyState(WebSocket.CLOSED)
+          onCloseRef.current?.(event)
+        },
+        onError: (event) => {
+          setIsConnected(false)
+          onErrorRef.current?.(event)
+        },
+        onMessage: (event) => {
+          onMessageRef.current?.(event)
+        },
+        onOpen: (event) => {
+          setIsConnected(true)
+          setReadyState(WebSocket.OPEN)
+          onOpenRef.current?.(event)
+        },
+      })
+    }
+  }, [
+    wsOptions.onMessage,
+    wsOptions.onOpen,
+    wsOptions.onClose,
+    wsOptions.onError,
+  ])
+
+  // Create WebSocket instance once on mount
   // biome-ignore lint/correctness/useExhaustiveDependencies: WebSocket should only be created once
   useEffect(() => {
+    if (wsRef.current) return
+
     // Create WebSocket instance with enhanced handlers
     wsRef.current = createSocket({
       ...wsOptions,
       onClose: (event) => {
         setIsConnected(false)
         setReadyState(WebSocket.CLOSED)
-        wsOptions.onClose?.(event)
+        onCloseRef.current?.(event)
       },
       onError: (event) => {
         setIsConnected(false)
-        wsOptions.onError?.(event)
+        onErrorRef.current?.(event)
       },
       onMessage: (event) => {
-        wsOptions.onMessage?.(event)
+        onMessageRef.current?.(event)
       },
       onOpen: (event) => {
         setIsConnected(true)
         setReadyState(WebSocket.OPEN)
-        wsOptions.onOpen?.(event)
+        onOpenRef.current?.(event)
       },
     })
 
@@ -94,11 +139,13 @@ export function useWebSocket(
 
   const close = () => {
     wsRef.current?.close()
+    wsRef.current = null
     setIsConnected(false)
     setReadyState(WebSocket.CLOSED)
   }
 
   const connect = () => {
+    setReadyState(WebSocket.CONNECTING)
     wsRef.current?.connect()
   }
 
