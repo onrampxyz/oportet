@@ -37,9 +37,11 @@ export function useBridge(params: UseBridgeParams) {
     queryKey: ['bridge-chains', targetChainId],
   })
 
-  const { sendCallsSyncAsync } = useSendCallsSync({ mutation: {
-    retry: false
-  } })
+  const { sendCallsSyncAsync } = useSendCallsSync({
+    mutation: {
+      retry: false,
+    },
+  })
 
   // Bridge function
   const bridge = async () => {

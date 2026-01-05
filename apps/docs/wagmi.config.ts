@@ -2,7 +2,7 @@ import { PortoConfig } from '@porto/apps'
 import { Dialog, Mode } from 'rise-wallet'
 import { porto } from 'rise-wallet/wagmi'
 import { createConfig, createStorage, http } from 'wagmi'
-import { sepolia, optimismSepolia } from 'wagmi/chains'
+import { optimismSepolia, sepolia } from 'wagmi/chains'
 
 const portoConfig = PortoConfig.getConfig()
 
