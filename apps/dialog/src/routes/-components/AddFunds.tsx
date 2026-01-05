@@ -283,7 +283,7 @@ export function AddFunds(props: AddFunds.Props) {
   return (
     <FundsProvider
       address={address}
-      initialView={(props.view as View) ?? 'default'}
+      initialView={(props.view as View) ?? 'global-deposit'}
     >
       <AddFundsContent {...props} />
     </FundsProvider>

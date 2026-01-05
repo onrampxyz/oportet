@@ -37,7 +37,9 @@ export function useBridge(params: UseBridgeParams) {
     queryKey: ['bridge-chains', targetChainId],
   })
 
-  const { sendCallsSyncAsync } = useSendCallsSync()
+  const { sendCallsSyncAsync } = useSendCallsSync({ mutation: {
+    retry: false
+  } })
 
   // Bridge function
   const bridge = async () => {
@@ -65,11 +67,11 @@ export function useBridge(params: UseBridgeParams) {
           {
             abi: [
               parseAbiItem(
-                'function bridgeAllLayerZero(address _bridge, address _recipient)',
+                'function bridgeLayerZero(address _bridge, uint256 _amoun, address _recipient)',
               ),
             ],
-            args: [selectedToken.bridgeContract, account],
-            functionName: 'bridgeAllLayerZero',
+            args: [selectedToken.bridgeContract, amount, account],
+            functionName: 'bridgeLayerZero',
             to: selectedToken.bridgeWrapper,
           },
         ],

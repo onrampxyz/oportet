@@ -29,7 +29,7 @@ export function useMintToken(params: UseMintTokenParams) {
                 abi: [
                   parseAbiItem('function mint(address to, uint256 amount)'),
                 ],
-                args: [address, Value.from('1', 18)],
+                args: [address, Value.from('100', 18)],
                 functionName: 'mint',
               }),
               to: tokenAddress,
