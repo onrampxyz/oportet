@@ -8,10 +8,7 @@ import ExternalLink from '~icons/lucide/external-link'
 
 export type BridgeStatus =
   | 'idle'
-  | 'source-pending'
-  | 'source-confirmed'
-  | 'source-failed'
-  | 'destination-pending'
+  | 'pending'
   | 'completed'
   | 'failed'
 
@@ -63,8 +60,7 @@ export function Bridge(props: Readonly<BridgeProps>) {
 
   console.log('bridgeState:: ', bridgeState)
 
-  const isFailed =
-    bridgeState.status === 'source-failed' || bridgeState.status === 'failed'
+  const isFailed = bridgeState.status === 'failed'
 
   return (
     <Layout>
@@ -81,22 +77,20 @@ export function Bridge(props: Readonly<BridgeProps>) {
             {/* Source Chain Status */}
             <div className="flex items-start gap-2">
               <div className="mt-1">
-                {bridgeState.status === 'source-pending' && (
+                {bridgeState.status === 'pending' && (
                   <Spinner color="purple" size="small" />
                 )}
                 {bridgeState.status === 'completed' && (
                   <CheckCircle className="size-5 text-th_positive" />
                 )}
-                {(bridgeState.status === 'failed') && (
+                {bridgeState.status === 'failed' && (
                   <XCircle className="size-5" color="red" />
                 )}
                 <CircleDashed
                   className="block size-5 data-[hidden=true]:hidden"
                   color="gray"
                   data-hidden={
-                    bridgeState.status === 'source-pending' ||
-                    bridgeState.status === 'source-confirmed' ||
-                    bridgeState.status === 'source-failed' ||
+                    bridgeState.status === 'pending' ||
                     bridgeState.status === 'failed'
                   }
                 />
@@ -106,7 +100,7 @@ export function Bridge(props: Readonly<BridgeProps>) {
                   Bridge transaction
                 </div>
                 <ErrorDisplay
-                  hidden={bridgeState.status !== 'source-failed'}
+                  hidden={bridgeState.status !== 'failed'}
                   message={bridgeState.message ?? ''}
                 />
                 {bridgeState.sourceTxHash && (
@@ -156,12 +150,11 @@ export function Bridge(props: Readonly<BridgeProps>) {
 
       <Layout.Footer>
         <Layout.Footer.Actions>
-          {(bridgeState.status === 'failed') &&
-            onRetry && (
-              <Button onClick={onRetry} variant="primary" width="full">
-                Retry
-              </Button>
-            )}
+          {bridgeState.status === 'failed' && onRetry && (
+            <Button onClick={onRetry} variant="primary" width="full">
+              Retry
+            </Button>
+          )}
           {bridgeState.status === 'completed' && (
             <Button onClick={() => onSuccess()} variant="primary" width="full">
               Done
@@ -171,7 +164,7 @@ export function Bridge(props: Readonly<BridgeProps>) {
           <Button
             className="hidden size-5 data-[visible=true]:block text-center"
             color="gray"
-            data-visible={bridgeState.status === 'source-pending'}
+            data-visible={bridgeState.status === 'pending'}
             disabled
             variant="secondary"
             width="full"

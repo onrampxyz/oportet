@@ -52,7 +52,7 @@ export function useBridge(params: UseBridgeParams) {
 
     setBridgeState({
       sourceChainId: selectedChainId,
-      status: 'source-pending',
+      status: 'pending',
     })
 
     try {

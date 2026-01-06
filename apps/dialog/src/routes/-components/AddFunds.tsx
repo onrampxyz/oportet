@@ -22,7 +22,6 @@ import {
   DepositSelection,
   GlobalDeposit,
 } from './GlobalDeposit'
-import { BridgeFromChain } from './GlobalDeposit/BridgeFromChain'
 import { DepositError } from './GlobalDeposit/DepositError'
 import { SetupApplePay } from './SetupApplePay'
 
@@ -180,14 +179,6 @@ function AddFundsContent(props: Readonly<AddFunds.Props>) {
       />
     )
 
-  if (view === 'bridge')
-    return (
-      <BridgeFromChain
-        address={address!}
-        onBack={() => setView('default')}
-        onSuccess={() => onApprove?.({ id: zeroHash })}
-      />
-    )
 
   if (view === 'selection-deposit') {
     return <DepositSelection />
@@ -221,8 +212,8 @@ function AddFundsContent(props: Readonly<AddFunds.Props>) {
           {showApplePay &&
             address &&
             (onrampStatus?.email &&
-            onrampStatus.phone &&
-            !onrampStatus.reverifyPhone ? (
+              onrampStatus.phone &&
+              !onrampStatus.reverifyPhone ? (
               <div className="flex w-full flex-col">
                 {createOrder.isSuccess && createOrder.data?.url && (
                   <ApplePayIframe
@@ -234,10 +225,10 @@ function AddFundsContent(props: Readonly<AddFunds.Props>) {
                 )}
                 {(!iframeLoaded ||
                   lastOrderEvent?.eventName ===
-                    'onramp_api.apple_pay_button_pressed' ||
+                  'onramp_api.apple_pay_button_pressed' ||
                   lastOrderEvent?.eventName === 'onramp_api.polling_start') && (
-                  <ApplePayButton label="Buy with" loading />
-                )}
+                    <ApplePayButton label="Buy with" loading />
+                  )}
               </div>
             ) : (
               <ApplePayButton
@@ -253,7 +244,7 @@ function AddFundsContent(props: Readonly<AddFunds.Props>) {
                 nativeTokenName={chain?.nativeCurrency?.symbol}
               />
               <Button
-                onClick={() => setView('bridge')}
+                onClick={() => setView('global-deposit')}
                 variant="positive"
                 width="full"
               >

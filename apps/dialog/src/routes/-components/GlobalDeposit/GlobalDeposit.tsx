@@ -12,8 +12,8 @@ import {
   useMintToken,
   useWalletAsset,
 } from '~/hooks'
-import { Layout } from '../Layout'
 import { DropdownSelector, getAssets, SupportedChains } from '.'
+import { Layout } from '../Layout'
 import { Bridge, type BridgeState } from './Bridge'
 
 export function GlobalDeposit() {
@@ -53,10 +53,10 @@ export function GlobalDeposit() {
     destinationChainId: 11155931, // Default to RISE, add handling when on mainnet
     destinationTokenAddress: destinationToken[0]?.address,
     enabled:
-      bridgeState.status === 'source-confirmed' ||
-      bridgeState.status === 'destination-pending',
+      bridgeState.status === 'completed' ||
+      bridgeState.status === 'failed',
     refetchInterval:
-      bridgeState.status === 'destination-pending' ? 2000 : false,
+      bridgeState.status === 'pending' ? 2000 : false,
   })
 
   const selectedToken = useMemo(() => {
