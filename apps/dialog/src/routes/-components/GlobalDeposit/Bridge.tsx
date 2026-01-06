@@ -56,7 +56,7 @@ export function ErrorDisplay(
     return null
   }
 
-  return <div className="text-destructive text-sm">{message}</div>
+  return <div className="text-destructive text-sm max-w-32">{message}</div>
 }
 
 export function Bridge(props: Readonly<BridgeProps>) {
@@ -102,8 +102,8 @@ export function Bridge(props: Readonly<BridgeProps>) {
                 )}
                 {(bridgeState.status === 'source-failed' ||
                   bridgeState.status === 'failed') && (
-                  <XCircle className="size-5" color="red" />
-                )}
+                    <XCircle className="size-5" color="red" />
+                  )}
                 <CircleDashed
                   className="block size-5 data-[hidden=true]:hidden"
                   color="gray"
