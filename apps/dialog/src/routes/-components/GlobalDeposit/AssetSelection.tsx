@@ -27,7 +27,7 @@ export const BRIDGE_TOKENS: Record<number, BridgeToken[]> = {
       bridgeType: 'layerzero',
       bridgeWrapper: zeroAddress,
       decimals: 18,
-      icon: '/ui/token-icons/usdc.svg',
+      icon: '/dialog/ui/token-icons/usdc.svg',
       minDeposit: Value.from('0.1', 18), // 0.1 USDC
       name: 'USDC', // TODO: fix this
       symbol: 'USDC',
@@ -39,7 +39,7 @@ export const BRIDGE_TOKENS: Record<number, BridgeToken[]> = {
       bridgeType: 'layerzero',
       bridgeWrapper: zeroAddress,
       decimals: 18,
-      icon: '/ui/token-icons/usdt.svg',
+      icon: '/dialog/ui/token-icons/usdt.svg',
       minDeposit: Value.from('0.1', 18), // 0.1 USDC
       name: 'USDT', // TODO: fix this
       symbol: 'USDT',

@@ -11,12 +11,12 @@ export type Chain = {
 
 export const SupportedChains: Chain[] = [
   {
-    icon: '/chains/rise.svg',
+    icon: '/dialog/chains/rise.svg',
     id: Chains.riseTestnet.id,
     name: Chains.riseTestnet.name,
   },
   {
-    icon: '/chains/sepolia.svg',
+    icon: '/dialog/chains/sepolia.svg',
     id: Chains.sepolia.id,
     name: Chains.sepolia.name,
   },

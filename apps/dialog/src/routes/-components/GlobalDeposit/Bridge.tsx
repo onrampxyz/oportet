@@ -55,7 +55,7 @@ export function ErrorDisplay(
     return null
   }
 
-  return <div className="text-destructive text-sm max-w-32">{message}</div>
+  return <div className="text-destructive text-sm max-w-[320px]">{message}</div>
 }
 
 export function Bridge(props: Readonly<BridgeProps>) {
@@ -114,7 +114,7 @@ export function Bridge(props: Readonly<BridgeProps>) {
                   <div className="flex items-center gap-2">
                     <a
                       className="flex items-center gap-1 text-sm text-th_base-secondary hover:underline"
-                      href={`https://layerzeroscan.com/tx/${bridgeState.sourceTxHash}`}
+                      href={`https://testnet.layerzeroscan.com/tx/${bridgeState.sourceTxHash}`}
                       rel="noopener noreferrer"
                       target="_blank"
                     >
@@ -171,7 +171,7 @@ export function Bridge(props: Readonly<BridgeProps>) {
           )}
 
           <Button
-            className="hidden size-5 data-[visible=true]:block"
+            className="hidden size-5 data-[visible=true]:block text-center"
             color="gray"
             data-visible={
               bridgeState.status === 'source-pending' ||
