@@ -12,8 +12,8 @@ import {
   useMintToken,
   useWalletAsset,
 } from '~/hooks'
-import { DropdownSelector, getAssets, SupportedChains } from '.'
 import { Layout } from '../Layout'
+import { DropdownSelector, getAssets, SupportedChains } from '.'
 import { Bridge, type BridgeState } from './Bridge'
 
 export function GlobalDeposit() {
@@ -214,7 +214,11 @@ export function GlobalDeposit() {
                       }}
                       variant="primary"
                     >
-                      {isMinting ? <Spinner color="white" size="small" /> : "Mint"}
+                      {isMinting ? (
+                        <Spinner color="white" size="small" />
+                      ) : (
+                        'Mint'
+                      )}
                     </Button>
                   ) : (
                     <Button
