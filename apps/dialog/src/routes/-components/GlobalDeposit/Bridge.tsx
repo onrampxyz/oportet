@@ -89,8 +89,8 @@ export function Bridge(props: Readonly<BridgeProps>) {
                 )}
                 {(bridgeState.status === 'source-failed' ||
                   bridgeState.status === 'failed') && (
-                    <XCircle className="size-5" color="red" />
-                  )}
+                  <XCircle className="size-5" color="red" />
+                )}
                 <CircleDashed
                   className="block size-5 data-[hidden=true]:hidden"
                   color="gray"
