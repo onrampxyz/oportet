@@ -2,7 +2,6 @@ import { Button, CopyButton, Details, Spinner } from '@porto/ui'
 import { type Hex, Value } from 'ox'
 import { Layout } from '~/routes/-components/Layout'
 import CheckCircle from '~icons/lucide/check-circle'
-import CircleDashed from '~icons/lucide/circle-dashed'
 import XCircle from '~icons/lucide/circle-x'
 import ExternalLink from '~icons/lucide/external-link'
 
@@ -77,22 +76,14 @@ export function Bridge(props: Readonly<BridgeProps>) {
                   <Spinner color="purple" size="small" />
                 )}
                 {bridgeState.status === 'completed' && (
-                  <CheckCircle className="size-5 text-th_positive" />
+                  <CheckCircle color="green" className="size-5 " />
                 )}
                 {bridgeState.status === 'failed' && (
                   <XCircle className="size-5" color="red" />
                 )}
-                <CircleDashed
-                  className="block size-5 data-[hidden=true]:hidden"
-                  color="gray"
-                  data-hidden={
-                    bridgeState.status === 'pending' ||
-                    bridgeState.status === 'failed'
-                  }
-                />
               </div>
               <div className="flex-1">
-                <div className="font-medium text-sm text-th_base pt-1">
+                <div className="font-medium text-sm text-th_base pt-0.5">
                   Bridge transaction
                 </div>
                 <ErrorDisplay

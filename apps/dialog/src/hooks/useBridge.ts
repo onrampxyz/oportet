@@ -91,7 +91,7 @@ export function useBridge(params: UseBridgeParams) {
         setBridgeState((prev) => ({
           ...prev,
           message: `Status: ${response.status} with code ${response.statusCode}`,
-          sourceTxHash,
+          // sourceTxHash,
           status: 'failed',
         }))
       } else if (response.status === 'success') {
