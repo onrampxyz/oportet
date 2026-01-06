@@ -107,7 +107,8 @@ export function useBridge(params: UseBridgeParams) {
     } catch (e) {
       const error = e as Error
       console.log('error-bridging::', error)
-      const message = typeof error.cause === 'string' ? error.cause : error.message
+      const message =
+        typeof error.cause === 'string' ? error.cause : error.message
 
       setError(error)
       setBridgeState((prev) => ({

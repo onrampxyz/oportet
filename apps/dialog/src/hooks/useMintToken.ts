@@ -52,9 +52,13 @@ export function useMintToken(params: UseMintTokenParams) {
       return status
     } catch (e) {
       const error = e as Error
-      const message = typeof error.cause === 'string' ? error.cause : error.message
+      const message =
+        typeof error.cause === 'string' ? error.cause : error.message
 
-      console.log('mint error message:: ', ErrorFormatter.extractMessage(message))
+      console.log(
+        'mint error message:: ',
+        ErrorFormatter.extractMessage(message),
+      )
     } finally {
       setIsMinting(false)
     }

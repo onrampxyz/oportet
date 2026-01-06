@@ -53,7 +53,14 @@ export function ErrorDisplay(
 }
 
 export function Bridge(props: Readonly<BridgeProps>) {
-  const { bridgeState, selectedToken, selectedChain, amount, onSuccess, onRetry } = props
+  const {
+    bridgeState,
+    selectedToken,
+    selectedChain,
+    amount,
+    onSuccess,
+    onRetry,
+  } = props
 
   console.log('bridgeState:: ', bridgeState)
 
@@ -85,7 +92,9 @@ export function Bridge(props: Readonly<BridgeProps>) {
               </div>
               <div className="flex-1">
                 <div className="font-medium text-sm text-th_base pt-0.5">
-                  {bridgeState.status === "pending" ? "Bridging tokens..." : "Bridge transaction"}
+                  {bridgeState.status === 'pending'
+                    ? 'Bridging tokens...'
+                    : 'Bridge transaction'}
                 </div>
                 <ErrorDisplay
                   hidden={bridgeState.status !== 'failed'}
@@ -118,10 +127,8 @@ export function Bridge(props: Readonly<BridgeProps>) {
               <div className="flex items-center justify-between gap-2">
                 <p className="text-th_base">Source Chain</p>
                 <p className="text-th_base">
-                  <span className='font-bold'>
-                    {selectedChain?.name}
-                  </span>{" "}
-                  ({selectedChain?.id})
+                  <span className="font-bold">{selectedChain?.name}</span> (
+                  {selectedChain?.id})
                 </p>
               </div>
               <div className="flex items-center justify-between gap-2">
@@ -145,7 +152,7 @@ export function Bridge(props: Readonly<BridgeProps>) {
         </div>
       </Layout.Content>
 
-      <Layout.Footer className='min-h-0!'>
+      <Layout.Footer className="min-h-0!">
         <Layout.Footer.Actions>
           {bridgeState.status === 'failed' && onRetry && (
             <Button onClick={onRetry} variant="primary" width="full">

@@ -12,8 +12,8 @@ import {
   useMintToken,
   useWalletAsset,
 } from '~/hooks'
-import { DropdownSelector, getAssets, SupportedChains } from '.'
 import { Layout } from '../Layout'
+import { DropdownSelector, getAssets, SupportedChains } from '.'
 import { Bridge, type BridgeState } from './Bridge'
 
 export type GlobalDepositProps = Readonly<{
@@ -132,8 +132,8 @@ export function GlobalDeposit({ onClose }: GlobalDepositProps) {
           refetchRiseBalance()
           onClose()
         }}
-        selectedToken={selectedToken}
         selectedChain={selectedChain}
+        selectedToken={selectedToken}
         targetChainId={targetChainId}
       />
     )
@@ -267,8 +267,7 @@ export function GlobalDeposit({ onClose }: GlobalDepositProps) {
             </Button>
           </Layout.Footer.Actions>
         </Layout.Footer>
-      )
-      }
-    </Layout >
+      )}
+    </Layout>
   )
 }

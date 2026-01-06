@@ -6,9 +6,10 @@ import { WalletBalances } from './WalletBalances'
 
 export function Portfolio() {
   const { address } = useAccount()
-  const { balances, protocol, summary, calls, isLoading, isPending } = useWallet({
-    address,
-  })
+  const { balances, protocol, summary, calls, isLoading, isPending } =
+    useWallet({
+      address,
+    })
 
   const handleRefetch = () => {
     balances.refetch()
