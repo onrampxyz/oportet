@@ -1,7 +1,7 @@
 import type { Address } from 'ox'
 import type { ReactNode } from 'react'
 import { createContext, useContext, useMemo, useState } from 'react'
-import type { BridgeToken } from '~/routes/-components/GlobalDeposit/BridgeFromChain'
+import { BridgeToken } from '~/routes/-components/GlobalDeposit'
 import type { View } from '../routes/-components/AddFunds'
 import type { Chain } from '../routes/-components/GlobalDeposit/ChainSelection'
 
@@ -44,7 +44,7 @@ export function FundsProvider({
   address,
   children,
   initialView = 'default',
-}: FundsProviderProps) {
+}: Readonly<FundsProviderProps>) {
   const [view, setView] = useState<View>(initialView)
   const [selectedChain, setSelectedChain] = useState<Chain | undefined>()
   const [selectedAsset, setSelectedAsset] = useState<BridgeToken | undefined>()
