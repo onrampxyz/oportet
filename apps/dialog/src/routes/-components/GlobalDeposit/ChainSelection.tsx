@@ -10,11 +10,11 @@ export type Chain = {
 }
 
 export const SupportedChains: Chain[] = [
-  // {
-  //   icon: '/ui/chains/rise.svg',
-  //   id: Chains.riseTestnet.id,
-  //   name: Chains.riseTestnet.name,
-  // },
+  {
+    icon: '/ui/chains/rise.svg',
+    id: Chains.riseTestnet.id,
+    name: Chains.riseTestnet.name,
+  },
   {
     icon: '/icons/chains/sepolia.svg',
     id: Chains.sepolia.id,
@@ -44,7 +44,11 @@ export function ChainSelection() {
                 key={chain.name}
                 onClick={() => {
                   setSelectedChain(chain)
-                  setView('selection-asset')
+                  if (chain.id === Chains.riseTestnet.id) {
+                    setView('global-deposit')
+                  } else {
+                    setView('selection-asset')
+                  }
                 }}
                 type="button"
                 variant="secondary"

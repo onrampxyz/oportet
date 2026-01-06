@@ -1,8 +1,9 @@
 import { Input } from '@porto/apps/components'
-import { Button, Deposit, Separator } from '@porto/ui'
+import { Button, Deposit } from '@porto/ui'
 import { cx } from 'cva'
 import { Value } from 'ox'
 import { useEffect, useMemo, useState } from 'react'
+import { Chains } from 'rise-wallet/index'
 import { formatUnits, parseUnits } from 'viem'
 import { useFundsContext } from '~/contexts'
 import {
@@ -153,106 +154,112 @@ export function GlobalDeposit() {
               onSelect={(item) => {
                 setAmount('0')
                 setSelectedChain(item)
+                setSelectedAsset(getAssets(item.id)[0])
               }}
               selectedItem={selectedChain}
             />
           </div>
-
-          <div className="space-y-2 rounded-lg bg-th_base-alt p-2">
-            <div className="flex items-center justify-between gap-2">
-              <p className="text-sm text-th_base-secondary">Token</p>
-              <div className="flex gap-2">
-                <p className="text-sm text-th_base-secondary">Balance:</p>
-                <p className="text-sm text-th_base-secondary">
-                  {amountBalance}{' '}
-                  <span className="font-bold">{selectedAsset?.symbol}</span>
-                </p>
+          {selectedChain?.id !== Chains.riseTestnet.id && (
+            <>
+              <div className="space-y-2 rounded-lg bg-th_base-alt p-2">
+                <div className="flex items-center justify-between gap-2">
+                  <p className="text-sm text-th_base-secondary">Token</p>
+                  <div className="flex gap-2">
+                    <p className="text-sm text-th_base-secondary">Balance:</p>
+                    <p className="text-sm text-th_base-secondary">
+                      {amountBalance}{' '}
+                      <span className="font-bold">{selectedAsset?.symbol}</span>
+                    </p>
+                  </div>
+                </div>
+                <DropdownSelector
+                  items={tokens}
+                  onSelect={(item) => {
+                    setAmount('0')
+                    setSelectedAsset(item)
+                  }}
+                  selectedItem={selectedAsset}
+                />
               </div>
-            </div>
-            <DropdownSelector
-              items={tokens}
-              onSelect={(item) => {
-                setAmount('0')
-                setSelectedAsset(item)
-              }}
-              selectedItem={selectedAsset}
+
+              <div className="space-y-2 rounded-lg bg-th_base-alt p-2">
+                <div className="flex items-center justify-between gap-2">
+                  <p className="text-sm text-th_base-secondary">Amount</p>
+                  {selectedToken && (
+                    <p className="text-th_base-secondary text-xs">
+                      Minimum Deposit:{' '}
+                      {formatUnits(
+                        selectedToken?.minDeposit,
+                        selectedToken?.decimals,
+                      )}{' '}
+                      {selectedToken?.symbol}
+                    </p>
+                  )}
+                </div>
+                <div className="flex gap-2">
+                  <Input
+                    className={cx('w-full bg-th_field')}
+                    name="Amount"
+                    onChange={(event) => {
+                      const value = event.target.value
+                      setAmount(value)
+                    }}
+                    placeholder="0.00"
+                    type="number"
+                    value={amount}
+                  />
+                  {isBalanceZero ? (
+                    <Button
+                      className="border border-th_base"
+                      onClick={async () => {
+                        await mintToken()
+                      }}
+                      variant="primary"
+                    >
+                      Mint
+                    </Button>
+                  ) : (
+                    <Button
+                      className="border border-th_base"
+                      onClick={() => {
+                        setAmount(amountBalance)
+                      }}
+                      variant="primary"
+                    >
+                      Max
+                    </Button>
+                  )}
+                </div>
+              </div>
+            </>
+          )}
+          {selectedChain?.id === Chains.riseTestnet.id && (
+            <Deposit
+              address={address ?? ''}
+              chainId={selectedChain?.id}
+              label="Send tokens to this address"
             />
-          </div>
-
-          <div className="space-y-2 rounded-lg bg-th_base-alt p-2">
-            <div className="flex items-center justify-between gap-2">
-              <p className="text-sm text-th_base-secondary">Amount</p>
-              {selectedToken && (
-                <p className="text-th_base-secondary text-xs">
-                  Minimum Deposit:{' '}
-                  {formatUnits(
-                    selectedToken?.minDeposit,
-                    selectedToken?.decimals,
-                  )}{' '}
-                  {selectedToken?.symbol}
-                </p>
-              )}
-            </div>
-            <div className="flex gap-2">
-              <Input
-                className={cx('w-full bg-th_field')}
-                name="Amount"
-                onChange={(event) => {
-                  const value = event.target.value
-                  setAmount(value)
-                }}
-                placeholder="0.00"
-                type="number"
-                value={amount}
-              />
-              {isBalanceZero ? (
-                <Button
-                  className="border border-th_base"
-                  onClick={async () => {
-                    await mintToken()
-                  }}
-                  variant="primary"
-                >
-                  Mint
-                </Button>
-              ) : (
-                <Button
-                  className="border border-th_base"
-                  onClick={() => {
-                    setAmount(amountBalance)
-                  }}
-                  variant="primary"
-                >
-                  Max
-                </Button>
-              )}
-            </div>
-          </div>
-
-          <Separator label="OR" position="center" size="medium" spacing={0} />
-          <Deposit
-            address={address ?? ''}
-            chainId={selectedChain?.id}
-            label="Send tokens to this address"
-          />
+          )}
         </div>
       </Layout.Content>
-      <Layout.Footer>
-        <Layout.Footer.Actions>
-          <Button
-            className="w-full flex-1"
-            disabled={
-              Number(amountBalance) === 0 ||
-              Number(amount) === 0 ||
-              shouldExceedMinDeposit
-            }
-            onClick={bridge}
-            variant="primary"
-          >
-            Deposit to RISE
-          </Button>
-        </Layout.Footer.Actions>
-      </Layout.Footer>
+      {selectedChain?.id !== Chains.riseTestnet.id && (
+        <Layout.Footer>
+          <Layout.Footer.Actions>
+            <Button
+              className="w-full flex-1"
+              disabled={
+                Number(amountBalance) === 0 ||
+                Number(amount) === 0 ||
+                shouldExceedMinDeposit
+              }
+              onClick={bridge}
+              variant="primary"
+            >
+              Deposit to RISE
+            </Button>
+          </Layout.Footer.Actions>
+        </Layout.Footer>
+      )}
     </Layout>
   )
 }
