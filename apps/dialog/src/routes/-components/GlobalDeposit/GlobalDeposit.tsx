@@ -1,5 +1,5 @@
 import { Input } from '@porto/apps/components'
-import { Button, Deposit } from '@porto/ui'
+import { Button, Deposit, Spinner } from '@porto/ui'
 import { cx } from 'cva'
 import { Value } from 'ox'
 import { useEffect, useMemo, useState } from 'react'
@@ -12,8 +12,8 @@ import {
   useMintToken,
   useWalletAsset,
 } from '~/hooks'
-import { Layout } from '../Layout'
 import { DropdownSelector, getAssets, SupportedChains } from '.'
+import { Layout } from '../Layout'
 import { Bridge, type BridgeState } from './Bridge'
 
 export function GlobalDeposit() {
@@ -37,7 +37,7 @@ export function GlobalDeposit() {
     tokenAddress: selectedAsset?.address ?? '0x',
   })
 
-  const { mintToken } = useMintToken({
+  const { mintToken, isMinting } = useMintToken({
     address: address ?? '0x',
     chainId: selectedChain?.id,
     tokenAddress: selectedAsset?.address,
@@ -92,7 +92,7 @@ export function GlobalDeposit() {
       selectedToken?.decimals,
     )
 
-    return Number(amount) <= Number(minDeposit)
+    return Number(amount) < Number(minDeposit)
   }, [amount, selectedToken])
 
   // Initialize with defaults if not set
@@ -214,7 +214,7 @@ export function GlobalDeposit() {
                       }}
                       variant="primary"
                     >
-                      Mint
+                      {isMinting ? <Spinner color="white" size="small" /> : "Mint"}
                     </Button>
                   ) : (
                     <Button

@@ -76,7 +76,7 @@ export function Bridge(props: Readonly<BridgeProps>) {
                   <Spinner color="purple" size="small" />
                 )}
                 {bridgeState.status === 'completed' && (
-                  <CheckCircle color="green" className="size-5 " />
+                  <CheckCircle className="size-5 " color="green" />
                 )}
                 {bridgeState.status === 'failed' && (
                   <XCircle className="size-5" color="red" />

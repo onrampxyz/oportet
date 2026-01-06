@@ -1,5 +1,6 @@
-import type { Address, Hex } from 'ox'
+import type { Address } from 'ox'
 import { Value } from 'ox'
+import { useState } from 'react'
 import { encodeFunctionData, parseAbiItem } from 'viem'
 import { porto } from '~/lib/Porto'
 
@@ -12,14 +13,14 @@ export type UseMintTokenParams = {
 export function useMintToken(params: UseMintTokenParams) {
   const { address, chainId, tokenAddress } = params
 
+  const [isMinting,  setIsMinting] = useState(false)
+
   const mintToken = async () => {
-    console.log('address To:: ', address)
-    console.log('selectedTokenAddress:: ', tokenAddress)
-    console.log('selectedChainId:: ', chainId)
-
     if (!tokenAddress || !chainId) return
+    setIsMinting(true)
 
-    const { id } = await porto.provider.request({
+    try {
+      const { id } = await porto.provider.request({
       method: 'wallet_sendCalls',
       params: [
         {
@@ -35,7 +36,7 @@ export function useMintToken(params: UseMintTokenParams) {
               to: tokenAddress,
             },
           ],
-          chainId: `0x${chainId.toString(16)}` as Hex.Hex,
+          chainId: `0x${chainId.toString(16)}` ,
         },
       ],
     })
@@ -47,8 +48,17 @@ export function useMintToken(params: UseMintTokenParams) {
 
     console.log('mint call:', status)
 
+    refetch()
+
     return status
+    } catch (e) {
+      console.log("error-minting:: ", e)
+    } finally {
+      setIsMinting(false)
+    }
   }
 
-  return { mintToken }
+  console.log('isMinting:: ', isMinting)
+
+  return { mintToken, isMinting }
 }
