@@ -6,11 +6,7 @@ import CircleDashed from '~icons/lucide/circle-dashed'
 import XCircle from '~icons/lucide/circle-x'
 import ExternalLink from '~icons/lucide/external-link'
 
-export type BridgeStatus =
-  | 'idle'
-  | 'pending'
-  | 'completed'
-  | 'failed'
+export type BridgeStatus = 'idle' | 'pending' | 'completed' | 'failed'
 
 export type BridgeState = {
   status: BridgeStatus

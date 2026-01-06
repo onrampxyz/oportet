@@ -13,5 +13,5 @@ function RouteComponent() {
   if (!account.isConnected) return <Landing />
 
   // Redirect to perps route when connected
-  return <Navigate to="/perps" />
+  return <Navigate to="/portfolio" />
 }
