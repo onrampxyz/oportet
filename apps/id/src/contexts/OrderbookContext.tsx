@@ -136,7 +136,7 @@ export function OrderbookProvider({
               while (
                 insertIndex < newAsks.length &&
                 ValueFormatter.anyToFloat(price) >
-                ValueFormatter.anyToFloat(newAsks[insertIndex]?.price)
+                  ValueFormatter.anyToFloat(newAsks[insertIndex]?.price)
               )
                 insertIndex += 1
               newAsks.splice(insertIndex, 0, {
@@ -169,7 +169,7 @@ export function OrderbookProvider({
               while (
                 insertIndex < newBids.length &&
                 ValueFormatter.anyToFloat(price) <
-                ValueFormatter.anyToFloat(newBids[insertIndex]?.price)
+                  ValueFormatter.anyToFloat(newBids[insertIndex]?.price)
               )
                 insertIndex += 1
               newBids.splice(insertIndex, 0, {
@@ -248,10 +248,11 @@ export function OrderbookProvider({
     const orderBuy = orderbook?.bids.slice(0, MAX_DISPLAY) ?? []
 
     if (orderBuy[0]) {
-      orderBuy[0].size_acc = ValueFormatter.anyToFloat(orderBuy[0].size);
+      orderBuy[0].size_acc = ValueFormatter.anyToFloat(orderBuy[0].size)
       for (let i = 1; i < orderBuy.length; i += 1) {
         orderBuy[i]!.size_acc =
-          orderBuy[i - 1]!.size_acc + ValueFormatter.anyToFloat(orderBuy[i]!.size);
+          orderBuy[i - 1]!.size_acc +
+          ValueFormatter.anyToFloat(orderBuy[i]!.size)
       }
     }
 
@@ -259,17 +260,19 @@ export function OrderbookProvider({
   }, [orderbook])
 
   const orderBookSell = useMemo(() => {
-    const orderSell = orderbook?.asks
-      .slice(0, MAX_DISPLAY)
-      .toSorted(
-        (a, b) => Number.parseFloat(b.price) - Number.parseFloat(a.price),
-      ) ?? []
+    const orderSell =
+      orderbook?.asks
+        .slice(0, MAX_DISPLAY)
+        .toSorted(
+          (a, b) => Number.parseFloat(b.price) - Number.parseFloat(a.price),
+        ) ?? []
 
     if (orderSell[0]) {
-      orderSell[0].size_acc = ValueFormatter.anyToFloat(orderSell[0].size);
+      orderSell[0].size_acc = ValueFormatter.anyToFloat(orderSell[0].size)
       for (let i = 1; i < orderSell.length; i += 1) {
         orderSell[i]!.size_acc =
-          orderSell[i - 1]!.size_acc + ValueFormatter.anyToFloat(orderSell[i]!.size);
+          orderSell[i - 1]!.size_acc +
+          ValueFormatter.anyToFloat(orderSell[i]!.size)
       }
     }
 

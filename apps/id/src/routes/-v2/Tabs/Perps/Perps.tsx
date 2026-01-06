@@ -47,7 +47,7 @@ export function Perps() {
             activeTimeframe={activeTimeframe}
             onTimeframeChange={setActiveTimeframe}
           />
-          <Positions />
+          {selectedMarket && <Positions market={selectedMarket} />}
           {filteredMarkets && (
             <Markets
               markets={filteredMarkets}

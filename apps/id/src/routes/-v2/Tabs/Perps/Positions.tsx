@@ -1,5 +1,7 @@
 import { cx } from 'cva'
 import { useState } from 'react'
+import { useAccount } from 'wagmi'
+import { type FilteredMarket, usePositions } from '~/hooks'
 import { OrdersData, PositionsData } from '~/mock/perps'
 import LucideX from '~icons/lucide/x'
 
@@ -26,8 +28,37 @@ export type UserOrder = {
   status: 'Open' | 'Partial' | 'Filled' | 'Cancelled'
 }
 
-export function Positions() {
+export type PositionsProps = {
+  market: FilteredMarket
+}
+
+export function Positions(props: Readonly<PositionsProps>) {
+  const { market } = props
   const [activeTab, setActiveTab] = useState<'orders' | 'positions'>('orders')
+  const { address } = useAccount()
+
+  const { data } = usePositions({
+    address,
+    marketId: market.market_id,
+  })
+  console.log('data-positions:: ', data)
+
+  // const positions = useMemo(() => {
+  //   if (!data) return []
+
+  //   return data.positions?.map((pos) => ({
+  //     entry: pos.avg_entry_price,
+  //     // isPositive: pos.pnl > 0,
+  //     leverage: pos.leverage,
+  //     // mark: pos.mark_price,
+  //     market: pos.market_id,
+  //     // name: market.name,
+  //     // pnl: pos.pnl,
+  //     // pnlPercent: pos.pnl_percent,
+  //     side: pos.size.startsWith('-') ? 'SHORT' : 'LONG',
+  //     size: pos.size,
+  //   }))
+  // }, [data])
 
   return (
     <div className="rounded-lg border border-gray5 bg-white p-5 dark:bg-gray1">

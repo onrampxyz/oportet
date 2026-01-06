@@ -1,4 +1,3 @@
-import { useMemo } from 'react'
 import { useOrderbook } from '~/contexts/OrderbookContext'
 import type { FilteredMarket } from '~/hooks'
 import { ValueFormatter } from '~/utils'
@@ -21,15 +20,6 @@ export function OrderBook(props: Readonly<OrderBookProps>) {
   )
 
   console.log('orderBookSell:: ', orderBookSell)
-
-  // Calculate max size for depth visualization
-  const maxSize = useMemo(() => {
-    const allOrders = [...orderBookBuy, ...orderBookSell]
-    const sizes = allOrders.map((order) =>
-      ValueFormatter.anyToFloat(order.size),
-    )
-    return Math.max(...sizes, 1)
-  }, [orderBookBuy, orderBookSell])
 
   return (
     <div className="space-y-1 rounded-lg border border-gray5 p-4">
@@ -55,19 +45,18 @@ export function OrderBook(props: Readonly<OrderBookProps>) {
             >
               {/* Background depth bar */}
               <div
-                className="absolute left-0 h-full transform-gpu bg-red-950/40 transition-[width] duration-500 ease-out"
+                className="absolute left-0 h-full transform-gpu bg-orange-600/15 transition-[width] duration-500 ease-out dark:bg-red-950/40"
                 style={{ width: `${sizePercent}%` }}
               />
-
               <div
-                className="absolute left-0 h-full transform-gpu bg-red-800 transition-[width] duration-500 ease-out"
+                className='absolute left-0 h-full transform-gpu bg-red-900 pb-3 transition-[width] duration-500 ease-out'
                 style={{
-                  width: `${(ValueFormatter.anyToFloat(order.size) / totalSell) * 15}%`,
+                  width: `${(ValueFormatter.anyToFloat(order.size) / totalSell) * 10}%`,
                 }}
               />
 
               {/* Content */}
-              <span className="relative z-10 font-mono text-red-300">
+              <span className="relative z-10 font-mono text-red-400">
                 {ValueFormatter.anyToFloat(order.price).toLocaleString(
                   'en-US',
                   {
@@ -98,19 +87,19 @@ export function OrderBook(props: Readonly<OrderBookProps>) {
             >
               {/* Background depth bar */}
               <div
-                className="absolute inset-0 transform-gpu bg-teal-950/40 transition-[width] duration-500 ease-out"
+                className="absolute inset-0 transform-gpu bg-teal-600/15 transition-[width] duration-500 ease-out dark:bg-teal-950/40"
                 style={{ width: `${sizePercent}%` }}
               />
 
               <div
-                className="absolute left-0 h-full transform-gpu bg-teal-600 text-green-500 transition-[width] duration-500 ease-out"
+                className="absolute left-0 h-full transform-gpu bg-teal-600 transition-[width] duration-500 ease-out"
                 style={{
                   width: `${(ValueFormatter.anyToFloat(order.size) / totalBuy) * 10}%`,
                 }}
               />
 
               {/* Content */}
-              <span className="relative z-10 font-mono text-teal-200">
+              <span className="relative z-10 font-mono text-teal-500">
                 {ValueFormatter.anyToFloat(order.price).toLocaleString(
                   'en-US',
                   {
@@ -119,7 +108,7 @@ export function OrderBook(props: Readonly<OrderBookProps>) {
                   },
                 )}
               </span>
-              <span className='relative z-10 font-mono'>
+              <span className="relative z-10 font-mono">
                 {ValueFormatter.anyToFloat(order.size).toFixed(6)}
               </span>
               <span className="relative z-10 text-gray-500">-</span>

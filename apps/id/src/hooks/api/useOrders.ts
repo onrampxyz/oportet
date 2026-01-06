@@ -8,7 +8,8 @@ import type {
   PlaceOrderResponse,
 } from '~/types/market'
 
-const API_BASE_URL = process.env.VITE_API_BASE_URL
+const API_BASE_URL =
+  process.env.VITE_API_BASE_URL ?? 'https://api.testnet.rise.trade'
 
 /**
  * Places a new order
@@ -77,7 +78,7 @@ export function useOpenOrders({
     enabled: enabled && !!address,
     queryFn: async () => {
       const params = new URLSearchParams()
-      if (address) params.append('user', address)
+      if (address) params.append('account', address)
       if (marketId) params.append('market_id', marketId)
 
       const response = await fetch(
