@@ -84,11 +84,10 @@ export function Bridge(props: Readonly<BridgeProps>) {
                 {bridgeState.status === 'source-pending' && (
                   <Spinner color="purple" size="small" />
                 )}
-                {bridgeState.status === 'source-confirmed' && (
+                {bridgeState.status === 'completed' && (
                   <CheckCircle className="size-5 text-th_positive" />
                 )}
-                {(bridgeState.status === 'source-failed' ||
-                  bridgeState.status === 'failed') && (
+                {(bridgeState.status === 'failed') && (
                   <XCircle className="size-5" color="red" />
                 )}
                 <CircleDashed
@@ -103,7 +102,7 @@ export function Bridge(props: Readonly<BridgeProps>) {
                 />
               </div>
               <div className="flex-1">
-                <div className="font-medium text-sm text-th_base">
+                <div className="font-medium text-sm text-th_base pt-1">
                   Bridge transaction
                 </div>
                 <ErrorDisplay
@@ -157,8 +156,7 @@ export function Bridge(props: Readonly<BridgeProps>) {
 
       <Layout.Footer>
         <Layout.Footer.Actions>
-          {(bridgeState.status === 'failed' ||
-            bridgeState.status === 'source-failed') &&
+          {(bridgeState.status === 'failed') &&
             onRetry && (
               <Button onClick={onRetry} variant="primary" width="full">
                 Retry
@@ -173,11 +171,7 @@ export function Bridge(props: Readonly<BridgeProps>) {
           <Button
             className="hidden size-5 data-[visible=true]:block text-center"
             color="gray"
-            data-visible={
-              bridgeState.status === 'source-pending' ||
-              bridgeState.status === 'source-confirmed' ||
-              bridgeState.status === 'destination-pending'
-            }
+            data-visible={bridgeState.status === 'source-pending'}
             disabled
             variant="secondary"
             width="full"

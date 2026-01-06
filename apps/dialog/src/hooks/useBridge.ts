@@ -92,13 +92,13 @@ export function useBridge(params: UseBridgeParams) {
           ...prev,
           message: `Status: ${response.status} with code ${response.statusCode}`,
           sourceTxHash,
-          status: 'source-failed',
+          status: 'failed',
         }))
-      } else {
+      } else if (response.status === 'success') {
         setBridgeState((prev) => ({
           ...prev,
           sourceTxHash,
-          status: 'source-confirmed',
+          status: 'completed',
         }))
       }
 
