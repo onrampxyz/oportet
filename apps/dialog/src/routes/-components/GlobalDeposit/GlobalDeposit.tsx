@@ -12,11 +12,15 @@ import {
   useMintToken,
   useWalletAsset,
 } from '~/hooks'
-import { Layout } from '../Layout'
 import { DropdownSelector, getAssets, SupportedChains } from '.'
+import { Layout } from '../Layout'
 import { Bridge, type BridgeState } from './Bridge'
 
-export function GlobalDeposit() {
+export type GlobalDepositProps = Readonly<{
+  onClose: () => void
+}>
+
+export function GlobalDeposit({ onClose }: GlobalDepositProps) {
   const {
     address,
     amount,
@@ -124,11 +128,12 @@ export function GlobalDeposit() {
           bridge()
         }}
         onSuccess={() => {
-          setBridgeState({ status: 'idle' })
           refetchBalance()
           refetchRiseBalance()
+          onClose()
         }}
         selectedToken={selectedToken}
+        selectedChain={selectedChain}
         targetChainId={targetChainId}
       />
     )
@@ -184,13 +189,13 @@ export function GlobalDeposit() {
                 <div className="flex items-center justify-between gap-2">
                   <p className="text-sm text-th_base-secondary">Amount</p>
                   {selectedToken && (
-                    <p className="text-th_base-secondary text-xs">
+                    <p className="text-th_base-secondary text-sm">
                       Minimum Deposit:{' '}
                       {formatUnits(
                         selectedToken?.minDeposit,
                         selectedToken?.decimals,
                       )}{' '}
-                      {selectedToken?.symbol}
+                      <span className="font-bold">{selectedToken?.symbol}</span>
                     </p>
                   )}
                 </div>
@@ -252,6 +257,7 @@ export function GlobalDeposit() {
               disabled={
                 Number(amountBalance) === 0 ||
                 Number(amount) === 0 ||
+                Number(amount) > Number(amountBalance) ||
                 shouldExceedMinDeposit
               }
               onClick={bridge}
@@ -261,7 +267,8 @@ export function GlobalDeposit() {
             </Button>
           </Layout.Footer.Actions>
         </Layout.Footer>
-      )}
-    </Layout>
+      )
+      }
+    </Layout >
   )
 }

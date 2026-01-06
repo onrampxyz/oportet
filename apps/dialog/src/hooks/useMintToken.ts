@@ -3,6 +3,7 @@ import { Value } from 'ox'
 import { useState } from 'react'
 import { encodeFunctionData, parseAbiItem } from 'viem'
 import { porto } from '~/lib/Porto'
+import { ErrorFormatter } from '~/utils'
 
 export type UseMintTokenParams = {
   address: Address.Address
@@ -50,13 +51,14 @@ export function useMintToken(params: UseMintTokenParams) {
 
       return status
     } catch (e) {
-      console.log('error-minting:: ', e)
+      const error = e as Error
+      const message = typeof error.cause === 'string' ? error.cause : error.message
+
+      console.log('mint error message:: ', ErrorFormatter.extractMessage(message))
     } finally {
       setIsMinting(false)
     }
   }
-
-  console.log('isMinting:: ', isMinting)
 
   return { isMinting, mintToken }
 }

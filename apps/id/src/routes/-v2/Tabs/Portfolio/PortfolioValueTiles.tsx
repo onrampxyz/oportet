@@ -1,31 +1,52 @@
 import { cx } from 'cva'
+import { ValueFormatter } from '~/utils'
 import ArrowDownIcon from '~icons/lucide/arrow-down'
 import ArrowUpIcon from '~icons/lucide/arrow-up'
+import { PortfolioValueTilesSkeleton } from './PortfolioValueTilesSkeleton'
 
 export type PortfolioValueTilesProps = {
-  totalValue: string
-  valueChange: string
-  valueChangePercent: string
-  inPositions: string
-  totalPnL24h: string
-  totalProfit: string
-  totalLoss: string
   isLoading?: boolean
 }
 
-export function PortfolioValueTiles(props: PortfolioValueTilesProps) {
-  const {
-    totalValue,
-    valueChange,
-    valueChangePercent,
-    inPositions,
-    totalPnL24h,
-    totalProfit,
-    totalLoss,
-  } = props
+export function PortfolioValueTiles(props: Readonly<PortfolioValueTilesProps>) {
+  const { isLoading } = props
+
+  const totalValue = 0
+  const protocolsValue = 0
+
+  // Mock data for metrics not yet available from API
+  // TODO: Replace with real API data when available
+  const mockValueChange = totalValue * 0.22 // 22% mock change
+  const mockInPositions = protocolsValue
+  const mockTotalPnL24h = totalValue * 0.08 // 8% mock 24h PnL
+  const mockTotalProfit = totalValue * 0.35 // 35% mock profit
+  const mockTotalLoss = totalValue * 0.15 // 15% mock loss
+
+  const formatValue = (value: number) => {
+    if (value === 0) return '$0.00'
+    const formatted = ValueFormatter.formatToPrice(value)
+    return value >= 0 ? `+$${formatted}` : `-$${formatted.replace('-', '')}`
+  }
+
+  const formatPercent = (percent: number) => {
+    return `${percent.toFixed(2)}%`
+  }
+
+  // Formatted display values
+  const totalValueDisplay = `$${ValueFormatter.formatToPrice(totalValue)}`
+  const valueChange = formatValue(mockValueChange)
+  const valueChangePercent = formatPercent((mockValueChange / totalValue) * 100)
+  const inPositions = `$${ValueFormatter.formatToPrice(mockInPositions)}`
+  const totalPnL24h = formatValue(mockTotalPnL24h)
+  const totalProfit = formatValue(mockTotalProfit)
+  const totalLoss = `-$${ValueFormatter.formatToPrice(Math.abs(mockTotalLoss))}`
 
   const isValuePositive = !valueChange.startsWith('-')
   const isPnLPositive = !totalPnL24h.startsWith('-')
+
+  if (isLoading) {
+    return <PortfolioValueTilesSkeleton />
+  }
 
   return (
     <div className="grid gap-3 lg:grid-cols-[1fr_300px]">
@@ -35,7 +56,7 @@ export function PortfolioValueTiles(props: PortfolioValueTilesProps) {
           <div className="mb-1 font-medium text-gray11 text-sm">
             Total Portfolio Value
           </div>
-          <div className="font-semibold text-3xl">{totalValue}</div>
+          <div className="font-semibold text-3xl">{totalValueDisplay}</div>
         </div>
 
         <div

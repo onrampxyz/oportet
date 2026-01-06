@@ -9,6 +9,7 @@ import type {
   BridgeState,
   BridgeToken,
 } from '~/routes/-components/GlobalDeposit'
+import { ErrorFormatter } from '~/utils'
 
 export type UseBridgeParams = {
   selectedChainId?: number
@@ -90,8 +91,7 @@ export function useBridge(params: UseBridgeParams) {
       if (response.status === 'failure') {
         setBridgeState((prev) => ({
           ...prev,
-          message: `Status: ${response.status} with code ${response.statusCode}`,
-          // sourceTxHash,
+          message: `Failed with status code ${response.statusCode}`,
           status: 'failed',
         }))
       } else if (response.status === 'success') {
@@ -107,11 +107,12 @@ export function useBridge(params: UseBridgeParams) {
     } catch (e) {
       const error = e as Error
       console.log('error-bridging::', error)
+      const message = typeof error.cause === 'string' ? error.cause : error.message
 
       setError(error)
       setBridgeState((prev) => ({
         ...prev,
-        message: typeof error.cause === 'string' ? error.cause : error.message,
+        message: ErrorFormatter.extractMessage(message),
         status: 'failed',
       }))
     }

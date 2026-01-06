@@ -7,7 +7,7 @@ import type {
   WalletSummary,
 } from '~/types/wallet'
 
-const API_BASE_URL = process.env.VITE_API_INDEXING_URL
+const API_BASE_URL = process.env.VITE_API_INDEXING_URL ?? "https://points-api.marble.live"
 
 /**
  * Fetches wallet balances for a given address
@@ -179,6 +179,12 @@ export function useWallet({
   const protocol = useWalletPositions({ address, enabled })
   const summary = useWalletSummary({ address, enabled })
 
+  console.log("balances:: ", balances)
+    console.log("calls:: ", calls)
+      console.log("protocol:: ", protocol)
+        console.log("summary:: ", summary)
+        console.log("----------------")
+
   return {
     balances,
     calls,
@@ -191,6 +197,11 @@ export function useWallet({
       calls.isLoading ||
       protocol.isLoading ||
       summary.isLoading,
+    isPending: balances.isPending ||
+      calls.isPending ||
+      protocol.isPending ||
+      summary.isPending,
+
     protocol,
     summary,
   }
