@@ -1,6 +1,5 @@
 import { Button, CopyButton, Details, Spinner } from '@porto/ui'
 import { type Hex, Value } from 'ox'
-import { porto } from '~/lib/Porto'
 import { Layout } from '~/routes/-components/Layout'
 import CheckCircle from '~icons/lucide/check-circle'
 import CircleDashed from '~icons/lucide/circle-dashed'
@@ -60,21 +59,9 @@ export function ErrorDisplay(
 }
 
 export function Bridge(props: Readonly<BridgeProps>) {
-  const {
-    bridgeState,
-    chains,
-    targetChainId,
-    selectedToken,
-    amount,
-    onSuccess,
-    onRetry,
-  } = props
+  const { bridgeState, selectedToken, amount, onSuccess, onRetry } = props
 
   console.log('bridgeState:: ', bridgeState)
-
-  const sourceChain = chains?.find((c) => c.id === bridgeState.sourceChainId)
-  const allChains = [...(chains ?? []), ...porto._internal.config.chains]
-  const destChain = allChains.find((c: any) => c.id === targetChainId)
 
   const isFailed =
     bridgeState.status === 'source-failed' || bridgeState.status === 'failed'
