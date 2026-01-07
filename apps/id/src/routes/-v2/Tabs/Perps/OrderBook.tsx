@@ -19,8 +19,6 @@ export function OrderBook(props: Readonly<OrderBookProps>) {
     selectedMarket?.market_id,
   )
 
-  console.log('orderBookSell:: ', orderBookSell)
-
   return (
     <div className="space-y-1 rounded-lg border border-gray5 p-4">
       <h3 className="mb-4 font-semibold">Order Book</h3>
