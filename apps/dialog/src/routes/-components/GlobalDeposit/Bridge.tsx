@@ -49,7 +49,11 @@ export function ErrorDisplay(
     return null
   }
 
-  return <div className="text-destructive text-sm max-w-[320px] break-all">{message}</div>
+  return (
+    <div className="text-destructive text-sm max-w-[320px] break-all">
+      {message}
+    </div>
+  )
 }
 
 export function Bridge(props: Readonly<BridgeProps>) {
