@@ -47,7 +47,7 @@ export function OrderBook(props: Readonly<OrderBookProps>) {
                 style={{ width: `${sizePercent}%` }}
               />
               <div
-                className='absolute left-0 h-full transform-gpu bg-red-900 pb-3 transition-[width] duration-500 ease-out'
+                className="absolute left-0 h-full transform-gpu bg-red-900 pb-3 transition-[width] duration-500 ease-out"
                 style={{
                   width: `${(ValueFormatter.anyToFloat(order.size) / totalSell) * 10}%`,
                 }}

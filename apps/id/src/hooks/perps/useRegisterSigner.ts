@@ -36,10 +36,10 @@ type RegisterSignerMessage = {
   signer: Address
 }
 
-const loadNs = process?.hrtime?.bigint?.() || BigInt(0)
-const loadMs = Date.now()
-
 export const nowInNano = () => {
+  const loadNs = BigInt(0) // process?.hrtime?.bigint?.() || BigInt(0)
+  const loadMs = Date.now()
+
   if (process?.hrtime?.bigint) {
     const current = process.hrtime.bigint()
     return BigInt(
