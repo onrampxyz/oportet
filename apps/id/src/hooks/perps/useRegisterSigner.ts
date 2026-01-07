@@ -1,7 +1,7 @@
 import { useMutation } from '@tanstack/react-query'
 import type { Address } from 'viem'
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
-import { useWriteContract } from 'wagmi'
+import { useSendCallsSync } from 'wagmi'
 
 const RISEX_AUTH_CONTRACT =
   '0x8d8708f9d87ef522c1f99dd579bf6a051e34c28e' as Address
@@ -104,7 +104,11 @@ export const createClientNonce = (address: string | undefined) => {
  * ```
  */
 export function useRegisterSigner() {
-  const { writeContractAsync } = useWriteContract()
+  const { sendCallsSyncAsync } = useSendCallsSync({
+    mutation: {
+      retry: false,
+    },
+  })
 
   const mutation = useMutation({
     mutationFn: async ({
@@ -181,26 +185,36 @@ export function useRegisterSigner() {
       })
 
       // Step 4: Submit registration via contract call
-      const hash = await writeContractAsync({
-        abi: RISEX_AUTH_ABI,
-        address: RISEX_AUTH_CONTRACT,
-        args: [
-          account, // account
-          signerAddress, // signer
-          message, // message
-          BigInt(nonce), // nonce
-          expiration, // expiration
-          accountSignature, // accountSignature
-          signerSignature, // signerSignature
+      const response = await sendCallsSyncAsync({
+        calls: [
+          {
+            abi: RISEX_AUTH_ABI,
+            args: [
+              account, // account
+              signerAddress, // signer
+              message, // message
+              BigInt(nonce), // nonce
+              expiration, // expiration
+              accountSignature, // accountSignature
+              signerSignature, // signerSignature
+            ],
+            functionName: 'registerSigner',
+            to: RISEX_AUTH_CONTRACT,
+          },
         ],
-        functionName: 'registerSigner',
+        chainId: chainId as never,
+        timeout: 60_000,
       })
+
+      // Get transaction hash from receipts
+      const hash = response.receipts?.[0]?.transactionHash
 
       return {
         accountSignature,
         expiration,
         hash,
         nonce,
+        response,
         signer: signerAddress,
         signerSignature,
         signingKey, // IMPORTANT: Store this securely - it authorizes all transactions
