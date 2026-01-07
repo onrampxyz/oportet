@@ -5,7 +5,7 @@ import type { PositionsResponse } from '~/types/perps/position'
 const API_BASE_URL =
   process.env.VITE_API_BASE_URL ?? 'https://api.testnet.rise.trade'
 
-export function usePositions({
+export function useOpenPositions({
   address,
   enabled = true,
   marketId,

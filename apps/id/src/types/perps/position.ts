@@ -15,9 +15,12 @@ export type Position = {
 }
 
 export type PositionsResponse = {
-  positions: Position[]
-  total_count: number
-  page: number
-  page_size: number
-  has_next_page: boolean
+  data: {
+    positions: Position[]
+    total_count: number
+    page: number
+    page_size: number
+    has_next_page: boolean
+  }
+  request_id: string
 }

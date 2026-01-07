@@ -1,14 +1,10 @@
 import { useEffect, useState } from 'react'
-import {
-  type FilteredMarket,
-  useFilteredMarkets,
-  useMarkets,
-} from '~/hooks'
+import { type FilteredMarket, useFilteredMarkets, useMarkets } from '~/hooks'
 import { MarketSummary } from './MarketSummary'
 import { Markets } from './Markets'
 import { OrderBook } from './OrderBook'
-import { Positions } from './Positions'
 import { PriceChart } from './PriceChart'
+import { TradeDisplay } from './TradeDisplay'
 import { TradingForm } from './TradingForm'
 
 export type MarketsProps = {
@@ -51,7 +47,7 @@ export function Perps() {
             activeTimeframe={activeTimeframe}
             onTimeframeChange={setActiveTimeframe}
           />
-          {selectedMarket && <Positions market={selectedMarket} />}
+          {selectedMarket && <TradeDisplay markets={filteredMarkets} />}
           {filteredMarkets && (
             <Markets
               markets={filteredMarkets}
