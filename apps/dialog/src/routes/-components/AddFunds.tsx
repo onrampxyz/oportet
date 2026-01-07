@@ -22,7 +22,6 @@ import {
   DepositSelection,
   GlobalDeposit,
 } from './GlobalDeposit'
-import { BridgeFromChain } from './GlobalDeposit/BridgeFromChain'
 import { DepositError } from './GlobalDeposit/DepositError'
 import { SetupApplePay } from './SetupApplePay'
 
@@ -180,15 +179,6 @@ function AddFundsContent(props: Readonly<AddFunds.Props>) {
       />
     )
 
-  if (view === 'bridge')
-    return (
-      <BridgeFromChain
-        address={address!}
-        onBack={() => setView('default')}
-        onSuccess={() => onApprove?.({ id: zeroHash })}
-      />
-    )
-
   if (view === 'selection-deposit') {
     return <DepositSelection />
   }
@@ -202,7 +192,7 @@ function AddFundsContent(props: Readonly<AddFunds.Props>) {
   }
 
   if (view === 'global-deposit') {
-    return <GlobalDeposit />
+    return <GlobalDeposit onClose={onReject ?? (() => {})} />
   }
 
   return (
@@ -253,7 +243,7 @@ function AddFundsContent(props: Readonly<AddFunds.Props>) {
                 nativeTokenName={chain?.nativeCurrency?.symbol}
               />
               <Button
-                onClick={() => setView('bridge')}
+                onClick={() => setView('global-deposit')}
                 variant="positive"
                 width="full"
               >
@@ -276,14 +266,14 @@ function AddFundsContent(props: Readonly<AddFunds.Props>) {
   )
 }
 
-export function AddFunds(props: AddFunds.Props) {
+export function AddFunds(props: Readonly<AddFunds.Props>) {
   const account = RemoteHooks.useAccount(porto)
   const address = props.address ?? account?.address
 
   return (
     <FundsProvider
       address={address}
-      initialView={(props.view as View) ?? 'default'}
+      initialView={(props.view as View) ?? 'global-deposit'}
     >
       <AddFundsContent {...props} />
     </FundsProvider>

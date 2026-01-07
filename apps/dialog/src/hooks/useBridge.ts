@@ -9,6 +9,7 @@ import type {
   BridgeState,
   BridgeToken,
 } from '~/routes/-components/GlobalDeposit'
+import { ErrorFormatter } from '~/utils'
 
 export type UseBridgeParams = {
   selectedChainId?: number
@@ -37,7 +38,11 @@ export function useBridge(params: UseBridgeParams) {
     queryKey: ['bridge-chains', targetChainId],
   })
 
-  const { sendCallsSyncAsync } = useSendCallsSync()
+  const { sendCallsSyncAsync } = useSendCallsSync({
+    mutation: {
+      retry: false,
+    },
+  })
 
   // Bridge function
   const bridge = async () => {
@@ -48,7 +53,7 @@ export function useBridge(params: UseBridgeParams) {
 
     setBridgeState({
       sourceChainId: selectedChainId,
-      status: 'source-pending',
+      status: 'pending',
     })
 
     try {
@@ -65,15 +70,16 @@ export function useBridge(params: UseBridgeParams) {
           {
             abi: [
               parseAbiItem(
-                'function bridgeAllLayerZero(address _bridge, address _recipient)',
+                'function bridgeLayerZero(address _bridge, uint256 _amoun, address _recipient)',
               ),
             ],
-            args: [selectedToken.bridgeContract, account],
-            functionName: 'bridgeAllLayerZero',
+            args: [selectedToken.bridgeContract, amount, account],
+            functionName: 'bridgeLayerZero',
             to: selectedToken.bridgeWrapper,
           },
         ],
         chainId: selectedChainId as never,
+        timeout: 60_000,
       })
 
       // Get transaction hash from receipts
@@ -85,15 +91,14 @@ export function useBridge(params: UseBridgeParams) {
       if (response.status === 'failure') {
         setBridgeState((prev) => ({
           ...prev,
-          message: `Status: ${response.status} with code ${response.statusCode}`,
-          sourceTxHash,
-          status: 'source-failed',
+          message: `Failed with status code ${response.statusCode}`,
+          status: 'failed',
         }))
-      } else {
+      } else if (response.status === 'success') {
         setBridgeState((prev) => ({
           ...prev,
           sourceTxHash,
-          status: 'source-confirmed',
+          status: 'completed',
         }))
       }
 
@@ -102,11 +107,13 @@ export function useBridge(params: UseBridgeParams) {
     } catch (e) {
       const error = e as Error
       console.log('error-bridging::', error)
+      const message =
+        typeof error.cause === 'string' ? error.cause : error.message
 
       setError(error)
       setBridgeState((prev) => ({
         ...prev,
-        message: typeof error.cause === 'string' ? error.cause : error.message,
+        message: ErrorFormatter.extractMessage(message),
         status: 'failed',
       }))
     }

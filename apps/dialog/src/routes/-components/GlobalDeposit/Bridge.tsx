@@ -1,20 +1,12 @@
 import { Button, CopyButton, Details, Spinner } from '@porto/ui'
 import { type Hex, Value } from 'ox'
-import { porto } from '~/lib/Porto'
+import type { Chain } from '~/routes/-components/GlobalDeposit/ChainSelection'
 import { Layout } from '~/routes/-components/Layout'
 import CheckCircle from '~icons/lucide/check-circle'
-import CircleDashed from '~icons/lucide/circle-dashed'
 import XCircle from '~icons/lucide/circle-x'
 import ExternalLink from '~icons/lucide/external-link'
 
-export type BridgeStatus =
-  | 'idle'
-  | 'source-pending'
-  | 'source-confirmed'
-  | 'source-failed'
-  | 'destination-pending'
-  | 'completed'
-  | 'failed'
+export type BridgeStatus = 'idle' | 'pending' | 'completed' | 'failed'
 
 export type BridgeState = {
   status: BridgeStatus
@@ -42,6 +34,7 @@ export type BridgeProps = {
   chains?: readonly { id: number; name: string; blockExplorers?: any }[]
   targetChainId: number
   selectedToken?: BridgeToken
+  selectedChain?: Chain
   amount?: bigint
   onSuccess: () => void
   onRetry?: () => void | Promise<void>
@@ -56,15 +49,18 @@ export function ErrorDisplay(
     return null
   }
 
-  return <div className="text-destructive text-sm">{message}</div>
+  return (
+    <div className="text-destructive text-sm max-w-[320px] break-all">
+      {message}
+    </div>
+  )
 }
 
 export function Bridge(props: Readonly<BridgeProps>) {
   const {
     bridgeState,
-    chains,
-    targetChainId,
     selectedToken,
+    selectedChain,
     amount,
     onSuccess,
     onRetry,
@@ -72,19 +68,13 @@ export function Bridge(props: Readonly<BridgeProps>) {
 
   console.log('bridgeState:: ', bridgeState)
 
-  const sourceChain = chains?.find((c) => c.id === bridgeState.sourceChainId)
-  const allChains = [...(chains ?? []), ...porto._internal.config.chains]
-  const destChain = allChains.find((c: any) => c.id === targetChainId)
-
-  const isFailed =
-    bridgeState.status === 'source-failed' || bridgeState.status === 'failed'
-
   return (
     <Layout>
       <Layout.Header>
         <Layout.Header.Default
-          title="Bridge Status"
-          variant={isFailed ? 'destructive' : 'default'}
+          subContent="Deposit to your RISE Wallet"
+          title="Global Deposit"
+          variant="default"
         />
       </Layout.Header>
 
@@ -92,45 +82,33 @@ export function Bridge(props: Readonly<BridgeProps>) {
         <div className="flex flex-col gap-3">
           <div className="flex flex-col gap-3">
             {/* Source Chain Status */}
-            <div className="flex items-start gap-2">
+            <div className="flex items-start gap-2 pt-1 pb-2">
               <div className="mt-1">
-                {bridgeState.status === 'source-pending' && (
+                {bridgeState.status === 'pending' && (
                   <Spinner color="purple" size="small" />
                 )}
-                {bridgeState.status === 'source-confirmed' && (
-                  <CheckCircle className="size-5 text-th_positive" />
+                {bridgeState.status === 'completed' && (
+                  <CheckCircle className="size-4 " color="green" />
                 )}
-                {(bridgeState.status === 'source-failed' ||
-                  bridgeState.status === 'failed') && (
-                  <XCircle className="size-5" color="red" />
+                {bridgeState.status === 'failed' && (
+                  <XCircle className="size-4" color="red" />
                 )}
-                <CircleDashed
-                  className="block size-5 data-[hidden=true]:hidden"
-                  color="gray"
-                  data-hidden={
-                    bridgeState.status === 'source-pending' ||
-                    bridgeState.status === 'source-confirmed' ||
-                    bridgeState.status === 'source-failed' ||
-                    bridgeState.status === 'failed'
-                  }
-                />
               </div>
               <div className="flex-1">
-                <div className="font-medium text-sm text-th_base">
-                  Source chain transaction
-                </div>
-                <div className="text-sm text-th_base-secondary">
-                  {sourceChain?.name}
+                <div className="font-medium text-sm text-th_base pt-0.5">
+                  {bridgeState.status === 'pending'
+                    ? 'Bridging tokens...'
+                    : 'Bridge transaction'}
                 </div>
                 <ErrorDisplay
-                  hidden={bridgeState.status !== 'source-failed'}
+                  hidden={bridgeState.status !== 'failed'}
                   message={bridgeState.message ?? ''}
                 />
                 {bridgeState.sourceTxHash && (
                   <div className="flex items-center gap-2">
                     <a
                       className="flex items-center gap-1 text-sm text-th_base-secondary hover:underline"
-                      href={`${sourceChain?.blockExplorers?.default?.url}/tx/${bridgeState.sourceTxHash}`}
+                      href={`https://testnet.layerzeroscan.com/tx/${bridgeState.sourceTxHash}`}
                       rel="noopener noreferrer"
                       target="_blank"
                     >
@@ -146,57 +124,17 @@ export function Bridge(props: Readonly<BridgeProps>) {
                 )}
               </div>
             </div>
-
-            {/* Destination Chain Status */}
-            <div className="flex items-start gap-2">
-              <div className="mt-1">
-                {bridgeState.status === 'destination-pending' && (
-                  <Spinner color="purple" size="small" />
-                )}
-                {bridgeState.status === 'completed' && (
-                  <CheckCircle className="size-5 text-th_positive" />
-                )}
-                {bridgeState.status === 'failed' && (
-                  <XCircle className="size-5" color="red" />
-                )}
-
-                <CircleDashed
-                  className="block size-5 data-[hidden=true]:hidden"
-                  color="gray"
-                  data-hidden={
-                    bridgeState.status === 'destination-pending' ||
-                    bridgeState.status === 'completed' ||
-                    bridgeState.status === 'failed'
-                  }
-                />
-              </div>
-              <div className="flex-1">
-                <div className="font-medium text-sm text-th_base">
-                  Destination chain receipt
-                </div>
-                <div className="text-sm text-th_base-secondary">
-                  {destChain?.name}
-                </div>
-                {bridgeState.status === 'destination-pending' && (
-                  <div className="mt-1 text-sm text-th_base-secondary">
-                    Waiting for bridge to complete...
-                  </div>
-                )}
-                {bridgeState.status === 'completed' && (
-                  <div className="mt-1 text-sm text-th_positive">
-                    Tokens received successfully
-                  </div>
-                )}
-                <ErrorDisplay
-                  hidden={bridgeState.status !== 'failed'}
-                  message={bridgeState.message ?? ''}
-                />
-              </div>
-            </div>
           </div>
 
           {selectedToken && amount !== undefined && (
             <Details opened>
+              <div className="flex items-center justify-between gap-2">
+                <p className="text-th_base">Source Chain</p>
+                <p className="text-th_base">
+                  <span className="font-bold">{selectedChain?.name}</span> (
+                  {selectedChain?.id})
+                </p>
+              </div>
               <div className="flex items-center justify-between gap-2">
                 <p className="text-th_base">Amount</p>
                 <p className="text-th_base">
@@ -218,35 +156,18 @@ export function Bridge(props: Readonly<BridgeProps>) {
         </div>
       </Layout.Content>
 
-      <Layout.Footer>
+      <Layout.Footer className="min-h-0!">
         <Layout.Footer.Actions>
-          {(bridgeState.status === 'failed' ||
-            bridgeState.status === 'source-failed') &&
-            onRetry && (
-              <Button onClick={onRetry} variant="primary" width="full">
-                Retry
-              </Button>
-            )}
+          {bridgeState.status === 'failed' && onRetry && (
+            <Button onClick={onRetry} variant="primary" width="full">
+              Retry
+            </Button>
+          )}
           {bridgeState.status === 'completed' && (
             <Button onClick={() => onSuccess()} variant="primary" width="full">
               Done
             </Button>
           )}
-
-          <Button
-            className="hidden size-5 data-[visible=true]:block"
-            color="gray"
-            data-visible={
-              bridgeState.status === 'source-pending' ||
-              bridgeState.status === 'source-confirmed' ||
-              bridgeState.status === 'destination-pending'
-            }
-            disabled
-            variant="secondary"
-            width="full"
-          >
-            Bridge in progress...
-          </Button>
         </Layout.Footer.Actions>
       </Layout.Footer>
     </Layout>

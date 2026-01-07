@@ -9,11 +9,11 @@ export const TabItems = [
   //   name: 'Assets',
   //   path: '/assets',
   // },
-  {
-    id: 'perps',
-    name: 'Perps',
-    path: '/perps',
-  },
+  // {
+  //   id: 'perps',
+  //   name: 'Perps',
+  //   path: '/perps',
+  // },
   {
     id: 'portfolio',
     name: 'Portfolio',

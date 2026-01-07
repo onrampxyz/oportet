@@ -56,8 +56,6 @@ export function WalletBalances(props: Readonly<WalletBalancesProps>) {
     }
   }
 
-  console.log('balances:: ', balances)
-
   if (isLoading) {
     return <WalletBalancesSkeleton />
   }

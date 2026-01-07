@@ -27,8 +27,8 @@ export const BRIDGE_TOKENS: Record<number, BridgeToken[]> = {
       bridgeType: 'layerzero',
       bridgeWrapper: zeroAddress,
       decimals: 18,
-      icon: '/icons/usdc.svg',
-      minDeposit: Value.from('0.1', 18), // 0.1 USDC
+      icon: '/dialog/ui/token-icons/usdc.svg',
+      minDeposit: Value.from('10', 18), // 0.1 USDC
       name: 'USDC', // TODO: fix this
       symbol: 'USDC',
     },
@@ -39,8 +39,8 @@ export const BRIDGE_TOKENS: Record<number, BridgeToken[]> = {
       bridgeType: 'layerzero',
       bridgeWrapper: zeroAddress,
       decimals: 18,
-      icon: '/icons/usdt.svg',
-      minDeposit: Value.from('0.1', 18), // 0.1 USDC
+      icon: '/dialog/ui/token-icons/usdt.svg',
+      minDeposit: Value.from('10', 18), // 0.1 USDC
       name: 'USDT', // TODO: fix this
       symbol: 'USDT',
     },
@@ -52,10 +52,10 @@ export const BRIDGE_TOKENS: Record<number, BridgeToken[]> = {
       bridgeContract:
         '0x8421D6445915b251bE303475dfCdD083e4aCBA0f' as Address.Address,
       bridgeType: 'layerzero',
-      bridgeWrapper: '0xCc5F8e7D2318DA052d63A0FCaE341D8aebDEdD9D',
+      bridgeWrapper: '0x226cefe884c9425377954fB9B5Cb9AD4BdCD398D',
       decimals: 18,
-      icon: '/icons/usdc.svg',
-      minDeposit: Value.from('0.1', 18), // 0.1 USDC
+      icon: '/dialog/ui/token-icons/usdc.svg',
+      minDeposit: Value.from('10', 18), // 0.1 USDC
       name: 'USDC', // TODO: fix this
       symbol: 'USDC',
     },
@@ -64,10 +64,10 @@ export const BRIDGE_TOKENS: Record<number, BridgeToken[]> = {
       bridgeContract:
         '0x046832405512D508b873E65174E51613291083bC' as Address.Address,
       bridgeType: 'layerzero',
-      bridgeWrapper: '0xCc5F8e7D2318DA052d63A0FCaE341D8aebDEdD9D',
+      bridgeWrapper: '0x226cefe884c9425377954fB9B5Cb9AD4BdCD398D',
       decimals: 18,
-      icon: '/icons/usdt.svg',
-      minDeposit: Value.from('0.1', 18), // 0.1 USDC
+      icon: '/dialog/ui/token-icons/usdt.svg',
+      minDeposit: Value.from('10', 18), // 0.1 USDC
       name: 'USDT', // TODO: fix this
       symbol: 'USDT',
     },
@@ -81,7 +81,6 @@ export function getAssets(id?: number) {
     (token) => token.address.toLowerCase() !== zeroAddress.toLowerCase(),
   )
 
-  console.log('tokens:: ', tokens)
   return tokens
 }
 
