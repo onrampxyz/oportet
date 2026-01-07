@@ -5,6 +5,7 @@ import { Value } from 'ox'
 import { useEffect, useMemo, useState } from 'react'
 import { Chains } from 'rise-wallet/index'
 import { formatUnits, parseUnits } from 'viem'
+import { useReadContract } from 'wagmi'
 import { useFundsContext } from '~/contexts'
 import {
   useBridge,
@@ -12,8 +13,8 @@ import {
   useMintToken,
   useWalletAsset,
 } from '~/hooks'
-import { Layout } from '../Layout'
 import { DropdownSelector, getAssets, SupportedChains } from '.'
+import { Layout } from '../Layout'
 import { Bridge, type BridgeState } from './Bridge'
 
 export type GlobalDepositProps = Readonly<{
@@ -35,11 +36,19 @@ export function GlobalDeposit({ onClose }: GlobalDepositProps) {
     status: 'idle',
   })
 
-  const { balance, refetch: refetchBalance } = useWalletAsset({
+  const {
+    balance,
+    refetch: refetchBalance,
+    isLoading: isWalletAssetLoading,
+  } = useWalletAsset({
     address: address ?? '0x',
     chainId: selectedChain?.id,
     tokenAddress: selectedAsset?.address ?? '0x',
   })
+
+  const tokens = getAssets(selectedChain?.id)
+  // Default to RISE, add handling when on mainnet
+  const destinationToken = getAssets(11155931)
 
   const { mintToken, isMinting } = useMintToken({
     address: address ?? '0x',
@@ -47,9 +56,41 @@ export function GlobalDeposit({ onClose }: GlobalDepositProps) {
     tokenAddress: selectedAsset?.address,
   })
 
-  const tokens = getAssets(selectedChain?.id)
-  // Default to RISE, add handling when on mainnet
-  const destinationToken = getAssets(11155931)
+  const selectedToken = useMemo(() => {
+    return tokens.find(
+      (t) => t.address.toLowerCase() === selectedAsset?.address?.toLowerCase(),
+    )
+  }, [tokens, selectedAsset?.address])
+
+  const {
+    data: minAmounts,
+    isLoading: isLoadingMinAmounts,
+    isFetching: isFetchingMinAmounts,
+  } = useReadContract({
+    abi: [
+      {
+        inputs: [{ internalType: 'address', name: '', type: 'address' }],
+        name: 'minAmounts',
+        outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+        stateMutability: 'view',
+        type: 'function',
+      },
+    ],
+    address: selectedToken?.bridgeWrapper!,
+    args: [selectedToken?.bridgeContract!],
+    chainId: selectedChain?.id as any,
+    functionName: 'minAmounts',
+    query: {
+      enabled:
+        !!selectedToken?.bridgeWrapper && !!selectedToken?.bridgeContract,
+    },
+  })
+
+  const minDepositAmount = useMemo(() => {
+    if (!minAmounts || !selectedToken) return null
+
+    return formatUnits(minAmounts, selectedToken.decimals)
+  }, [minAmounts, selectedToken])
 
   //TODO: add balance: riseBalance,
   const { refetch: refetchRiseBalance } = useDestinationAsset({
@@ -60,12 +101,6 @@ export function GlobalDeposit({ onClose }: GlobalDepositProps) {
       bridgeState.status === 'completed' || bridgeState.status === 'failed',
     refetchInterval: bridgeState.status === 'pending' ? 2000 : false,
   })
-
-  const selectedToken = useMemo(() => {
-    return tokens.find(
-      (t) => t.address.toLowerCase() === selectedAsset?.address?.toLowerCase(),
-    )
-  }, [tokens, selectedAsset?.address])
 
   const { bridge, chains, targetChainId } = useBridge({
     account: address ?? '0x',
@@ -91,13 +126,12 @@ export function GlobalDeposit({ onClose }: GlobalDepositProps) {
   const shouldExceedMinDeposit = useMemo(() => {
     if (!amount || !selectedToken) return false
 
-    const minDeposit = formatUnits(
-      selectedToken?.minDeposit,
-      selectedToken?.decimals,
-    )
+    const minDeposit =
+      minDepositAmount ??
+      formatUnits(selectedToken?.minDeposit, selectedToken?.decimals)
 
     return Number(amount) < Number(minDeposit)
-  }, [amount, selectedToken])
+  }, [amount, selectedToken, minDepositAmount])
 
   // Initialize with defaults if not set
   useEffect(() => {
@@ -169,10 +203,16 @@ export function GlobalDeposit({ onClose }: GlobalDepositProps) {
                   <p className="text-sm text-th_base-secondary">Token</p>
                   <div className="flex gap-2">
                     <p className="text-sm text-th_base-secondary">Balance:</p>
-                    <p className="text-sm text-th_base-secondary">
-                      {amountBalance}{' '}
-                      <span className="font-bold">{selectedAsset?.symbol}</span>
-                    </p>
+                    {isWalletAssetLoading ? (
+                      <div className="h-4 w-20 animate-pulse rounded bg-th_base" />
+                    ) : (
+                      <p className="text-sm text-th_base-secondary">
+                        {amountBalance}{' '}
+                        <span className="font-bold">
+                          {selectedAsset?.symbol}
+                        </span>
+                      </p>
+                    )}
                   </div>
                 </div>
                 <DropdownSelector
@@ -189,14 +229,27 @@ export function GlobalDeposit({ onClose }: GlobalDepositProps) {
                 <div className="flex items-center justify-between gap-2">
                   <p className="text-sm text-th_base-secondary">Amount</p>
                   {selectedToken && (
-                    <p className="text-th_base-secondary text-sm">
-                      Minimum Deposit:{' '}
-                      {formatUnits(
-                        selectedToken?.minDeposit,
-                        selectedToken?.decimals,
-                      )}{' '}
-                      <span className="font-bold">{selectedToken?.symbol}</span>
-                    </p>
+                    <div className="flex gap-1">
+                      <p className="text-sm text-th_base-secondary">
+                        Minimum Deposit:{' '}
+                      </p>
+                      {isLoadingMinAmounts || isFetchingMinAmounts ? (
+                        <div className="h-4 w-16 animate-pulse rounded bg-th_base" />
+                      ) : (
+                        <p className="text-sm text-th_base-secondary">
+                          <span>
+                            {minDepositAmount ??
+                              formatUnits(
+                                selectedToken?.minDeposit,
+                                selectedToken?.decimals,
+                              )}{' '}
+                          </span>{' '}
+                          <span className="font-bold">
+                            {selectedToken?.symbol}
+                          </span>
+                        </p>
+                      )}
+                    </div>
                   )}
                 </div>
                 <div className="flex gap-2">

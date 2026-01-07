@@ -12,7 +12,11 @@ export type UseWalletBalanceParams = {
 export function useWalletAsset(params: UseWalletBalanceParams) {
   const { address, chainId, tokenAddress } = params
 
-  const { data: balance, refetch } = useQuery({
+  const {
+    data: balance,
+    refetch,
+    isLoading,
+  } = useQuery({
     enabled: Boolean(chainId && tokenAddress && address),
     async queryFn() {
       if (!chainId || !tokenAddress) return 0n
@@ -43,5 +47,5 @@ export function useWalletAsset(params: UseWalletBalanceParams) {
     queryKey: ['wallet-asset-balance', chainId, tokenAddress, address],
   })
 
-  return { balance, refetch }
+  return { balance, isLoading, refetch }
 }
