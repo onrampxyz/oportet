@@ -37,16 +37,6 @@ type RegisterSignerMessage = {
 }
 
 export const nowInNano = () => {
-  // const loadNs = BigInt(0) // process?.hrtime?.bigint?.() || BigInt(0)
-  // const loadMs = Date.now()
-
-  // if (process?.hrtime?.bigint) {
-  //   const current = process.hrtime.bigint()
-  //   return BigInt(
-  //     BigInt(loadMs) * 1000000n + BigInt(current - loadNs),
-  //   ).toString()
-  // }
-
   const rand6Digits = Math.round(Math.random() * 1000000)
     .toString()
     .padStart(6, '0')

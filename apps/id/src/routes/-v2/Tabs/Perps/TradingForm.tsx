@@ -1,5 +1,8 @@
-import { Button } from '@porto/apps/components'
+import { Button, Spinner } from '@porto/apps/components'
 import { cx } from 'cva'
+import { useEffect, useState } from 'react'
+import { useAccount } from 'wagmi'
+import { useRegisterSigner } from '~/hooks'
 import LucideChevronDown from '~icons/lucide/chevron-down'
 
 export type TradingFormProps = {
@@ -9,6 +12,72 @@ export type TradingFormProps = {
 
 export function TradingForm(props: TradingFormProps) {
   const { orderType, onOrderTypeChange } = props
+  const [isSignerRegistered, setIsSignerRegistered] = useState(false)
+
+  const { address } = useAccount()
+  const { registerSigner, isPending } = useRegisterSigner()
+
+  // Check if signer is already registered
+  useEffect(() => {
+    const signingKey = localStorage.getItem('risex-signing-key')
+    if (signingKey) {
+      setIsSignerRegistered(true)
+    }
+  }, [])
+
+  const handleSignAccount = async () => {
+    if (!address) return
+
+    try {
+      const result = await registerSigner({
+        account: address,
+        chainId: 11155931, // RISE testnet
+      })
+
+      // Store the signing key securely
+      localStorage.setItem('risex-signing-key', result.signingKey)
+      setIsSignerRegistered(true)
+    } catch (error) {
+      console.error('Failed to register signer:', error)
+    }
+  }
+
+  // Show sign account prompt if not registered
+  if (!isSignerRegistered) {
+    return (
+      <div className="rounded-lg border border-gray5 bg-white p-6 dark:bg-gray1">
+        <div className="flex flex-col gap-4 text-center">
+          <div className="space-y-2">
+            <h3 className="font-semibold text-lg">Sign Your RISE Account</h3>
+            <p className="text-gray11 text-sm">
+              To start trading on RiseX, you need to sign your RISE account.
+              This creates a secure signing key for executing trades.
+            </p>
+          </div>
+          <Button
+            className="w-full"
+            disabled={isPending || !address}
+            onClick={handleSignAccount}
+            variant="primary"
+          >
+            {isPending ? (
+              <span className="flex items-center justify-center gap-2">
+                <Spinner className="size-4!" />
+                Signing Account...
+              </span>
+            ) : (
+              'Sign Your RISE Account'
+            )}
+          </Button>
+          {!address && (
+            <p className="text-red-600 text-xs">
+              Please connect your wallet first
+            </p>
+          )}
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="rounded-lg border border-gray5 bg-white p-4 dark:bg-gray1">
