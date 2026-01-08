@@ -65,7 +65,7 @@ export function Markets(props: Readonly<MarketsProps>) {
 
                 return (
                   <tr
-                    className="cursor-pointer border-gray3 border-b last:border-0 hover:bg-gray2"
+                    className="cursor-pointer border-gray3 border-b hover:bg-gray2"
                     key={market.product_id}
                     onClick={() => onMarketSelect(market)}
                   >

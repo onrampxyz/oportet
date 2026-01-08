@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { type FilteredMarket, useFilteredMarkets, useMarkets } from '~/hooks'
+import { type MarketInfo, useMarkets, useMarketsInfo } from '~/hooks'
 import { MarketSummary } from './MarketSummary'
 import { Markets } from './Markets'
 import { OrderBook } from './OrderBook'
@@ -8,32 +8,34 @@ import { TradeDisplay } from './TradeDisplay'
 import { TradingForm } from './TradingForm'
 
 export type MarketsProps = {
-  markets: FilteredMarket[]
-  onMarketSelect: (market: FilteredMarket) => void
+  markets: MarketInfo[]
+  onMarketSelect: (market: MarketInfo) => void
 }
 
 export function Perps() {
   const [orderType, setOrderType] = useState<'long' | 'short'>('long')
   const [activeTimeframe, setActiveTimeframe] = useState('1D')
-  const [selectedMarket, setSelectedMarket] = useState<FilteredMarket | null>()
+  const [selectedMarket, setSelectedMarket] = useState<MarketInfo | null>()
 
-  const { data: markets } = useMarkets()
+  const { data: marketsData } = useMarkets()
 
-  const filteredMarkets = useFilteredMarkets(markets?.data.markets ?? [])
+  const markets = useMarketsInfo(marketsData?.data.markets ?? [])
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: Avoid unnecessary re-render
+  console.log('markets:: ', markets)
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: avoid unnecesasry re-renders
   useEffect(() => {
-    if (markets && markets?.data.markets?.length !== 0) {
-      setSelectedMarket(filteredMarkets[0])
+    if (marketsData && marketsData.data.markets.length > 0) {
+      setSelectedMarket(markets[0])
     }
-  }, [markets])
+  }, [marketsData])
 
   return (
     <div className="space-y-4">
       {/* Market Summary */}
-      {filteredMarkets && selectedMarket && (
+      {markets && selectedMarket && (
         <MarketSummary
-          markets={filteredMarkets}
+          markets={markets}
           onMarketSelect={setSelectedMarket}
           selectedMarket={selectedMarket}
         />
@@ -47,12 +49,12 @@ export function Perps() {
             activeTimeframe={activeTimeframe}
             onTimeframeChange={setActiveTimeframe}
           />
-          {selectedMarket && <TradeDisplay markets={filteredMarkets} />}
-          {filteredMarkets && (
-            <Markets
-              markets={filteredMarkets}
-              onMarketSelect={setSelectedMarket}
-            />
+
+          {markets && (
+            <>
+              <TradeDisplay markets={markets} />
+              <Markets markets={markets} onMarketSelect={setSelectedMarket} />
+            </>
           )}
         </div>
 

@@ -1,22 +1,41 @@
 import { cx } from 'cva'
-import { useState } from 'react'
-import type { FilteredMarket } from '~/hooks'
+import { useMemo, useState } from 'react'
+import { type MarketInfo, useOrdersInfo } from '~/hooks'
 import { OrdersTable } from './Orders'
 import { PositionsTable } from './PositionsTable'
 
-export type TradeDisplayProps = {
-  markets: FilteredMarket[]
-}
+type TradeDisplayProps = { markets: MarketInfo[] }
 
-export function TradeDisplay(props: Readonly<TradeDisplayProps>) {
-  const { markets } = props
-  const [activeTab, setActiveTab] = useState<'orders' | 'positions'>('positions')
+export function TradeDisplay({ markets }: Readonly<TradeDisplayProps>) {
+  const [activeTab, setActiveTab] = useState<
+    'orders' | 'positions' | 'history'
+  >('positions')
+
+  const { orders: historyOrders } = useOrdersInfo({
+    markets,
+  })
+
+  const openOrders = useMemo(() => {
+    return historyOrders.filter((order) => order.status === 'Open' || order.status === 'Partial')
+  }, [historyOrders])
 
   return (
     <div className="rounded-lg border border-gray5 bg-white p-5 dark:bg-gray1">
       {/* Tabs Header */}
       <div className="mb-4 flex items-center justify-between">
         <div className="flex gap-4">
+          <button
+            className={cx(
+              'pb-2 font-semibold text-sm transition-colors',
+              activeTab === 'positions'
+                ? 'border-violet9 border-b-2 text-gray12'
+                : 'text-gray10 hover:text-gray12',
+            )}
+            onClick={() => setActiveTab('positions')}
+            type="button"
+          >
+            Positions
+          </button>
           <button
             className={cx(
               'pb-2 font-semibold text-sm transition-colors',
@@ -32,14 +51,14 @@ export function TradeDisplay(props: Readonly<TradeDisplayProps>) {
           <button
             className={cx(
               'pb-2 font-semibold text-sm transition-colors',
-              activeTab === 'positions'
+              activeTab === 'history'
                 ? 'border-violet9 border-b-2 text-gray12'
                 : 'text-gray10 hover:text-gray12',
             )}
-            onClick={() => setActiveTab('positions')}
+            onClick={() => setActiveTab('history')}
             type="button"
           >
-            Positions
+            History
           </button>
         </div>
         {activeTab === 'positions' && (
@@ -53,7 +72,9 @@ export function TradeDisplay(props: Readonly<TradeDisplayProps>) {
       </div>
 
       {/* Tab Content */}
-      {activeTab === 'orders' ? <OrdersTable /> : <PositionsTable markets={markets} />}
+      {activeTab === "orders" && <OrdersTable emptyMessage="No open orders" orders={openOrders} />}
+      {activeTab === "positions" && <PositionsTable markets={markets} />}
+      {activeTab === "history" && <OrdersTable emptyMessage="No order history" orders={historyOrders} />}
     </div>
   )
 }

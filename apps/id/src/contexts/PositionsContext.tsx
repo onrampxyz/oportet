@@ -7,12 +7,12 @@ import {
   useMemo,
   useState,
 } from 'react'
-import type { Position } from '~/routes/-v2/Tabs/Perps/Positions'
 import { useWebSocketConnection } from './WebSocketConnectionContext'
 import { useWebSocketMessageBus } from './WebSocketMessageBus'
+import { PositionInfo } from '~/hooks'
 
 type PositionsContextState = {
-  positions: Position[]
+  positions: PositionInfo[]
   loading: boolean
   closePosition: (marketId: string) => void
   closeAllPositions: () => void
@@ -40,7 +40,7 @@ export function PositionsProvider({
   const { send, isConnected } = useWebSocketConnection()
   const { subscribe } = useWebSocketMessageBus()
 
-  const [positions, setPositions] = useState<Position[]>([])
+  const [positions, setPositions] = useState<PositionInfo[]>([])
   const [loading, setLoading] = useState(true)
 
   // This will be called from parent when WebSocket messages arrive

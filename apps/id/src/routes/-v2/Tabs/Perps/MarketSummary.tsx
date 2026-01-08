@@ -2,7 +2,7 @@ import { Separator } from '@ariakit/react'
 import { cx } from 'cva'
 import { useMemo, useState } from 'react'
 import { useModal } from '~/contexts/ModalContext'
-import type { FilteredMarket } from '~/hooks/perps/useFilteredMarkets'
+import type { MarketInfo } from '~/hooks/perps/useMaketInfo'
 import { getChangePercent } from '~/lib/utils/perps'
 import { ValueFormatter } from '~/utils'
 import LucideChevronDown from '~icons/lucide/chevron-down'
@@ -10,7 +10,7 @@ import LucideSearch from '~icons/lucide/search'
 import type { MarketsProps } from './Perps'
 
 export type MarketSummaryProps = MarketsProps & {
-  selectedMarket?: FilteredMarket
+  selectedMarket?: MarketInfo
 }
 
 function MarketSelector({
@@ -18,9 +18,9 @@ function MarketSelector({
   selectedMarket,
   onMarketSelect,
 }: Readonly<{
-  markets: FilteredMarket[]
-  selectedMarket?: FilteredMarket
-  onMarketSelect: (market: FilteredMarket) => void
+  markets: MarketInfo[]
+  selectedMarket?: MarketInfo
+  onMarketSelect: (market: MarketInfo) => void
 }>) {
   const [searchQuery, setSearchQuery] = useState('')
 

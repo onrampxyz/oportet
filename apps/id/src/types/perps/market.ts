@@ -85,16 +85,39 @@ export type PlaceOrderRequest = {
 
 export type Order = {
   id: string
-  market_id: string
-  user: Address.Address
-  side: OrderSide
-  type: OrderType
   price: string
-  quantity: string
-  filled_quantity: string
-  status: OrderStatus
+  size: string
+  market_id: string
+  side: string // 'BUY' | 'SELL'
+  type: string // 'LIMIT' | 'MARKET'
+  time_in_force: string
+  expiry: number
+  post_only: boolean
+  reduce_only: boolean
+  cancel_reason: string
+  block_number: string
+  log_index: string
+  stp_mode: string
+  filled_size: string
+  status: string // 'ORDER_STATUS_OPEN' | 'ORDER_STATUS_FILLED' | 'ORDER_STATUS_CANCELLED'
+  sender: string
+  fee_bps: string
+  avg_price: string
+  cancel_requested: boolean
   created_at: string
-  updated_at: string
+  tx_hash: string
+  cancel_requested_at: string
+  cancel_tx_hash: string
+}
+
+export type OrderHistoryResponse = {
+  data: {
+    has_next_page: boolean
+    orders: Order[]
+    page: number
+    total_count: number
+  }
+  request_id: string
 }
 
 export type PlaceOrderResponse = {

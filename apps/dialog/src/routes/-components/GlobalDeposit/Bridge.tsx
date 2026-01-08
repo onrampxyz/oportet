@@ -50,7 +50,7 @@ export function ErrorDisplay(
   }
 
   return (
-    <div className="text-destructive text-sm max-w-[320px] break-all">
+    <div className="max-w-[320px] break-all text-destructive text-sm">
       {message}
     </div>
   )
@@ -88,14 +88,14 @@ export function Bridge(props: Readonly<BridgeProps>) {
                   <Spinner color="purple" size="small" />
                 )}
                 {bridgeState.status === 'completed' && (
-                  <CheckCircle className="size-4 " color="green" />
+                  <CheckCircle className="size-4" color="green" />
                 )}
                 {bridgeState.status === 'failed' && (
                   <XCircle className="size-4" color="red" />
                 )}
               </div>
               <div className="flex-1">
-                <div className="font-medium text-sm text-th_base pt-0.5">
+                <div className="pt-0.5 font-medium text-sm text-th_base">
                   {bridgeState.status === 'pending'
                     ? 'Bridging tokens...'
                     : 'Bridge transaction'}

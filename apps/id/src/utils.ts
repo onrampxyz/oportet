@@ -172,6 +172,10 @@ export namespace ValueFormatter {
    * @example
    * ValueFormatter.formatWithSuffix(1234567890, 18, { decimals: 1 })
    * // Returns: "1.2B"
+   *
+   * @example
+   * ValueFormatter.formatWithSuffix(12345000000000)
+   * // Returns: "12,345T"
    */
   export function formatWithSuffix(
     num: string | bigint | number | undefined,
@@ -190,7 +194,16 @@ export namespace ValueFormatter {
 
     // Trillion (1,000,000,000,000)
     if (absValue >= 1_000_000_000_000) {
-      return `${sign}${(absValue / 1_000_000_000_000).toFixed(decimals)}T`
+      const trillionValue = absValue / 1_000_000_000_000
+      // Add comma formatting when the number has more than 4 digits (e.g., 1,234.56T)
+      if (trillionValue >= 1000) {
+        const formatter = new Intl.NumberFormat('en-US', {
+          maximumFractionDigits: decimals,
+          minimumFractionDigits: decimals,
+        })
+        return `${sign}${formatter.format(trillionValue)}T`
+      }
+      return `${sign}${trillionValue.toFixed(decimals)}T`
     }
 
     // Billion (1,000,000,000)

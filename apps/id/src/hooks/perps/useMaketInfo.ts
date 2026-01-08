@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { MARKETS_CONFIG } from '~/constants/order'
 import type { Market } from '~/types/market'
 
-export function useFilteredMarkets(markets: Market[]) {
+export function useMarketsInfo(markets: Market[]) {
   const supportedMarkets = Object.values(MARKETS_CONFIG)
 
   const filteredMarkets = useMemo(() => {
@@ -28,7 +28,7 @@ export function useFilteredMarkets(markets: Market[]) {
   return filteredMarkets
 }
 
-export type FilteredMarket = Market & {
+export type MarketInfo = Market & {
   product_id?: string
   base_asset?: string
 }

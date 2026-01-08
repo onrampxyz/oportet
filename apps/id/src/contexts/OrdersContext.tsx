@@ -7,12 +7,13 @@ import {
   useMemo,
   useState,
 } from 'react'
-import type { UserOrder } from '~/routes/-v2/Tabs/Perps/Positions'
+// import type { UserOrder } from '~/routes/-v2/Tabs/Perps/Positions'
 import { useWebSocketConnection } from './WebSocketConnectionContext'
 import { useWebSocketMessageBus } from './WebSocketMessageBus'
+import type { OrderInfo } from '~/hooks'
 
 type OrdersContextState = {
-  orders: UserOrder[]
+  orders: OrderInfo[]
   loading: boolean
   cancelOrder: (orderId: string) => void
 }
@@ -35,7 +36,7 @@ export function OrdersProvider({ children }: Readonly<OrdersProviderProps>) {
   const { send, isConnected } = useWebSocketConnection()
   const { subscribe } = useWebSocketMessageBus()
 
-  const [orders, setOrders] = useState<UserOrder[]>([])
+  const [orders, setOrders] = useState<OrderInfo[]>([])
   const [loading, setLoading] = useState(true)
 
   // This will be called from parent when WebSocket messages arrive

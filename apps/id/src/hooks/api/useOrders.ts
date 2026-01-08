@@ -7,6 +7,7 @@ import type {
   PlaceOrderRequest,
   PlaceOrderResponse,
 } from '~/types/market'
+import type { OrderHistoryResponse } from '~/types/perps/market'
 
 const API_BASE_URL =
   process.env.VITE_API_BASE_URL ?? 'https://api.testnet.rise.trade'
@@ -151,18 +152,21 @@ export function useOrderHistory({
   enabled = true,
   limit = 100,
   marketId,
+  status,
 }: {
   address?: Address.Address | undefined
   enabled?: boolean
   limit?: number
   marketId?: string
+  status?: string
 }) {
   return useQuery({
     enabled: enabled && !!address,
     queryFn: async () => {
       const params = new URLSearchParams()
-      if (address) params.append('user', address)
+      if (address) params.append('account', address)
       if (marketId) params.append('market_id', marketId)
+      if (status) params.append('statuses', status)
       if (limit) params.append('limit', limit.toString())
 
       const response = await fetch(
@@ -171,7 +175,7 @@ export function useOrderHistory({
       if (!response.ok) {
         throw new Error(`Failed to fetch order history: ${response.statusText}`)
       }
-      return response.json() as Promise<Order[]>
+      return response.json() as Promise<OrderHistoryResponse>
     },
     queryKey: ['orders', 'history', address, marketId, limit],
     refetchInterval: 10_000, // Refetch every 10 seconds

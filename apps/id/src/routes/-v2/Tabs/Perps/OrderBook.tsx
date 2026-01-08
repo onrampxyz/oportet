@@ -1,5 +1,5 @@
 import { useOrderbook } from '~/contexts/OrderbookContext'
-import type { FilteredMarket } from '~/hooks'
+import type { MarketInfo } from '~/hooks'
 import { ValueFormatter } from '~/utils'
 
 export type Order = {
@@ -10,7 +10,7 @@ export type Order = {
 }
 
 export type OrderBookProps = {
-  selectedMarket?: FilteredMarket | null
+  selectedMarket?: MarketInfo | null
 }
 
 export function OrderBook(props: Readonly<OrderBookProps>) {
