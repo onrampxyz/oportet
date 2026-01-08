@@ -7,10 +7,10 @@ import {
   useMemo,
   useState,
 } from 'react'
+import type { OrderInfo } from '~/hooks'
 // import type { UserOrder } from '~/routes/-v2/Tabs/Perps/Positions'
 import { useWebSocketConnection } from './WebSocketConnectionContext'
 import { useWebSocketMessageBus } from './WebSocketMessageBus'
-import type { OrderInfo } from '~/hooks'
 
 type OrdersContextState = {
   orders: OrderInfo[]

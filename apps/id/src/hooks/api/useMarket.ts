@@ -29,7 +29,7 @@ export function useMarkets({ enabled = true }: { enabled?: boolean } = {}) {
       return response.json() as Promise<MarketResponse>
     },
     queryKey: ['markets'],
-    refetchInterval: 30_000, // Refetch every 30 seconds
+    refetchInterval: 5_000, // Refetch every 5 seconds
     staleTime: 20_000, // Consider data stale after 20 seconds
   })
 }

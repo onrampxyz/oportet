@@ -16,7 +16,9 @@ export function TradeDisplay({ markets }: Readonly<TradeDisplayProps>) {
   })
 
   const openOrders = useMemo(() => {
-    return historyOrders.filter((order) => order.status === 'Open' || order.status === 'Partial')
+    return historyOrders.filter(
+      (order) => order.status === 'Open' || order.status === 'Partial',
+    )
   }, [historyOrders])
 
   return (
@@ -72,9 +74,13 @@ export function TradeDisplay({ markets }: Readonly<TradeDisplayProps>) {
       </div>
 
       {/* Tab Content */}
-      {activeTab === "orders" && <OrdersTable emptyMessage="No open orders" orders={openOrders} />}
-      {activeTab === "positions" && <PositionsTable markets={markets} />}
-      {activeTab === "history" && <OrdersTable emptyMessage="No order history" orders={historyOrders} />}
+      {activeTab === 'orders' && (
+        <OrdersTable emptyMessage="No open orders" orders={openOrders} />
+      )}
+      {activeTab === 'positions' && <PositionsTable markets={markets} />}
+      {activeTab === 'history' && (
+        <OrdersTable emptyMessage="No order history" orders={historyOrders} />
+      )}
     </div>
   )
 }

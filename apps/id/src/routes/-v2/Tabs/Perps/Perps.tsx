@@ -21,8 +21,6 @@ export function Perps() {
 
   const markets = useMarketsInfo(marketsData?.data.markets ?? [])
 
-  console.log('markets:: ', markets)
-
   // biome-ignore lint/correctness/useExhaustiveDependencies: avoid unnecesasry re-renders
   useEffect(() => {
     if (marketsData && marketsData.data.markets.length > 0) {

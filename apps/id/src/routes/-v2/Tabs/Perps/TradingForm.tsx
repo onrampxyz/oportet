@@ -10,12 +10,13 @@ export type TradingFormProps = {
   onOrderTypeChange: (type: 'long' | 'short') => void
 }
 
-export function TradingForm(props: TradingFormProps) {
+export function TradingForm(props: Readonly<TradingFormProps>) {
   const { orderType, onOrderTypeChange } = props
   const [isSignerRegistered, setIsSignerRegistered] = useState(false)
 
   const { address } = useAccount()
-  const { registerSigner, isPending } = useRegisterSigner()
+
+  const { authenticate, isPending } = useRegisterSigner()
 
   // Check if signer is already registered
   useEffect(() => {
@@ -29,13 +30,15 @@ export function TradingForm(props: TradingFormProps) {
     if (!address) return
 
     try {
-      const result = await registerSigner({
+      const result = await authenticate({
         account: address,
         chainId: 11155931, // RISE testnet
       })
 
       // Store the signing key securely
-      localStorage.setItem('risex-signing-key', result.signingKey)
+      if (result?.signingKey) {
+        localStorage.setItem('risex-signing-key', result?.signingKey)
+      }
       setIsSignerRegistered(true)
     } catch (error) {
       console.error('Failed to register signer:', error)

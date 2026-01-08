@@ -178,7 +178,7 @@ export function useOrderHistory({
       return response.json() as Promise<OrderHistoryResponse>
     },
     queryKey: ['orders', 'history', address, marketId, limit],
-    refetchInterval: 10_000, // Refetch every 10 seconds
+    refetchInterval: 5_000, // Refetch every 5 seconds
     staleTime: 5_000, // Consider data stale after 5 seconds
   })
 }

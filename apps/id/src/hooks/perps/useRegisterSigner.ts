@@ -1,4 +1,4 @@
-import { useMutation } from '@tanstack/react-query'
+import { useState } from 'react'
 import type { Address } from 'viem'
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
 import { useSendCallsSync } from 'wagmi'
@@ -36,6 +36,44 @@ type RegisterSignerMessage = {
   signer: Address
 }
 
+type GetSignerParams = {
+  account: Address
+  chainId: number
+}
+
+type GetSignerResult = {
+  signingKey: `0x${string}`
+  signerAccount: ReturnType<typeof privateKeyToAccount>
+  signerAddress: Address
+  signerSignature: `0x${string}`
+  nonce: string
+}
+
+type GetAccountSignatureParams = {
+  signerAccount: ReturnType<typeof privateKeyToAccount>
+  signerAddress: Address
+  nonce: string
+  expiration: number
+  chainId: number
+}
+
+type GetAccountSignatureResult = {
+  message: string
+  toSignMessage: RegisterSignerMessage
+  accountSignature: `0x${string}`
+}
+
+type RegisterSignerContractParams = {
+  account: Address
+  signerAddress: Address
+  message: string
+  nonce: string
+  expiration: number
+  accountSignature: `0x${string}`
+  signerSignature: `0x${string}`
+  chainId: number
+}
+
 export const nowInNano = () => {
   const rand6Digits = Math.round(Math.random() * 1000000)
     .toString()
@@ -68,6 +106,178 @@ export const createClientNonce = (address: string | undefined) => {
 }
 
 /**
+ * Generates a new signer key and creates a signature for verification.
+ *
+ * This function:
+ * 1. Generates a new private key for the signer
+ * 2. Creates a signer account from the private key
+ * 3. Signs the VerifySigner typed data with the signer account
+ *
+ * @param params - Parameters including the main account address and chain ID
+ * @returns Object containing the signing key, signer account, address, and signature
+ */
+async function getSigner({
+  account,
+  chainId,
+}: GetSignerParams): Promise<GetSignerResult> {
+  const signingKey = generatePrivateKey()
+  const signerAccount = privateKeyToAccount(signingKey)
+  const signerAddress = signerAccount.address
+
+  const nonce = createClientNonce(account)
+
+  const domain = {
+    chainId,
+    name: 'RISEx',
+    verifyingContract: RISEX_AUTH_CONTRACT,
+    version: '1',
+  }
+
+  const verifySignerMessage: VerifySignerMessage = {
+    account,
+    nonce,
+  }
+
+  const signerSignature = await signerAccount.signTypedData({
+    domain,
+    message: verifySignerMessage,
+    primaryType: 'VerifySigner',
+    types: {
+      VerifySigner: [
+        { name: 'account', type: 'address' },
+        { name: 'nonce', type: 'string' },
+      ],
+    },
+  })
+
+  return {
+    nonce,
+    signerAccount,
+    signerAddress,
+    signerSignature,
+    signingKey,
+  }
+}
+
+/**
+ * Creates the account signature for registering a signer.
+ *
+ * This function:
+ * 1. Constructs the RegisterSigner message
+ * 2. Signs the typed data with the signer account
+ *
+ * @param params - Parameters including the signer account, address, nonce, expiration, and chain ID
+ * @returns Object containing the message, typed message, and account signature
+ */
+async function getAccountSignature({
+  chainId,
+  expiration,
+  nonce,
+  signerAccount,
+  signerAddress,
+}: GetAccountSignatureParams): Promise<GetAccountSignatureResult> {
+  const message = 'Please sign in with your wallet to access RISEx.'
+  const toSignMessage: RegisterSignerMessage = {
+    expiration: expiration.toString(),
+    message,
+    nonce,
+    signer: signerAddress,
+  }
+
+  const domain = {
+    chainId,
+    name: 'RISEx',
+    verifyingContract: RISEX_AUTH_CONTRACT,
+    version: '1',
+  }
+
+  const accountSignature = await signerAccount.signTypedData({
+    domain,
+    message: {
+      expiration,
+      message,
+      nonce: BigInt(toSignMessage.nonce),
+      signer: toSignMessage.signer,
+    },
+    primaryType: 'RegisterSigner',
+    types: {
+      RegisterSigner: [
+        { name: 'signer', type: 'address' },
+        { name: 'message', type: 'string' },
+        { name: 'expiration', type: 'uint40' },
+        { name: 'nonce', type: 'uint256' },
+      ],
+    },
+  })
+
+  return {
+    accountSignature,
+    message,
+    toSignMessage,
+  }
+}
+
+/**
+ * Calls the RiseX contract to register the signer.
+ *
+ * @param params - All parameters needed for the contract call
+ * @param sendCallsSyncAsync - Function to send the contract call
+ * @returns Contract call response
+ */
+async function registerSignerContract(
+  params: RegisterSignerContractParams,
+  sendCallsSyncAsync: ReturnType<typeof useSendCallsSync>['sendCallsSyncAsync'],
+) {
+  const {
+    account,
+    accountSignature,
+    chainId,
+    expiration,
+    message,
+    nonce,
+    signerAddress,
+    signerSignature,
+  } = params
+
+  console.log('chainId:: ', chainId)
+
+  console.log('sign-in args:: ', {
+    account,
+    accountSignature,
+    expiration,
+    message,
+    nonce: BigInt(nonce),
+    signerAddress,
+    signerSignature,
+  })
+
+  const response = await sendCallsSyncAsync({
+    calls: [
+      {
+        abi: RISEX_AUTH_ABI,
+        args: [
+          account,
+          signerAddress,
+          message,
+          BigInt(nonce),
+          expiration,
+          accountSignature,
+          signerSignature,
+        ],
+        functionName: 'registerSigner',
+        to: RISEX_AUTH_CONTRACT,
+      },
+    ],
+    chainId: chainId as any,
+    timeout: 180_000,
+  })
+
+  console.log('response:: ', response)
+
+  return response
+}
+
+/**
  * Custom hook for registering a signer with the RiseX contract.
  *
  * This hook handles the complete flow:
@@ -80,7 +290,7 @@ export const createClientNonce = (address: string | undefined) => {
  *
  * @example
  * ```tsx
- * const { registerSigner, isPending, error } = useRegisterSigner()
+ * const registerSigner = useRegisterSigner()
  *
  * const handleRegister = async () => {
  *   const result = await registerSigner({
@@ -94,107 +304,63 @@ export const createClientNonce = (address: string | undefined) => {
  * ```
  */
 export function useRegisterSigner() {
+  const [isPending, setIsPending] = useState(false)
   const { sendCallsSyncAsync } = useSendCallsSync({
     mutation: {
       retry: false,
     },
   })
 
-  const mutation = useMutation({
-    mutationFn: async ({
-      account,
-      chainId = 11155931,
-      expirationDays = 7,
-    }: {
-      account: Address
-      chainId?: number
-      expirationDays?: number
-    }) => {
-      // Step 1: Generate a new private key for the signer
-      const signingKey = generatePrivateKey()
-      const signerAccount = privateKeyToAccount(signingKey)
-      const signerAddress = signerAccount.address
-
-      // Generate nonce (random string)
-      const nonce = createClientNonce(account)
+  const authenticate = async ({
+    account,
+    chainId = 11155931, // Default to RISE testnet
+    expirationDays = 7,
+  }: {
+    account: Address
+    chainId?: number
+    expirationDays?: number
+  }) => {
+    try {
+      setIsPending(true)
 
       // Calculate expiration timestamp (in seconds) = 7 days from now
       const expiration = Math.floor(Date.now() / 1000) + expirationDays * 86400
 
-      // Step 2: Create signer signature using VerifySigner typed data
-      const domain = {
-        chainId, // Rise testnet = 11155931
-        name: 'RISEx',
-        verifyingContract: RISEX_AUTH_CONTRACT as Address,
-        version: '1',
-      }
-
-      const verifySignerMessage: VerifySignerMessage = {
-        account,
+      // Step 1: Generate signer and create signer signature
+      const {
+        signingKey,
+        signerAccount,
+        signerAddress,
+        signerSignature,
         nonce,
-      }
-
-      const signerSignature = await signerAccount.signTypedData({
-        domain,
-        message: verifySignerMessage,
-        primaryType: 'VerifySigner',
-        types: {
-          VerifySigner: [
-            { name: 'account', type: 'address' },
-            { name: 'nonce', type: 'string' },
-          ],
-        },
+      } = await getSigner({
+        account,
+        chainId,
       })
 
-      // Step 3: Create account signature using RegisterSigner typed data
-      const message = 'Register signer for RiseX'
-      const toSignMessage: RegisterSignerMessage = {
-        expiration: expiration.toString(),
-        message,
+      // Step 2: Create account signature
+      const { message, accountSignature } = await getAccountSignature({
+        chainId,
+        expiration,
         nonce,
-        signer: signerAddress,
-      }
+        signerAccount,
+        signerAddress,
+      })
 
-      const accountSignature = await signerAccount.signTypedData({
-        domain,
-        message: {
+      // Step 3: Register signer via contract call
+      const response = await registerSignerContract(
+        {
+          account,
+          accountSignature,
+          chainId,
           expiration,
           message,
-          nonce: BigInt(toSignMessage.nonce),
-          signer: toSignMessage.signer,
+          nonce,
+          signerAddress,
+          signerSignature,
         },
-        primaryType: 'RegisterSigner',
-        types: {
-          RegisterSigner: [
-            { name: 'signer', type: 'address' },
-            { name: 'message', type: 'string' },
-            { name: 'expiration', type: 'uint40' },
-            { name: 'nonce', type: 'uint256' },
-          ],
-        },
-      })
-
-      // Step 4: Submit registration via contract call
-      const response = await sendCallsSyncAsync({
-        calls: [
-          {
-            abi: RISEX_AUTH_ABI,
-            args: [
-              account, // account
-              signerAddress, // signer
-              message, // message
-              BigInt(nonce), // nonce
-              expiration, // expiration
-              accountSignature, // accountSignature
-              signerSignature, // signerSignature
-            ],
-            functionName: 'registerSigner',
-            to: RISEX_AUTH_CONTRACT,
-          },
-        ],
-        chainId: chainId as never,
-        timeout: 60_000,
-      })
+        sendCallsSyncAsync,
+      )
 
       // Get transaction hash from receipts
       const hash = response.receipts?.[0]?.transactionHash
@@ -209,15 +375,15 @@ export function useRegisterSigner() {
         signerSignature,
         signingKey, // IMPORTANT: Store this securely - it authorizes all transactions
       }
-    },
-    mutationKey: ['register-signer'],
-  })
+    } catch (e) {
+      console.log('Error in authenticate:: ', e)
+    } finally {
+      setIsPending(false)
+    }
+  }
 
   return {
-    error: mutation.error,
-    isPending: mutation.isPending,
-    isSuccess: mutation.isSuccess,
-    registerSigner: mutation.mutateAsync,
-    reset: mutation.reset,
+    authenticate,
+    isPending,
   }
 }
