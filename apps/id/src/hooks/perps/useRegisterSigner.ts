@@ -1,7 +1,9 @@
+import { SignatureErc8010 } from 'ox/erc8010'
 import { useState } from 'react'
 import type { Address } from 'viem'
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
-import { useSendCallsSync } from 'wagmi'
+import { useSendCallsSync, useSignTypedData } from 'wagmi'
+import { AddressFormatter } from '~/utils'
 
 const RISEX_AUTH_CONTRACT =
   '0x8d8708f9d87ef522c1f99dd579bf6a051e34c28e' as Address
@@ -23,6 +25,25 @@ const RISEX_AUTH_ABI = [
     type: 'function',
   },
 ] as const
+
+const REGISTER_TYPES = {
+  EIP712Domain: [
+    { name: 'name', type: 'string' },
+    { name: 'version', type: 'string' },
+    { name: 'chainId', type: 'uint256' },
+    { name: 'verifyingContract', type: 'address' },
+  ],
+  RegisterSigner: [
+    { name: 'signer', type: 'address' },
+    { name: 'message', type: 'string' },
+    { name: 'expiration', type: 'uint40' },
+    { name: 'nonce', type: 'uint256' },
+  ],
+  VerifySigner: [
+    { name: 'account', type: 'address' },
+    { name: 'nonce', type: 'uint256' },
+  ],
+}
 
 type VerifySignerMessage = {
   account: Address
@@ -50,11 +71,11 @@ type GetSignerResult = {
 }
 
 type GetAccountSignatureParams = {
-  signerAccount: ReturnType<typeof privateKeyToAccount>
   signerAddress: Address
   nonce: string
   expiration: number
   chainId: number
+  signTypedDataAsync: ReturnType<typeof useSignTypedData>['signTypedDataAsync']
 }
 
 type GetAccountSignatureResult = {
@@ -142,12 +163,7 @@ async function getSigner({
     domain,
     message: verifySignerMessage,
     primaryType: 'VerifySigner',
-    types: {
-      VerifySigner: [
-        { name: 'account', type: 'address' },
-        { name: 'nonce', type: 'string' },
-      ],
-    },
+    types: { VerifySigner: REGISTER_TYPES.VerifySigner },
   })
 
   return {
@@ -173,8 +189,8 @@ async function getAccountSignature({
   chainId,
   expiration,
   nonce,
-  signerAccount,
   signerAddress,
+  signTypedDataAsync,
 }: GetAccountSignatureParams): Promise<GetAccountSignatureResult> {
   const message = 'Please sign in with your wallet to access RISEx.'
   const toSignMessage: RegisterSignerMessage = {
@@ -191,8 +207,10 @@ async function getAccountSignature({
     version: '1',
   }
 
-  const accountSignature = await signerAccount.signTypedData({
-    domain,
+  let accountSignature: any
+
+  accountSignature = await signTypedDataAsync({
+    domain: domain as any,
     message: {
       expiration,
       message,
@@ -200,18 +218,18 @@ async function getAccountSignature({
       signer: toSignMessage.signer,
     },
     primaryType: 'RegisterSigner',
-    types: {
-      RegisterSigner: [
-        { name: 'signer', type: 'address' },
-        { name: 'message', type: 'string' },
-        { name: 'expiration', type: 'uint40' },
-        { name: 'nonce', type: 'uint256' },
-      ],
-    },
+    types: REGISTER_TYPES,
   })
 
+  if (SignatureErc8010.validate(accountSignature)) {
+    const { signature } = SignatureErc8010.unwrap(accountSignature)
+    accountSignature = signature
+  }
+
   return {
-    accountSignature,
+    accountSignature: AddressFormatter.formatSignature(
+      accountSignature,
+    ) as Address,
     message,
     toSignMessage,
   }
@@ -238,18 +256,6 @@ async function registerSignerContract(
     signerAddress,
     signerSignature,
   } = params
-
-  console.log('chainId:: ', chainId)
-
-  console.log('sign-in args:: ', {
-    account,
-    accountSignature,
-    expiration,
-    message,
-    nonce: BigInt(nonce),
-    signerAddress,
-    signerSignature,
-  })
 
   const response = await sendCallsSyncAsync({
     calls: [
@@ -305,6 +311,8 @@ async function registerSignerContract(
  */
 export function useRegisterSigner() {
   const [isPending, setIsPending] = useState(false)
+
+  const { signTypedDataAsync } = useSignTypedData()
   const { sendCallsSyncAsync } = useSendCallsSync({
     mutation: {
       retry: false,
@@ -327,24 +335,19 @@ export function useRegisterSigner() {
       const expiration = Math.floor(Date.now() / 1000) + expirationDays * 86400
 
       // Step 1: Generate signer and create signer signature
-      const {
-        signingKey,
-        signerAccount,
-        signerAddress,
-        signerSignature,
-        nonce,
-      } = await getSigner({
-        account,
-        chainId,
-      })
+      const { signingKey, signerAddress, signerSignature, nonce } =
+        await getSigner({
+          account,
+          chainId,
+        })
 
       // Step 2: Create account signature
       const { message, accountSignature } = await getAccountSignature({
         chainId,
         expiration,
         nonce,
-        signerAccount,
         signerAddress,
+        signTypedDataAsync,
       })
 
       // Step 3: Register signer via contract call

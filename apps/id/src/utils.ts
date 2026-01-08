@@ -1,4 +1,5 @@
 import { Value } from 'ox'
+import { hexToBigInt } from 'viem'
 import type { Spend } from './types/session'
 
 export namespace ArrayUtils {
@@ -80,6 +81,38 @@ export namespace AddressFormatter {
    */
   export function long(address: string | undefined): string {
     return mask(address, { end: 8, start: 10 })
+  }
+
+  export function formatSignature(signature: string) {
+    if (signature.length !== 132) {
+      return signature
+    }
+    const sigNoPrefix = signature.startsWith('0x')
+      ? signature.substring(2)
+      : signature
+    const r = sigNoPrefix.substring(0, 64) // first 32 bytes
+    let s = hexToBigInt(`0x${sigNoPrefix.substring(64, 128)}`) // next 32 bytes
+    let v = sigNoPrefix.substring(128, 130) // last bytes
+    if (v === '00') {
+      v = '1b'
+    } else if (v === '01') {
+      v = '1c'
+    }
+    if (v !== '1b' && v !== '1c') {
+      throw new Error('Invalid signature')
+    }
+    const secp256k1n = hexToBigInt(
+      '0xfffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141',
+    )
+
+    if (s > secp256k1n / BigInt(2)) {
+      s = secp256k1n - s
+      v = v === '1b' ? '1c' : '1b'
+    }
+
+    const formattedS = s.toString(16).padStart(64, '0')
+    const formattedSignature = `0x${r}${formattedS}${v}`
+    return formattedSignature
   }
 }
 

@@ -38,8 +38,8 @@ export function TradingForm(props: Readonly<TradingFormProps>) {
       // Store the signing key securely
       if (result?.signingKey) {
         localStorage.setItem('risex-signing-key', result?.signingKey)
+        setIsSignerRegistered(true)
       }
-      setIsSignerRegistered(true)
     } catch (error) {
       console.error('Failed to register signer:', error)
     }
