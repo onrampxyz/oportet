@@ -136,7 +136,7 @@ export function OrderbookProvider({
               while (
                 insertIndex < newAsks.length &&
                 ValueFormatter.anyToFloat(price) >
-                ValueFormatter.anyToFloat(newAsks[insertIndex]?.price)
+                  ValueFormatter.anyToFloat(newAsks[insertIndex]?.price)
               )
                 insertIndex += 1
               newAsks.splice(insertIndex, 0, {
@@ -169,7 +169,7 @@ export function OrderbookProvider({
               while (
                 insertIndex < newBids.length &&
                 ValueFormatter.anyToFloat(price) <
-                ValueFormatter.anyToFloat(newBids[insertIndex]?.price)
+                  ValueFormatter.anyToFloat(newBids[insertIndex]?.price)
               )
                 insertIndex += 1
               newBids.splice(insertIndex, 0, {

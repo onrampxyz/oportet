@@ -9,81 +9,52 @@ import type {
 } from 'lightweight-charts'
 import { CandlestickSeries, ColorType, createChart } from 'lightweight-charts'
 import { useEffect, useMemo, useRef } from 'react'
+import { useTradingView } from '~/hooks/perps/useTradingView'
 
 export type PriceChartProps = {
   activeTimeframe: string
+  marketId?: string
   onTimeframeChange: (timeframe: string) => void
 }
 
-// Generate mock candlestick data based on timeframe
-function generateMockData(timeframe: string): CandlestickData[] {
-  const basePrice = 98245
-  const dataPoints: CandlestickData[] = []
-  let intervals = 24
-  let baseTime = Math.floor(Date.now() / 1000)
-  let timeInterval = 3600 // 1 hour in seconds
-
-  switch (timeframe) {
-    case '1H':
-      intervals = 60
-      timeInterval = 60 // 1 minute
-      break
-    case '4H':
-      intervals = 24
-      timeInterval = 3600 * 4 // 4 hours
-      break
-    case '1D':
-      intervals = 24
-      timeInterval = 3600 // 1 hour
-      break
-    case '1W':
-      intervals = 7
-      timeInterval = 86400 // 1 day
-      break
-  }
-
-  // Start from intervals ago
-  baseTime -= intervals * timeInterval
-
-  let currentPrice = basePrice
-
-  for (let i = 0; i < intervals; i++) {
-    const time = (baseTime + i * timeInterval) as Time
-
-    // Generate realistic OHLC data
-    const open = currentPrice
-    const variance = (Math.random() - 0.5) * 500
-    const trend = (i / intervals) * 1500 // Slight upward trend
-    const high = open + Math.abs(variance) + Math.random() * 200
-    const low = open - Math.abs(variance) - Math.random() * 200
-    const close = open + variance + trend / intervals
-
-    dataPoints.push({
-      close,
-      high,
-      low,
-      open,
-      time,
-    })
-
-    currentPrice = close
-  }
-
-  return dataPoints
-}
-
 export function PriceChart(props: Readonly<PriceChartProps>) {
-  const { activeTimeframe, onTimeframeChange } = props
+  const { activeTimeframe, marketId = '1', onTimeframeChange } = props
 
-  const timeframes = ['1H', '4H', '1D', '1W']
+  const timeframes = ['1M', '1H', '1D', '1W']
   const chartContainerRef = useRef<HTMLDivElement>(null)
   const chartRef = useRef<IChartApi | null>(null)
   const seriesRef = useRef<ISeriesApi<'Candlestick'> | null>(null)
 
-  const chartData = useMemo(
-    () => generateMockData(activeTimeframe),
-    [activeTimeframe],
-  )
+  const { candleData, isLoading, isError, error } = useTradingView({
+    market_id: marketId,
+  })
+
+  // Transform API data to candlestick format
+  const chartData = useMemo<CandlestickData[]>(() => {
+    if (!candleData || candleData.length === 0) {
+      console.log('No candle data available')
+      return []
+    }
+
+    console.log('Transforming candle data, length:', candleData.length)
+
+    const transformed = candleData.map((candle) => {
+      const time = Number.parseInt(candle.time, 10) / 1000000000
+      console.log('Original time:', candle.time, 'Converted time:', time)
+
+      return {
+        close: Number.parseFloat(candle.close),
+        high: Number.parseFloat(candle.high),
+        low: Number.parseFloat(candle.low),
+        open: Number.parseFloat(candle.open),
+        // Convert nanoseconds to seconds for lightweight-charts
+        time: time as Time,
+      }
+    })
+
+    console.log('Transformed data sample:', transformed[0])
+    return transformed
+  }, [candleData])
 
   // Initialize chart
   useEffect(() => {
@@ -176,13 +147,32 @@ export function PriceChart(props: Readonly<PriceChartProps>) {
 
   // Update chart data when it changes
   useEffect(() => {
-    if (!seriesRef.current) return
+    console.log('Data update effect triggered')
+    console.log('seriesRef.current:', seriesRef.current)
+    console.log('chartData.length:', chartData.length)
 
-    seriesRef.current.setData(chartData)
+    if (!seriesRef.current) {
+      console.log('Series ref not available')
+      return
+    }
 
-    // Fit content to show all data
-    if (chartRef.current) {
-      chartRef.current.timeScale().fitContent()
+    if (chartData.length === 0) {
+      console.log('No chart data to display')
+      return
+    }
+
+    console.log('Setting data to series:', chartData.length, 'candles')
+    try {
+      seriesRef.current.setData(chartData)
+      console.log('Data set successfully')
+
+      // Fit content to show all data
+      if (chartRef.current) {
+        chartRef.current.timeScale().fitContent()
+        console.log('Fit content applied')
+      }
+    } catch (err) {
+      console.error('Error setting chart data:', err)
     }
   }, [chartData])
 
@@ -209,7 +199,24 @@ export function PriceChart(props: Readonly<PriceChartProps>) {
         </div>
       </div>
 
-      <div className="h-64 w-full" ref={chartContainerRef} />
+      {isLoading ? (
+        <div className="flex h-64 w-full items-center justify-center">
+          <span className="text-gray9">Loading chart...</span>
+        </div>
+      ) : isError ? (
+        <div className="flex h-64 w-full flex-col items-center justify-center gap-2">
+          <span className="text-red9">Error loading chart data</span>
+          <span className="text-gray9 text-xs">
+            {error?.message || 'Unknown error'}
+          </span>
+        </div>
+      ) : chartData.length === 0 ? (
+        <div className="flex h-64 w-full items-center justify-center">
+          <span className="text-gray9">No chart data available</span>
+        </div>
+      ) : (
+        <div className="h-64 w-full" ref={chartContainerRef} />
+      )}
     </div>
   )
 }
