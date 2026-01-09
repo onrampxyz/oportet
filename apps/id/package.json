@@ -25,6 +25,7 @@
     "@web3icons/react": "^4.1.9",
     "cuer": "^0.0.2",
     "cva": "catalog:",
+    "lightweight-charts": "^5.1.0",
     "ox": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
