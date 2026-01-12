@@ -6,29 +6,31 @@ import { useAccount } from 'wagmi'
 import { useRegisterSigner } from '~/hooks'
 import { useAccountBalance } from '~/hooks/api/useAccountBalance'
 import { useDepositToken } from '~/hooks/api/useDepositToken'
+import { usePlaceOrder } from '~/hooks/api/useOrders'
+import { OrderSide, OrderType } from '~/types/perps/order'
 import LucideChevronDown from '~icons/lucide/chevron-down'
 
 export type TradingFormProps = {
-  orderType: 'long' | 'short'
-  onOrderTypeChange: (type: 'long' | 'short') => void
+  orderType: OrderSide
+  onOrderTypeChange: (value: OrderSide) => void
 }
-
-type OrderTypeTab = 'market' | 'limit'
 
 const LEVERAGE = ['5', '10', '25', '50']
 
 export function TradingForm(props: Readonly<TradingFormProps>) {
   const { orderType, onOrderTypeChange } = props
   const [isSignerRegistered, setIsSignerRegistered] = useState(false)
-  const [orderTypeTab, setOrderTypeTab] = useState<OrderTypeTab>('market')
+  const [orderTypeTab, setOrderTypeTab] = useState<OrderType>(OrderType.Market)
   const [leverage, setLeverage] = useState('10')
   const [limitPrice, setLimitPrice] = useState('')
+  const [size, setSize] = useState('')
 
   const { address } = useAccount()
 
   const { authenticate, isPending } = useRegisterSigner()
   const { mutate: depositToken, isPending: isDepositPending } =
     useDepositToken()
+  const { isPending: isPlacingOrder } = usePlaceOrder()
 
   const { balance } = useAccountBalance({
     tokenAddress: '0x8d17fc7db6b4fcf40afb296354883dec95a12f58', // usdc
@@ -81,6 +83,26 @@ export function TradingForm(props: Readonly<TradingFormProps>) {
       signer: signingKey || undefined,
       token: 'USDC',
     })
+  }
+
+  const handlePlaceOrder = () => {
+    if (!address || !size) return
+
+    // Determine price based on order type
+    const price = orderTypeTab === OrderType.Limit ? limitPrice : '0'
+
+    console.log("price:: ", price)
+
+
+    // placeOrder({
+    //   address,
+    //   marketId: '1', // BTC market
+    //   orderType: orderTypeTab,
+    //   postOnly: false,
+    //   price: BigInt(price),
+    //   side: orderType,
+    //   size,
+    // })
   }
 
   // Show sign account prompt if not registered
@@ -145,11 +167,11 @@ export function TradingForm(props: Readonly<TradingFormProps>) {
         <button
           className={cx(
             'flex-1 rounded py-2 font-medium text-sm transition-colors',
-            orderType === 'long'
+            orderType === OrderSide.Long
               ? 'bg-green-600 text-white'
               : 'bg-gray3 text-gray10 hover:bg-gray4',
           )}
-          onClick={() => onOrderTypeChange('long')}
+          onClick={() => onOrderTypeChange(OrderSide.Long)}
           type="button"
         >
           Long
@@ -157,11 +179,11 @@ export function TradingForm(props: Readonly<TradingFormProps>) {
         <button
           className={cx(
             'flex-1 rounded py-2 font-medium text-sm transition-colors',
-            orderType === 'short'
+            orderType === OrderSide.Short
               ? 'bg-red-600 text-white'
               : 'bg-gray3 text-gray10 hover:bg-gray4',
           )}
-          onClick={() => onOrderTypeChange('short')}
+          onClick={() => onOrderTypeChange(OrderSide.Short)}
           type="button"
         >
           Short
@@ -174,11 +196,11 @@ export function TradingForm(props: Readonly<TradingFormProps>) {
           <button
             className={cx(
               'flex-1 rounded px-4 py-2 font-medium text-sm transition-colors',
-              orderTypeTab === 'market'
+              orderTypeTab === OrderType.Market
                 ? 'bg-violet9 text-white'
                 : 'bg-gray3 text-gray10 hover:bg-gray4',
             )}
-            onClick={() => setOrderTypeTab('market')}
+            onClick={() => setOrderTypeTab(OrderType.Market)}
             type="button"
           >
             Market
@@ -186,11 +208,11 @@ export function TradingForm(props: Readonly<TradingFormProps>) {
           <button
             className={cx(
               'flex-1 rounded px-4 py-2 font-medium text-sm transition-colors',
-              orderTypeTab === 'limit'
+              orderTypeTab === OrderType.Limit
                 ? 'bg-violet9 text-white'
                 : 'bg-gray3 text-gray10 hover:bg-gray4',
             )}
-            onClick={() => setOrderTypeTab('limit')}
+            onClick={() => setOrderTypeTab(OrderType.Limit)}
             type="button"
           >
             Limit
@@ -199,7 +221,7 @@ export function TradingForm(props: Readonly<TradingFormProps>) {
       </div>
 
       {/* Limit Price (only shown for limit orders) */}
-      {orderTypeTab === 'limit' && (
+      {orderTypeTab === OrderType.Limit && (
         <div className="mb-4">
           <label
             className="mb-2 block text-gray10 text-xs"
@@ -271,8 +293,10 @@ export function TradingForm(props: Readonly<TradingFormProps>) {
           <input
             className="w-full rounded border border-gray5 px-3 py-2 pr-16 text-sm outline-none focus:border-violet9"
             id="size"
+            onChange={(e) => setSize(e.target.value)}
             placeholder="0.00"
             type="text"
+            value={size}
           />
           <div className="-translate-y-1/2 absolute top-1/2 right-3 flex items-center gap-2">
             <span className="text-gray10 text-xs">BTC</span>
@@ -309,12 +333,21 @@ export function TradingForm(props: Readonly<TradingFormProps>) {
       <Button
         className={cx(
           'rounded! w-full py-3 font-medium text-sm transition-colors',
-          orderType === 'long'
+          orderType === OrderSide.Long
             ? 'bg-green-600 hover:bg-green-700'
             : 'bg-red-600 hover:bg-red-700',
         )}
+        disabled={isPlacingOrder || !address || !size}
+        onClick={handlePlaceOrder}
       >
-        Place {orderType === 'long' ? 'Long' : 'Short'} Order
+        {isPlacingOrder ? (
+          <span className="flex items-center justify-center gap-2">
+            <Spinner className="size-4!" />
+            Placing Order...
+          </span>
+        ) : (
+          `Place ${orderType} Order`
+        )}
       </Button>
     </div>
   )

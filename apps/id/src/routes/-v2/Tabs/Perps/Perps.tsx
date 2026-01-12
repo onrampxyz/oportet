@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { type MarketInfo, useMarkets, useMarketsInfo } from '~/hooks'
+import { OrderSide } from '~/types/perps/order'
 import { MarketSummary } from './MarketSummary'
 import { Markets } from './Markets'
 import { OrderBook } from './OrderBook'
@@ -13,7 +14,7 @@ export type MarketsProps = {
 }
 
 export function Perps() {
-  const [orderType, setOrderType] = useState<'long' | 'short'>('long')
+  const [orderType, setOrderType] = useState<OrderSide>(OrderSide.Long)
   const [activeTimeframe, setActiveTimeframe] = useState('1D')
   const [selectedMarket, setSelectedMarket] = useState<MarketInfo | null>()
 

@@ -1,8 +1,15 @@
 import { SignatureErc8010 } from 'ox/erc8010'
 import { useState } from 'react'
-import type { Address } from 'viem'
+import type { Address, Hex } from 'viem'
+import { encodePacked, keccak256 } from 'viem'
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
 import { useSendCallsSync, useSignTypedData } from 'wagmi'
+import {
+  OrderSide,
+  type OrderType,
+  type STPMode,
+  TimeInForce,
+} from '~/types/perps/order'
 import { AddressFormatter } from '~/utils'
 
 const RISEX_AUTH_CONTRACT =
@@ -44,6 +51,27 @@ const REGISTER_TYPES = {
     { name: 'nonce', type: 'uint256' },
   ],
 }
+
+const VERIFY_SIGNATURE_TYPES = {
+  VerifySignature: [
+    { name: 'account', type: 'address' },
+    { name: 'target', type: 'address' },
+    { name: 'hash', type: 'bytes32' },
+    { name: 'nonce', type: 'uint256' },
+    { name: 'deadline', type: 'uint256' },
+  ],
+}
+
+// Perp contract address (placeholder - should be configured)
+const RISEX_PERP_CONTRACT =
+  '0x0000000000000000000000000000000000000000' as Address
+
+const getRISExDomain = (authContractAddress: `0x${string}`) => ({
+  chainId: 11155931, // RISE testnet
+  name: 'RISEx',
+  verifyingContract: authContractAddress,
+  version: '1',
+})
 
 type VerifySignerMessage = {
   account: Address
@@ -365,6 +393,8 @@ export function useRegisterSigner() {
         sendCallsSyncAsync,
       )
 
+      console.log('authenticate-response:: ', response)
+
       // Get transaction hash from receipts
       const hash = response.receipts?.[0]?.transactionHash
 
@@ -389,4 +419,177 @@ export function useRegisterSigner() {
     authenticate,
     isPending,
   }
+}
+
+/**
+ * Signs place order data with the signing key
+ *
+ * @param encodedData - The encoded order data to sign
+ * @param signingKey - The private key for signing
+ * @param account - The user's account address
+ * @param deadline - The deadline timestamp for the signature
+ * @returns Object containing the signature and nonce
+ */
+export const signPlaceOrderData = async ({
+  account,
+  deadline,
+  encodedData,
+  signingKey,
+}: {
+  account: `0x${string}`
+  deadline: number
+  encodedData: Hex
+  signingKey: `0x${string}`
+}): Promise<{ nonce: string; signature: `0x${string}` }> => {
+  const signerAccount = privateKeyToAccount(signingKey)
+
+  // Hash the encoded data before signing
+  const messageHash = keccak256(encodedData)
+
+  // Generate nonce
+  const nonce = createClientNonce(account)
+  const domain = getRISExDomain(RISEX_AUTH_CONTRACT)
+
+  const signingKeySignature = await signerAccount.signTypedData({
+    domain,
+    message: {
+      account,
+      deadline,
+      hash: messageHash,
+      nonce: BigInt(nonce),
+      target: RISEX_PERP_CONTRACT,
+    },
+    primaryType: 'VerifySignature',
+    types: { VerifySignature: VERIFY_SIGNATURE_TYPES.VerifySignature },
+  })
+
+  return { nonce, signature: signingKeySignature }
+}
+
+/**
+ * Signs cancel order data with the signing key
+ *
+ * @param encodedData - The encoded cancel order data to sign
+ * @param signingKey - The private key for signing
+ * @param account - The user's account address
+ * @param deadline - The deadline timestamp for the signature
+ * @returns Object containing the signature and nonce
+ */
+export const signCancelOrderData = async ({
+  account,
+  deadline,
+  encodedData,
+  signingKey,
+}: {
+  account: `0x${string}`
+  deadline: number
+  encodedData: Hex
+  signingKey: `0x${string}`
+}): Promise<{ nonce: string; signature: `0x${string}` }> => {
+  const signerAccount = privateKeyToAccount(signingKey)
+
+  // Hash the encoded data before signing
+  const messageHash = keccak256(encodedData)
+
+  // Generate nonce
+  const nonce = createClientNonce(account)
+  const domain = getRISExDomain(RISEX_AUTH_CONTRACT)
+
+  const signingKeySignature = await signerAccount.signTypedData({
+    domain,
+    message: {
+      account,
+      deadline,
+      hash: messageHash,
+      nonce: BigInt(nonce),
+      target: RISEX_PERP_CONTRACT,
+    },
+    primaryType: 'VerifySignature',
+    types: { VerifySignature: VERIFY_SIGNATURE_TYPES.VerifySignature },
+  })
+
+  return { nonce, signature: signingKeySignature }
+}
+
+/**
+ * Type definitions for encoding order data
+ */
+type EncodePlaceOrderParams = {
+  expiry: number
+  marketId: string
+  orderType: OrderType
+  postOnly: boolean
+  price: bigint
+  reduceOnly: boolean
+  side: OrderSide
+  size: bigint
+  stpMode: STPMode
+  timeInForce?: TimeInForce
+}
+
+type EncodeCancelOrderParams = {
+  marketId: string
+  orderId: bigint
+}
+
+/**
+ * Encodes place order data into packed binary format
+ *
+ * @param marketId - Market ID (uint64)
+ * @param size - Order size (uint128)
+ * @param price - Order price (uint128)
+ * @param side - Order side (Long/Short)
+ * @param stpMode - Self-trade prevention mode
+ * @param orderType - Order type (Market/Limit)
+ * @param postOnly - Post-only flag
+ * @param reduceOnly - Reduce-only flag
+ * @param timeInForce - Time in force option (defaults to GoodTillCancelled)
+ * @param expiry - Expiry timestamp (uint32)
+ * @returns Hex-encoded packed data
+ */
+export const encodePlaceOrderData = ({
+  expiry,
+  marketId,
+  orderType,
+  postOnly,
+  price,
+  reduceOnly,
+  side,
+  size,
+  stpMode,
+  timeInForce = TimeInForce.GoodTillCancelled,
+}: EncodePlaceOrderParams): Hex => {
+  // Pack flags: bit 0 = side, bit 1 = postOnly, bit 2 = reduceOnly, bits 3-4 = stpMode
+  let flags = 0
+  if (side === OrderSide.Short) flags |= 0x01 // bit 0: side (0 = Long/Buy, 1 = Short/Sell)
+  if (postOnly) flags |= 0x02 // bit 1: postOnly
+  if (reduceOnly) flags |= 0x04 // bit 2: reduceOnly
+  flags |= stpMode << 3 // bits 3-4: stpMode
+
+  return encodePacked(
+    ['uint64', 'uint128', 'uint128', 'uint8', 'uint8', 'uint8', 'uint32'],
+    [BigInt(marketId), size, price, flags, orderType, timeInForce, expiry],
+  )
+}
+
+/**
+ * Encodes cancel order data into packed binary format
+ *
+ * @param marketId - Market ID (uint64)
+ * @param orderId - Order ID (uint192)
+ * @returns Hex-encoded packed data
+ */
+export const encodeCancelOrderData = ({
+  marketId,
+  orderId,
+}: EncodeCancelOrderParams): Hex => {
+  // Since viem's encodePacked doesn't support uint192 directly, we manually construct the bytes
+  // uint64 (8 bytes) + uint192 (24 bytes) = 32 bytes total
+  const marketIdBytes = encodePacked(['uint64'], [BigInt(marketId)])
+  // Convert orderId to 24-byte hex string (uint192)
+  // 24 bytes = 48 hex characters
+  const orderIdHex = orderId.toString(16).padStart(48, '0')
+  // Concatenate: marketId (8 bytes) + orderId (24 bytes) = 32 bytes
+  // Remove 0x prefix from marketIdBytes and prepend 0x to the final result
+  return `0x${marketIdBytes.slice(2)}${orderIdHex}` as Hex
 }

@@ -1,16 +1,70 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import type { Address } from 'ox'
+import {
+  createClientNonce,
+  encodePlaceOrderData,
+  signPlaceOrderData,
+} from '~/hooks/perps/useRegisterSigner'
+import type { CancelOrderResponse, Order } from '~/types/market'
 import type {
-  CancelOrderRequest,
-  CancelOrderResponse,
-  Order,
-  PlaceOrderRequest,
+  OrderHistoryResponse,
   PlaceOrderResponse,
-} from '~/types/market'
-import type { OrderHistoryResponse } from '~/types/perps/market'
+} from '~/types/perps/market'
+import type {
+  OrderSide,
+  OrderType,
+  STPMode,
+  TimeInForce,
+} from '~/types/perps/order'
 
 const API_BASE_URL =
   process.env.VITE_API_BASE_URL ?? 'https://api.testnet.rise.trade'
+
+type PermitParams = {
+  account: string
+  signer: string
+  deadline: string
+  signature: string
+  nonce: string
+}
+
+type OrderParams = {
+  market_id: string
+  size: string
+  price: string
+  side: OrderSide
+  stp_mode: STPMode
+  order_type: OrderType
+  post_only: boolean
+  reduce_only: boolean
+  tif: TimeInForce
+  expiry: number
+}
+
+type PlaceOrderParams = {
+  order_params: OrderParams
+  permit_params: PermitParams
+}
+
+type CancelOrderParams = {
+  order_id: string
+  market_id: string
+  permit_params: PermitParams
+}
+
+type PlaceOrderRequest = {
+  address: Address.Address
+  signer: string
+  marketId: string
+  orderType: OrderType
+  postOnly: boolean
+  price: bigint
+  reduceOnly: boolean
+  side: OrderSide
+  size: bigint
+  stpMode: STPMode
+  timeInForce: TimeInForce
+}
 
 /**
  * Places a new order
@@ -20,11 +74,15 @@ const API_BASE_URL =
  * const { mutate, isPending, error } = usePlaceOrder()
  *
  * mutate({
- *   market_id: 'BTC-USDC',
- *   side: 'buy',
- *   type: 'limit',
+ *   marketId: '1',
+ *   size: '0.1',
  *   price: '50000',
- *   quantity: '0.1'
+ *   side: 'buy',
+ *   orderType: 'limit',
+ *   address: '0x1234...',
+ *   signer: '0x5678...',
+ *   signature: '0x...',
+ *   deadline: '1234567890',
  * })
  * ```
  */
@@ -32,10 +90,80 @@ export function usePlaceOrder() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async (order: PlaceOrderRequest) => {
+    mutationFn: async ({
+      address,
+      marketId,
+      orderType,
+      postOnly,
+      price,
+      reduceOnly,
+      side,
+      signer,
+      size,
+      stpMode,
+      timeInForce,
+    }: PlaceOrderRequest) => {
+      const SEVEN_DAYS = 7 * 24 * 60 * 60 * 1000
+      const expiresAt = Math.floor((Date.now() + SEVEN_DAYS) / 1000)
+      // const nonce = createClientNonce(address)
+
+      // Encode the place order data according to SC format
+      const encodedData = encodePlaceOrderData({
+        expiry: expiresAt,
+        marketId,
+        orderType,
+        postOnly,
+        price,
+        reduceOnly,
+        side,
+        size,
+        stpMode,
+        timeInForce,
+      })
+
+      const signingKey = localStorage.getItem(
+        'risex-signing-key',
+      ) as Address.Address
+
+      if (!signingKey) {
+        console.error('No signing key found')
+        return
+      }
+
+      // Sign the encoded data using the signer's private key
+      const { signature, nonce } = await signPlaceOrderData({
+        account: address,
+        deadline: expiresAt,
+        encodedData,
+        signingKey,
+      })
+
+      const request: PlaceOrderParams = {
+        order_params: {
+          expiry: expiresAt,
+          market_id: marketId,
+          order_type: orderType,
+          post_only: postOnly,
+          price: price.toString(),
+          reduce_only: reduceOnly,
+          side,
+          size: size.toString(),
+          stp_mode: stpMode,
+          tif: timeInForce,
+        },
+        permit_params: {
+          account: address || '',
+          deadline: expiresAt.toString(),
+          nonce,
+          signature: signature || `0x${'0'.repeat(130)}`,
+          signer,
+        },
+      }
+
       const response = await fetch(`${API_BASE_URL}/v1/orders/place`, {
-        body: JSON.stringify(order),
+        body: JSON.stringify(request),
         headers: {
+          Accept: 'application/json',
           'Content-Type': 'application/json',
         },
         method: 'POST',
@@ -104,7 +232,11 @@ export function useOpenOrders({
  * const { mutate, isPending, error } = useCancelOrder()
  *
  * mutate({
- *   order_id: 'order_123'
+ *   orderId: 'order_123',
+ *   marketId: '1',
+ *   address: '0x1234...',
+ *   signer: '0x5678...',
+ *   signature: '0x...',
  * })
  * ```
  */
@@ -112,7 +244,37 @@ export function useCancelOrder() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async (request: CancelOrderRequest) => {
+    mutationFn: async ({
+      address,
+      deadline,
+      marketId,
+      orderId,
+      signature,
+      signer,
+    }: {
+      address: string
+      deadline?: string
+      marketId: string
+      orderId: string
+      signature?: `0x${string}`
+      signer: string
+    }) => {
+      const SEVEN_DAYS = 7 * 24 * 60 * 60 * 1000
+      const expiresAt = Math.floor((Date.now() + SEVEN_DAYS) / 1000)
+      const nonce = createClientNonce(address)
+
+      const request: CancelOrderParams = {
+        market_id: marketId.toString(),
+        order_id: orderId.toString(),
+        permit_params: {
+          account: address || '',
+          deadline: deadline || expiresAt.toString(),
+          nonce,
+          signature: signature || `0x${'0'.repeat(130)}`,
+          signer,
+        },
+      }
+
       const response = await fetch(`${API_BASE_URL}/v1/orders/cancel`, {
         body: JSON.stringify(request),
         headers: {

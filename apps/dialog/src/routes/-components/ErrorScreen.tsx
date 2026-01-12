@@ -15,7 +15,7 @@ export function ErrorScreen(props: ErrorScreen.Props) {
   const errorContext = ErrorScreen.useErrorContext()
   const errorDetails = DialogErrors.formatDialogError(dialogError, errorContext)
 
-  console.log("errorDetails:: ", errorDetails)
+  console.log('errorDetails:: ', errorDetails)
 
   return (
     <Layout>

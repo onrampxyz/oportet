@@ -33,8 +33,7 @@
     "rise-wallet": "workspace:*",
     "sonner": "catalog:",
     "valibot": "^1.1.0",
-    "wagmi": "catalog:",
-    "zustand": "catalog:"
+    "wagmi": "catalog:"
   },
   "devDependencies": {
     "@iconify/json": "catalog:",
