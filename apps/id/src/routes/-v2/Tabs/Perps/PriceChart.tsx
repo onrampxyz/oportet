@@ -40,7 +40,6 @@ export function PriceChart(props: Readonly<PriceChartProps>) {
 
     const transformed = candleData.map((candle) => {
       const time = Number.parseInt(candle.time, 10) / 1000000000
-      console.log('Original time:', candle.time, 'Converted time:', time)
 
       return {
         close: Number.parseFloat(candle.close),
