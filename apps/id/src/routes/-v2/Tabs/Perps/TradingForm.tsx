@@ -91,8 +91,7 @@ export function TradingForm(props: Readonly<TradingFormProps>) {
     // Determine price based on order type
     const price = orderTypeTab === OrderType.Limit ? limitPrice : '0'
 
-    console.log("price:: ", price)
-
+    console.log('price:: ', price)
 
     // placeOrder({
     //   address,
