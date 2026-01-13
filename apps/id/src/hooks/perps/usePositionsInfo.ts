@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 import { formatEther, formatUnits } from 'viem'
+import { useAccount } from 'wagmi'
 import { ValueFormatter } from '~/utils'
 import { useOpenPositions } from '../api/usePositions'
 import type { MarketInfo } from './useMaketInfo'
@@ -38,12 +39,12 @@ export type UsePositionsInfoParams = {
 export function usePositionsInfo(params?: UsePositionsInfoParams) {
   const markets = params?.markets || []
 
-  // const { address } = useAccount()
+  const { address } = useAccount()
   // testdata
   // 0x6a691f9e1F3eFEcBa7D73B3b6b6adc58a5839247
 
   const { data } = useOpenPositions({
-    address: '0x6a691f9e1F3eFEcBa7D73B3b6b6adc58a5839247',
+    address,
   })
 
   const positionsData = data?.data?.positions || []

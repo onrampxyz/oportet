@@ -170,8 +170,8 @@ export function usePlaceOrder() {
       const response = await fetch(`${API_BASE_URL}/v1/orders/place`, {
         body: JSON.stringify(request),
         headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
+          // Accept: 'application/json',
+          // 'Content-Type': 'application/json',
         },
         method: 'POST',
       })
