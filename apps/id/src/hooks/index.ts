@@ -1,3 +1,5 @@
+// Re-export constants for backward compatibility
+export { RISEX_USDC_CONTRACT } from '~/constants/auth'
 export * from './api/useAccount'
 export * from './api/useMarket'
 export * from './api/useOrders'

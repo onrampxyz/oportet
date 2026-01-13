@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query'
 import type { Address } from 'ox'
-import { createClientNonce } from '~/hooks/perps/useRegisterSigner'
+import { createClientNonce } from '~/lib/utils/auth'
 
 const API_BASE_URL =
   process.env.VITE_API_BASE_URL ?? 'https://api.testnet.rise.trade'
