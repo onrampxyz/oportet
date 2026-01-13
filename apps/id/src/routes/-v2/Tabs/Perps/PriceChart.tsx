@@ -1,5 +1,3 @@
-'use client'
-
 import { cx } from 'cva'
 import type {
   CandlestickData,
@@ -36,8 +34,6 @@ export function PriceChart(props: Readonly<PriceChartProps>) {
       return []
     }
 
-    console.log('Transforming candle data, length:', candleData.length)
-
     const transformed = candleData.map((candle) => {
       const time = Number.parseInt(candle.time, 10) / 1000000000
 
@@ -51,7 +47,6 @@ export function PriceChart(props: Readonly<PriceChartProps>) {
       }
     })
 
-    console.log('Transformed data sample:', transformed[0])
     return transformed
   }, [candleData])
 
@@ -146,29 +141,20 @@ export function PriceChart(props: Readonly<PriceChartProps>) {
 
   // Update chart data when it changes
   useEffect(() => {
-    console.log('Data update effect triggered')
-    console.log('seriesRef.current:', seriesRef.current)
-    console.log('chartData.length:', chartData.length)
-
     if (!seriesRef.current) {
-      console.log('Series ref not available')
       return
     }
 
     if (chartData.length === 0) {
-      console.log('No chart data to display')
       return
     }
 
-    console.log('Setting data to series:', chartData.length, 'candles')
     try {
       seriesRef.current.setData(chartData)
-      console.log('Data set successfully')
 
       // Fit content to show all data
       if (chartRef.current) {
         chartRef.current.timeScale().fitContent()
-        console.log('Fit content applied')
       }
     } catch (err) {
       console.error('Error setting chart data:', err)

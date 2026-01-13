@@ -5,6 +5,7 @@ import type { MarketInfo } from './useMaketInfo'
 
 export type OrderInfo = {
   market?: string
+  marketId: string
   side: 'LONG' | 'SHORT'
   type: 'Limit' | 'Market'
   size: string
@@ -88,6 +89,7 @@ export function useOrdersInfo(params?: UseOrdersInfoParams) {
       return {
         filled,
         market: market?.product_id,
+        marketId: order.market_id,
         orderId: order.id,
         price: ValueFormatter.formatWithSuffix(order.price) ?? '-',
         quoteSymbol: market?.base_asset,

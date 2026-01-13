@@ -7,7 +7,7 @@ import {
   useMemo,
   useState,
 } from 'react'
-import { PositionInfo } from '~/hooks'
+import type { PositionInfo } from '~/hooks'
 import { useWebSocketConnection } from './WebSocketConnectionContext'
 import { useWebSocketMessageBus } from './WebSocketMessageBus'
 

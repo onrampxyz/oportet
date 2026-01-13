@@ -1,16 +1,19 @@
 import { cx } from 'cva'
-import type { OrderInfo } from '~/hooks'
+import { type OrderInfo, useCancelOrder } from '~/hooks'
 import LucideX from '~icons/lucide/x'
 
 export type OrdersTableProps = {
   orders: OrderInfo[]
   emptyMessage?: string
+  address: `0x${string}`
 }
 
 export function OrdersTable({
   orders,
   emptyMessage = 'No orders',
+  address,
 }: Readonly<OrdersTableProps>) {
+  const { mutate: cancelOrder, isPending } = useCancelOrder()
   return (
     <div className="overflow-x-auto">
       <table className="w-full">
@@ -76,7 +79,16 @@ export function OrdersTable({
                 </td>
                 <td className="py-1 text-right">
                   <button
-                    className="text-gray10 hover:text-gray12"
+                    className="text-gray10 hover:text-gray12 disabled:cursor-not-allowed disabled:opacity-50"
+                    disabled={isPending || order.status !== 'Open'}
+                    onClick={() => {
+                      cancelOrder({
+                        address,
+                        marketId: order.marketId,
+                        orderId: order.orderId,
+                        signer: address,
+                      })
+                    }}
                     type="button"
                   >
                     <LucideX className="size-4" />

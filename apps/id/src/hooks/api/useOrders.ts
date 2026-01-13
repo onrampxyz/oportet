@@ -1,8 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import type { Address } from 'ox'
+import { parseEther } from 'viem'
 import {
-  createClientNonce,
+  encodeCancelOrderData,
   encodePlaceOrderData,
+  signCancelOrderData,
   signPlaceOrderData,
 } from '~/hooks/perps/useRegisterSigner'
 import type { CancelOrderResponse, Order } from '~/types/market'
@@ -54,7 +56,7 @@ type CancelOrderParams = {
 
 type PlaceOrderRequest = {
   address: Address.Address
-  signer: string
+  // signer: string
   marketId: string
   orderType: OrderType
   postOnly: boolean
@@ -98,14 +100,12 @@ export function usePlaceOrder() {
       price,
       reduceOnly,
       side,
-      signer,
+      // signer,
       size,
       stpMode,
       timeInForce,
     }: PlaceOrderRequest) => {
-      const SEVEN_DAYS = 7 * 24 * 60 * 60 * 1000
-      const expiresAt = Math.floor((Date.now() + SEVEN_DAYS) / 1000)
-      // const nonce = createClientNonce(address)
+      const expiresAt = Math.floor(Date.now() / 1000) + 86400 // 24hours
 
       // Encode the place order data according to SC format
       const encodedData = encodePlaceOrderData({
@@ -121,19 +121,26 @@ export function usePlaceOrder() {
         timeInForce,
       })
 
-      const signingKey = localStorage.getItem(
-        'risex-signing-key',
+      console.log('encodedData:: ', encodedData)
+
+      const storedAuth = localStorage.getItem(
+        'risex-authInfo',
       ) as Address.Address
 
-      if (!signingKey) {
+      if (!storedAuth) {
         console.error('No signing key found')
         return
       }
 
+      console.log('storedAuth:: ', storedAuth)
+      const { signer, signingKey } = JSON.parse(storedAuth)
+
+      console.log('signer:: ', signer)
+      console.log('signingKey:: ', signingKey)
+
       // Sign the encoded data using the signer's private key
       const { signature, nonce } = await signPlaceOrderData({
         account: address,
-        deadline: expiresAt,
         encodedData,
         signingKey,
       })
@@ -144,10 +151,10 @@ export function usePlaceOrder() {
           market_id: marketId,
           order_type: orderType,
           post_only: postOnly,
-          price: price.toString(),
+          price: parseEther(price.toString()).toString(),
           reduce_only: reduceOnly,
           side,
-          size: size.toString(),
+          size: parseEther(size.toString()).toString(),
           stp_mode: stpMode,
           tif: timeInForce,
         },
@@ -246,29 +253,45 @@ export function useCancelOrder() {
   return useMutation({
     mutationFn: async ({
       address,
-      deadline,
       marketId,
       orderId,
-      signature,
-      signer,
     }: {
-      address: string
-      deadline?: string
+      address: Address.Address
       marketId: string
       orderId: string
       signature?: `0x${string}`
       signer: string
     }) => {
-      const SEVEN_DAYS = 7 * 24 * 60 * 60 * 1000
-      const expiresAt = Math.floor((Date.now() + SEVEN_DAYS) / 1000)
-      const nonce = createClientNonce(address)
+      const expiresAt = Math.floor(Date.now() / 1000) + 86400 // 24hours
+
+      const encodedData = encodeCancelOrderData({
+        marketId: marketId,
+        orderId: BigInt(orderId),
+      })
+
+      const storedAuth = localStorage.getItem(
+        'risex-authInfo',
+      ) as Address.Address
+
+      if (!storedAuth) {
+        console.error('No signing key found')
+        return
+      }
+
+      const { signer, signingKey } = JSON.parse(storedAuth)
+
+      const { signature, nonce } = await signCancelOrderData({
+        account: address,
+        encodedData,
+        signingKey,
+      })
 
       const request: CancelOrderParams = {
         market_id: marketId.toString(),
         order_id: orderId.toString(),
         permit_params: {
           account: address || '',
-          deadline: deadline || expiresAt.toString(),
+          deadline: expiresAt.toString(),
           nonce,
           signature: signature || `0x${'0'.repeat(130)}`,
           signer,
@@ -278,6 +301,7 @@ export function useCancelOrder() {
       const response = await fetch(`${API_BASE_URL}/v1/orders/cancel`, {
         body: JSON.stringify(request),
         headers: {
+          Accept: 'application/json',
           'Content-Type': 'application/json',
         },
         method: 'POST',

@@ -3,11 +3,11 @@ import { cx } from 'cva'
 import { useEffect, useState } from 'react'
 import { formatUnits } from 'viem'
 import { useAccount } from 'wagmi'
-import { useRegisterSigner } from '~/hooks'
+import { RISEX_USDC_CONTRACT, useRegisterSigner } from '~/hooks'
 import { useAccountBalance } from '~/hooks/api/useAccountBalance'
 import { useDepositToken } from '~/hooks/api/useDepositToken'
 import { usePlaceOrder } from '~/hooks/api/useOrders'
-import { OrderSide, OrderType } from '~/types/perps/order'
+import { OrderSide, OrderType, TimeInForce } from '~/types/perps/order'
 import LucideChevronDown from '~icons/lucide/chevron-down'
 
 export type TradingFormProps = {
@@ -30,10 +30,10 @@ export function TradingForm(props: Readonly<TradingFormProps>) {
   const { authenticate, isPending } = useRegisterSigner()
   const { mutate: depositToken, isPending: isDepositPending } =
     useDepositToken()
-  const { isPending: isPlacingOrder } = usePlaceOrder()
+  const { mutate: placeOrder, isPending: isPlacingOrder } = usePlaceOrder()
 
   const { balance } = useAccountBalance({
-    tokenAddress: '0x8d17fc7db6b4fcf40afb296354883dec95a12f58', // usdc
+    tokenAddress: RISEX_USDC_CONTRACT, // usdc
     userAddress: address,
   })
 
@@ -44,9 +44,17 @@ export function TradingForm(props: Readonly<TradingFormProps>) {
 
   // Check if signer is already registered
   useEffect(() => {
-    const signingKey = localStorage.getItem('risex-signing-key')
-    if (signingKey) {
-      setIsSignerRegistered(true)
+    const storedAuth = localStorage.getItem('risex-authInfo')
+
+    console.log('storedAuth:: ', storedAuth)
+
+    if (storedAuth) {
+      const parsed = JSON.parse(storedAuth)
+      const signingKey = parsed.signingKey
+
+      if (signingKey) {
+        setIsSignerRegistered(true)
+      }
     }
   }, [])
 
@@ -61,7 +69,6 @@ export function TradingForm(props: Readonly<TradingFormProps>) {
 
       // Store the signing key securely
       if (result?.signingKey) {
-        localStorage.setItem('risex-signing-key', result?.signingKey)
         setIsSignerRegistered(true)
       }
     } catch (error) {
@@ -76,7 +83,8 @@ export function TradingForm(props: Readonly<TradingFormProps>) {
   const handleFaucet = () => {
     if (!address) return
 
-    const signingKey = localStorage.getItem('risex-signing-key')
+    const signingKey = localStorage.getItem('risex-authInfo')
+
     depositToken({
       account: address,
       amount: '1000',
@@ -93,15 +101,18 @@ export function TradingForm(props: Readonly<TradingFormProps>) {
 
     console.log('price:: ', price)
 
-    // placeOrder({
-    //   address,
-    //   marketId: '1', // BTC market
-    //   orderType: orderTypeTab,
-    //   postOnly: false,
-    //   price: BigInt(price),
-    //   side: orderType,
-    //   size,
-    // })
+    placeOrder({
+      address,
+      marketId: '1', // BTC market
+      orderType: orderTypeTab,
+      postOnly: false,
+      price: BigInt(price),
+      reduceOnly: false,
+      side: orderType,
+      size: BigInt(size),
+      stpMode: 0, // No self-trade prevention
+      timeInForce: TimeInForce.GoodTillCancelled, // GoodTillTime
+    })
   }
 
   // Show sign account prompt if not registered
@@ -345,7 +356,7 @@ export function TradingForm(props: Readonly<TradingFormProps>) {
             Placing Order...
           </span>
         ) : (
-          `Place ${orderType} Order`
+          `Place ${OrderSide[orderType]} Order`
         )}
       </Button>
     </div>

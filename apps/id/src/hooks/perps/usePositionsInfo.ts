@@ -9,10 +9,12 @@ export type PositionInfo = {
   isPositive: boolean
   leverage: string
   market?: string
+  marketId: string
   markPrice: string
   pnl: string
   pnlPercent: string
   quoteSymbol?: string
+  rawSide: 'BUY' | 'SELL'
   side: 'LONG' | 'SHORT'
   size: string
 }
@@ -101,11 +103,13 @@ export function usePositionsInfo(params?: UsePositionsInfoParams) {
           isPositive,
           leverage: pos.leverage === '0' ? '-' : pos.leverage,
           market: market?.product_id,
+          marketId: pos.market_id,
           markPrice:
             ValueFormatter.formatWithSuffix(market?.mark_price) ?? '0.00',
           pnl: ValueFormatter.formatWithSuffix(pnl) ?? '-',
           pnlPercent,
           quoteSymbol: market?.base_asset,
+          rawSide: pos.side,
           side: pos.side === 'BUY' ? 'LONG' : 'SHORT',
           size: sizeInEther,
         } as PositionInfo

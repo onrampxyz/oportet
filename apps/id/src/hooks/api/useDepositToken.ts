@@ -76,10 +76,10 @@ export function useDepositToken() {
 
       const response = await fetch(`${API_BASE_URL}/v1/account/deposit`, {
         body: JSON.stringify(request),
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
+        // headers: {
+        //   Accept: 'application/json',
+        //   'Content-Type': 'application/json',
+        // },
         method: 'POST',
       })
 

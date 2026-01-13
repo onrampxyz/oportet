@@ -51,8 +51,6 @@ export function useAccountBalance({
         )
       }
 
-      console.log('fetching account balance...', response)
-
       return response.json() as Promise<AccountBalanceResponse>
     },
     queryKey: ['account-balance', userAddress, tokenAddress],

@@ -1,7 +1,6 @@
 import { SignatureErc8010 } from 'ox/erc8010'
 import { useState } from 'react'
-import type { Address, Hex } from 'viem'
-import { encodePacked, keccak256 } from 'viem'
+import { type Address, encodePacked, type Hex, keccak256 } from 'viem'
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
 import { useSendCallsSync, useSignTypedData } from 'wagmi'
 import {
@@ -12,8 +11,36 @@ import {
 } from '~/types/perps/order'
 import { AddressFormatter } from '~/utils'
 
-const RISEX_AUTH_CONTRACT =
+// mainnet
+// export const RISEX_AUTH_CONTRACT =
+//   '0xE97B9CCe868f7d221395764F74581f2BE955DEF5' as Address
+
+// export const RISEX_PERP_CONTRACT =
+//   '0xa05E081c59e5eAe31F1C7def4FBb2C98648dCfc2' as Address
+
+// export const RISEX_USDC_CONTRACT =
+//   '0x8d17fc7db6b4fcf40afb296354883dec95a12f58' as Address
+
+// from api/config
+// testnet
+export const RISEX_AUTH_CONTRACT =
   '0x8d8708f9d87ef522c1f99dd579bf6a051e34c28e' as Address
+
+export const RISEX_PERP_CONTRACT =
+  '0x68cacd54a8c93a3186bf50be6b78b761f728e1b4' as Address
+
+export const RISEX_USDC_CONTRACT =
+  '0x8d17fc7db6b4fcf40afb296354883dec95a12f58' as Address
+
+// testnet
+// export const RISEX_AUTH_CONTRACT =
+//   '0xc81317B0d589Cd0414Ae14d62aa909A967799682' as Address
+
+// export const RISEX_PERP_CONTRACT =
+//   '0x19Ec7351883158a5ff264EE3cfD12293fcA3aA6A' as Address
+
+// export const RISEX_USDC_CONTRACT =
+//   '0x774E23c66BA53cFBE1b8C7a5e4dBc01766AE9393' as Address
 
 const RISEX_AUTH_ABI = [
   {
@@ -61,10 +88,6 @@ const VERIFY_SIGNATURE_TYPES = {
     { name: 'deadline', type: 'uint256' },
   ],
 }
-
-// Perp contract address (placeholder - should be configured)
-const RISEX_PERP_CONTRACT =
-  '0x0000000000000000000000000000000000000000' as Address
 
 const getRISExDomain = (authContractAddress: `0x${string}`) => ({
   chainId: 11155931, // RISE testnet
@@ -398,6 +421,16 @@ export function useRegisterSigner() {
       // Get transaction hash from receipts
       const hash = response.receipts?.[0]?.transactionHash
 
+      localStorage.setItem(
+        'risex-authInfo',
+        JSON.stringify({
+          permissionExpiration: expiration,
+          signer: signerAddress,
+          signerSignature,
+          signingKey,
+        }),
+      )
+
       return {
         accountSignature,
         expiration,
@@ -432,38 +465,50 @@ export function useRegisterSigner() {
  */
 export const signPlaceOrderData = async ({
   account,
-  deadline,
   encodedData,
   signingKey,
 }: {
   account: `0x${string}`
-  deadline: number
   encodedData: Hex
   signingKey: `0x${string}`
 }): Promise<{ nonce: string; signature: `0x${string}` }> => {
-  const signerAccount = privateKeyToAccount(signingKey)
+  const SEVEN_DAYS = 7 * 24 * 60 * 60 * 1000
+  try {
+    const signerAccount = privateKeyToAccount(signingKey)
 
-  // Hash the encoded data before signing
-  const messageHash = keccak256(encodedData)
+    // Hash the encoded data before signing
+    const messageHash = keccak256(encodedData)
 
-  // Generate nonce
-  const nonce = createClientNonce(account)
-  const domain = getRISExDomain(RISEX_AUTH_CONTRACT)
+    // Generate nonce
+    const nonce = createClientNonce(account)
 
-  const signingKeySignature = await signerAccount.signTypedData({
-    domain,
-    message: {
-      account,
-      deadline,
-      hash: messageHash,
-      nonce: BigInt(nonce),
-      target: RISEX_PERP_CONTRACT,
-    },
-    primaryType: 'VerifySignature',
-    types: { VerifySignature: VERIFY_SIGNATURE_TYPES.VerifySignature },
-  })
+    const deadline = Math.floor((Date.now() + SEVEN_DAYS) / 1000)
 
-  return { nonce, signature: signingKeySignature }
+    const domain = getRISExDomain(RISEX_AUTH_CONTRACT)
+
+    const signingKeySignature = await signerAccount.signTypedData({
+      domain,
+      message: {
+        account,
+        deadline,
+        hash: messageHash,
+        nonce: BigInt(nonce),
+        target: RISEX_PERP_CONTRACT,
+      },
+      primaryType: 'VerifySignature',
+      types: { VerifySignature: VERIFY_SIGNATURE_TYPES.VerifySignature },
+    })
+
+    return { nonce, signature: signingKeySignature }
+  } catch (e) {
+    console.log('error-signPlaceOrderData:: ', e)
+
+    return {
+      nonce: '',
+      signature:
+        '0x0000000000000000000000000000000000000000000000000000000000000000',
+    }
+  }
 }
 
 /**
@@ -477,15 +522,15 @@ export const signPlaceOrderData = async ({
  */
 export const signCancelOrderData = async ({
   account,
-  deadline,
   encodedData,
   signingKey,
 }: {
   account: `0x${string}`
-  deadline: number
   encodedData: Hex
   signingKey: `0x${string}`
 }): Promise<{ nonce: string; signature: `0x${string}` }> => {
+  const SEVEN_DAYS = 7 * 24 * 60 * 60 * 1000
+
   const signerAccount = privateKeyToAccount(signingKey)
 
   // Hash the encoded data before signing
@@ -494,6 +539,8 @@ export const signCancelOrderData = async ({
   // Generate nonce
   const nonce = createClientNonce(account)
   const domain = getRISExDomain(RISEX_AUTH_CONTRACT)
+
+  const deadline = Math.floor((Date.now() + SEVEN_DAYS) / 1000)
 
   const signingKeySignature = await signerAccount.signTypedData({
     domain,

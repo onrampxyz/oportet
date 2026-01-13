@@ -1,5 +1,6 @@
 import { cx } from 'cva'
 import { useMemo, useState } from 'react'
+import { useAccount } from 'wagmi'
 import { type MarketInfo, useOrdersInfo } from '~/hooks'
 import { OrdersTable } from './Orders'
 import { PositionsTable } from './PositionsTable'
@@ -7,6 +8,7 @@ import { PositionsTable } from './PositionsTable'
 type TradeDisplayProps = { markets: MarketInfo[] }
 
 export function TradeDisplay({ markets }: Readonly<TradeDisplayProps>) {
+  const { address } = useAccount()
   const [activeTab, setActiveTab] = useState<
     'orders' | 'positions' | 'history'
   >('positions')
@@ -74,12 +76,22 @@ export function TradeDisplay({ markets }: Readonly<TradeDisplayProps>) {
       </div>
 
       {/* Tab Content */}
-      {activeTab === 'orders' && (
-        <OrdersTable emptyMessage="No open orders" orders={openOrders} />
+      {activeTab === 'orders' && address && (
+        <OrdersTable
+          address={address}
+          emptyMessage="No open orders"
+          orders={openOrders}
+        />
       )}
-      {activeTab === 'positions' && <PositionsTable markets={markets} />}
-      {activeTab === 'history' && (
-        <OrdersTable emptyMessage="No order history" orders={historyOrders} />
+      {activeTab === 'positions' && address && (
+        <PositionsTable address={address} markets={markets} />
+      )}
+      {activeTab === 'history' && address && (
+        <OrdersTable
+          address={address}
+          emptyMessage="No order history"
+          orders={historyOrders}
+        />
       )}
     </div>
   )

@@ -240,6 +240,7 @@ export function Header() {
           <Button
             onClick={() => {
               disconnect()
+              localStorage.removeItem('risex-authInfo')
             }}
             variant="primary"
           >

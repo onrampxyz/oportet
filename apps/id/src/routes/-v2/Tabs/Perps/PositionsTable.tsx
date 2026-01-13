@@ -1,16 +1,22 @@
 import { cx } from 'cva'
-import { type MarketInfo, usePositionsInfo } from '~/hooks'
+import { parseEther } from 'viem'
+import { type MarketInfo, usePlaceOrder, usePositionsInfo } from '~/hooks'
+import { OrderSide, OrderType, STPMode, TimeInForce } from '~/types/perps/order'
 import LucideX from '~icons/lucide/x'
 
 export type PositionsTableProps = {
   markets: MarketInfo[]
+  address: `0x${string}`
 }
 
-export function PositionsTable({ markets }: Readonly<PositionsTableProps>) {
+export function PositionsTable({
+  markets,
+  address,
+}: Readonly<PositionsTableProps>) {
   const { positions } = usePositionsInfo({
     markets,
   })
-
+  const { mutate: placeOrder, isPending } = usePlaceOrder()
   return (
     <div className="overflow-x-auto">
       <table className="w-full">
@@ -84,7 +90,31 @@ export function PositionsTable({ markets }: Readonly<PositionsTableProps>) {
                 </td>
                 <td className="py-1 text-right">
                   <button
-                    className="text-gray10 hover:text-gray12"
+                    className="text-gray10 hover:text-gray12 disabled:cursor-not-allowed disabled:opacity-50"
+                    disabled={isPending}
+                    onClick={() => {
+                      const market = markets.find(
+                        (m) => m.market_id === position.marketId,
+                      )
+                      if (!market) return
+
+                      // Close position by placing a reduce-only market order in the opposite direction
+                      placeOrder({
+                        address,
+                        marketId: position.marketId,
+                        orderType: OrderType.Market,
+                        postOnly: false,
+                        price: 0n,
+                        reduceOnly: true,
+                        side:
+                          position.rawSide === 'BUY'
+                            ? OrderSide.Short
+                            : OrderSide.Long,
+                        size: parseEther(position.size),
+                        stpMode: STPMode.None,
+                        timeInForce: TimeInForce.ImmediateOrCancel,
+                      })
+                    }}
                     type="button"
                   >
                     <LucideX className="size-4" />
