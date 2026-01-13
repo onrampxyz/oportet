@@ -8,7 +8,7 @@ import {
   Portfolio,
   Recovery,
   Sessions,
-  Transactions,
+  Transactions
 } from './Tabs'
 
 // Dashboard with routing-based tabs
@@ -29,7 +29,7 @@ export function Dashboard() {
     if (pathname.includes('/sessions')) return 'sessions'
     if (pathname.includes('/assets')) return 'assets'
     if (pathname.includes('/portfolio')) return 'portfolio'
-    return 'perps' // default
+    return 'portfolio' // default
   }
 
   const activeTab = getActiveTab()
@@ -50,7 +50,7 @@ export function Dashboard() {
       case 'portfolio':
         return <Portfolio />
       default:
-        return <Perps />
+        return <Portfolio />
     }
   }
 
