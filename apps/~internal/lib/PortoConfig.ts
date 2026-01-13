@@ -67,6 +67,8 @@ const dialogHosts = {
 export function getConfig(
   env = Env.get(),
 ): Porto.Config<readonly [Chain, ...Chain[]]> {
+  console.log('env:: ', env)
+  console.log('config:: ', config[env])
   return config[env] as never
 }
 
