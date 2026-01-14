@@ -4,6 +4,9 @@ import {
   LogoMark,
   Toast,
 } from '@porto/apps/components'
+import { WalletIcon } from '@web3icons/react/dynamic'
+import * as Mipd from 'mipd'
+import * as MipdPostMessage from 'mipd-postmessage/child'
 import * as React from 'react'
 import { toast } from 'sonner'
 import { useAccount, useConnect, useConnectors } from 'wagmi'
@@ -12,9 +15,14 @@ import LucideCircleX from '~icons/lucide/circle-x'
 import IconScanFace from '~icons/porto/scan-face'
 import { Layout } from './Layout'
 
+const mipdPMStore = MipdPostMessage.createStore()
+const mipdStore = Mipd.createStore()
+
 export function Landing() {
   const account = useAccount()
+
   const connect = useConnect({
+
     mutation: {
       onError(error) {
         if (error.message.includes('email already verified'))
@@ -31,13 +39,48 @@ export function Landing() {
   })
   const [connector] = useConnectors()
 
+  console.log("connector:: ", connector)
+
   const [email, setEmail] = React.useState('')
+
+  const parentProviders = React.useSyncExternalStore(
+    mipdPMStore.subscribe,
+    mipdPMStore.getProviders,
+  )
+  const selfProviders = React.useSyncExternalStore(
+    mipdStore.subscribe,
+    mipdStore.getProviders,
+  )
+
+  const providers = React.useMemo(() =>
+    [...parentProviders, ...selfProviders].filter(
+      (provider) => provider.info.rdns !== 'com.risechain.wallet',
+    ),
+    [parentProviders, selfProviders],
+  )
+
+  console.log("providers:: ", providers)
+
+  const getWalletName = (rdns: string): string => {
+    // Split by '.' and get the last part as the wallet name
+    const parts = rdns.split('.')
+    const walletName = parts.at(-1)
+
+    // Handle special cases where wallet name spans multiple parts
+    if (rdns === 'com.coinbase.wallet') {
+      return 'coinbase wallet'
+    }
+
+    return walletName ?? ""
+  }
+
+  // 0x8091C7784Baaf77732167FCeA66148eA7e444a56
 
   return (
     <>
       <Layout.Header left={false} right={undefined} />
 
-      <div className="flex h-full flex-col items-center justify-between gap-y-4 rounded-3xl">
+      <div className="flex h-full flex-col items-center justify-between gap-y-4 rounded-xl">
         <div className="flex h-full w-full max-w-[328px] flex-col justify-center gap-y-6 max-lg:gap-y-20">
           {account.isConnecting ? (
             <IndeterminateLoader
@@ -75,7 +118,7 @@ export function Landing() {
                     })
                   }}
                 >
-                  <div className="group peer flex h-12.5 items-center rounded-4xl border border-gray7 bg-gray1 py-2 pr-2 pl-4">
+                  <div className="group peer flex h-12.5 items-center rounded-xl border border-gray7 bg-gray1 py-2 pr-2 pl-4">
                     <label className="sr-only" htmlFor="label">
                       Email
                     </label>
@@ -108,11 +151,11 @@ export function Landing() {
                   <div className="h-4" />
 
                   <Button
-                    className="h-12.5! w-full bg-gray12! text-gray1! text-lg! hover:bg-gray12/90!"
+                    className="h-12.5! w-full rounded-xl! bg-gray12! text-gray1! text-lg! hover:bg-gray12/90!"
                     type="submit"
                     variant="default"
                   >
-                    Create account
+                    Create account via Passkey
                   </Button>
                 </form>
 
@@ -124,10 +167,48 @@ export function Landing() {
                   </span>
                 </div>
 
+                <div className="rounded-xl p-8 text-center">
+                  Create via Injected Signer
+                  <div className="flex gap-2 p-3">
+                    {providers.map((provider) => {
+                      return (
+                        <button
+                          className="rounded-xl border border-gray7 p-2 hover:bg-gray3 focus:outline-none focus:ring-2 focus:ring-gray8"
+                          key={provider.info.uuid}
+                          onClick={(event) => {
+                            event.preventDefault()
+                            connect.connect({
+                              capabilities: {
+                                createAccount: { label: email },
+                                email: false,
+                                providerRdns: provider.info.rdns,
+                              },
+                              connector: connector!,
+                            })
+                          }}
+                          type="button"
+                        >
+                          <WalletIcon
+                            id={getWalletName(provider.info.rdns)}
+                            size={40}
+                            variant="branded"
+                          />
+                        </button>
+                      )
+                    })}
+                  </div>
+                </div>
+
+                <div className="h-3.5 border-gray7 border-b-1 text-center">
+                  <span className="my-auto bg-gray2 px-2 font-[500] text-gray10">
+                    or
+                  </span>
+                </div>
+
                 <div className="h-6" />
 
                 <Button
-                  className="flex h-12.5! w-full items-center gap-2 text-lg!"
+                  className="flex h-12.5! w-full items-center gap-2 rounded-xl! text-lg!"
                   onClick={() =>
                     connect.connect({
                       capabilities: {
