@@ -1,26 +1,32 @@
 import { Button, Spinner } from '@porto/apps/components'
 import { cx } from 'cva'
 import { useEffect, useState } from 'react'
-import { formatUnits } from 'viem'
+import { formatUnits, parseUnits } from 'viem'
 import { useAccount } from 'wagmi'
-import { RISEX_USDC_CONTRACT, useRegisterSigner } from '~/hooks'
+import {
+  type MarketInfo,
+  RISEX_USDC_CONTRACT,
+  useRegisterSigner,
+} from '~/hooks'
 import { useAccountBalance } from '~/hooks/api/useAccountBalance'
 import { useDepositToken } from '~/hooks/api/useDepositToken'
 import { usePlaceOrder } from '~/hooks/api/useOrders'
 import { OrderSide, OrderType, TimeInForce } from '~/types/perps/order'
+import { ValueFormatter } from '~/utils'
 import LucideChevronDown from '~icons/lucide/chevron-down'
 
 export type TradingFormProps = {
-  orderType: OrderSide
-  onOrderTypeChange: (value: OrderSide) => void
+  selectedMarket: MarketInfo
 }
 
 const LEVERAGE = ['5', '10', '25', '50']
 
 export function TradingForm(props: Readonly<TradingFormProps>) {
-  const { orderType, onOrderTypeChange } = props
+  const { selectedMarket } = props
+
+  const [orderSide, setOrderSide] = useState<OrderSide>(OrderSide.Long)
   const [isSignerRegistered, setIsSignerRegistered] = useState(false)
-  const [orderTypeTab, setOrderTypeTab] = useState<OrderType>(OrderType.Market)
+  const [orderType, setOrderType] = useState<OrderType>(OrderType.Market)
   const [leverage, setLeverage] = useState('10')
   const [limitPrice, setLimitPrice] = useState('')
   const [size, setSize] = useState('')
@@ -28,8 +34,10 @@ export function TradingForm(props: Readonly<TradingFormProps>) {
   const { address } = useAccount()
 
   const { authenticate, isPending } = useRegisterSigner()
+
   const { mutate: depositToken, isPending: isDepositPending } =
     useDepositToken()
+
   const { mutate: placeOrder, isPending: isPlacingOrder } = usePlaceOrder()
 
   const { balance } = useAccountBalance({
@@ -41,22 +49,6 @@ export function TradingForm(props: Readonly<TradingFormProps>) {
   const formattedBalance = balance
     ? Number.parseFloat(formatUnits(BigInt(balance), 18)).toFixed(2)
     : '0.00'
-
-  // Check if signer is already registered
-  useEffect(() => {
-    const storedAuth = localStorage.getItem('risex-authInfo')
-
-    console.log('storedAuth:: ', storedAuth)
-
-    if (storedAuth) {
-      const parsed = JSON.parse(storedAuth)
-      const signingKey = parsed.signingKey
-
-      if (signingKey) {
-        setIsSignerRegistered(true)
-      }
-    }
-  }, [])
 
   const handleSignAccount = async () => {
     if (!address) return
@@ -97,23 +89,44 @@ export function TradingForm(props: Readonly<TradingFormProps>) {
     if (!address || !size) return
 
     // Determine price based on order type
-    const price = orderTypeTab === OrderType.Limit ? limitPrice : '0'
+    const price =
+      orderType === OrderType.Market
+        ? parseUnits('0'.toString(), 18)
+        : parseUnits(ValueFormatter.anyToFloat(limitPrice).toString(), 18)
 
     console.log('price:: ', price)
 
     placeOrder({
       address,
-      marketId: '1', // BTC market
-      orderType: orderTypeTab,
+      expiredAt: { num: 1, unit: 'd' },
+      marketId: selectedMarket.market_id,
+      orderType,
       postOnly: false,
-      price: BigInt(price),
+      price,
       reduceOnly: false,
-      side: orderType,
-      size: BigInt(size),
+      side: orderSide,
+      size: parseUnits(ValueFormatter.anyToFloat(size).toString(), 18),
       stpMode: 0, // No self-trade prevention
-      timeInForce: TimeInForce.GoodTillCancelled, // GoodTillTime
+      timeInForce:
+        orderType === OrderType.Limit
+          ? TimeInForce.GoodTillCancelled
+          : TimeInForce.FillOrKill,
     })
   }
+
+  // Check if signer is already registered
+  useEffect(() => {
+    const storedAuth = localStorage.getItem('risex-authInfo')
+
+    if (storedAuth) {
+      const parsed = JSON.parse(storedAuth)
+      const signingKey = parsed.signingKey
+
+      if (signingKey) {
+        setIsSignerRegistered(true)
+      }
+    }
+  }, [])
 
   // Show sign account prompt if not registered
   if (!isSignerRegistered) {
@@ -177,11 +190,11 @@ export function TradingForm(props: Readonly<TradingFormProps>) {
         <button
           className={cx(
             'flex-1 rounded py-2 font-medium text-sm transition-colors',
-            orderType === OrderSide.Long
+            orderSide === OrderSide.Long
               ? 'bg-green-600 text-white'
               : 'bg-gray3 text-gray10 hover:bg-gray4',
           )}
-          onClick={() => onOrderTypeChange(OrderSide.Long)}
+          onClick={() => setOrderSide(OrderSide.Long)}
           type="button"
         >
           Long
@@ -189,11 +202,11 @@ export function TradingForm(props: Readonly<TradingFormProps>) {
         <button
           className={cx(
             'flex-1 rounded py-2 font-medium text-sm transition-colors',
-            orderType === OrderSide.Short
+            orderSide === OrderSide.Short
               ? 'bg-red-600 text-white'
               : 'bg-gray3 text-gray10 hover:bg-gray4',
           )}
-          onClick={() => onOrderTypeChange(OrderSide.Short)}
+          onClick={() => setOrderSide(OrderSide.Short)}
           type="button"
         >
           Short
@@ -206,11 +219,11 @@ export function TradingForm(props: Readonly<TradingFormProps>) {
           <button
             className={cx(
               'flex-1 rounded px-4 py-2 font-medium text-sm transition-colors',
-              orderTypeTab === OrderType.Market
+              orderType === OrderType.Market
                 ? 'bg-violet9 text-white'
                 : 'bg-gray3 text-gray10 hover:bg-gray4',
             )}
-            onClick={() => setOrderTypeTab(OrderType.Market)}
+            onClick={() => setOrderType(OrderType.Market)}
             type="button"
           >
             Market
@@ -218,11 +231,11 @@ export function TradingForm(props: Readonly<TradingFormProps>) {
           <button
             className={cx(
               'flex-1 rounded px-4 py-2 font-medium text-sm transition-colors',
-              orderTypeTab === OrderType.Limit
+              orderType === OrderType.Limit
                 ? 'bg-violet9 text-white'
                 : 'bg-gray3 text-gray10 hover:bg-gray4',
             )}
-            onClick={() => setOrderTypeTab(OrderType.Limit)}
+            onClick={() => setOrderType(OrderType.Limit)}
             type="button"
           >
             Limit
@@ -231,7 +244,7 @@ export function TradingForm(props: Readonly<TradingFormProps>) {
       </div>
 
       {/* Limit Price (only shown for limit orders) */}
-      {orderTypeTab === OrderType.Limit && (
+      {orderType === OrderType.Limit && (
         <div className="mb-4">
           <label
             className="mb-2 block text-gray10 text-xs"
@@ -343,7 +356,7 @@ export function TradingForm(props: Readonly<TradingFormProps>) {
       <Button
         className={cx(
           'rounded! w-full py-3 font-medium text-sm transition-colors',
-          orderType === OrderSide.Long
+          orderSide === OrderSide.Long
             ? 'bg-green-600 hover:bg-green-700'
             : 'bg-red-600 hover:bg-red-700',
         )}
@@ -356,7 +369,7 @@ export function TradingForm(props: Readonly<TradingFormProps>) {
             Placing Order...
           </span>
         ) : (
-          `Place ${OrderSide[orderType]} Order`
+          `Place ${OrderSide[orderSide]} Order`
         )}
       </Button>
     </div>

@@ -37,6 +37,11 @@ export enum TimeInForce {
   ImmediateOrCancel = 3,
 }
 
+export type ExpiredAt = {
+  num: number
+  unit: 'h' | 'm' | 's' | 'd'
+}
+
 export type MarketInfo = {
   name: string
   quote: string

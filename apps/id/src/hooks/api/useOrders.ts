@@ -1,21 +1,23 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import type { Address } from 'ox'
-import { parseEther } from 'viem'
+import { SEVEN_DAYS } from '~/constants/auth'
 import {
   encodeCancelOrderData,
   encodePlaceOrderData,
   signCancelOrderData,
   signPlaceOrderData,
 } from '~/hooks/perps/useRegisterSigner'
+import { convertExpiredAtToSeconds } from '~/lib/utils/auth'
 import type { CancelOrderResponse, Order } from '~/types/market'
 import type {
   OrderHistoryResponse,
   PlaceOrderResponse,
 } from '~/types/perps/market'
-import type {
-  OrderSide,
-  OrderType,
-  STPMode,
+import {
+  type ExpiredAt,
+  type OrderSide,
+  type OrderType,
+  type STPMode,
   TimeInForce,
 } from '~/types/perps/order'
 
@@ -66,6 +68,7 @@ type PlaceOrderRequest = {
   size: bigint
   stpMode: STPMode
   timeInForce: TimeInForce
+  expiredAt: ExpiredAt
 }
 
 /**
@@ -92,24 +95,41 @@ export function usePlaceOrder() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async ({
-      address,
-      marketId,
-      orderType,
-      postOnly,
-      price,
-      reduceOnly,
-      side,
-      // signer,
-      size,
-      stpMode,
-      timeInForce,
-    }: PlaceOrderRequest) => {
-      const expiresAt = Math.floor(Date.now() / 1000) + 86400 // 24hours
+    mutationFn: async (params: PlaceOrderRequest) => {
+      const {
+        address,
+        marketId,
+        orderType,
+        postOnly,
+        price,
+        reduceOnly,
+        side,
+        size,
+        stpMode,
+        timeInForce,
+        expiredAt,
+      } = params
+
+      console.log('params:: ', params)
+
+      const deadline = Math.floor((Date.now() + SEVEN_DAYS) / 1000) // 24hours
+      const expiry =
+        timeInForce === TimeInForce.GoodTillTime
+          ? convertExpiredAtToSeconds(expiredAt)
+          : 0
+
+      const storedAuth = localStorage.getItem(
+        'risex-authInfo',
+      ) as Address.Address
+
+      if (!storedAuth) {
+        console.error('No signing key found')
+        return
+      }
 
       // Encode the place order data according to SC format
       const encodedData = encodePlaceOrderData({
-        expiry: expiresAt,
+        expiry,
         marketId,
         orderType,
         postOnly,
@@ -122,47 +142,39 @@ export function usePlaceOrder() {
       })
 
       console.log('encodedData:: ', encodedData)
-
-      const storedAuth = localStorage.getItem(
-        'risex-authInfo',
-      ) as Address.Address
-
-      if (!storedAuth) {
-        console.error('No signing key found')
-        return
-      }
-
       console.log('storedAuth:: ', storedAuth)
       const { signer, signingKey } = JSON.parse(storedAuth)
 
       console.log('signer:: ', signer)
       console.log('signingKey:: ', signingKey)
+      console.log('address:: ', address)
 
       // Sign the encoded data using the signer's private key
       const { signature, nonce } = await signPlaceOrderData({
         account: address,
+        deadline,
         encodedData,
         signingKey,
       })
 
       const request: PlaceOrderParams = {
         order_params: {
-          expiry: expiresAt,
+          expiry,
           market_id: marketId,
           order_type: orderType,
           post_only: postOnly,
-          price: parseEther(price.toString()).toString(),
+          price: price.toString(),
           reduce_only: reduceOnly,
           side,
-          size: parseEther(size.toString()).toString(),
+          size: size.toString(),
           stp_mode: stpMode,
           tif: timeInForce,
         },
         permit_params: {
           account: address || '',
-          deadline: expiresAt.toString(),
+          deadline: deadline.toString(),
           nonce,
-          signature: signature || `0x${'0'.repeat(130)}`,
+          signature,
           signer,
         },
       }
@@ -170,8 +182,8 @@ export function usePlaceOrder() {
       const response = await fetch(`${API_BASE_URL}/v1/orders/place`, {
         body: JSON.stringify(request),
         headers: {
-          // Accept: 'application/json',
-          // 'Content-Type': 'application/json',
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
         },
         method: 'POST',
       })
@@ -262,13 +274,9 @@ export function useCancelOrder() {
       signature?: `0x${string}`
       signer: string
     }) => {
-      const expiresAt = Math.floor(Date.now() / 1000) + 86400 // 24hours
+      // const expiresAt = Math.floor(Date.now() / 1000) + 86400 // 24hours
 
-      const encodedData = encodeCancelOrderData({
-        marketId: marketId,
-        orderId: BigInt(orderId),
-      })
-
+      const deadline = Math.floor((Date.now() + SEVEN_DAYS) / 1000) // 24hours
       const storedAuth = localStorage.getItem(
         'risex-authInfo',
       ) as Address.Address
@@ -278,10 +286,16 @@ export function useCancelOrder() {
         return
       }
 
+      const encodedData = encodeCancelOrderData({
+        marketId: marketId,
+        orderId: BigInt(orderId),
+      })
+
       const { signer, signingKey } = JSON.parse(storedAuth)
 
       const { signature, nonce } = await signCancelOrderData({
         account: address,
+        deadline,
         encodedData,
         signingKey,
       })
@@ -291,7 +305,7 @@ export function useCancelOrder() {
         order_id: orderId.toString(),
         permit_params: {
           account: address || '',
-          deadline: expiresAt.toString(),
+          deadline: deadline.toString(),
           nonce,
           signature: signature || `0x${'0'.repeat(130)}`,
           signer,

@@ -14,8 +14,6 @@ import type {
   SignOrderDataResult,
 } from '~/types/perps/auth'
 
-const SEVEN_DAYS = 7 * 24 * 60 * 60 * 1000
-
 /**
  * Signs place order data with the signing key
  *
@@ -40,18 +38,18 @@ export const signPlaceOrderData = async ({
   account,
   encodedData,
   signingKey,
+  deadline,
 }: SignOrderDataParams): Promise<SignOrderDataResult> => {
   try {
     const signerAccount = privateKeyToAccount(signingKey)
+
+    console.log('signerAccount:: ', signerAccount)
 
     // Hash the encoded data before signing
     const messageHash = hashEncodedData(encodedData)
 
     // Generate nonce
     const nonce = createClientNonce(account)
-
-    const deadline = Math.floor((Date.now() + SEVEN_DAYS) / 1000)
-
     const domain = getRISExDomain(RISEX_AUTH_CONTRACT)
 
     const signingKeySignature = await signerAccount.signTypedData({
@@ -103,6 +101,7 @@ export const signCancelOrderData = async ({
   account,
   encodedData,
   signingKey,
+  deadline,
 }: SignOrderDataParams): Promise<SignOrderDataResult> => {
   try {
     const signerAccount = privateKeyToAccount(signingKey)
@@ -112,8 +111,6 @@ export const signCancelOrderData = async ({
 
     // Generate nonce
     const nonce = createClientNonce(account)
-
-    const deadline = Math.floor((Date.now() + SEVEN_DAYS) / 1000)
 
     const domain = getRISExDomain(RISEX_AUTH_CONTRACT)
 

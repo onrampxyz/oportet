@@ -46,7 +46,7 @@ export async function getSigner({
     nonce,
   }
 
-  const signerSignature = await signerAccount.signTypedData({
+  const signingKeySignature = await signerAccount.signTypedData({
     domain: {
       ...domain,
       chainId,
@@ -60,7 +60,7 @@ export async function getSigner({
     nonce,
     signerAccount,
     signerAddress,
-    signerSignature,
     signingKey,
+    signingKeySignature,
   }
 }

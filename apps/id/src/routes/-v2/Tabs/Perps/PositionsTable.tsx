@@ -101,6 +101,7 @@ export function PositionsTable({
                       // Close position by placing a reduce-only market order in the opposite direction
                       placeOrder({
                         address,
+                        expiredAt: { num: 1, unit: 'd' },
                         marketId: position.marketId,
                         orderType: OrderType.Market,
                         postOnly: false,

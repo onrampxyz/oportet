@@ -41,6 +41,30 @@ export const RISEX_AUTH_ABI = [
     stateMutability: 'nonpayable',
     type: 'function',
   },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: 'account',
+        type: 'address',
+      },
+      {
+        internalType: 'address',
+        name: 'signer',
+        type: 'address',
+      },
+    ],
+    name: 'getSessionKeyStatus',
+    outputs: [
+      {
+        internalType: 'enum IRISExAuthorization.SessionKeyStatus',
+        name: '',
+        type: 'uint8',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
 ] as const
 
 /**
@@ -88,3 +112,8 @@ export const DEFAULT_EXPIRATION_DAYS = 7
  * Default chain ID for RISEx (RISE testnet)
  */
 export const DEFAULT_CHAIN_ID = 11155931
+
+/**
+ * in ms
+ */
+export const SEVEN_DAYS = 7 * 24 * 60 * 60 * 1000

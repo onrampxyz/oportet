@@ -1,3 +1,4 @@
+import { readContract } from '@wagmi/core/actions'
 import { useState } from 'react'
 import type { Address } from 'viem'
 import { useSendCallsSync, useSignTypedData } from 'wagmi'
@@ -7,6 +8,7 @@ import {
   RISEX_AUTH_ABI,
   RISEX_AUTH_CONTRACT,
 } from '~/constants/auth'
+import { config } from '~/lib/Wagmi'
 import { getAccountSignature } from './useGetAccountSignature'
 import { getSigner } from './useGetSigner'
 
@@ -25,7 +27,7 @@ async function registerSignerContract(
     nonce: string
     expiration: number
     accountSignature: `0x${string}`
-    signerSignature: `0x${string}`
+    signingKeySignature: `0x${string}`
     chainId: number
   },
   sendCallsSyncAsync: ReturnType<typeof useSendCallsSync>['sendCallsSyncAsync'],
@@ -38,7 +40,7 @@ async function registerSignerContract(
     message,
     nonce,
     signerAddress,
-    signerSignature,
+    signingKeySignature,
   } = params
 
   const response = await sendCallsSyncAsync({
@@ -52,7 +54,7 @@ async function registerSignerContract(
           BigInt(nonce),
           expiration,
           accountSignature,
-          signerSignature,
+          signingKeySignature,
         ],
         functionName: 'registerSigner',
         to: RISEX_AUTH_CONTRACT,
@@ -122,7 +124,7 @@ export function useRegisterSigner() {
       const expiration = Math.floor(Date.now() / 1000) + expirationDays * 86400
 
       // Step 1: Generate signer and create signer signature
-      const { signingKey, signerAddress, signerSignature, nonce } =
+      const { signingKey, signerAddress, signingKeySignature, nonce } =
         await getSigner({
           account,
           chainId,
@@ -147,7 +149,7 @@ export function useRegisterSigner() {
           message,
           nonce,
           signerAddress,
-          signerSignature,
+          signingKeySignature,
         },
         sendCallsSyncAsync,
       )
@@ -157,16 +159,26 @@ export function useRegisterSigner() {
       // Get transaction hash from receipts
       const hash = response.receipts?.[0]?.transactionHash
 
+      const isSessionKeyValid = await readContract(config, {
+        abi: RISEX_AUTH_ABI,
+        address: RISEX_AUTH_CONTRACT,
+        args: [account, signerAddress],
+        functionName: 'getSessionKeyStatus',
+      })
+
+      console.log('isSessionKeyValid:: ', isSessionKeyValid)
       // Store authentication info in localStorage
-      localStorage.setItem(
-        'risex-authInfo',
-        JSON.stringify({
-          permissionExpiration: expiration,
-          signer: signerAddress,
-          signerSignature,
-          signingKey,
-        }),
-      )
+      if (isSessionKeyValid) {
+        localStorage.setItem(
+          'risex-authInfo',
+          JSON.stringify({
+            permissionExpiration: expiration,
+            signer: signerAddress,
+            signingKey,
+            signingKeySignature, // signingKeySignature
+          }),
+        )
+      }
 
       return {
         accountSignature,
@@ -175,8 +187,8 @@ export function useRegisterSigner() {
         nonce,
         response,
         signer: signerAddress,
-        signerSignature,
         signingKey, // IMPORTANT: Store this securely - it authorizes all transactions
+        signingKeySignature,
       }
     } catch (e) {
       console.error('Error in authenticate:', e)

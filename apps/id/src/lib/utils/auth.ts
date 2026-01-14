@@ -4,7 +4,7 @@ import type {
   EncodeCancelOrderParams,
   EncodePlaceOrderParams,
 } from '~/types/perps/auth'
-import { OrderSide, TimeInForce } from '~/types/perps/order'
+import { type ExpiredAt, OrderSide, TimeInForce } from '~/types/perps/order'
 
 /**
  * Gets the RISEx EIP-712 domain configuration
@@ -148,4 +148,18 @@ export const encodeCancelOrderData = ({
  */
 export const hashEncodedData = (encodedData: Hex): Hex => {
   return keccak256(encodedData)
+}
+
+export const convertExpiredAtToSeconds = (expiredAt: ExpiredAt) => {
+  const unitToSeconds: Record<string, number> = {
+    d: 86400, // days
+    h: 3600, // hours
+    m: 60, // minutes
+    s: 1, // seconds
+  }
+
+  const seconds = expiredAt.num * (unitToSeconds[expiredAt.unit] || 1)
+  const nowInSeconds = Math.floor(Date.now() / 1000)
+
+  return seconds + nowInSeconds
 }

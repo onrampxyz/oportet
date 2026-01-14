@@ -36,7 +36,7 @@ export type GetSignerResult = {
   signingKey: `0x${string}`
   signerAccount: ReturnType<typeof privateKeyToAccount>
   signerAddress: Address
-  signerSignature: `0x${string}`
+  signingKeySignature: `0x${string}`
   nonce: string
 }
 
@@ -105,6 +105,7 @@ export type SignOrderDataParams = {
   account: `0x${string}`
   encodedData: `0x${string}`
   signingKey: `0x${string}`
+  deadline: number
 }
 
 /**
