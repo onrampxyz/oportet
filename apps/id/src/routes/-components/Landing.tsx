@@ -22,7 +22,6 @@ export function Landing() {
   const account = useAccount()
 
   const connect = useConnect({
-
     mutation: {
       onError(error) {
         if (error.message.includes('email already verified'))
@@ -39,7 +38,7 @@ export function Landing() {
   })
   const [connector] = useConnectors()
 
-  console.log("connector:: ", connector)
+  console.log('connector:: ', connector)
 
   const [email, setEmail] = React.useState('')
 
@@ -52,14 +51,15 @@ export function Landing() {
     mipdStore.getProviders,
   )
 
-  const providers = React.useMemo(() =>
-    [...parentProviders, ...selfProviders].filter(
-      (provider) => provider.info.rdns !== 'com.risechain.wallet',
-    ),
+  const providers = React.useMemo(
+    () =>
+      [...parentProviders, ...selfProviders].filter(
+        (provider) => provider.info.rdns !== 'com.risechain.wallet',
+      ),
     [parentProviders, selfProviders],
   )
 
-  console.log("providers:: ", providers)
+  console.log('providers:: ', providers)
 
   const getWalletName = (rdns: string): string => {
     // Split by '.' and get the last part as the wallet name
@@ -71,7 +71,7 @@ export function Landing() {
       return 'coinbase wallet'
     }
 
-    return walletName ?? ""
+    return walletName ?? ''
   }
 
   // 0x8091C7784Baaf77732167FCeA66148eA7e444a56

@@ -1,5 +1,4 @@
 export * from './useClickOutside'
-export * from './useConnectInjectedSigner'
 export * from './useSelector'
 export * from './useTokenInfo'
 export * from './useTokenStandard'
