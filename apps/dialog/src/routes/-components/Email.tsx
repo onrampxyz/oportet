@@ -84,7 +84,7 @@ export function Email(props: Email.Props) {
 
   const [invalid, setInvalid] = React.useState(false)
 
-  console.log("Email: ", props);
+  console.log('Email: ', props)
 
   return (
     <Layout>
@@ -175,13 +175,27 @@ export function Email(props: Email.Props) {
                 Optional
               </div>
             </div>
-            <div className="flex w-full gap-0">
-              <Button
-                className={
-                  providers.length > 0
-                    ? 'min-w-0 flex-1! rounded-e-none!'
-                    : undefined
+            <div className='flex w-full flex-col gap-4 pt-2'>
+              {/* <ExternalWalletPopover
+                disabled={status === 'loading' || signingIn}
+                onSelect={(providerRdns) =>
+                  onApprove({ email: emailInput, providerRdns, signIn: false })
                 }
+                providers={providers}
+                variant={actions.includes('sign-in') ? 'secondary' : 'primary'}
+              /> */}
+
+              <InjectedSigner
+                disabled={status === 'loading' || signingIn}
+                onSelect={(providerRdns) =>
+                  onApprove({ email: emailInput, providerRdns, signIn: false })
+                }
+                providers={providers}
+                variant={actions.includes('sign-in') ? 'secondary' : 'primary'}
+              />
+
+              <Button
+                className="flex-1! rounded-xl p-1"
                 data-testid="sign-up"
                 disabled={status === 'loading' || signingIn}
                 loading={signingUp && 'Signing up…'}
@@ -201,23 +215,6 @@ export function Email(props: Email.Props) {
                   </div>
                 )}
               </Button>
-              {/* <ExternalWalletPopover
-                disabled={status === 'loading' || signingIn}
-                onSelect={(providerRdns) =>
-                  onApprove({ email: emailInput, providerRdns, signIn: false })
-                }
-                providers={providers}
-                variant={actions.includes('sign-in') ? 'secondary' : 'primary'}
-              /> */}
-
-              <InjectedSigner
-                disabled={status === 'loading' || signingIn}
-                onSelect={(providerRdns) =>
-                  onApprove({ email: emailInput, providerRdns, signIn: false })
-                }
-                providers={providers}
-                variant={actions.includes('sign-in') ? 'secondary' : 'primary'}
-              />
             </div>
           </form>
         ) : (

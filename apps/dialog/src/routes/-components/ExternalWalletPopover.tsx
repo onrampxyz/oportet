@@ -5,7 +5,7 @@ import type * as React from 'react'
 import LucideChevronDown from '~icons/lucide/chevron-down'
 
 export function ExternalWalletPopover(props: ExternalWalletPopover.Props) {
-  console.log("ExternalWalletPopover props: ", props);
+  console.log('ExternalWalletPopover props: ', props)
   const { disabled, onSelect, providers, render, variant = 'primary' } = props
 
   if (providers.length === 0) return null
@@ -26,11 +26,11 @@ export function ExternalWalletPopover(props: ExternalWalletPopover.Props) {
           render
             ? undefined
             : {
-              borderLeftColor:
-                variant === 'primary'
-                  ? 'color-mix(in srgb, var(--text-color-th_primary) 30%, transparent)'
-                  : 'color-mix(in srgb, var(--text-color-th_secondary) 30%, transparent)',
-            }
+                borderLeftColor:
+                  variant === 'primary'
+                    ? 'color-mix(in srgb, var(--text-color-th_primary) 30%, transparent)'
+                    : 'color-mix(in srgb, var(--text-color-th_secondary) 30%, transparent)',
+              }
         }
       >
         {!render && <LucideChevronDown className="size-4" />}

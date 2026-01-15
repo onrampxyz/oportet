@@ -6,13 +6,13 @@ export function InjectedSigner(props: Readonly<InjectedSignerContent.Props>) {
   console.log('InjectedSigner props: ', props)
 
   // const { disabled, onSelect, providers, render, variant = 'primary' } = props
-  const { onSelect, providers, variant = 'primary' } = props
+  const { onSelect, providers, variant = 'secondary' } = props
 
   if (providers.length === 0) return null
 
   return (
-    <div className="rounded-xl p-8 text-center">
-      Create via Injected Signer
+    <div className="rounded-xl text-center">
+      Use External Wallet
       <div className="flex gap-2 p-3">
         {providers.map((provider) => {
           return (
