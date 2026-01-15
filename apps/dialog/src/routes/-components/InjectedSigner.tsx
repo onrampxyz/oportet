@@ -2,8 +2,6 @@ import type * as Mipd from 'mipd'
 import type * as React from 'react'
 
 export function InjectedSigner(props: Readonly<InjectedSignerContent.Props>) {
-  console.log('InjectedSigner props: ', props)
-
   // const { disabled, onSelect, providers, render, variant = 'primary' } = props
   const { onSelect, providers } = props
 
@@ -11,7 +9,7 @@ export function InjectedSigner(props: Readonly<InjectedSignerContent.Props>) {
 
   return (
     <div className="rounded-xl text-center">
-      Use Injected Signer
+      <span className="text-th_base-secondary">Use Injected Signer</span>
       <div className="flex flex-wrap items-center justify-center gap-2 py-3">
         {providers.map((provider) => {
           return (
