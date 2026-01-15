@@ -175,24 +175,7 @@ export function Email(props: Email.Props) {
                 Optional
               </div>
             </div>
-            <div className='flex w-full flex-col gap-4 pt-2'>
-              {/* <ExternalWalletPopover
-                disabled={status === 'loading' || signingIn}
-                onSelect={(providerRdns) =>
-                  onApprove({ email: emailInput, providerRdns, signIn: false })
-                }
-                providers={providers}
-                variant={actions.includes('sign-in') ? 'secondary' : 'primary'}
-              /> */}
-
-              <InjectedSigner
-                disabled={status === 'loading' || signingIn}
-                onSelect={(providerRdns) =>
-                  onApprove({ email: emailInput, providerRdns, signIn: false })
-                }
-                providers={providers}
-                variant={actions.includes('sign-in') ? 'secondary' : 'primary'}
-              />
+            <div className="flex w-full flex-col gap-4 pt-2">
 
               <Button
                 className="flex-1! rounded-xl p-1"
@@ -215,6 +198,29 @@ export function Email(props: Email.Props) {
                   </div>
                 )}
               </Button>
+
+              <div className="h-3.5 border-gray7 border-b-1 text-center">
+                <span className="my-auto bg-gray2 px-2 font-[500] text-gray10">
+                  or
+                </span>
+              </div>
+
+              {/* <ExternalWalletPopover
+                disabled={status === 'loading' || signingIn}
+                onSelect={(providerRdns) =>
+                  onApprove({ email: emailInput, providerRdns, signIn: false })
+                }
+                providers={providers}
+                variant={actions.includes('sign-in') ? 'secondary' : 'primary'}
+              /> */}
+
+              <InjectedSigner
+                disabled={status === 'loading' || signingIn}
+                onSelect={(providerRdns) =>
+                  onApprove({ email: emailInput, providerRdns, signIn: false })
+                }
+                providers={providers}
+              />
             </div>
           </form>
         ) : (
