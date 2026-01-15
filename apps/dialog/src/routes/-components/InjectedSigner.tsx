@@ -12,7 +12,7 @@ export function InjectedSigner(props: Readonly<InjectedSignerContent.Props>) {
   return (
     <div className="rounded-xl text-center">
       Use Injected Signer
-      <div className="flex flex-wrap gap-2 py-3">
+      <div className='flex flex-wrap items-center justify-center gap-2 py-3'>
         {providers.map((provider) => {
           return (
             <button

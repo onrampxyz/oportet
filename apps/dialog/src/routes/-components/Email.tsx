@@ -198,7 +198,7 @@ export function Email(props: Email.Props) {
                 ) : (
                   <div className="flex gap-2">
                     <IconScanFace className="size-5.25" />
-                    Sign up with RISE Wallet
+                    Sign up with Passkey
                   </div>
                 )}
               </Button>
@@ -221,21 +221,22 @@ export function Email(props: Email.Props) {
         ) : (
           // If no sign up button, this means the user is already logged in, however
           // the user may want to sign in with a different passkey.
-          <div className="flex w-full justify-between gap-2">
-            <div>
-              <span className="text-th_base-secondary">Using</span>{' '}
-              <span className="text-th_base">{displayName}</span>
-            </div>
-            <div className="flex items-center gap-0.5">
-              <TextButton
-                color="link"
-                onClick={() => {
-                  onApprove({ selectAccount: true, signIn: true })
-                }}
-              >
-                Switch
-              </TextButton>
-              {/* <ExternalWalletPopover
+          <>
+            <div className="flex w-full justify-between gap-2">
+              <div>
+                <span className="text-th_base-secondary">Using</span>{' '}
+                <span className="text-th_base">{displayName}</span>
+              </div>
+              <div className="flex items-center gap-0.5">
+                <TextButton
+                  color="link"
+                  onClick={() => {
+                    onApprove({ selectAccount: true, signIn: true })
+                  }}
+                >
+                  Switch
+                </TextButton>
+                {/* <ExternalWalletPopover
                       onSelect={(providerRdns) =>
                         onApprove({
                           providerRdns,
@@ -253,15 +254,17 @@ export function Email(props: Email.Props) {
                         </button>
                       }
                     /> */}
-              <div className="text-th_base-secondary">⋅</div>
-              <TextButton
-                color="link"
-                onClick={() => {
-                  setActions(['sign-up'])
-                }}
-              >
-                Sign up
-              </TextButton>
+                <div className="text-th_base-secondary">⋅</div>
+                <TextButton
+                  color="link"
+                  onClick={() => {
+                    setActions(['sign-up'])
+                  }}
+                >
+                  Sign up
+                </TextButton>
+              </div>
+
             </div>
             {providers.length > 0 && (
               <>
@@ -284,7 +287,7 @@ export function Email(props: Email.Props) {
                 />
               </>
             )}
-          </div>
+          </>
         )}
       </div>
     </Layout>
