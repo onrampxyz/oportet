@@ -125,7 +125,7 @@ export function Email(props: Email.Props) {
               <>
                 <div className="h-3.5 border-gray7 border-b-1 text-center">
                   <span className="my-auto bg-gray2 px-2 font-[500] text-gray10">
-                    or
+                    OR
                   </span>
                 </div>
 
@@ -205,7 +205,7 @@ export function Email(props: Email.Props) {
 
               <div className="h-3.5 border-gray7 border-b-1 text-center">
                 <span className="my-auto bg-gray2 px-2 font-[500] text-gray10">
-                  or
+                  OR
                 </span>
               </div>
 
@@ -222,7 +222,7 @@ export function Email(props: Email.Props) {
           // If no sign up button, this means the user is already logged in, however
           // the user may want to sign in with a different passkey.
           <>
-            <div className="flex w-full justify-between gap-2">
+            <div className='flex w-full items-center justify-between gap-2'>
               <div>
                 <span className="text-th_base-secondary">Using</span>{' '}
                 <span className="text-th_base">{displayName}</span>
@@ -264,13 +264,12 @@ export function Email(props: Email.Props) {
                   Sign up
                 </TextButton>
               </div>
-
             </div>
             {providers.length > 0 && (
-              <>
+              <div className="flex w-full flex-col gap-4 pt-2">
                 <div className="h-3.5 border-gray7 border-b-1 text-center">
                   <span className="my-auto bg-gray2 px-2 font-[500] text-gray10">
-                    or
+                    OR
                   </span>
                 </div>
 
@@ -285,7 +284,7 @@ export function Email(props: Email.Props) {
                   }
                   providers={providers}
                 />
-              </>
+              </div>
             )}
           </>
         )}

@@ -91,7 +91,7 @@ export function SignUp(props: SignUp.Props) {
 
             <div className="h-3.5 border-gray7 border-b-1 text-center">
               <span className="my-auto bg-gray2 px-2 font-[500] text-gray10">
-                or
+                OR
               </span>
             </div>
 
