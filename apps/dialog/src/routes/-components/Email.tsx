@@ -13,6 +13,7 @@ import { StringFormatter } from '~/utils'
 import LucideChevronDown from '~icons/lucide/chevron-down'
 import LucideHaze from '~icons/lucide/haze'
 import IconScanFace from '~icons/porto/scan-face'
+import { InjectedSigner } from './InjectedSigner'
 
 export function Email(props: Email.Props) {
   const {
@@ -82,6 +83,8 @@ export function Email(props: Email.Props) {
   }, [actions, cli, hostname])
 
   const [invalid, setInvalid] = React.useState(false)
+
+  console.log("Email: ", props);
 
   return (
     <Layout>
@@ -198,7 +201,16 @@ export function Email(props: Email.Props) {
                   </div>
                 )}
               </Button>
-              <ExternalWalletPopover
+              {/* <ExternalWalletPopover
+                disabled={status === 'loading' || signingIn}
+                onSelect={(providerRdns) =>
+                  onApprove({ email: emailInput, providerRdns, signIn: false })
+                }
+                providers={providers}
+                variant={actions.includes('sign-in') ? 'secondary' : 'primary'}
+              /> */}
+
+              <InjectedSigner
                 disabled={status === 'loading' || signingIn}
                 onSelect={(providerRdns) =>
                   onApprove({ email: emailInput, providerRdns, signIn: false })
