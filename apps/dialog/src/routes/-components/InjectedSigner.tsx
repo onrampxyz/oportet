@@ -11,8 +11,8 @@ export function InjectedSigner(props: Readonly<InjectedSignerContent.Props>) {
 
   return (
     <div className="rounded-xl text-center">
-      Use External Wallet
-      <div className='flex flex-wrap gap-2 py-3'>
+      Use Injected Signer
+      <div className="flex flex-wrap gap-2 py-3">
         {providers.map((provider) => {
           return (
             <button
@@ -24,9 +24,9 @@ export function InjectedSigner(props: Readonly<InjectedSignerContent.Props>) {
             >
               <img
                 alt={provider.info.name}
-                height={24}
+                height={32}
                 src={provider.info.icon}
-                width={24}
+                width={32}
               />
             </button>
           )
@@ -34,13 +34,6 @@ export function InjectedSigner(props: Readonly<InjectedSignerContent.Props>) {
       </div>
     </div>
   )
-}
-
-export namespace ExternalWalletPopoverContent {
-  export type Props = {
-    onSelect: (providerRdns: string) => void
-    providers: Mipd.EIP6963ProviderDetail[]
-  }
 }
 
 export namespace InjectedSignerContent {

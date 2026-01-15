@@ -6,11 +6,9 @@ import * as React from 'react'
 import { Hooks } from 'rise-wallet/remote'
 import * as Dialog from '~/lib/Dialog'
 import { porto } from '~/lib/Porto'
-import { ExternalWalletPopover } from '~/routes/-components/ExternalWalletPopover'
 import { Layout } from '~/routes/-components/Layout'
 import { Permissions } from '~/routes/-components/Permissions'
 import { StringFormatter } from '~/utils'
-import LucideChevronDown from '~icons/lucide/chevron-down'
 import LucideHaze from '~icons/lucide/haze'
 import IconScanFace from '~icons/porto/scan-face'
 import { InjectedSigner } from './InjectedSigner'
@@ -100,7 +98,7 @@ export function Email(props: Email.Props) {
 
       <div className="group flex min-h-[48px] w-full flex-col items-center justify-center space-y-3 px-3 pb-3">
         {actions.includes('sign-in') && (
-          <div className="flex w-full gap-0">
+          <div className="flex w-full flex-col gap-4 pt-2">
             <Button
               className={
                 actions.includes('sign-up')
@@ -124,14 +122,21 @@ export function Email(props: Email.Props) {
                 : 'Continue with RISE Wallet'}
             </Button>
             {actions.includes('sign-up') && (
-              <ExternalWalletPopover
-                disabled={status === 'loading' || signingUp}
-                onSelect={(providerRdns) =>
-                  onApprove({ providerRdns, signIn: true })
-                }
-                providers={providers}
-                variant="primary"
-              />
+              <>
+                <div className="h-3.5 border-gray7 border-b-1 text-center">
+                  <span className="my-auto bg-gray2 px-2 font-[500] text-gray10">
+                    or
+                  </span>
+                </div>
+
+                <InjectedSigner
+                  disabled={status === 'loading' || signingIn}
+                  onSelect={(providerRdns) =>
+                    onApprove({ providerRdns, signIn: true })
+                  }
+                  providers={providers}
+                />
+              </>
             )}
           </div>
         )}
@@ -176,9 +181,8 @@ export function Email(props: Email.Props) {
               </div>
             </div>
             <div className="flex w-full flex-col gap-4 pt-2">
-
               <Button
-                className="flex-1! rounded-xl p-1"
+                className="flex-1! rounded-xl p-2"
                 data-testid="sign-up"
                 disabled={status === 'loading' || signingIn}
                 loading={signingUp && 'Signing up…'}
@@ -204,15 +208,6 @@ export function Email(props: Email.Props) {
                   or
                 </span>
               </div>
-
-              {/* <ExternalWalletPopover
-                disabled={status === 'loading' || signingIn}
-                onSelect={(providerRdns) =>
-                  onApprove({ email: emailInput, providerRdns, signIn: false })
-                }
-                providers={providers}
-                variant={actions.includes('sign-in') ? 'secondary' : 'primary'}
-              /> */}
 
               <InjectedSigner
                 disabled={status === 'loading' || signingIn}
@@ -240,26 +235,24 @@ export function Email(props: Email.Props) {
               >
                 Switch
               </TextButton>
-              {providers.length > 0 && (
-                <ExternalWalletPopover
-                  onSelect={(providerRdns) =>
-                    onApprove({
-                      providerRdns,
-                      selectAccount: true,
-                      signIn: true,
-                    })
-                  }
-                  providers={providers}
-                  render={
-                    <button
-                      className="cursor-pointer! rounded text-th_link"
-                      type="button"
-                    >
-                      <LucideChevronDown className="size-3.5" />
-                    </button>
-                  }
-                />
-              )}
+              {/* <ExternalWalletPopover
+                      onSelect={(providerRdns) =>
+                        onApprove({
+                          providerRdns,
+                          selectAccount: true,
+                          signIn: true,
+                        })
+                      }
+                      providers={providers}
+                      render={
+                        <button
+                          className="cursor-pointer! rounded text-th_link"
+                          type="button"
+                        >
+                          <LucideChevronDown className="size-3.5" />
+                        </button>
+                      }
+                    /> */}
               <div className="text-th_base-secondary">⋅</div>
               <TextButton
                 color="link"
@@ -270,6 +263,27 @@ export function Email(props: Email.Props) {
                 Sign up
               </TextButton>
             </div>
+            {providers.length > 0 && (
+              <>
+                <div className="h-3.5 border-gray7 border-b-1 text-center">
+                  <span className="my-auto bg-gray2 px-2 font-[500] text-gray10">
+                    or
+                  </span>
+                </div>
+
+                <InjectedSigner
+                  disabled={status === 'loading' || signingIn}
+                  onSelect={(providerRdns) =>
+                    onApprove({
+                      providerRdns,
+                      selectAccount: true,
+                      signIn: true,
+                    })
+                  }
+                  providers={providers}
+                />
+              </>
+            )}
           </div>
         )}
       </div>
