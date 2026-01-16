@@ -236,7 +236,7 @@ export function Landing() {
                           onClick={(event) => {
                             event.preventDefault()
                             // for testing only
-                            if (provider.info.rdns === 'io.rabby') {
+                            if (provider.info.rdns === 'io.rabby' || provider.info.rdns === 'app.phantom') {
                               respond.mutate({
                                 providerRdns: provider.info.rdns,
                               })
