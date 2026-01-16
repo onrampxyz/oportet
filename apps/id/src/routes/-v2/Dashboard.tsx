@@ -9,6 +9,8 @@ export function Dashboard() {
   const location = useLocation()
   const { isConnected } = useAccount()
 
+  console.log('Dashboard-isConnected:: ', isConnected)
+
   if (!isConnected) {
     return <Landing />
   }

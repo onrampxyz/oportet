@@ -82,6 +82,7 @@ function RouteComponent() {
   console.log('------------------------')
   console.log('request:: ', request)
   console.log('method:: ', request.method)
+  console.log('grantPermissions:: ', grantPermissions)
 
   const respond = useMutation({
     async mutationFn({

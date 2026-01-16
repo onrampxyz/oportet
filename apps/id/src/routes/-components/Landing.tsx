@@ -11,7 +11,7 @@ import * as MipdPostMessage from 'mipd-postmessage/child'
 import type { RpcSchema } from 'ox'
 import * as React from 'react'
 import type { RpcSchema as porto_RpcSchema } from 'rise-wallet'
-import { Actions, Porto } from 'rise-wallet/remote'
+import { Actions, Hooks, Porto } from 'rise-wallet/remote'
 import { toast } from 'sonner'
 import { useAccount, useConnect, useConnectors } from 'wagmi'
 import LucideCircleCheck from '~icons/lucide/circle-check'
@@ -42,8 +42,6 @@ export function Landing() {
   })
   const [connector] = useConnectors()
 
-  console.log('connector:: ', connector)
-
   const [email, setEmail] = React.useState('')
 
   const parentProviders = React.useSyncExternalStore(
@@ -63,8 +61,6 @@ export function Landing() {
     [parentProviders, selfProviders],
   )
 
-  console.log('providers:: ', providers)
-
   const getWalletName = (rdns: string): string => {
     // Split by '.' and get the last part as the wallet name
     const parts = rdns.split('.')
@@ -80,14 +76,17 @@ export function Landing() {
 
   const porto = Porto.create()
 
+  const address = Hooks.usePortoStore(
+    porto,
+    (state) => state.accounts[0]?.address,
+  )
+
+  console.log('---------------------')
+
   const respond = useMutation({
-    async mutationFn({
-      providerRdns,
-    }: {
-      providerRdns?: string
-    }) {
-      console.log("entering mutation")
-      return Actions.respond<
+    async mutationFn({ providerRdns }: { providerRdns?: string }) {
+      console.log('entering mutation')
+      const response = await Actions.respond<
         RpcSchema.ExtractReturnType<porto_RpcSchema.Schema, 'wallet_connect'>
       >(
         porto,
@@ -100,20 +99,38 @@ export function Landing() {
             {
               capabilities: {
                 createAccount: true,
+                email: false,
                 providerRdns,
-                //  selectAccount,
+                selectAccount: true,
+                signIn: true,
               },
             },
           ],
         },
         {
           selector(result) {
-            return result.accounts.map((x) => x.address)
+            console.log('selector result:: ', result)
+            return result.accounts.map((x: { address: any }) => x.address)
           },
         },
       )
+
+      return response
     },
   })
+
+  console.log('account:: ', account)
+  console.log('respond.isSuccess:: ', respond.isSuccess)
+  console.log('respond:: ', respond)
+  console.log('porto-address:: ', address)
+
+  // if (respond.isSuccess) {
+  //   return <Dashboard />
+  // }
+
+  // METAMASK
+  // 0x7841BA339453d8254D2C58E532BCd8C0eF012F23
+  // 0x8F8faa9eBB54DEda91a62B4FC33550B19B9d33bf
 
   // 0x8091C7784Baaf77732167FCeA66148eA7e444a56
 
@@ -218,18 +235,21 @@ export function Landing() {
                           key={provider.info.uuid}
                           onClick={(event) => {
                             event.preventDefault()
-                            // biome-ignore lint/nursery/noFloatingPromises: initial fix
-                            respond.mutate({ providerRdns: provider.info.rdns })
-
-                            // handleOnInjectedConnect(provider)
-                            // connect.connect({
-                            //   capabilities: {
-                            //     createAccount: true,
-                            //     email: false,
-                            //     providerRdns: provider.info.rdns,
-                            //   },
-                            //   connector: connector!,
-                            // })
+                            // for testing only
+                            if (provider.info.rdns === 'io.rabby') {
+                              respond.mutate({
+                                providerRdns: provider.info.rdns,
+                              })
+                            } else {
+                              connect.connect({
+                                capabilities: {
+                                  createAccount: true,
+                                  email: false,
+                                  providerRdns: provider.info.rdns,
+                                },
+                                connector: connector!,
+                              })
+                            }
                           }}
                           type="button"
                         >
@@ -255,7 +275,6 @@ export function Landing() {
                 <Button
                   className="flex h-12.5! w-full items-center gap-2 rounded-xl! text-lg!"
                   onClick={() => {
-                    console.log('connector:: ', connector)
                     return connect.connect({
                       capabilities: {
                         createAccount: false,
