@@ -17,7 +17,12 @@ export const Route = createFileRoute('/dialog/wallet_addFunds')({
 })
 
 function RouteComponent() {
+  console.log("-----------------")
+  console.log('entering wallet_addFunds')
   const request = Route.useSearch()
+
+  console.log("wallet_addFunds-request:: ", request)
+
   const { address, chainId, value } =
     request._decoded.method === 'wallet_addFunds'
       ? request._decoded.params[0]

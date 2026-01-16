@@ -26,7 +26,8 @@ export const Route = createFileRoute('/dialog/wallet_connect')({
 })
 
 function RouteComponent() {
-  console.log("entering wallet_connect")
+  console.log("-----------------")
+  console.log('entering wallet_connect')
   const request = Route.useSearch()
   const { params = [] } = request
   const { capabilities } = params[0] ?? {}
@@ -78,9 +79,9 @@ function RouteComponent() {
   )
   const grantPermissions = grantPermissionsQuery.data
 
-  console.log("------------------------")
-  console.log("request:: ", request)
-  console.log("method:: ", request.method)
+  console.log('------------------------')
+  console.log('request:: ', request)
+  console.log('method:: ', request.method)
 
   const respond = useMutation({
     async mutationFn({
@@ -232,7 +233,7 @@ function RouteComponent() {
 
   useAuthSessionRedirect(respond)
 
-  console.log("respond.isSuccess:: ", respond.isSuccess)
+  console.log('respond.isSuccess:: ', respond.isSuccess)
 
   if (respond.isSuccess) return
 
