@@ -61,12 +61,6 @@ export function SignIn(props: SignIn.Props) {
             >
               Sign up
             </Button>
-            {/* <ExternalWalletPopover
-              disabled={status === 'loading' || signingIn}
-              onSelect={(providerRdns) => onApprove({ providerRdns })}
-              providers={providers}
-              variant="secondary"
-            /> */}
             <div className="h-3.5 border-gray7 border-b-1 text-center">
               <span className="my-auto inline-flex bg-gray2 px-2 pt-1 font-[500] text-gray10">
                 OR
@@ -98,14 +92,6 @@ export function SignIn(props: SignIn.Props) {
             >
               Sign in
             </Button>
-            {/* <ExternalWalletPopover
-              disabled={status === 'loading' || signingUp}
-              onSelect={(providerRdns) =>
-                onApprove({ providerRdns, signIn: true })
-              }
-              providers={providers}
-              variant="primary"
-            /> */}
             <div className="h-3.5 border-gray7 border-b-1 text-center">
               <span className="my-auto inline-flex bg-gray2 px-2 pt-1 font-[500] text-gray10">
                 OR

@@ -20,9 +20,9 @@ export function Email(props: Email.Props) {
     permissions,
     providers = [],
     status,
+    injectedStatus
   } = props
 
-  const [isInjectedSigning, setIsInjectedSigning] = React.useState(false)
   const [actions, setActions] = React.useState<
     readonly ('sign-in' | 'sign-up')[]
   >(props.actions ?? ['sign-in', 'sign-up'])
@@ -83,8 +83,6 @@ export function Email(props: Email.Props) {
 
   const [invalid, setInvalid] = React.useState(false)
 
-  console.log('Email: ', props)
-
   return (
     <Layout>
       <Layout.Header className="flex-grow">
@@ -109,7 +107,7 @@ export function Email(props: Email.Props) {
               data-testid="sign-in"
               disabled={status === 'loading' || signingUp}
               icon={<IconScanFace className="size-5.25" />}
-              loading={signingIn && !isInjectedSigning && 'Signing in…'}
+              loading={signingIn && injectedStatus !== "pending" && 'Signing in…'}
               onClick={() => {
                 setMode('sign-in')
                 onApprove({ signIn: true })
@@ -133,9 +131,7 @@ export function Email(props: Email.Props) {
                 <InjectedSigner
                   disabled={status === 'loading' || signingIn}
                   onSelect={(providerRdns) => {
-                    setIsInjectedSigning(true)
                     onApprove({ providerRdns, signIn: true })
-                    setIsInjectedSigning(false)
                   }}
                   providers={providers}
                 />
@@ -188,7 +184,7 @@ export function Email(props: Email.Props) {
                 className="flex-1! rounded-xl p-2"
                 data-testid="sign-up"
                 disabled={status === 'loading' || signingIn}
-                loading={signingUp && !isInjectedSigning && 'Signing up…'}
+                loading={signingUp && injectedStatus !== "pending" && 'Signing up…'}
                 size="medium"
                 type="submit"
                 variant={actions.includes('sign-in') ? 'secondary' : 'primary'}
@@ -239,24 +235,6 @@ export function Email(props: Email.Props) {
                 >
                   Switch
                 </TextButton>
-                {/* <ExternalWalletPopover
-                      onSelect={(providerRdns) =>
-                        onApprove({
-                          providerRdns,
-                          selectAccount: true,
-                          signIn: true,
-                        })
-                      }
-                      providers={providers}
-                      render={
-                        <button
-                          className="cursor-pointer! rounded text-th_link"
-                          type="button"
-                        >
-                          <LucideChevronDown className="size-3.5" />
-                        </button>
-                      }
-                    /> */}
                 <div className="text-th_base-secondary">⋅</div>
                 <TextButton
                   color="link"
@@ -309,5 +287,6 @@ export namespace Email {
     permissions?: Permissions.Props
     providers?: Mipd.EIP6963ProviderDetail[]
     status?: 'loading' | 'responding' | undefined
+    injectedStatus?: 'pending' | 'completed'
   }
 }

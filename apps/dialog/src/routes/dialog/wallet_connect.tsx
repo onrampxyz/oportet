@@ -26,11 +26,13 @@ export const Route = createFileRoute('/dialog/wallet_connect')({
 })
 
 function RouteComponent() {
-  console.log('-----------------')
-  console.log('entering wallet_connect')
   const request = Route.useSearch()
   const { params = [] } = request
   const { capabilities } = params[0] ?? {}
+
+  const [injectedStatus, setInjectedStatus] = React.useState<
+    'pending' | 'completed' | undefined
+  >()
 
   const parentProviders = React.useSyncExternalStore(
     mipdPMStore.subscribe,
@@ -60,8 +62,6 @@ function RouteComponent() {
     return injectedProviders
   }, [parentProviders, selfProviders])
 
-  console.log('providers:: ', providers)
-
   const address = Hooks.usePortoStore(
     porto,
     (state) => state.accounts[0]?.address,
@@ -79,11 +79,6 @@ function RouteComponent() {
   )
   const grantPermissions = grantPermissionsQuery.data
 
-  console.log('------------------------')
-  console.log('request:: ', request)
-  console.log('method:: ', request.method)
-  console.log('grantPermissions:: ', grantPermissions)
-
   const respond = useMutation({
     async mutationFn({
       email,
@@ -91,12 +86,14 @@ function RouteComponent() {
       selectAccount,
       reject,
       providerRdns,
+      isInjected = false,
     }: {
       email?: string
       signIn?: boolean
       selectAccount?: boolean
       reject?: boolean
       providerRdns?: string
+      isInjected?: boolean
     }) {
       if (!request) throw new Error('no request found.')
       if (request.method !== 'wallet_connect')
@@ -114,13 +111,8 @@ function RouteComponent() {
         'relayUrl',
       )
 
-      console.log('relayUrl:: ', relayUrl)
-
       const capabilities = params[0]?.capabilities
       const grantAdmins = capabilities?.grantAdmins
-
-      console.log('capabilities:: ', capabilities)
-      console.log('grantAdmins:: ', grantAdmins)
 
       // If any admins need to be authorized, we need to check the
       // authority & validity of the request.
@@ -139,6 +131,10 @@ function RouteComponent() {
           return Actions.respond(porto, request, {
             error: new Provider.UnauthorizedError(),
           }).catch(() => { })
+      }
+
+      if (isInjected) {
+        setInjectedStatus("pending")
       }
 
       const response = await Actions.respond(
@@ -182,7 +178,7 @@ function RouteComponent() {
             // navigator.credentials.create() from inside an iframe, notably
             // the Firefox + Bitwarden extension combination.
             // See https://github.com/bitwarden/clients/issues/12590
-            console.log("wallet_connect-dialogue-error:: ", e)
+            console.log('wallet_connect-dialogue-error:: ', e)
 
             if (
               e?.message?.includes("Invalid 'sameOriginWithAncestors' value")
@@ -205,6 +201,8 @@ function RouteComponent() {
           },
         },
       )
+
+      setInjectedStatus("completed")
 
       const { accounts } = response as { accounts: { address: string }[] }
       const address = accounts[0]?.address
@@ -236,8 +234,6 @@ function RouteComponent() {
 
   useAuthSessionRedirect(respond)
 
-  console.log('respond.isSuccess:: ', respond.isSuccess)
-
   if (respond.isSuccess) return
 
   return (
@@ -248,6 +244,7 @@ function RouteComponent() {
           ? capabilities?.createAccount?.label || ''
           : undefined
       }
+      injectedStatus={injectedStatus}
       onApprove={(options) => respond.mutate(options)}
       permissions={grantPermissions?.permissions}
       providers={providers}

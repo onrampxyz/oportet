@@ -70,14 +70,6 @@ export function Landing() {
     return walletName ?? ''
   }
 
-  console.log('---------------------')
-
-  // METAMASK
-  // 0x7841BA339453d8254D2C58E532BCd8C0eF012F23
-  // 0x8F8faa9eBB54DEda91a62B4FC33550B19B9d33bf
-
-  // 0x8091C7784Baaf77732167FCeA66148eA7e444a56
-
   return (
     <>
       <Layout.Header left={false} right={undefined} />
