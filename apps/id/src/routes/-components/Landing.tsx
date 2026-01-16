@@ -4,10 +4,14 @@ import {
   LogoMark,
   Toast,
 } from '@porto/apps/components'
+import { useMutation } from '@tanstack/react-query'
 import { WalletIcon } from '@web3icons/react/dynamic'
 import * as Mipd from 'mipd'
 import * as MipdPostMessage from 'mipd-postmessage/child'
+import type { RpcSchema } from 'ox'
 import * as React from 'react'
+import type { RpcSchema as porto_RpcSchema } from 'rise-wallet'
+import { Actions, Porto } from 'rise-wallet/remote'
 import { toast } from 'sonner'
 import { useAccount, useConnect, useConnectors } from 'wagmi'
 import LucideCircleCheck from '~icons/lucide/circle-check'
@@ -74,30 +78,42 @@ export function Landing() {
     return walletName ?? ''
   }
 
-  // const porto = Porto.create()
+  const porto = Porto.create()
 
-  // const handleOnInjectedConnect = async (
-  //   provider: Mipd.EIP6963ProviderDetail,
-  // ) => {
-  //   try {
-  //     const response = await porto.provider.request({
-  //       method: 'wallet_connect',
-  //       params: [
-  //         {
-  //           capabilities: {
-  //             createAccount: false,
-  //             email: false,
-  //             providerRdns: provider.info.rdns,
-  //           },
-  //         },
-  //       ],
-  //     })
-
-  //     console.log('response:: ', response)
-  //   } catch (e) {
-  //     console.log('e-handleInjectedConnect:: ', e)
-  //   }
-  // }
+  const respond = useMutation({
+    async mutationFn({
+      providerRdns,
+    }: {
+      providerRdns?: string
+    }) {
+      console.log("entering mutation")
+      return Actions.respond<
+        RpcSchema.ExtractReturnType<porto_RpcSchema.Schema, 'wallet_connect'>
+      >(
+        porto,
+        {
+          _returnType: undefined,
+          id: 0,
+          jsonrpc: '2.0',
+          method: 'wallet_connect',
+          params: [
+            {
+              capabilities: {
+                createAccount: true,
+                providerRdns,
+                //  selectAccount,
+              },
+            },
+          ],
+        },
+        {
+          selector(result) {
+            return result.accounts.map((x) => x.address)
+          },
+        },
+      )
+    },
+  })
 
   // 0x8091C7784Baaf77732167FCeA66148eA7e444a56
 
@@ -203,15 +219,17 @@ export function Landing() {
                           onClick={(event) => {
                             event.preventDefault()
                             // biome-ignore lint/nursery/noFloatingPromises: initial fix
+                            respond.mutate({ providerRdns: provider.info.rdns })
+
                             // handleOnInjectedConnect(provider)
-                            connect.connect({
-                              capabilities: {
-                                createAccount: true,
-                                email: false,
-                                providerRdns: provider.info.rdns,
-                              },
-                              connector: connector!,
-                            })
+                            // connect.connect({
+                            //   capabilities: {
+                            //     createAccount: true,
+                            //     email: false,
+                            //     providerRdns: provider.info.rdns,
+                            //   },
+                            //   connector: connector!,
+                            // })
                           }}
                           type="button"
                         >
