@@ -118,8 +118,8 @@ export function Email(props: Email.Props) {
               width={actions.includes('sign-up') ? undefined : 'full'}
             >
               {actions.includes('sign-up')
-                ? 'Sign in with RISE Wallet'
-                : 'Continue with RISE Wallet'}
+                ? 'Sign in with Passkey'
+                : 'Continue with Passkey'}
             </Button>
             {actions.includes('sign-up') && (
               <>
@@ -268,7 +268,7 @@ export function Email(props: Email.Props) {
             {providers.length > 0 && (
               <div className="flex w-full flex-col gap-4 pt-2">
                 <div className="h-3.5 border-gray7 border-b-1 text-center">
-                  <span className='my-auto inline-flex bg-gray2 px-2 pt-1 font-[500] text-gray10'>
+                  <span className="my-auto inline-flex bg-gray2 px-2 pt-1 font-[500] text-gray10">
                     OR
                   </span>
                 </div>

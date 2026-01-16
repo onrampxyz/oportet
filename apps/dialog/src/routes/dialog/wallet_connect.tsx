@@ -106,6 +106,9 @@ function RouteComponent() {
       const relayUrl = new URLSearchParams(window.location.search).get(
         'relayUrl',
       )
+
+      console.log("relayUrl:: ", relayUrl)
+
       const capabilities = params[0]?.capabilities
       const grantAdmins = capabilities?.grantAdmins
 
@@ -117,7 +120,7 @@ function RouteComponent() {
         if (!relayUrl || new URL(relayUrl).hostname !== 'localhost')
           return Actions.respond(porto, request, {
             error: new Provider.UnauthorizedError(),
-          }).catch(() => {})
+          }).catch(() => { })
 
         // If the keys are not trusted by the relay, do not allow.
         const publicKeys = grantAdmins.map((admin) => admin.publicKey)
@@ -125,7 +128,7 @@ function RouteComponent() {
         if (!isValid)
           return Actions.respond(porto, request, {
             error: new Provider.UnauthorizedError(),
-          }).catch(() => {})
+          }).catch(() => { })
       }
 
       const response = await Actions.respond(
@@ -139,11 +142,11 @@ function RouteComponent() {
                 ...capabilities,
                 createAccount: email
                   ? {
-                      ...(typeof capabilities?.createAccount === 'object'
-                        ? capabilities?.createAccount
-                        : {}),
-                      label: email,
-                    }
+                    ...(typeof capabilities?.createAccount === 'object'
+                      ? capabilities?.createAccount
+                      : {}),
+                    label: email,
+                  }
                   : capabilities?.createAccount || !signIn,
                 email: Boolean(email),
                 grantPermissions: grantPermissions?._encoded,

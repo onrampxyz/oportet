@@ -90,7 +90,7 @@ export function SignUp(props: SignUp.Props) {
             </Button>
 
             <div className="h-3.5 border-gray7 border-b-1 text-center">
-              <span className='my-auto inline-flex bg-gray2 px-2 pt-1 font-[500] text-gray10'>
+              <span className="my-auto inline-flex bg-gray2 px-2 pt-1 font-[500] text-gray10">
                 OR
               </span>
             </div>
