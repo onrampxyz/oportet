@@ -27,6 +27,11 @@ export const Route = createFileRoute('/dialog/wallet_connect')({
 
 function RouteComponent() {
   const request = Route.useSearch()
+  console.log("entering wallet_connect")
+  console.log("------------------------")
+  console.log("request:: ", request)
+  console.log("method:: ", request.method)
+
   const { params = [] } = request
   const { capabilities } = params[0] ?? {}
 
@@ -107,10 +112,13 @@ function RouteComponent() {
         'relayUrl',
       )
 
-      console.log("relayUrl:: ", relayUrl)
+      console.log('relayUrl:: ', relayUrl)
 
       const capabilities = params[0]?.capabilities
       const grantAdmins = capabilities?.grantAdmins
+
+      console.log('capabilities:: ', capabilities)
+      console.log('grantAdmins:: ', grantAdmins)
 
       // If any admins need to be authorized, we need to check the
       // authority & validity of the request.
@@ -223,6 +231,8 @@ function RouteComponent() {
   ])
 
   useAuthSessionRedirect(respond)
+
+  console.log("respond.isSuccess:: ", respond.isSuccess)
 
   if (respond.isSuccess) return
 

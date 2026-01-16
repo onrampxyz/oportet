@@ -8,6 +8,7 @@ import { WalletIcon } from '@web3icons/react/dynamic'
 import * as Mipd from 'mipd'
 import * as MipdPostMessage from 'mipd-postmessage/child'
 import * as React from 'react'
+import { Porto } from 'rise-wallet/remote'
 import { toast } from 'sonner'
 import { useAccount, useConnect, useConnectors } from 'wagmi'
 import LucideCircleCheck from '~icons/lucide/circle-check'
@@ -73,6 +74,31 @@ export function Landing() {
 
     return walletName ?? ''
   }
+
+  const porto = Porto.create()
+
+  // const handleOnInjectedConnect = async (
+  //   provider: Mipd.EIP6963ProviderDetail,
+  // ) => {
+  //   try {
+  //     const response = await porto.provider.request({
+  //       method: 'wallet_connect',
+  //       params: [
+  //         {
+  //           capabilities: {
+  //             createAccount: false,
+  //             email: false,
+  //             providerRdns: provider.info.rdns,
+  //           },
+  //         },
+  //       ],
+  //     })
+
+  //     console.log('response:: ', response)
+  //   } catch (e) {
+  //     console.log('e-handleInjectedConnect:: ', e)
+  //   }
+  // }
 
   // 0x8091C7784Baaf77732167FCeA66148eA7e444a56
 
@@ -170,16 +196,18 @@ export function Landing() {
                 <div className="rounded-xl p-8 text-center">
                   Create via Injected Signer
                   <div className="flex gap-2 p-3">
-                    {providers.map((provider) => {
+                    {providers?.map((provider) => {
                       return (
                         <button
                           className="rounded-xl border border-gray7 p-2 hover:bg-gray3 focus:outline-none focus:ring-2 focus:ring-gray8"
                           key={provider.info.uuid}
                           onClick={(event) => {
                             event.preventDefault()
+                            // biome-ignore lint/nursery/noFloatingPromises: initial fix
+                            // handleOnInjectedConnect(provider)
                             connect.connect({
                               capabilities: {
-                                createAccount: { label: email },
+                                createAccount: true,
                                 email: false,
                                 providerRdns: provider.info.rdns,
                               },
@@ -209,15 +237,16 @@ export function Landing() {
 
                 <Button
                   className="flex h-12.5! w-full items-center gap-2 rounded-xl! text-lg!"
-                  onClick={() =>
-                    connect.connect({
+                  onClick={() => {
+                    console.log('connector:: ', connector)
+                    return connect.connect({
                       capabilities: {
                         createAccount: false,
                         selectAccount: true,
                       },
                       connector: connector!,
                     })
-                  }
+                  }}
                   type="button"
                   variant="accent"
                 >
