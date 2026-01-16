@@ -20,7 +20,7 @@ export function Email(props: Email.Props) {
     permissions,
     providers = [],
     status,
-    injectedStatus
+    injectedStatus,
   } = props
 
   const [actions, setActions] = React.useState<
@@ -107,7 +107,9 @@ export function Email(props: Email.Props) {
               data-testid="sign-in"
               disabled={status === 'loading' || signingUp}
               icon={<IconScanFace className="size-5.25" />}
-              loading={signingIn && injectedStatus !== "pending" && 'Signing in…'}
+              loading={
+                signingIn && injectedStatus !== 'pending' && 'Signing in…'
+              }
               onClick={() => {
                 setMode('sign-in')
                 onApprove({ signIn: true })
@@ -131,7 +133,7 @@ export function Email(props: Email.Props) {
                 <InjectedSigner
                   disabled={status === 'loading' || signingIn}
                   onSelect={(providerRdns) => {
-                    onApprove({ providerRdns, signIn: true })
+                    onApprove({ isInjected: true, providerRdns, signIn: true })
                   }}
                   providers={providers}
                 />
@@ -184,7 +186,9 @@ export function Email(props: Email.Props) {
                 className="flex-1! rounded-xl p-2"
                 data-testid="sign-up"
                 disabled={status === 'loading' || signingIn}
-                loading={signingUp && injectedStatus !== "pending" && 'Signing up…'}
+                loading={
+                  signingUp && injectedStatus !== 'pending' && 'Signing up…'
+                }
                 size="medium"
                 type="submit"
                 variant={actions.includes('sign-in') ? 'secondary' : 'primary'}
@@ -211,7 +215,12 @@ export function Email(props: Email.Props) {
               <InjectedSigner
                 disabled={status === 'loading' || signingIn}
                 onSelect={(providerRdns) =>
-                  onApprove({ email: emailInput, providerRdns, signIn: false })
+                  onApprove({
+                    email: emailInput,
+                    isInjected: true,
+                    providerRdns,
+                    signIn: false,
+                  })
                 }
                 providers={providers}
               />
@@ -258,6 +267,7 @@ export function Email(props: Email.Props) {
                   disabled={status === 'loading' || signingIn}
                   onSelect={(providerRdns) =>
                     onApprove({
+                      isInjected: true,
                       providerRdns,
                       selectAccount: true,
                       signIn: true,
@@ -283,6 +293,7 @@ export namespace Email {
       providerRdns?: string
       selectAccount?: boolean
       signIn?: boolean
+      isInjected?: boolean
     }) => void
     permissions?: Permissions.Props
     providers?: Mipd.EIP6963ProviderDetail[]
