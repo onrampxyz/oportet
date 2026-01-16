@@ -8,7 +8,6 @@ import { WalletIcon } from '@web3icons/react/dynamic'
 import * as Mipd from 'mipd'
 import * as MipdPostMessage from 'mipd-postmessage/child'
 import * as React from 'react'
-import { Porto } from 'rise-wallet/remote'
 import { toast } from 'sonner'
 import { useAccount, useConnect, useConnectors } from 'wagmi'
 import LucideCircleCheck from '~icons/lucide/circle-check'
@@ -75,7 +74,7 @@ export function Landing() {
     return walletName ?? ''
   }
 
-  const porto = Porto.create()
+  // const porto = Porto.create()
 
   // const handleOnInjectedConnect = async (
   //   provider: Mipd.EIP6963ProviderDetail,
