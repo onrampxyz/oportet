@@ -4,14 +4,10 @@ import {
   LogoMark,
   Toast,
 } from '@porto/apps/components'
-import { useMutation } from '@tanstack/react-query'
 import { WalletIcon } from '@web3icons/react/dynamic'
 import * as Mipd from 'mipd'
 import * as MipdPostMessage from 'mipd-postmessage/child'
-import type { RpcSchema } from 'ox'
 import * as React from 'react'
-import type { RpcSchema as porto_RpcSchema } from 'rise-wallet'
-import { Actions, Hooks, Porto } from 'rise-wallet/remote'
 import { toast } from 'sonner'
 import { useAccount, useConnect, useConnectors } from 'wagmi'
 import LucideCircleCheck from '~icons/lucide/circle-check'
@@ -74,59 +70,7 @@ export function Landing() {
     return walletName ?? ''
   }
 
-  const porto = Porto.create()
-
-  const address = Hooks.usePortoStore(
-    porto,
-    (state) => state.accounts[0]?.address,
-  )
-
   console.log('---------------------')
-
-  const respond = useMutation({
-    async mutationFn({ providerRdns }: { providerRdns?: string }) {
-      console.log('entering mutation')
-      const response = await Actions.respond<
-        RpcSchema.ExtractReturnType<porto_RpcSchema.Schema, 'wallet_connect'>
-      >(
-        porto,
-        {
-          _returnType: undefined,
-          id: 0,
-          jsonrpc: '2.0',
-          method: 'wallet_connect',
-          params: [
-            {
-              capabilities: {
-                createAccount: true,
-                email: false,
-                providerRdns,
-                selectAccount: true,
-                signIn: true,
-              },
-            },
-          ],
-        },
-        {
-          selector(result) {
-            console.log('selector result:: ', result)
-            return result.accounts.map((x: { address: any }) => x.address)
-          },
-        },
-      )
-
-      return response
-    },
-  })
-
-  console.log('account:: ', account)
-  console.log('respond.isSuccess:: ', respond.isSuccess)
-  console.log('respond:: ', respond)
-  console.log('porto-address:: ', address)
-
-  // if (respond.isSuccess) {
-  //   return <Dashboard />
-  // }
 
   // METAMASK
   // 0x7841BA339453d8254D2C58E532BCd8C0eF012F23
@@ -235,21 +179,14 @@ export function Landing() {
                           key={provider.info.uuid}
                           onClick={(event) => {
                             event.preventDefault()
-                            // for testing only
-                            if (provider.info.rdns === 'io.rabby' || provider.info.rdns === 'app.phantom') {
-                              respond.mutate({
+                            connect.connect({
+                              capabilities: {
+                                createAccount: true,
+                                email: false,
                                 providerRdns: provider.info.rdns,
-                              })
-                            } else {
-                              connect.connect({
-                                capabilities: {
-                                  createAccount: true,
-                                  email: false,
-                                  providerRdns: provider.info.rdns,
-                                },
-                                connector: connector!,
-                              })
-                            }
+                              },
+                              connector: connector!,
+                            })
                           }}
                           type="button"
                         >
