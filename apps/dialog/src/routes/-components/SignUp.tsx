@@ -99,6 +99,7 @@ export function SignUp(props: SignUp.Props) {
               disabled={status === 'loading'}
               onSelect={(providerRdns) => onApprove({ providerRdns })}
               providers={providers}
+              signingIn={status === 'responding'}
             />
           </div>
         </div>

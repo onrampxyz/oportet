@@ -23,6 +23,8 @@ export function Email(props: Email.Props) {
     injectedStatus,
   } = props
 
+  console.log("injectedStatus:: ", injectedStatus)
+
   const [actions, setActions] = React.useState<
     readonly ('sign-in' | 'sign-up')[]
   >(props.actions ?? ['sign-in', 'sign-up'])
@@ -136,6 +138,7 @@ export function Email(props: Email.Props) {
                     onApprove({ isInjected: true, providerRdns, signIn: true })
                   }}
                   providers={providers}
+                  signingIn={status === 'responding'}
                 />
               </>
             )}
@@ -223,6 +226,7 @@ export function Email(props: Email.Props) {
                   })
                 }
                 providers={providers}
+                signingIn={status === 'responding'}
               />
             </div>
           </form>
@@ -274,6 +278,7 @@ export function Email(props: Email.Props) {
                     })
                   }
                   providers={providers}
+                  signingIn={status === 'responding'}
                 />
               </div>
             )}

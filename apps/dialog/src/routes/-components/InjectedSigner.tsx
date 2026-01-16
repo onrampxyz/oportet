@@ -1,9 +1,10 @@
 import type * as Mipd from 'mipd'
-import type * as React from 'react'
+import { useState } from 'react'
 
-export function InjectedSigner(props: Readonly<InjectedSignerContent.Props>) {
-  // const { disabled, onSelect, providers, render, variant = 'primary' } = props
-  const { onSelect, providers } = props
+export function InjectedSigner(props: Readonly<InjectedSigner.Props>) {
+  const { onSelect, providers, disabled, signingIn } = props
+
+  const [rdns, setRdns] = useState('')
 
   if (providers.length === 0) return null
 
@@ -14,9 +15,14 @@ export function InjectedSigner(props: Readonly<InjectedSignerContent.Props>) {
         {providers.map((provider) => {
           return (
             <button
-              className="rounded-xl border border-gray7 p-2 hover:bg-gray3 focus:outline-none focus:ring-2 focus:ring-gray8"
+              className='rounded-xl border border-gray7 p-2 hover:bg-gray3 focus:outline-none focus:ring-2 focus:ring-gray8 data-[connecting=true]:animate-bounce'
+              data-connecting={signingIn && provider.info.rdns === rdns}
+              disabled={disabled}
               key={provider.info.uuid}
-              onClick={() => onSelect(provider.info.rdns)}
+              onClick={() => {
+                setRdns(provider.info.rdns)
+                onSelect(provider.info.rdns)
+              }}
               title={`Connect with ${provider.info.name}`}
               type="button"
             >
@@ -34,12 +40,11 @@ export function InjectedSigner(props: Readonly<InjectedSignerContent.Props>) {
   )
 }
 
-export namespace InjectedSignerContent {
+export namespace InjectedSigner {
   export type Props = {
     disabled?: boolean
     onSelect: (providerRdns: string) => void
     providers: Mipd.EIP6963ProviderDetail[]
-    render?: React.ReactElement
-    variant?: 'primary' | 'secondary'
+    signingIn?: boolean
   }
 }
