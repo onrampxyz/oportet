@@ -22,6 +22,7 @@ export function Email(props: Email.Props) {
     status,
   } = props
 
+  const [isInjectedSigning, setIsInjectedSigning] = React.useState(false)
   const [actions, setActions] = React.useState<
     readonly ('sign-in' | 'sign-up')[]
   >(props.actions ?? ['sign-in', 'sign-up'])
@@ -108,7 +109,7 @@ export function Email(props: Email.Props) {
               data-testid="sign-in"
               disabled={status === 'loading' || signingUp}
               icon={<IconScanFace className="size-5.25" />}
-              loading={signingIn && 'Signing in…'}
+              loading={signingIn && !isInjectedSigning && 'Signing in…'}
               onClick={() => {
                 setMode('sign-in')
                 onApprove({ signIn: true })
@@ -131,9 +132,11 @@ export function Email(props: Email.Props) {
 
                 <InjectedSigner
                   disabled={status === 'loading' || signingIn}
-                  onSelect={(providerRdns) =>
+                  onSelect={(providerRdns) => {
+                    setIsInjectedSigning(true)
                     onApprove({ providerRdns, signIn: true })
-                  }
+                    setIsInjectedSigning(false)
+                  }}
                   providers={providers}
                 />
               </>
@@ -185,7 +188,7 @@ export function Email(props: Email.Props) {
                 className="flex-1! rounded-xl p-2"
                 data-testid="sign-up"
                 disabled={status === 'loading' || signingIn}
-                loading={signingUp && 'Signing up…'}
+                loading={signingUp && !isInjectedSigning && 'Signing up…'}
                 size="medium"
                 type="submit"
                 variant={actions.includes('sign-in') ? 'secondary' : 'primary'}
