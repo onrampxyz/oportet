@@ -101,7 +101,7 @@ export function Email(props: Email.Props) {
         {actions.includes("sign-in") && (
           <div className="flex w-full flex-col gap-4 pt-2">
             <Button
-              className="flex-1! rounded-xl! p-2"
+              className="flex-1! rounded-xl p-2"
               data-testid="sign-in"
               disabled={status === "loading" || signingUp}
               icon={<IconScanFace className="size-5.25" />}
@@ -112,6 +112,7 @@ export function Email(props: Email.Props) {
                 setMode("sign-in");
                 onApprove({ signIn: true });
               }}
+              size="medium"
               type="button"
               variant="primary"
               width={actions.includes("sign-up") ? undefined : "full"}
