@@ -25,11 +25,11 @@ export function ExternalWalletPopover(props: ExternalWalletPopover.Props) {
           render
             ? undefined
             : {
-              borderLeftColor:
-                variant === 'primary'
-                  ? 'color-mix(in srgb, var(--text-color-th_primary) 30%, transparent)'
-                  : 'color-mix(in srgb, var(--text-color-th_secondary) 30%, transparent)',
-            }
+                borderLeftColor:
+                  variant === 'primary'
+                    ? 'color-mix(in srgb, var(--text-color-th_primary) 30%, transparent)'
+                    : 'color-mix(in srgb, var(--text-color-th_secondary) 30%, transparent)',
+              }
         }
       >
         {!render && <LucideChevronDown className="size-4" />}

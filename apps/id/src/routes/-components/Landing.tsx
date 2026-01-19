@@ -40,8 +40,7 @@ export function Landing() {
   const walletNameMap: Record<string, string> = {
     'com.coinbase.wallet': 'coinbase wallet',
     // Add other special cases here
-  };
-
+  }
 
   const parentProviders = React.useSyncExternalStore(
     mipdPMStore.subscribe,
@@ -62,11 +61,11 @@ export function Landing() {
 
   const getWalletName = (rdns: string): string => {
     if (walletNameMap[rdns]) {
-      return walletNameMap[rdns];
+      return walletNameMap[rdns]
     }
 
-    const parts = rdns.split('.');
-    return parts.at(-1) ?? '';
+    const parts = rdns.split('.')
+    return parts.at(-1) ?? ''
   }
 
   return (
@@ -155,7 +154,7 @@ export function Landing() {
                 {providers?.map((provider) => {
                   return (
                     <button
-                      className='rounded-xl border border-gray7 p-2 hover:bg-gray3 focus:outline-none focus:ring-2 focus:ring-gray8 data-[connecting=true]:animate-bounce'
+                      className="rounded-xl border border-gray7 p-2 hover:bg-gray3 focus:outline-none focus:ring-2 focus:ring-gray8 data-[connecting=true]:animate-bounce"
                       data-connecting={
                         account.isConnecting && provider.info.rdns === rdns
                       }

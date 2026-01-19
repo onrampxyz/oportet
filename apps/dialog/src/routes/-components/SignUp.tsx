@@ -1,12 +1,12 @@
-import { Button, LightDarkImage, Screen } from '@porto/ui'
-import type * as Mipd from 'mipd'
-import { useState } from 'react'
-import * as Dialog from '~/lib/Dialog'
-import { Layout } from '~/routes/-components/Layout'
-import { Permissions } from '~/routes/-components/Permissions'
-import LucideLogIn from '~icons/lucide/log-in'
-import Question from '~icons/mingcute/question-line'
-import { InjectedSigner } from './InjectedSigner'
+import { Button, LightDarkImage, Screen } from "@porto/ui";
+import type * as Mipd from "mipd";
+import { useState } from "react";
+import * as Dialog from "~/lib/Dialog";
+import { Layout } from "~/routes/-components/Layout";
+import { Permissions } from "~/routes/-components/Permissions";
+import LucideLogIn from "~icons/lucide/log-in";
+import Question from "~icons/mingcute/question-line";
+import { InjectedSigner } from "./InjectedSigner";
 
 export function SignUp(props: SignUp.Props) {
   const {
@@ -16,13 +16,13 @@ export function SignUp(props: SignUp.Props) {
     permissions,
     providers = [],
     status,
-  } = props
+  } = props;
 
-  const [showLearn, setShowLearn] = useState(false)
+  const [showLearn, setShowLearn] = useState(false);
 
-  const hostname = Dialog.useStore((state) => state.referrer?.url?.hostname)
+  const hostname = Dialog.useStore((state) => state.referrer?.url?.hostname);
 
-  if (showLearn) return <SignUp.Learn onDone={() => setShowLearn(false)} />
+  if (showLearn) return <SignUp.Learn onDone={() => setShowLearn(false)} />;
 
   return (
     <Screen
@@ -40,11 +40,11 @@ export function SignUp(props: SignUp.Props) {
         <Layout.Header.Default
           content={
             <>
-              Create a new passkey wallet to start using{' '}
+              Create a new passkey wallet to start using{" "}
               {hostname ? (
                 <span className="font-medium">{hostname}</span>
               ) : (
-                'this website'
+                "this website"
               )}
               .
             </>
@@ -61,7 +61,7 @@ export function SignUp(props: SignUp.Props) {
           {enableSignIn ? (
             <Button
               data-testid="sign-in"
-              disabled={status === 'loading'}
+              disabled={status === "loading"}
               onClick={() => onApprove({ selectAccount: true, signIn: true })}
             >
               Sign in
@@ -76,51 +76,45 @@ export function SignUp(props: SignUp.Props) {
             <Button
               className={
                 providers.length > 0
-                  ? 'min-w-0 flex-1! rounded-e-none!'
+                  ? "min-w-0 flex-1! rounded-e-none!"
                   : undefined
               }
               data-testid="sign-up"
-              disabled={status === 'loading'}
-              loading={status === 'responding' && 'Signing up…'}
+              disabled={status === "loading"}
+              loading={status === "responding" && "Signing up…"}
               onClick={() => onApprove({ signIn: false })}
               variant="primary"
-              width={providers.length > 0 ? undefined : 'grow'}
+              width={providers.length > 0 ? undefined : "grow"}
             >
               Sign up
             </Button>
 
-            <div className="h-3.5 border-gray7 border-b-1 text-center">
-              <span className="my-auto inline-flex bg-gray2 px-2 pt-1 font-[500] text-gray10">
-                OR
-              </span>
-            </div>
-
             <InjectedSigner
-              disabled={status === 'loading'}
+              disabled={status === "loading"}
               onSelect={(providerRdns) => onApprove({ providerRdns })}
               providers={providers}
-              signingIn={status === 'responding'}
+              signingIn={status === "responding"}
             />
           </div>
         </div>
       </Layout.Content>
     </Screen>
-  )
+  );
 }
 
 export namespace SignUp {
   export type Props = {
-    enableSignIn?: boolean
+    enableSignIn?: boolean;
     onApprove: (p: {
-      signIn?: boolean
-      selectAccount?: boolean
-      providerRdns?: string
-    }) => void
-    onReject: () => void
-    permissions?: Permissions.Props
-    providers?: Mipd.EIP6963ProviderDetail[]
-    status?: 'loading' | 'responding' | undefined
-  }
+      signIn?: boolean;
+      selectAccount?: boolean;
+      providerRdns?: string;
+    }) => void;
+    onReject: () => void;
+    permissions?: Permissions.Props;
+    providers?: Mipd.EIP6963ProviderDetail[];
+    status?: "loading" | "responding" | undefined;
+  };
 
   export function Learn({ onDone }: { onDone: () => void }) {
     return (
@@ -160,6 +154,6 @@ export namespace SignUp {
           </Layout.Footer.Actions>
         </Layout.Footer>
       </Screen>
-    )
+    );
   }
 }
