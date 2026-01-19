@@ -1,25 +1,38 @@
-import { Button, LogoMark, Toast } from '@porto/apps/components'
-import { WalletIcon } from '@web3icons/react/dynamic'
-import * as Mipd from 'mipd'
-import * as MipdPostMessage from 'mipd-postmessage/child'
-import * as React from 'react'
-import { toast } from 'sonner'
-import { useAccount, useConnect, useConnectors } from 'wagmi'
-import LucideCircleCheck from '~icons/lucide/circle-check'
-import LucideCircleX from '~icons/lucide/circle-x'
-import IconScanFace from '~icons/porto/scan-face'
-import { Layout } from './Layout'
+import { Button, LogoMark, Toast } from "@porto/apps/components";
+import { WalletIcon } from "@web3icons/react/dynamic";
+import * as Mipd from "mipd";
+import * as MipdPostMessage from "mipd-postmessage/child";
+import * as React from "react";
+import { toast } from "sonner";
+import { useAccount, useConnect, useConnectors } from "wagmi";
+import LucideCircleCheck from "~icons/lucide/circle-check";
+import LucideCircleX from "~icons/lucide/circle-x";
+import IconScanFace from "~icons/porto/scan-face";
+import { Layout } from "./Layout";
 
-const mipdPMStore = MipdPostMessage.createStore()
-const mipdStore = Mipd.createStore()
+const mipdPMStore = MipdPostMessage.createStore();
+const mipdStore = Mipd.createStore();
 
 export function Landing() {
-  const account = useAccount()
+  const [connector] = useConnectors();
+  const [isInjectedConnecting, setIsInjectedConnecting] = React.useState(false);
+  const [isSigningIn, setIsSigningIn] = React.useState(false);
+  const [isCreatingAccount, setIsCreatingAccount] = React.useState(false);
+  const [rdns, setRdns] = React.useState("");
+  const [email, setEmail] = React.useState("");
 
+  const resetFlags = () => {
+    setIsInjectedConnecting(false);
+    setIsSigningIn(false);
+    setIsCreatingAccount(false);
+  };
+
+  const account = useAccount();
   const connect = useConnect({
     mutation: {
       onError(error) {
-        if (error.message.includes('email already verified'))
+        resetFlags();
+        if (error.message.includes("email already verified"))
           toast.custom((t) => (
             <Toast
               className={t}
@@ -27,46 +40,58 @@ export function Landing() {
               kind="error"
               title="Create account failed"
             />
-          ))
+          ));
+      },
+      onSuccess() {
+        resetFlags();
       },
     },
-  })
-
-  const [connector] = useConnectors()
-  const [rdns, setRdns] = React.useState('')
-  const [email, setEmail] = React.useState('')
-
+  });
   // TODO: move this to a constant
   const walletNameMap: Record<string, string> = {
-    'com.coinbase.wallet': 'coinbase wallet',
+    "com.coinbase.wallet": "coinbase wallet",
     // Add other special cases here
-  }
+  };
 
   const parentProviders = React.useSyncExternalStore(
     mipdPMStore.subscribe,
     mipdPMStore.getProviders,
-  )
+  );
   const selfProviders = React.useSyncExternalStore(
     mipdStore.subscribe,
     mipdStore.getProviders,
-  )
+  );
 
   const providers = React.useMemo(
     () =>
       [...parentProviders, ...selfProviders].filter(
-        (provider) => provider.info.rdns !== 'com.risechain.wallet',
+        (provider) => provider.info.rdns !== "com.risechain.wallet",
       ),
     [parentProviders, selfProviders],
-  )
+  );
 
   const getWalletName = (rdns: string): string => {
     if (walletNameMap[rdns]) {
-      return walletNameMap[rdns]
+      return walletNameMap[rdns];
     }
 
-    const parts = rdns.split('.')
-    return parts.at(-1) ?? ''
-  }
+    const parts = rdns.split(".");
+    return parts.at(-1) ?? "";
+  };
+
+  const onInjectConnect = (rdns: string) => {
+    console.log("oninject");
+    setIsInjectedConnecting(true);
+    setRdns(rdns);
+    connect.connect({
+      capabilities: {
+        createAccount: true,
+        email: false,
+        providerRdns: rdns,
+      },
+      connector: connector!,
+    });
+  };
 
   return (
     <>
@@ -89,14 +114,15 @@ export function Landing() {
           <div>
             <form
               onSubmit={async (event) => {
-                event.preventDefault()
+                event.preventDefault();
+                setIsCreatingAccount(true);
                 connect.connect({
                   capabilities: {
                     createAccount: { label: email },
                     email: true,
                   },
                   connector: connector!,
-                })
+                });
               }}
             >
               <div className="group peer flex h-12.5 items-center rounded-xl border border-gray7 bg-gray1 py-2 pr-2 pl-4">
@@ -132,11 +158,14 @@ export function Landing() {
               <div className="h-4" />
 
               <Button
-                className="h-12.5! w-full rounded-xl! bg-gray12! text-gray1! text-lg! hover:bg-gray12/90!"
+                className="h-12.5! w-full rounded-xl! bg-gray12! text-gray1! text-lg! hover:bg-gray12/90! data-[connecting=true]:animate-pulse"
+                data-connecting={isCreatingAccount}
                 type="submit"
                 variant="default"
               >
-                Create account via Passkey
+                {isCreatingAccount
+                  ? "Creating account..."
+                  : "Create account via Passkey"}
               </Button>
             </form>
 
@@ -156,20 +185,12 @@ export function Landing() {
                     <button
                       className="rounded-xl border border-gray7 p-2 hover:bg-gray3 focus:outline-none focus:ring-2 focus:ring-gray8 data-[connecting=true]:animate-bounce"
                       data-connecting={
-                        account.isConnecting && provider.info.rdns === rdns
+                        isInjectedConnecting && provider.info.rdns === rdns
                       }
                       key={provider.info.uuid}
                       onClick={(event) => {
-                        setRdns(provider.info.rdns)
-                        event.preventDefault()
-                        connect.connect({
-                          capabilities: {
-                            createAccount: true,
-                            email: false,
-                            providerRdns: provider.info.rdns,
-                          },
-                          connector: connector!,
-                        })
+                        onInjectConnect(provider.info.rdns);
+                        event.preventDefault();
                       }}
                       type="button"
                     >
@@ -179,7 +200,7 @@ export function Landing() {
                         variant="branded"
                       />
                     </button>
-                  )
+                  );
                 })}
               </div>
             </div>
@@ -193,21 +214,23 @@ export function Landing() {
             <div className="h-6" />
 
             <Button
-              className="flex h-12.5! w-full items-center gap-2 rounded-xl! text-lg!"
+              className="flex h-12.5! w-full items-center gap-2 rounded-xl! text-lg! data-[connecting=true]:animate-pulse"
+              data-connecting={isSigningIn}
               onClick={() => {
+                setIsSigningIn(true);
                 return connect.connect({
                   capabilities: {
                     createAccount: false,
                     selectAccount: true,
                   },
                   connector: connector!,
-                })
+                });
               }}
               type="button"
               variant="accent"
             >
               <IconScanFace className="size-5.25" />
-              Sign in
+              {isSigningIn ? "Signing in..." : "Sign in"}
             </Button>
           </div>
         </div>
@@ -215,5 +238,5 @@ export function Landing() {
 
       <Layout.IntegrateFooter />
     </>
-  )
+  );
 }
