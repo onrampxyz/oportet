@@ -4,7 +4,7 @@ import * as Mipd from "mipd";
 import * as MipdPostMessage from "mipd-postmessage/child";
 import * as React from "react";
 import { toast } from "sonner";
-import { useAccount, useConnect, useConnectors } from "wagmi";
+import { useConnect, useConnectors } from "wagmi";
 import LucideCircleCheck from "~icons/lucide/circle-check";
 import LucideCircleX from "~icons/lucide/circle-x";
 import IconScanFace from "~icons/porto/scan-face";
@@ -27,7 +27,6 @@ export function Landing() {
     setIsCreatingAccount(false);
   };
 
-  const account = useAccount();
   const connect = useConnect({
     mutation: {
       onError(error) {
