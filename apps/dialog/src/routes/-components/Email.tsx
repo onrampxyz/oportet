@@ -6,13 +6,12 @@ import * as React from 'react'
 import { Hooks } from 'rise-wallet/remote'
 import * as Dialog from '~/lib/Dialog'
 import { porto } from '~/lib/Porto'
-import { ExternalWalletPopover } from '~/routes/-components/ExternalWalletPopover'
 import { Layout } from '~/routes/-components/Layout'
 import { Permissions } from '~/routes/-components/Permissions'
 import { StringFormatter } from '~/utils'
-import LucideChevronDown from '~icons/lucide/chevron-down'
 import LucideHaze from '~icons/lucide/haze'
 import IconScanFace from '~icons/porto/scan-face'
+import { InjectedSigner } from './InjectedSigner'
 
 export function Email(props: Email.Props) {
   const {
@@ -21,7 +20,10 @@ export function Email(props: Email.Props) {
     permissions,
     providers = [],
     status,
+    injectedStatus,
   } = props
+
+  console.log('injectedStatus:: ', injectedStatus)
 
   const [actions, setActions] = React.useState<
     readonly ('sign-in' | 'sign-up')[]
@@ -97,39 +99,28 @@ export function Email(props: Email.Props) {
 
       <div className="group flex min-h-[48px] w-full flex-col items-center justify-center space-y-3 px-3 pb-3">
         {actions.includes('sign-in') && (
-          <div className="flex w-full gap-0">
+          <div className="flex w-full flex-col gap-4 pt-2">
             <Button
-              className={
-                actions.includes('sign-up')
-                  ? 'min-w-0 flex-1! rounded-e-none!'
-                  : undefined
-              }
+              className="flex-1! rounded-xl p-2"
               data-testid="sign-in"
               disabled={status === 'loading' || signingUp}
               icon={<IconScanFace className="size-5.25" />}
-              loading={signingIn && 'Signing in…'}
+              loading={
+                signingIn && injectedStatus !== 'pending' && 'Signing in…'
+              }
               onClick={() => {
                 setMode('sign-in')
                 onApprove({ signIn: true })
               }}
+              size="medium"
               type="button"
               variant="primary"
               width={actions.includes('sign-up') ? undefined : 'full'}
             >
               {actions.includes('sign-up')
-                ? 'Sign in with RISE Wallet'
-                : 'Continue with RISE Wallet'}
+                ? 'Sign in with Passkey'
+                : 'Continue with Passkey'}
             </Button>
-            {actions.includes('sign-up') && (
-              <ExternalWalletPopover
-                disabled={status === 'loading' || signingUp}
-                onSelect={(providerRdns) =>
-                  onApprove({ providerRdns, signIn: true })
-                }
-                providers={providers}
-                variant="primary"
-              />
-            )}
           </div>
         )}
 
@@ -172,16 +163,14 @@ export function Email(props: Email.Props) {
                 Optional
               </div>
             </div>
-            <div className="flex w-full gap-0">
+            <div className="flex w-full flex-col gap-4 pt-2">
               <Button
-                className={
-                  providers.length > 0
-                    ? 'min-w-0 flex-1! rounded-e-none!'
-                    : undefined
-                }
+                className="flex-1! rounded-xl p-2"
                 data-testid="sign-up"
                 disabled={status === 'loading' || signingIn}
-                loading={signingUp && 'Signing up…'}
+                loading={
+                  signingUp && injectedStatus !== 'pending' && 'Signing up…'
+                }
                 size="medium"
                 type="submit"
                 variant={actions.includes('sign-in') ? 'secondary' : 'primary'}
@@ -194,68 +183,72 @@ export function Email(props: Email.Props) {
                 ) : (
                   <div className="flex gap-2">
                     <IconScanFace className="size-5.25" />
-                    Sign up with RISE Wallet
+                    Sign up with Passkey
                   </div>
                 )}
               </Button>
-              <ExternalWalletPopover
+              <InjectedSigner
                 disabled={status === 'loading' || signingIn}
                 onSelect={(providerRdns) =>
-                  onApprove({ email: emailInput, providerRdns, signIn: false })
+                  onApprove({
+                    email: emailInput,
+                    isInjected: true,
+                    providerRdns,
+                    signIn: false,
+                  })
                 }
                 providers={providers}
-                variant={actions.includes('sign-in') ? 'secondary' : 'primary'}
+                signingIn={status === 'responding'}
               />
             </div>
           </form>
         ) : (
           // If no sign up button, this means the user is already logged in, however
           // the user may want to sign in with a different passkey.
-          <div className="flex w-full justify-between gap-2">
-            <div>
-              <span className="text-th_base-secondary">Using</span>{' '}
-              <span className="text-th_base">{displayName}</span>
+          <>
+            <div className="flex w-full items-center justify-between gap-2">
+              <div>
+                <span className="text-th_base-secondary">Using</span>{' '}
+                <span className="text-th_base">{displayName}</span>
+              </div>
+              <div className="flex items-center gap-0.5">
+                <TextButton
+                  color="link"
+                  onClick={() => {
+                    onApprove({ selectAccount: true, signIn: true })
+                  }}
+                >
+                  Switch
+                </TextButton>
+                <div className="text-th_base-secondary">⋅</div>
+                <TextButton
+                  color="link"
+                  onClick={() => {
+                    setActions(['sign-up'])
+                  }}
+                >
+                  Sign up
+                </TextButton>
+              </div>
             </div>
-            <div className="flex items-center gap-0.5">
-              <TextButton
-                color="link"
-                onClick={() => {
-                  onApprove({ selectAccount: true, signIn: true })
-                }}
-              >
-                Switch
-              </TextButton>
-              {providers.length > 0 && (
-                <ExternalWalletPopover
+            {providers.length > 0 && (
+              <div className="flex w-full flex-col gap-4 pt-2">
+                <InjectedSigner
+                  disabled={status === 'loading' || signingIn}
                   onSelect={(providerRdns) =>
                     onApprove({
+                      isInjected: true,
                       providerRdns,
                       selectAccount: true,
                       signIn: true,
                     })
                   }
                   providers={providers}
-                  render={
-                    <button
-                      className="cursor-pointer! rounded text-th_link"
-                      type="button"
-                    >
-                      <LucideChevronDown className="size-3.5" />
-                    </button>
-                  }
+                  signingIn={status === 'responding'}
                 />
-              )}
-              <div className="text-th_base-secondary">⋅</div>
-              <TextButton
-                color="link"
-                onClick={() => {
-                  setActions(['sign-up'])
-                }}
-              >
-                Sign up
-              </TextButton>
-            </div>
-          </div>
+              </div>
+            )}
+          </>
         )}
       </div>
     </Layout>
@@ -271,9 +264,11 @@ export namespace Email {
       providerRdns?: string
       selectAccount?: boolean
       signIn?: boolean
+      isInjected?: boolean
     }) => void
     permissions?: Permissions.Props
     providers?: Mipd.EIP6963ProviderDetail[]
     status?: 'loading' | 'responding' | undefined
+    injectedStatus?: 'pending' | 'completed'
   }
 }

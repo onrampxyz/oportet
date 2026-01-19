@@ -4,10 +4,10 @@ import * as React from 'react'
 import { Hooks } from 'rise-wallet/remote'
 import * as Dialog from '~/lib/Dialog'
 import { porto } from '~/lib/Porto'
-import { ExternalWalletPopover } from '~/routes/-components/ExternalWalletPopover'
 import { Layout } from '~/routes/-components/Layout'
 import { Permissions } from '~/routes/-components/Permissions'
 import LucideLogIn from '~icons/lucide/log-in'
+import { InjectedSigner } from './InjectedSigner'
 
 export function SignIn(props: SignIn.Props) {
   const { onApprove, permissions, providers = [], status } = props
@@ -43,7 +43,7 @@ export function SignIn(props: SignIn.Props) {
 
       <Layout.Footer>
         <Layout.Footer.Actions>
-          <div className="flex min-w-0 flex-1 gap-0">
+          <div className="flex w-full flex-col gap-4 pt-2">
             <Button
               className={
                 providers.length > 0
@@ -61,14 +61,13 @@ export function SignIn(props: SignIn.Props) {
             >
               Sign up
             </Button>
-            <ExternalWalletPopover
+            <InjectedSigner
               disabled={status === 'loading' || signingIn}
               onSelect={(providerRdns) => onApprove({ providerRdns })}
               providers={providers}
-              variant="secondary"
             />
           </div>
-          <div className="flex min-w-0 flex-1 gap-0">
+          <div className="flex w-full flex-col gap-4 pt-2">
             <Button
               className={
                 providers.length > 0
@@ -87,13 +86,12 @@ export function SignIn(props: SignIn.Props) {
             >
               Sign in
             </Button>
-            <ExternalWalletPopover
-              disabled={status === 'loading' || signingUp}
+            <InjectedSigner
+              disabled={status === 'loading' || signingIn}
               onSelect={(providerRdns) =>
                 onApprove({ providerRdns, signIn: true })
               }
               providers={providers}
-              variant="primary"
             />
           </div>
         </Layout.Footer.Actions>

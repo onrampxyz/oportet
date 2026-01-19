@@ -27,6 +27,7 @@ export const Route = createFileRoute('/dialog/eth_requestAccounts')({
 
 function RouteComponent() {
   const request = Route.useSearch()
+
   const address = Hooks.usePortoStore(
     porto,
     (state) => state.accounts[0]?.address,
