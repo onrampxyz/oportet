@@ -1,5 +1,3 @@
-import * as UserAgent from '../../core/internal/userAgent.js'
-
 export type MethodPolicy = {
   method: string
   modes?:
@@ -77,11 +75,12 @@ export const methodPolicies = [
     method: 'wallet_connect',
     modes: {
       dialog: true,
-      headless: !UserAgent.isSafari()
-        ? {
-            sameOrigin: true,
-          }
-        : undefined,
+      // headless: !UserAgent.isSafari()
+      //   ? {
+      //       sameOrigin: true,
+      //     }
+      //   : undefined,
+      headless: true,
     },
     requireConnection: false,
   },
