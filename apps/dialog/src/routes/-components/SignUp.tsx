@@ -2,11 +2,11 @@ import { Button, LightDarkImage, Screen } from '@porto/ui'
 import type * as Mipd from 'mipd'
 import { useState } from 'react'
 import * as Dialog from '~/lib/Dialog'
-import { ExternalWalletPopover } from '~/routes/-components/ExternalWalletPopover'
 import { Layout } from '~/routes/-components/Layout'
 import { Permissions } from '~/routes/-components/Permissions'
 import LucideLogIn from '~icons/lucide/log-in'
 import Question from '~icons/mingcute/question-line'
+import { InjectedSigner } from './InjectedSigner'
 
 export function SignUp(props: SignUp.Props) {
   const {
@@ -72,7 +72,7 @@ export function SignUp(props: SignUp.Props) {
             </Button>
           )}
 
-          <div className="flex min-w-0 flex-1 gap-0">
+          <div className="flex w-full flex-col gap-4 pt-2">
             <Button
               className={
                 providers.length > 0
@@ -88,11 +88,12 @@ export function SignUp(props: SignUp.Props) {
             >
               Sign up
             </Button>
-            <ExternalWalletPopover
+
+            <InjectedSigner
               disabled={status === 'loading'}
               onSelect={(providerRdns) => onApprove({ providerRdns })}
               providers={providers}
-              variant="primary"
+              signingIn={status === 'responding'}
             />
           </div>
         </div>
