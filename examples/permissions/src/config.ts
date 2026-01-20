@@ -1,16 +1,16 @@
 import { porto } from 'rise-wallet/wagmi'
 import { parseEther } from 'viem'
 import { createConfig, http } from 'wagmi'
-import { baseSepolia } from 'wagmi/chains'
+import { sepolia } from 'wagmi/chains'
 import { exp1Config } from './contracts'
 
 export const config = createConfig({
-  chains: [baseSepolia],
+  chains: [sepolia],
   connectors: [porto()],
   multiInjectedProviderDiscovery: false,
   pollingInterval: 1_000,
   transports: {
-    [baseSepolia.id]: http(),
+    [sepolia.id]: http(),
   },
 })
 
