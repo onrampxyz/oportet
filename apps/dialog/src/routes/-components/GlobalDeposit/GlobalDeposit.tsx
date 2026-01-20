@@ -1,5 +1,5 @@
 import { Input } from '@porto/apps/components'
-import { Button, Deposit, Spinner } from '@porto/ui'
+import { Button, Deposit } from '@porto/ui'
 import { cx } from 'cva'
 import { Value } from 'ox'
 import { useEffect, useMemo, useState } from 'react'
@@ -13,8 +13,8 @@ import {
   useMintToken,
   useWalletAsset,
 } from '~/hooks'
-import { Layout } from '../Layout'
 import { DropdownSelector, getAssets, SupportedChains } from '.'
+import { Layout } from '../Layout'
 import { Bridge, type BridgeState } from './Bridge'
 
 export type GlobalDepositProps = Readonly<{
@@ -264,31 +264,16 @@ export function GlobalDeposit({ onClose }: GlobalDepositProps) {
                     type="number"
                     value={amount}
                   />
-                  {isBalanceZero ? (
-                    <Button
-                      className="border border-th_base"
-                      onClick={async () => {
-                        await mintToken()
-                      }}
-                      variant="primary"
-                    >
-                      {isMinting ? (
-                        <Spinner color="white" size="small" />
-                      ) : (
-                        'Mint'
-                      )}
-                    </Button>
-                  ) : (
-                    <Button
-                      className="border border-th_base"
-                      onClick={() => {
-                        setAmount(amountBalance)
-                      }}
-                      variant="primary"
-                    >
-                      Max
-                    </Button>
-                  )}
+                  <Button
+                    className="border border-th_base"
+                    disabled={isBalanceZero}
+                    onClick={() => {
+                      setAmount(amountBalance)
+                    }}
+                    variant="primary"
+                  >
+                    Max
+                  </Button>
                 </div>
               </div>
             </>

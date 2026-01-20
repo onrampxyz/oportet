@@ -1,41 +1,43 @@
-import { Button } from '@porto/ui'
-import { Chains } from 'rise-wallet/index'
-import { useFundsContext } from '~/contexts'
-import { Layout } from '../Layout'
+import { Button } from "@porto/ui";
+import { Chains } from "rise-wallet/index";
+import { useFundsContext } from "~/contexts";
+import { Layout } from "../Layout";
+import { ReceiveViaQr } from "./ReceiveViaQr";
 
 export type Chain = {
-  id: number
-  name: string
-  icon: string
-}
+  id: number;
+  name: string;
+  icon: string;
+};
 
 export const SupportedChains: Chain[] = [
   {
-    icon: '/dialog/chains/rise.svg',
-    id: Chains.riseTestnet.id,
-    name: Chains.riseTestnet.name,
-  },
-  {
-    icon: '/dialog/chains/sepolia.svg',
+    icon: "/dialog/chains/sepolia.svg",
     id: Chains.sepolia.id,
     name: Chains.sepolia.name,
   },
-]
+];
 
 export function ChainSelection() {
-  const { selectedChain, setSelectedChain, setView } = useFundsContext()
+  const { selectedChain, setSelectedChain, setView, address } =
+    useFundsContext();
 
   return (
     <Layout>
-      <Layout.Header>
-        <Layout.Header.Default
-          subContent="Deposit token from these chains"
-          title="Choose a Network"
-          variant="default"
-        />
-      </Layout.Header>
       <Layout.Content>
-        <div className="space-y-2 pt-3">
+        {address && <ReceiveViaQr address={address} />}
+        <div className="mx-4 h-3.5 border-gray7 border-b-1 text-center">
+          <span className="my-auto mt-[3px] inline-flex bg-gray2 px-2 text-th_base-secondary">
+            OR
+          </span>
+        </div>
+        <p className="pt-4 text-center font-bold text-lg text-th_base">
+          Global Deposit
+        </p>
+        <p className="text-center text-sm text-th_base-secondary">
+          Bridge to your RISE Wallet
+        </p>
+        <div className="space-y-2 pt-2">
           {SupportedChains.map((chain) => {
             return (
               <Button
@@ -43,11 +45,11 @@ export function ChainSelection() {
                 data-selected={selectedChain?.name === chain.name}
                 key={chain.name}
                 onClick={() => {
-                  setSelectedChain(chain)
+                  setSelectedChain(chain);
                   if (chain.id === Chains.riseTestnet.id) {
-                    setView('global-deposit')
+                    setView("global-deposit");
                   } else {
-                    setView('selection-asset')
+                    setView("selection-asset");
                   }
                 }}
                 type="button"
@@ -61,10 +63,10 @@ export function ChainSelection() {
                 />
                 <span className="pt-0.5">{chain.name}</span>
               </Button>
-            )
+            );
           })}
         </div>
       </Layout.Content>
     </Layout>
-  )
+  );
 }
