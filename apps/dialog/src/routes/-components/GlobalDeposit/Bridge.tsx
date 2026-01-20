@@ -1,4 +1,4 @@
-import { Button, CopyButton, Details, Spinner } from '@porto/ui'
+import { Button, CopyButton, Details, Separator, Spinner } from '@porto/ui'
 import { type Hex, Value } from 'ox'
 import type { Chain } from '~/routes/-components/GlobalDeposit/ChainSelection'
 import { Layout } from '~/routes/-components/Layout'
@@ -50,7 +50,7 @@ export function ErrorDisplay(
   }
 
   return (
-    <div className="max-w-[320px] break-all text-destructive text-sm">
+    <div className='break-[break-word] max-w-[320px] text-destructive text-sm'>
       {message}
     </div>
   )
@@ -66,8 +66,6 @@ export function Bridge(props: Readonly<BridgeProps>) {
     onRetry,
   } = props
 
-  console.log('bridgeState:: ', bridgeState)
-
   return (
     <Layout>
       <Layout.Header>
@@ -78,9 +76,9 @@ export function Bridge(props: Readonly<BridgeProps>) {
         />
       </Layout.Header>
 
-      <Layout.Content>
-        <div className="flex flex-col gap-3">
-          <div className="flex flex-col gap-3">
+      <Layout.Content className="p-3!">
+        <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-3 rounded-md border border-th_base px-2.5 py-1">
             {/* Source Chain Status */}
             <div className="flex items-start gap-2 pt-1 pb-2">
               <div className="mt-1">
@@ -128,48 +126,58 @@ export function Bridge(props: Readonly<BridgeProps>) {
 
           {selectedToken && amount !== undefined && (
             <Details opened>
-              <div className="flex items-center justify-between gap-2">
-                <p className="text-th_base">Source Chain</p>
-                <p className="text-th_base">
-                  <span className="font-bold">{selectedChain?.name}</span> (
-                  {selectedChain?.id})
-                </p>
-              </div>
-              <div className="flex items-center justify-between gap-2">
-                <p className="text-th_base">Amount</p>
-                <p className="text-th_base">
-                  <span className="font-bold">
-                    {' '}
-                    {Value.format(amount, selectedToken.decimals)}{' '}
-                  </span>
-                  {selectedToken.symbol}
-                </p>
-              </div>
-              <div className="flex items-center justify-between gap-2">
-                <p className="text-th_base">Bridge type</p>
-                <p className="text-th_base">
-                  {selectedToken.bridgeType.toUpperCase()}
-                </p>
+              <div className="p-1">
+                <div className="flex items-center justify-between gap-2">
+                  <p className="text-th_base">Source Chain</p>
+                  <p className="text-th_base">
+                    <span className="font-bold">{selectedChain?.name}</span> (
+                    {selectedChain?.id})
+                  </p>
+                </div>
+                <Separator />
+                <div className="flex items-center justify-between gap-2">
+                  <p className="text-th_base">Amount</p>
+                  <p className="text-th_base">
+                    <span className="font-bold">
+                      {' '}
+                      {Value.format(amount, selectedToken.decimals)}{' '}
+                    </span>
+                    {selectedToken.symbol}
+                  </p>
+                </div>
+                <Separator />
+                <div className="flex items-center justify-between gap-2">
+                  <p className="text-th_base">Bridge type</p>
+                  <p className="text-th_base">
+                    {selectedToken.bridgeType.toUpperCase()}
+                  </p>
+                </div>
               </div>
             </Details>
           )}
         </div>
       </Layout.Content>
 
-      <Layout.Footer className="min-h-0!">
-        <Layout.Footer.Actions>
-          {bridgeState.status === 'failed' && onRetry && (
-            <Button onClick={onRetry} variant="primary" width="full">
-              Retry
-            </Button>
-          )}
-          {bridgeState.status === 'completed' && (
-            <Button onClick={() => onSuccess()} variant="primary" width="full">
-              Done
-            </Button>
-          )}
-        </Layout.Footer.Actions>
-      </Layout.Footer>
+      {bridgeState.status !== 'pending' && (
+        <Layout.Footer className="min-h-0!">
+          <Layout.Footer.Actions>
+            {bridgeState.status === 'failed' && onRetry && (
+              <Button onClick={onRetry} variant="primary" width="full">
+                Retry
+              </Button>
+            )}
+            {bridgeState.status === 'completed' && (
+              <Button
+                onClick={() => onSuccess()}
+                variant="primary"
+                width="full"
+              >
+                Done
+              </Button>
+            )}
+          </Layout.Footer.Actions>
+        </Layout.Footer>
+      )}
     </Layout>
   )
 }

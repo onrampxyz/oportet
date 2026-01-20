@@ -1,19 +1,19 @@
-import { Input } from '@porto/apps/components'
-import { Button, Deposit } from '@porto/ui'
-import { Value } from 'ox'
-import { useEffect, useMemo, useState } from 'react'
-import { Chains } from 'rise-wallet/index'
-import { formatUnits, parseUnits } from 'viem'
-import { useReadContract } from 'wagmi'
-import { useFundsContext } from '~/contexts'
-import { useBridge, useDestinationAsset, useWalletAsset } from '~/hooks'
-import { Layout } from '../Layout'
-import { DropdownSelector, getAssets, SupportedChains } from '.'
-import { Bridge, type BridgeState } from './Bridge'
+import { Input } from "@porto/apps/components";
+import { Button, Deposit } from "@porto/ui";
+import { Value } from "ox";
+import { useEffect, useMemo, useState } from "react";
+import { Chains } from "rise-wallet/index";
+import { formatUnits, parseUnits } from "viem";
+import { useReadContract } from "wagmi";
+import { useFundsContext } from "~/contexts";
+import { useBridge, useDestinationAsset, useWalletAsset } from "~/hooks";
+import { DropdownSelector, getAssets, SupportedChains } from ".";
+import { Layout } from "../Layout";
+import { Bridge, type BridgeState } from "./Bridge";
 
 export type GlobalDepositProps = Readonly<{
-  onClose: () => void
-}>
+  onClose: () => void;
+}>;
 
 export function GlobalDeposit({ onClose }: GlobalDepositProps) {
   const {
@@ -24,31 +24,31 @@ export function GlobalDeposit({ onClose }: GlobalDepositProps) {
     setAmount,
     setSelectedAsset,
     setSelectedChain,
-  } = useFundsContext()
+  } = useFundsContext();
 
   const [bridgeState, setBridgeState] = useState<BridgeState>({
-    status: 'idle',
-  })
+    status: "idle",
+  });
 
   const {
     balance,
     refetch: refetchBalance,
     isLoading: isWalletAssetLoading,
   } = useWalletAsset({
-    address: address ?? '0x',
+    address: address ?? "0x",
     chainId: selectedChain?.id,
-    tokenAddress: selectedAsset?.address ?? '0x',
-  })
+    tokenAddress: selectedAsset?.address ?? "0x",
+  });
 
-  const tokens = getAssets(selectedChain?.id)
+  const tokens = getAssets(selectedChain?.id);
   // Default to RISE, add handling when on mainnet
-  const destinationToken = getAssets(11155931)
+  const destinationToken = getAssets(11155931);
 
   const selectedToken = useMemo(() => {
     return tokens.find(
       (t) => t.address.toLowerCase() === selectedAsset?.address?.toLowerCase(),
-    )
-  }, [tokens, selectedAsset?.address])
+    );
+  }, [tokens, selectedAsset?.address]);
 
   const {
     data: minAmounts,
@@ -57,74 +57,74 @@ export function GlobalDeposit({ onClose }: GlobalDepositProps) {
   } = useReadContract({
     abi: [
       {
-        inputs: [{ internalType: 'address', name: '', type: 'address' }],
-        name: 'minAmounts',
-        outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
-        stateMutability: 'view',
-        type: 'function',
+        inputs: [{ internalType: "address", name: "", type: "address" }],
+        name: "minAmounts",
+        outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+        stateMutability: "view",
+        type: "function",
       },
     ],
     address: selectedToken?.bridgeWrapper!,
     args: [selectedToken?.bridgeContract!],
     chainId: selectedChain?.id as any,
-    functionName: 'minAmounts',
+    functionName: "minAmounts",
     query: {
       enabled:
         !!selectedToken?.bridgeWrapper && !!selectedToken?.bridgeContract,
     },
-  })
+  });
 
   const minDepositAmount = useMemo(() => {
-    if (!minAmounts || !selectedToken) return null
+    if (!minAmounts || !selectedToken) return null;
 
-    return formatUnits(minAmounts, selectedToken.decimals)
-  }, [minAmounts, selectedToken])
+    return formatUnits(minAmounts, selectedToken.decimals);
+  }, [minAmounts, selectedToken]);
 
   //TODO: add balance: riseBalance,
   const { refetch: refetchRiseBalance } = useDestinationAsset({
-    address: address ?? '0x',
-    destinationChainId: 11155931, // Default to RISE, add handling when on mainnet
+    address: address ?? "0x",
+    destinationChainId: 11155931, // TODO: Default to RISE, add handling when on mainnet
     destinationTokenAddress: destinationToken[0]?.address,
     enabled:
-      bridgeState.status === 'completed' || bridgeState.status === 'failed',
-    refetchInterval: bridgeState.status === 'pending' ? 2000 : false,
-  })
+      bridgeState.status === "completed" || bridgeState.status === "failed",
+    refetchInterval: bridgeState.status === "pending" ? 2000 : false,
+  });
 
   const { bridge, chains, targetChainId } = useBridge({
-    account: address ?? '0x',
+    account: address ?? "0x",
     amount: parseUnits(amount, selectedAsset?.decimals ?? 18),
     selectedChainId: selectedChain?.id,
     selectedToken,
     setBridgeState,
     tokenBalance: balance,
-  })
+  });
 
   const amountBalance = useMemo(() => {
     if (balance) {
-      return Value.format(balance, selectedAsset?.decimals)
+      return Value.format(balance, selectedAsset?.decimals);
     }
 
-    return '0.00'
-  }, [balance, selectedAsset?.decimals])
+    return "0.00";
+  }, [balance, selectedAsset?.decimals]);
 
   const shouldExceedMinDeposit = useMemo(() => {
-    if (!amount || !selectedToken) return false
+    if (!amount || !selectedToken) return false;
 
     const minDeposit =
       minDepositAmount ??
-      formatUnits(selectedToken?.minDeposit, selectedToken?.decimals)
+      formatUnits(selectedToken?.minDeposit, selectedToken?.decimals);
 
-    return Number(amount) < Number(minDeposit)
-  }, [amount, selectedToken, minDepositAmount])
+    return Number(amount) < Number(minDeposit);
+  }, [amount, selectedToken, minDepositAmount]);
 
   // Initialize with defaults if not set
   useEffect(() => {
     if (!selectedChain && SupportedChains[0]) {
-      setSelectedChain(SupportedChains[0])
+      setSelectedChain(SupportedChains[0]);
     }
 
     if (!selectedAsset && tokens[0]) {
-      setSelectedAsset(tokens[0])
+      setSelectedAsset(tokens[0]);
     }
   }, [
     selectedChain,
@@ -132,10 +132,10 @@ export function GlobalDeposit({ onClose }: GlobalDepositProps) {
     selectedAsset,
     setSelectedAsset,
     tokens[0],
-  ])
+  ]);
 
   // Show bridge progress view
-  if (bridgeState.status !== 'idle') {
+  if (bridgeState.status !== "idle") {
     return (
       <Bridge
         amount={parseUnits(amount, selectedToken?.decimals ?? 18)}
@@ -143,18 +143,18 @@ export function GlobalDeposit({ onClose }: GlobalDepositProps) {
         bridgeState={bridgeState}
         chains={chains}
         onRetry={() => {
-          bridge()
+          bridge();
         }}
         onSuccess={() => {
-          refetchBalance()
-          refetchRiseBalance()
-          onClose()
+          refetchBalance();
+          refetchRiseBalance();
+          onClose();
         }}
         selectedChain={selectedChain}
         selectedToken={selectedToken}
         targetChainId={targetChainId}
       />
-    )
+    );
   }
 
   return (
@@ -173,9 +173,9 @@ export function GlobalDeposit({ onClose }: GlobalDepositProps) {
             <DropdownSelector
               items={SupportedChains}
               onSelect={(item) => {
-                setAmount('0')
-                setSelectedChain(item)
-                setSelectedAsset(getAssets(item.id)[0])
+                setAmount("0");
+                setSelectedChain(item);
+                setSelectedAsset(getAssets(item.id)[0]);
               }}
               selectedItem={selectedChain}
             />
@@ -191,7 +191,7 @@ export function GlobalDeposit({ onClose }: GlobalDepositProps) {
                       <div className="h-4 w-20 animate-pulse rounded bg-th_base" />
                     ) : (
                       <p className="text-sm text-th_base-secondary">
-                        {amountBalance}{' '}
+                        {amountBalance}{" "}
                         <span className="font-bold">
                           {selectedAsset?.symbol}
                         </span>
@@ -202,8 +202,8 @@ export function GlobalDeposit({ onClose }: GlobalDepositProps) {
                 <DropdownSelector
                   items={tokens}
                   onSelect={(item) => {
-                    setAmount('0')
-                    setSelectedAsset(item)
+                    setAmount("0");
+                    setSelectedAsset(item);
                   }}
                   selectedItem={selectedAsset}
                 />
@@ -226,8 +226,8 @@ export function GlobalDeposit({ onClose }: GlobalDepositProps) {
                               formatUnits(
                                 selectedToken?.minDeposit,
                                 selectedToken?.decimals,
-                              )}{' '}
-                          </span>{' '}
+                              )}{" "}
+                          </span>{" "}
                           <span className="font-bold">
                             {selectedToken?.symbol}
                           </span>
@@ -241,8 +241,8 @@ export function GlobalDeposit({ onClose }: GlobalDepositProps) {
                     className="w-full bg-th_field"
                     name="Amount"
                     onChange={(event) => {
-                      const value = event.target.value
-                      setAmount(value)
+                      const value = event.target.value;
+                      setAmount(value);
                     }}
                     placeholder="0.00"
                     type="number"
@@ -251,7 +251,7 @@ export function GlobalDeposit({ onClose }: GlobalDepositProps) {
                   <Button
                     className="h-10! border border-th_base! bg-th_field!"
                     onClick={() => {
-                      setAmount(amountBalance)
+                      setAmount(amountBalance);
                     }}
                   >
                     Max
@@ -262,7 +262,7 @@ export function GlobalDeposit({ onClose }: GlobalDepositProps) {
           )}
           {selectedChain?.id === Chains.riseTestnet.id && (
             <Deposit
-              address={address ?? ''}
+              address={address ?? ""}
               chainId={selectedChain?.id}
               label="Send tokens to this address"
             />
@@ -289,5 +289,5 @@ export function GlobalDeposit({ onClose }: GlobalDepositProps) {
         </Layout.Footer>
       )}
     </Layout>
-  )
+  );
 }
