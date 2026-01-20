@@ -1,38 +1,38 @@
-import * as Ariakit from '@ariakit/react'
-import { Button, Toast } from '@porto/apps/components'
-import type { Address } from 'ox'
-import { useEffect, useState } from 'react'
-import { Dialog } from 'rise-wallet'
-import { Hooks } from 'rise-wallet/wagmi'
-import { toast } from 'sonner'
-import { formatEther } from 'viem'
-import { riseTestnet } from 'viem/chains'
+import * as Ariakit from "@ariakit/react";
+import { Button, Toast } from "@porto/apps/components";
+import type { Address } from "ox";
+import { useEffect, useState } from "react";
+import { Dialog } from "rise-wallet";
+import { Hooks } from "rise-wallet/wagmi";
+import { toast } from "sonner";
+import { formatEther } from "viem";
+import { riseTestnet } from "viem/chains";
 import {
   useAccount,
   useBalance,
   useCapabilities,
   useDisconnect,
   useSwitchChain,
-} from 'wagmi'
-import { AddressFormatter } from '~/utils'
-import LucideCopy from '~icons/lucide/copy'
-import LucideMoon from '~icons/lucide/moon'
-import LucideSun from '~icons/lucide/sun'
+} from "wagmi";
+import { AddressFormatter } from "~/utils";
+import LucideCopy from "~icons/lucide/copy";
+import LucideMoon from "~icons/lucide/moon";
+import LucideSun from "~icons/lucide/sun";
 
 export function Header() {
-  const { isConnected, address } = useAccount()
-  const { disconnect } = useDisconnect()
-  const { switchChainAsync } = useSwitchChain()
-  const { data: balance } = useBalance({ address })
+  const { isConnected, address } = useAccount();
+  const { disconnect } = useDisconnect();
+  const { switchChainAsync } = useSwitchChain();
+  const { data: balance } = useBalance({ address });
 
   const capabilities = useCapabilities({
     query: { enabled: isConnected },
-  })
+  });
 
   const addFunds = Hooks.useAddFunds({
     mutation: {
       onError: (error) => {
-        if (error.name === 'UserRejectedRequestError') return
+        if (error.name === "UserRejectedRequestError") return;
         toast.custom((t) => (
           <Toast
             className={t}
@@ -40,7 +40,7 @@ export function Header() {
             kind="error"
             title="Failed to add funds"
           />
-        ))
+        ));
       },
       onSuccess: () => {
         // TODO: make success message part of the dialog
@@ -51,92 +51,90 @@ export function Header() {
             kind="success"
             title="Funds Added"
           />
-        ))
+        ));
       },
     },
-  })
+  });
 
   const handleAddFunds = async () => {
     // if url has testnet search param
-    const urlHasTestnet = window.location.search.includes('testnet')
-    console.log('urlHasTestnet:: ', urlHasTestnet)
+    const urlHasTestnet = window.location.search.includes("testnet");
+    console.log("urlHasTestnet:: ", urlHasTestnet);
 
     if (!urlHasTestnet) {
       addFunds.mutate({
         address,
-        // view: "selection-options",
-        view: 'selection-network',
-        // view: 'selection-deposit'
-      })
-      return
+        view: "selection-network",
+      });
+      return;
     }
 
     await switchChainAsync({
       chainId: riseTestnet.id,
-    }).catch()
-    console.log('capabilities.data:: ', capabilities.data)
+    }).catch();
+    console.log("capabilities.data:: ", capabilities.data);
 
-    if (!capabilities.data) return
+    if (!capabilities.data) return;
     const exp1 = capabilities.data?.[riseTestnet.id]?.feeToken?.tokens?.find(
-      (t: any) => t.uid === 'exp1',
-    )
-    console.log('exp1:: ', exp1)
+      (t: any) => t.uid === "exp1",
+    );
+    console.log("exp1:: ", exp1);
 
-    if (!exp1) return
+    if (!exp1) return;
     addFunds.mutate({
       address,
       chainId: riseTestnet.id,
       token: exp1?.address as Address.Address,
       // @ts-expect-error TODO: fix type
       tokenAddress: exp1?.address as Address.Address,
-      view: 'selection-deposit',
-    })
-  }
+      view: "selection-deposit",
+    });
+  };
 
-  const themeController = Dialog.createThemeController()
+  const themeController = Dialog.createThemeController();
 
   const initialTheme = () => {
     // Check localStorage first
-    const savedTheme = localStorage.getItem('__porto_theme')
+    const savedTheme = localStorage.getItem("__porto_theme");
 
-    if (savedTheme === 'dark') {
-      return 'dark'
+    if (savedTheme === "dark") {
+      return "dark";
     }
     // Default to light mode
-    return 'light'
-  }
+    return "light";
+  };
 
-  const [theme, setTheme] = useState<'light' | 'dark'>(initialTheme())
+  const [theme, setTheme] = useState<"light" | "dark">(initialTheme());
 
   const toggleTheme = () => {
-    const newTheme = theme === 'light' ? 'dark' : 'light'
-    setTheme(newTheme)
+    const newTheme = theme === "light" ? "dark" : "light";
+    setTheme(newTheme);
 
-    if (newTheme === 'dark') {
-      document.documentElement.classList.remove('scheme-light')
-      document.documentElement.classList.add('scheme-light-dark')
-      localStorage.setItem('__porto_theme', 'dark')
+    if (newTheme === "dark") {
+      document.documentElement.classList.remove("scheme-light");
+      document.documentElement.classList.add("scheme-light-dark");
+      localStorage.setItem("__porto_theme", "dark");
       themeController.setTheme({
-        colorScheme: 'dark',
-      })
+        colorScheme: "dark",
+      });
     } else {
       document.documentElement.classList.remove(
-        'scheme-light-dark',
-        'scheme-dark',
-      )
-      document.documentElement.classList.add('scheme-light')
-      localStorage.setItem('__porto_theme', 'light')
+        "scheme-light-dark",
+        "scheme-dark",
+      );
+      document.documentElement.classList.add("scheme-light");
+      localStorage.setItem("__porto_theme", "light");
       themeController.setTheme({
-        colorScheme: 'light',
-      })
+        colorScheme: "light",
+      });
     }
-  }
+  };
 
   const handleCopyAddress = async () => {
-    if (!address) return
+    if (!address) return;
 
     try {
-      await navigator.clipboard.writeText(address)
+      await navigator.clipboard.writeText(address);
       toast.custom((t) => (
         <Toast
           className={t}
@@ -144,9 +142,9 @@ export function Header() {
           kind="success"
           title="Copied!"
         />
-      ))
+      ));
     } catch (error) {
-      console.info(error)
+      console.info(error);
       toast.custom((t) => (
         <Toast
           className={t}
@@ -154,42 +152,42 @@ export function Header() {
           kind="error"
           title="Copy Failed"
         />
-      ))
+      ));
     }
-  }
+  };
 
   // Set light mode as default on mount if no preference is saved
   // TODO: improve this to check for system preference
   useEffect(() => {
-    const savedTheme = localStorage.getItem('__porto_theme')
+    const savedTheme = localStorage.getItem("__porto_theme");
     if (!savedTheme) {
-      console.log('savedTheme:: ', savedTheme)
-      document.documentElement.classList.add('scheme-light')
+      console.log("savedTheme:: ", savedTheme);
+      document.documentElement.classList.add("scheme-light");
       document.documentElement.classList.remove(
-        'scheme-light-dark',
-        'scheme-dark',
-      )
-      localStorage.setItem('__porto_theme', 'light')
-      setTheme('light')
+        "scheme-light-dark",
+        "scheme-dark",
+      );
+      localStorage.setItem("__porto_theme", "light");
+      setTheme("light");
     } else {
-      setTheme(savedTheme as 'light' | 'dark')
-      if (savedTheme === 'dark') {
-        document.documentElement.classList.remove('scheme-light')
-        document.documentElement.classList.add('scheme-light-dark')
-        localStorage.setItem('__porto_theme', 'dark')
+      setTheme(savedTheme as "light" | "dark");
+      if (savedTheme === "dark") {
+        document.documentElement.classList.remove("scheme-light");
+        document.documentElement.classList.add("scheme-light-dark");
+        localStorage.setItem("__porto_theme", "dark");
       } else {
         document.documentElement.classList.remove(
-          'scheme-light-dark',
-          'scheme-dark',
-        )
-        document.documentElement.classList.add('scheme-light')
-        localStorage.setItem('__porto_theme', 'light')
+          "scheme-light-dark",
+          "scheme-dark",
+        );
+        document.documentElement.classList.add("scheme-light");
+        localStorage.setItem("__porto_theme", "light");
       }
     }
-  }, [])
+  }, []);
 
   if (!isConnected) {
-    return null
+    return null;
   }
 
   return (
@@ -211,8 +209,8 @@ export function Header() {
               </button>
             </div>
             <p className="font-semibold text-sm">
-              {formatEther(balance?.value ?? 0n)}{' '}
-              <span className="text-sm">{balance?.symbol ?? 'ETH'}</span>
+              {formatEther(balance?.value ?? 0n)}{" "}
+              <span className="text-sm">{balance?.symbol ?? "ETH"}</span>
             </p>
           </div>
         </div>
@@ -221,10 +219,10 @@ export function Header() {
           <Button
             onClick={toggleTheme}
             size="square"
-            title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
-            // variant="outline"
+            title={`Switch to ${theme === "light" ? "dark" : "light"} mode`}
+          // variant="outline"
           >
-            {theme === 'light' ? (
+            {theme === "light" ? (
               <LucideMoon className="size-5 text-gray11" />
             ) : (
               <LucideSun className="size-5 text-gray11" />
@@ -232,17 +230,17 @@ export function Header() {
           </Button>
           <Button
             onClick={(event) => {
-              event.stopPropagation()
-              event.preventDefault()
-              return handleAddFunds()
+              event.stopPropagation();
+              event.preventDefault();
+              return handleAddFunds();
             }}
           >
             Add Funds
           </Button>
           <Button
             onClick={() => {
-              disconnect()
-              localStorage.removeItem('risex-authInfo')
+              disconnect();
+              localStorage.removeItem("risex-authInfo");
             }}
             variant="primary"
           >
@@ -252,5 +250,5 @@ export function Header() {
       </div>
       <Ariakit.Separator className="border-gray5" />
     </div>
-  )
+  );
 }

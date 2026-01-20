@@ -36,24 +36,24 @@ export function DropdownSelector<T extends { name: string }>(
             : null}
         </DropdownMenu.Trigger>
 
-        <DropdownMenu.Content align="start">
+        <DropdownMenu.Content
+          align="start"
+          className="w-full p-2! transition-all"
+        >
           {items.map((item, index) => {
             const isSelected = selectedItem?.name === item.name
+            console.log(item.name, '===', selectedItem?.name, ':', isSelected)
+
             return (
-              <DropdownMenu.Item
-                className={
-                  isSelected
-                    ? css({
-                        backgroundColor: 'var(--background-color-th_primary)!',
-                        color: 'var(--text-color-th_primary)!',
-                      })
-                    : undefined
-                }
-                key={item.name}
-                onClick={() => handleSelect(item, index)}
-              >
-                {renderItem ? renderItem(item, isSelected) : item.name}
-              </DropdownMenu.Item>
+              <div key={item.name}>
+                <DropdownMenu.Item
+                  className={`rounded! ${isSelected ? 'bg-th_base-alt!' : ''}`}
+                  onClick={() => handleSelect(item, index)}
+                >
+                  {renderItem ? renderItem(item, isSelected) : item.name}
+                </DropdownMenu.Item>
+                {items.length - 1 !== index && <DropdownMenu.Separator />}
+              </div>
             )
           })}
         </DropdownMenu.Content>
@@ -89,7 +89,7 @@ export declare namespace DropdownSelector {
     onContinue?: ((item: T) => void) | undefined
     /** Optional custom render function for items */
     renderItem?: ((item: T, isSelected: boolean) => React.ReactNode) | undefined
-    /** Label for the continue button */
+    | ((item: T, isSelected: boolean) => React.ReactNode)
     continueButtonLabel?: string | undefined
     /** Disable the continue button */
     continueButtonDisabled?: boolean | undefined

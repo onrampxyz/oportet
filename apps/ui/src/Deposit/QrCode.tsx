@@ -1,6 +1,6 @@
-import { Cuer } from "cuer";
-import type { ReactNode } from "react";
-import { css, cx } from "styled-system/css";
+import { Cuer } from 'cuer'
+import type { ReactNode } from 'react'
+import { css, cx } from 'styled-system/css'
 
 export function QrCode({
   address,
@@ -8,21 +8,21 @@ export function QrCode({
   className,
   value,
 }: Readonly<QrCode.Props>) {
-  const params = new URLSearchParams();
+  const params = new URLSearchParams()
 
-  if (chainId !== undefined) params.set("chainId", String(chainId));
-  if (value !== undefined) params.set("value", String(value));
-  const uri = `ethereum:${address}${params.size > 0 ? `?${params}` : ""}`;
+  if (chainId !== undefined) params.set('chainId', String(chainId))
+  if (value !== undefined) params.set('value', String(value))
+  const uri = `ethereum:${address}${params.size > 0 ? `?${params}` : ''}`
 
   return (
     <div
       className={cx(
         css({
-          alignItems: "center",
-          borderRadius: "var(--radius-th_medium)",
+          alignItems: 'center',
+          borderRadius: 'var(--radius-th_medium)',
           padding: 12,
-          placeSelf: "center",
-          width: "fit-content,",
+          placeSelf: 'center',
+          width: 'fit-content,',
         }),
         className,
       )}
@@ -46,15 +46,15 @@ export function QrCode({
         </div>
       </div>
     </div>
-  );
+  )
 }
 
 export namespace QrCode {
   export interface Props {
-    address: string;
-    chainId?: number;
-    className?: string;
-    label?: ReactNode;
-    value?: bigint;
+    address: string
+    chainId?: number
+    className?: string
+    label?: ReactNode
+    value?: bigint
   }
 }

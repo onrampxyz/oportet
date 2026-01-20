@@ -37,7 +37,7 @@ export function ChainSelection() {
         <p className="text-center text-sm text-th_base-secondary">
           Bridge to your RISE Wallet
         </p>
-        <div className="space-y-2 pt-4 pb-2">
+        <div className="space-y-2 pt-4">
           {SupportedChains.map((chain) => {
             return (
               <Button

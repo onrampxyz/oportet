@@ -1,20 +1,14 @@
 import { Input } from '@porto/apps/components'
 import { Button, Deposit } from '@porto/ui'
-import { cx } from 'cva'
 import { Value } from 'ox'
 import { useEffect, useMemo, useState } from 'react'
 import { Chains } from 'rise-wallet/index'
 import { formatUnits, parseUnits } from 'viem'
 import { useReadContract } from 'wagmi'
 import { useFundsContext } from '~/contexts'
-import {
-  useBridge,
-  useDestinationAsset,
-  useMintToken,
-  useWalletAsset,
-} from '~/hooks'
-import { Layout } from '../Layout'
+import { useBridge, useDestinationAsset, useWalletAsset } from '~/hooks'
 import { DropdownSelector, getAssets, SupportedChains } from '.'
+import { Layout } from '../Layout'
 import { Bridge, type BridgeState } from './Bridge'
 
 export type GlobalDepositProps = Readonly<{
@@ -49,12 +43,6 @@ export function GlobalDeposit({ onClose }: GlobalDepositProps) {
   const tokens = getAssets(selectedChain?.id)
   // Default to RISE, add handling when on mainnet
   const destinationToken = getAssets(11155931)
-
-  const { mintToken, isMinting } = useMintToken({
-    address: address ?? '0x',
-    chainId: selectedChain?.id,
-    tokenAddress: selectedAsset?.address,
-  })
 
   const selectedToken = useMemo(() => {
     return tokens.find(
@@ -118,10 +106,6 @@ export function GlobalDeposit({ onClose }: GlobalDepositProps) {
 
     return '0.00'
   }, [balance, selectedAsset?.decimals])
-
-  const isBalanceZero = useMemo(() => {
-    return balance === 0n || !balance
-  }, [balance])
 
   const shouldExceedMinDeposit = useMemo(() => {
     if (!amount || !selectedToken) return false
@@ -229,9 +213,9 @@ export function GlobalDeposit({ onClose }: GlobalDepositProps) {
                 <div className="flex items-center justify-between gap-2">
                   <p className="text-sm text-th_base-secondary">Amount</p>
                   {selectedToken && (
-                    <div className="flex gap-1">
+                    <div className="flex gap-2">
                       <p className="text-sm text-th_base-secondary">
-                        Minimum Deposit:{' '}
+                        Minimum Deposit:
                       </p>
                       {isLoadingMinAmounts || isFetchingMinAmounts ? (
                         <div className="h-4 w-16 animate-pulse rounded bg-th_base" />
@@ -254,7 +238,7 @@ export function GlobalDeposit({ onClose }: GlobalDepositProps) {
                 </div>
                 <div className="flex gap-2">
                   <Input
-                    className={cx('w-full bg-th_field')}
+                    className="w-full bg-th_field"
                     name="Amount"
                     onChange={(event) => {
                       const value = event.target.value
@@ -264,16 +248,7 @@ export function GlobalDeposit({ onClose }: GlobalDepositProps) {
                     type="number"
                     value={amount}
                   />
-                  <Button
-                    className="border border-th_base"
-                    disabled={isBalanceZero}
-                    onClick={() => {
-                      setAmount(amountBalance)
-                    }}
-                    variant="primary"
-                  >
-                    Max
-                  </Button>
+                  <Button className="border border-th_base">Max</Button>
                 </div>
               </div>
             </>
@@ -307,5 +282,5 @@ export function GlobalDeposit({ onClose }: GlobalDepositProps) {
         </Layout.Footer>
       )}
     </Layout>
-  )
+  );
 }

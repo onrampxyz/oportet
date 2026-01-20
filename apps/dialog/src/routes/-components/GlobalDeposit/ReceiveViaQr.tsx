@@ -1,8 +1,8 @@
-import { CopyButton, QrCode } from "@porto/ui";
-import { css } from "styled-system/css";
-import type { Address } from "viem";
-import { riseTestnet } from "viem/chains";
-import { AddressFormatter } from "~/utils";
+import { CopyButton, QrCode } from '@porto/ui'
+import { css } from 'styled-system/css'
+import type { Address } from 'viem'
+import { riseTestnet } from 'viem/chains'
+import { AddressFormatter } from '~/utils'
 
 export function ReceiveViaQr({ address }: Readonly<ReceiveViaQr.Props>) {
   return (
@@ -14,7 +14,7 @@ export function ReceiveViaQr({ address }: Readonly<ReceiveViaQr.Props>) {
         Receive tokens via QR
       </p>
       <QrCode
-        address={address ?? ""}
+        address={address ?? ''}
         chainId={riseTestnet.id}
         className="bg-th_base"
       />
@@ -22,14 +22,14 @@ export function ReceiveViaQr({ address }: Readonly<ReceiveViaQr.Props>) {
         <div className="flex items-center justify-center gap-1 pb-2">
           <div
             className={css({
-              color: "var(--text-color-th_base)",
-              fontFamily: "monospace",
+              color: 'var(--text-color-th_base)',
+              fontFamily: 'monospace',
               fontSize: 12,
               fontWeight: 400,
-              lineHeight: "14px",
-              padding: "16px 4px",
-              textAlign: "center",
-              wordBreak: "break-all",
+              lineHeight: '14px',
+              padding: '16px 4px',
+              textAlign: 'center',
+              wordBreak: 'break-all',
             })}
           >
             {AddressFormatter.shorten(address as Address, 8)}
@@ -40,11 +40,11 @@ export function ReceiveViaQr({ address }: Readonly<ReceiveViaQr.Props>) {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
 export namespace ReceiveViaQr {
   export interface Props {
-    address: string;
+    address: string
   }
 }
