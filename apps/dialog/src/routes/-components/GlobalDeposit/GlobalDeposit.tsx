@@ -7,8 +7,8 @@ import { formatUnits, parseUnits } from 'viem'
 import { useReadContract } from 'wagmi'
 import { useFundsContext } from '~/contexts'
 import { useBridge, useDestinationAsset, useWalletAsset } from '~/hooks'
-import { Layout } from '../Layout'
 import { DropdownSelector, getAssets, SupportedChains } from '.'
+import { Layout } from '../Layout'
 import { Bridge, type BridgeState } from './Bridge'
 
 export type GlobalDepositProps = Readonly<{
@@ -236,7 +236,7 @@ export function GlobalDeposit({ onClose }: GlobalDepositProps) {
                     </div>
                   )}
                 </div>
-                <div className="flex gap-2">
+                <div className="flex gap-1">
                   <Input
                     className="w-full bg-th_field"
                     name="Amount"
@@ -248,7 +248,14 @@ export function GlobalDeposit({ onClose }: GlobalDepositProps) {
                     type="number"
                     value={amount}
                   />
-                  <Button className="border border-th_base">Max</Button>
+                  <Button
+                    className='h-10! border border-th_base! bg-th_field!'
+                    onClick={() => {
+                      setAmount(amountBalance)
+                    }}
+                  >
+                    Max
+                  </Button>
                 </div>
               </div>
             </>
