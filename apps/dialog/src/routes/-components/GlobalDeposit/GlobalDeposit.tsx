@@ -13,8 +13,8 @@ import {
   useMintToken,
   useWalletAsset,
 } from '~/hooks'
-import { DropdownSelector, getAssets, SupportedChains } from '.'
 import { Layout } from '../Layout'
+import { DropdownSelector, getAssets, SupportedChains } from '.'
 import { Bridge, type BridgeState } from './Bridge'
 
 export type GlobalDepositProps = Readonly<{

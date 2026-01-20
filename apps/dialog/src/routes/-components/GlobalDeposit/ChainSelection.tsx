@@ -26,9 +26,9 @@ export function ChainSelection() {
     <Layout>
       <Layout.Content>
         {address && <ReceiveViaQr address={address} />}
-        <div className="mx-4 h-3.5 border-gray7 border-b-1 text-center">
+        <div className="mx-2 h-3.5 border-gray7 border-b-1 text-center">
           <span className="my-auto mt-[3px] inline-flex bg-gray2 px-2 text-th_base-secondary">
-            OR
+            OR via
           </span>
         </div>
         <p className="pt-4 text-center font-bold text-lg text-th_base">
@@ -37,11 +37,11 @@ export function ChainSelection() {
         <p className="text-center text-sm text-th_base-secondary">
           Bridge to your RISE Wallet
         </p>
-        <div className="space-y-2 pt-2">
+        <div className="space-y-2 pt-4 pb-2">
           {SupportedChains.map((chain) => {
             return (
               <Button
-                className="justify-start! flex w-full items-center gap-2 rounded-lg"
+                className="justify-start! flex w-full items-center gap-2 rounded-lg bg-th_base-alt!"
                 data-selected={selectedChain?.name === chain.name}
                 key={chain.name}
                 onClick={() => {

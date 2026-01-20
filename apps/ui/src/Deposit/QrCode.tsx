@@ -19,7 +19,6 @@ export function QrCode({
       className={cx(
         css({
           alignItems: "center",
-          backgroundColor: "var(--background-color-th_base-alt)",
           borderRadius: "var(--radius-th_medium)",
           padding: 12,
           placeSelf: "center",

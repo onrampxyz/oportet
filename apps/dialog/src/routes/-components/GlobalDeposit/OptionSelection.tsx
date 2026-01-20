@@ -1,20 +1,20 @@
-import { Button } from "@porto/ui";
-import { useFundsContext, type View } from "~/contexts";
-import { Layout } from "../Layout";
+import { Button } from '@porto/ui'
+import { useFundsContext, type View } from '~/contexts'
+import { Layout } from '../Layout'
 
 export const Options = [
   {
-    id: "receive-via-qr",
-    label: "Receive via QR",
+    id: 'receive-via-qr',
+    label: 'Receive via QR',
   },
   {
-    id: "global-deposit",
-    label: "Global Deposit",
+    id: 'global-deposit',
+    label: 'Global Deposit',
   },
-];
+]
 
 export function OptionSelection() {
-  const { setView } = useFundsContext();
+  const { setView } = useFundsContext()
 
   return (
     <Layout>
@@ -26,17 +26,17 @@ export function OptionSelection() {
                 className="min-h-32 flex-1! items-center rounded-lg"
                 key={option.id}
                 onClick={() => {
-                  setView(option.id as View);
+                  setView(option.id as View)
                 }}
                 type="button"
                 variant="secondary"
               >
                 {option.label}
               </Button>
-            );
+            )
           })}
         </div>
       </Layout.Content>
     </Layout>
-  );
+  )
 }
