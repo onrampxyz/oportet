@@ -81,7 +81,7 @@ export function Landing() {
       <Layout.Header left={false} right={undefined} />
 
       <div className="flex h-full flex-col items-center justify-between gap-y-4 rounded-xl">
-        <div className="flex h-full w-full max-w-[328px] flex-col justify-center gap-y-6 max-lg:gap-y-20">
+        <div className="flex h-full w-full max-w-[328px] flex-col justify-center gap-y-6 max-lg:gap-y-12">
           <div className="flex flex-col items-center">
             <div className="h-[43px]">
               <LogoMark />

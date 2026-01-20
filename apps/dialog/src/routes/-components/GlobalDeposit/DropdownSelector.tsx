@@ -88,8 +88,10 @@ export declare namespace DropdownSelector {
     /** Optional callback when continue button is clicked */
     onContinue?: ((item: T) => void) | undefined
     /** Optional custom render function for items */
-    renderItem?: ((item: T, isSelected: boolean) => React.ReactNode) | undefined
-    | ((item: T, isSelected: boolean) => React.ReactNode)
+    renderItem?:
+      | ((item: T, isSelected: boolean) => React.ReactNode)
+      | undefined
+      | ((item: T, isSelected: boolean) => React.ReactNode)
     continueButtonLabel?: string | undefined
     /** Disable the continue button */
     continueButtonDisabled?: boolean | undefined

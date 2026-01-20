@@ -89,9 +89,6 @@ export namespace DropdownMenu {
         aria-haspopup="true"
         className={cx(
           css({
-            _active: {
-              transform: 'translateY(1px)',
-            },
             _disabled: {
               pointerEvents: 'none',
             },

@@ -1,26 +1,26 @@
-import { Button } from "@porto/ui";
-import { Chains } from "rise-wallet/index";
-import { useFundsContext } from "~/contexts";
-import { Layout } from "../Layout";
-import { ReceiveViaQr } from "./ReceiveViaQr";
+import { Button } from '@porto/ui'
+import { Chains } from 'rise-wallet/index'
+import { useFundsContext } from '~/contexts'
+import { Layout } from '../Layout'
+import { ReceiveViaQr } from './ReceiveViaQr'
 
 export type Chain = {
-  id: number;
-  name: string;
-  icon: string;
-};
+  id: number
+  name: string
+  icon: string
+}
 
 export const SupportedChains: Chain[] = [
   {
-    icon: "/dialog/chains/sepolia.svg",
+    icon: '/dialog/chains/sepolia.svg',
     id: Chains.sepolia.id,
     name: Chains.sepolia.name,
   },
-];
+]
 
 export function ChainSelection() {
   const { selectedChain, setSelectedChain, setView, address } =
-    useFundsContext();
+    useFundsContext()
 
   return (
     <Layout>
@@ -45,11 +45,11 @@ export function ChainSelection() {
                 data-selected={selectedChain?.name === chain.name}
                 key={chain.name}
                 onClick={() => {
-                  setSelectedChain(chain);
+                  setSelectedChain(chain)
                   if (chain.id === Chains.riseTestnet.id) {
-                    setView("global-deposit");
+                    setView('global-deposit')
                   } else {
-                    setView("selection-asset");
+                    setView('selection-asset')
                   }
                 }}
                 type="button"
@@ -63,10 +63,10 @@ export function ChainSelection() {
                 />
                 <span className="pt-0.5">{chain.name}</span>
               </Button>
-            );
+            )
           })}
         </div>
       </Layout.Content>
     </Layout>
-  );
+  )
 }
