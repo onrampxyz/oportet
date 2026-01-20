@@ -7,8 +7,8 @@ import { formatUnits, parseUnits } from 'viem'
 import { useReadContract } from 'wagmi'
 import { useFundsContext } from '~/contexts'
 import { useBridge, useDestinationAsset, useWalletAsset } from '~/hooks'
-import { DropdownSelector, getAssets, SupportedChains } from '.'
 import { Layout } from '../Layout'
+import { DropdownSelector, getAssets, SupportedChains } from '.'
 import { Bridge, type BridgeState } from './Bridge'
 
 export type GlobalDepositProps = Readonly<{
@@ -249,7 +249,7 @@ export function GlobalDeposit({ onClose }: GlobalDepositProps) {
                     value={amount}
                   />
                   <Button
-                    className='h-10! border border-th_base! bg-th_field!'
+                    className="h-10! border border-th_base! bg-th_field!"
                     onClick={() => {
                       setAmount(amountBalance)
                     }}
