@@ -2,7 +2,7 @@ import { Button, DropdownMenu } from "@porto/ui";
 import type * as React from "react";
 import { css } from "styled-system/css";
 
-export function DropdownSelector<T extends { name: string }>(
+export function DropdownSelector<T extends { name: string; icon?: string }>(
   props: DropdownSelector.Props<T>,
 ) {
   const {
@@ -29,11 +29,28 @@ export function DropdownSelector<T extends { name: string }>(
     >
       <DropdownMenu>
         <DropdownMenu.Trigger placeholder={placeholder}>
-          {selectedItem
-            ? renderItem
-              ? renderItem(selectedItem, true)
-              : selectedItem.name
-            : null}
+          {selectedItem ? (
+            renderItem ? (
+              renderItem(selectedItem, true)
+            ) : (
+              <span
+                className={css({
+                  alignItems: "center",
+                  display: "flex",
+                  gap: 8,
+                })}
+              >
+                {selectedItem.icon && (
+                  <img
+                    alt=""
+                    className={css({ height: 20, width: 20 })}
+                    src={selectedItem.icon}
+                  />
+                )}
+                {selectedItem.name}
+              </span>
+            )
+          ) : null}
         </DropdownMenu.Trigger>
 
         <DropdownMenu.Content
@@ -49,7 +66,29 @@ export function DropdownSelector<T extends { name: string }>(
                   className={`rounded! ${isSelected ? "bg-th_base-alt!" : ""}`}
                   onClick={() => handleSelect(item, index)}
                 >
-                  {renderItem ? renderItem(item, isSelected) : item.name}
+                  {renderItem ? (
+                    renderItem(item, isSelected)
+                  ) : (
+                    <span
+                      className={css({
+                        alignItems: "center",
+                        display: "flex",
+                        gap: 8,
+                      })}
+                    >
+                      {item.icon && (
+                        <img
+                          alt=""
+                          className={css({
+                            height: 20,
+                            width: 20,
+                          })}
+                          src={item.icon}
+                        />
+                      )}
+                      {item.name}
+                    </span>
+                  )}
                 </DropdownMenu.Item>
                 {items.length - 1 !== index && <DropdownMenu.Separator />}
               </div>
@@ -77,7 +116,7 @@ export function DropdownSelector<T extends { name: string }>(
 }
 
 export declare namespace DropdownSelector {
-  export type Props<T extends { name: string }> = {
+  export type Props<T extends { name: string; icon?: string }> = {
     /** Array of items to display in the dropdown */
     items: T[];
     /** Currently selected item */

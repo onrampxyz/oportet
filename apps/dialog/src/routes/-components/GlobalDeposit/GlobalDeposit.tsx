@@ -7,6 +7,7 @@ import { formatUnits, parseUnits } from "viem";
 import { useReadContract } from "wagmi";
 import { useFundsContext } from "~/contexts";
 import { useBridge, useDestinationAsset, useWalletAsset } from "~/hooks";
+import ArrowLeft from "~icons/lucide/arrow-left";
 import { DropdownSelector, getAssets, SupportedChains } from ".";
 import { Layout } from "../Layout";
 import { Bridge, type BridgeState } from "./Bridge";
@@ -24,6 +25,7 @@ export function GlobalDeposit({ onClose }: GlobalDepositProps) {
     setAmount,
     setSelectedAsset,
     setSelectedChain,
+    setView,
   } = useFundsContext();
 
   const [bridgeState, setBridgeState] = useState<BridgeState>({
@@ -139,6 +141,13 @@ export function GlobalDeposit({ onClose }: GlobalDepositProps) {
     return (
       <Bridge
         amount={parseUnits(amount, selectedToken?.decimals ?? 18)}
+        back={() => {
+          setBridgeState({
+            sourceChainId: selectedChain?.id,
+            status: "idle",
+          });
+          setView("global-deposit");
+        }}
         bridgeError={null}
         bridgeState={bridgeState}
         chains={chains}
@@ -160,11 +169,20 @@ export function GlobalDeposit({ onClose }: GlobalDepositProps) {
   return (
     <Layout>
       <Layout.Header>
-        <Layout.Header.Default
-          subContent="Deposit to your RISE Wallet"
-          title="Global Deposit"
-          variant="default"
-        />
+        <div className="flex items-center gap-2">
+          <Button
+            className="h-auto! rounded-full! bg-transparent! p-2!"
+            onClick={() => setView("selection-network")}
+            variant="secondary"
+          >
+            <ArrowLeft className="size-4 text-th_base" />
+          </Button>
+          <Layout.Header.Default
+            subContent="Deposit to your RISE Wallet"
+            title="Global Deposit"
+            variant="default"
+          />
+        </div>
       </Layout.Header>
       <Layout.Content>
         <div className="flex flex-col gap-2 pt-3">
