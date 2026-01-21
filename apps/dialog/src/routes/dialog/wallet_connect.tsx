@@ -10,6 +10,7 @@ import * as PermissionsRequest from "~/lib/PermissionsRequest";
 import { porto } from "~/lib/Porto";
 import { useAuthSessionRedirect } from "~/lib/ReactNative";
 import * as Router from "~/lib/Router";
+import { usePlatformAuthenticator } from "~/lib/usePlatformAuthenticator";
 import { Email } from "../-components/Email";
 
 const mipdPMStore = MipdPostMessage.createStore();
@@ -29,6 +30,12 @@ function RouteComponent() {
   const request = Route.useSearch();
   const { params = [] } = request;
   const { capabilities } = params[0] ?? {};
+
+  const isPlatformAuthenticatorAvailable = usePlatformAuthenticator();
+  console.log(
+    "isPlatformAuthenticatorAvailable:: ",
+    isPlatformAuthenticatorAvailable,
+  );
 
   const [injectedStatus, setInjectedStatus] = React.useState<
     "pending" | "completed" | undefined
@@ -103,6 +110,11 @@ function RouteComponent() {
       if (reject) {
         await Actions.reject(porto, request);
         throw new Provider.UserRejectedRequestError();
+      }
+
+      if (!isPlatformAuthenticatorAvailable) {
+        alert("This device cannot use platform authenticators.");
+        throw new Error("This device cannot use platform authenticators.");
       }
 
       const params = request.params ?? [];
