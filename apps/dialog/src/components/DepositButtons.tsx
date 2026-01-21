@@ -6,12 +6,14 @@ import {
   useQuery,
   useQueryClient,
 } from '@tanstack/react-query'
+import { createStore } from 'mipd-postmessage/child'
 import { Hex, Value } from 'ox'
 import * as React from 'react'
 import type * as Quote_schema from 'rise-wallet/core/internal/relay/schema/quotes'
 import { encodeFunctionData, erc20Abi, zeroAddress } from 'viem'
 import {
   createConfig,
+  injected,
   useAccount,
   useAccountEffect,
   useConnect,
@@ -23,12 +25,7 @@ import {
 } from 'wagmi'
 import { porto } from '~/lib/Porto'
 
-const config = createConfig({
-  chains: porto._internal.config.chains,
-  multiInjectedProviderDiscovery: true,
-  storage: null,
-  transports: porto._internal.config.transports,
-})
+const iframeMipd = createStore()
 const queryClient = new QueryClient()
 
 const defaultNativeDeposit = Value.fromEther('0.1')
@@ -48,6 +45,31 @@ export function DepositButtons(props: {
   const nativeDeficit = assetDeficits?.find(
     (d) => d.address === null || d.address === zeroAddress,
   )
+
+  const providers = React.useSyncExternalStore(
+    iframeMipd.subscribe,
+    iframeMipd.getProviders,
+  )
+
+  const config = React.useMemo(() => {
+    const connectors = providers.map((provider) =>
+      injected({
+        target: {
+          ...provider.info,
+          id: provider.info.rdns,
+          provider: provider.provider,
+        },
+      }),
+    )
+    return createConfig({
+      chains: porto._internal.config.chains,
+      connectors: [injected(), ...connectors],
+      multiInjectedProviderDiscovery: true,
+      storage: null,
+      transports: porto._internal.config.transports,
+    })
+  }, [providers])
+
   return (
     <WagmiProvider config={config} reconnectOnMount={false}>
       <QueryClientProvider client={queryClient}>

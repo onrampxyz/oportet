@@ -1,3 +1,5 @@
+import * as Mipd from 'mipd'
+import * as MipdPostMessage from 'mipd-postmessage/parent'
 import type { RpcRequest, RpcResponse } from 'ox'
 import * as Json from 'ox/Json'
 import * as Provider from 'ox/Provider'
@@ -80,6 +82,8 @@ export function iframe(options: iframe.Options = {}) {
     )
 
   if (typeof window === 'undefined') return noop()
+
+  const mipdStore = Mipd.createStore()
   return from({
     name: 'iframe',
     setup(parameters) {
@@ -148,6 +152,12 @@ export function iframe(options: iframe.Options = {}) {
 
       root.appendChild(style)
       root.appendChild(iframe)
+
+      MipdPostMessage.expose({
+        child: iframe.contentWindow!,
+        origin: hostUrl.origin,
+        store: mipdStore,
+      })
 
       const messenger = Messenger.bridge({
         from: Messenger.fromWindow(window, { targetOrigin: hostUrl.origin }),

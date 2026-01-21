@@ -1,7 +1,10 @@
 import { useMutation } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
+import * as Mipd from 'mipd'
+import * as MipdPostMessage from 'mipd-postmessage/child'
 import type { RpcSchema } from 'ox'
 import * as Provider from 'ox/Provider'
+import * as React from 'react'
 import type { RpcSchema as porto_RpcSchema } from 'rise-wallet'
 import { Actions, Hooks } from 'rise-wallet/remote'
 import { porto } from '~/lib/Porto'
@@ -9,6 +12,9 @@ import { useAuthSessionRedirect } from '~/lib/ReactNative'
 import * as Router from '~/lib/Router'
 import { SignIn } from '../-components/SignIn'
 import { SignUp } from '../-components/SignUp'
+
+const mipdPMStore = MipdPostMessage.createStore()
+const mipdStore = Mipd.createStore()
 
 export const Route = createFileRoute('/dialog/eth_requestAccounts')({
   component: RouteComponent,
@@ -21,9 +27,26 @@ export const Route = createFileRoute('/dialog/eth_requestAccounts')({
 
 function RouteComponent() {
   const request = Route.useSearch()
+
   const address = Hooks.usePortoStore(
     porto,
     (state) => state.accounts[0]?.address,
+  )
+
+  const parentProviders = React.useSyncExternalStore(
+    mipdPMStore.subscribe,
+    mipdPMStore.getProviders,
+  )
+  const selfProviders = React.useSyncExternalStore(
+    mipdStore.subscribe,
+    mipdStore.getProviders,
+  )
+  const providers = React.useMemo(
+    () =>
+      [...parentProviders, ...selfProviders].filter(
+        (provider) => provider.info.rdns !== 'com.risechain.wallet',
+      ),
+    [parentProviders, selfProviders],
   )
 
   const respond = useMutation({
@@ -77,6 +100,7 @@ function RouteComponent() {
         onApprove={({ selectAccount }) =>
           respond.mutate({ selectAccount, signIn: true })
         }
+        providers={providers}
         status={respond.isPending ? 'responding' : undefined}
       />
     )
@@ -87,6 +111,7 @@ function RouteComponent() {
         respond.mutate({ selectAccount, signIn })
       }
       onReject={() => respond.mutate({ reject: true })}
+      providers={providers}
       status={respond.isPending ? 'responding' : undefined}
     />
   )

@@ -32,6 +32,7 @@ import { base } from 'viem/chains'
 import {
   type ChainId,
   client,
+  getRelayUrl,
   isDialogModeType,
   type ModeType,
   mipd,
@@ -189,6 +190,14 @@ export function App() {
         </div>
         <h2>Misc.</h2>
         <GetCapabilities />
+        <div>
+          <br />
+          <hr />
+          <br />
+        </div>
+        <h2>Sponsorship</h2>
+        <GetUserSponsorshipStatus />
+        <UpdateUserSponsorshipStatus />
         <div>
           <br />
           <hr />
@@ -2021,6 +2030,187 @@ function PrepareCalls() {
       </div>
       {hash && <pre>{hash}</pre>}
     </form>
+  )
+}
+
+function GetUserSponsorshipStatus() {
+  const [result, setResult] = React.useState<{
+    status: {
+      address: string
+      tier: string
+      daily_limit: number
+      usage_last_24h: number
+      remaining_quota: number
+    }
+  } | null>(null)
+  const [error, setError] = React.useState<string | null>(null)
+
+  return (
+    <div>
+      <h3>sponsorship_getUserStatus</h3>
+      <form
+        onSubmit={async (e) => {
+          e.preventDefault()
+          setError(null)
+          setResult(null)
+
+          const formData = new FormData(e.target as HTMLFormElement)
+          const userAddress = formData.get('userAddress') as string
+          const chainId = formData.get('chainId') as string
+
+          try {
+            const [account] = await porto.provider.request({
+              method: 'eth_accounts',
+            })
+            const address = userAddress || account
+
+            if (!address) {
+              setError('No address provided and no account connected')
+              return
+            }
+
+            const currentChainId = Hex.toNumber(
+              await porto.provider.request({
+                method: 'eth_chainId',
+              }),
+            )
+
+            const response = await fetch(getRelayUrl(), {
+              body: JSON.stringify({
+                id: 1,
+                jsonrpc: '2.0',
+                method: 'sponsorship_getUserStatus',
+                params: [
+                  {
+                    chain_id: Number(chainId) || currentChainId,
+                    user_address: address,
+                  },
+                ],
+              }),
+              headers: { 'Content-Type': 'application/json' },
+              method: 'POST',
+            })
+
+            const data = await response.json()
+            if (data.error) {
+              setError(JSON.stringify(data.error, null, 2))
+            } else {
+              setResult(data.result)
+            }
+          } catch (err) {
+            console.error(err)
+            setError(String(err))
+          }
+        }}
+      >
+        <div className="flex flex-col gap-2">
+          <input
+            name="userAddress"
+            placeholder="User Address (default: connected account)"
+            type="text"
+          />
+          <input
+            name="chainId"
+            placeholder="Chain ID (default: current chain)"
+            type="text"
+          />
+          <button type="submit">Get Status</button>
+        </div>
+      </form>
+      {error && <pre className="text-red-500">{error}</pre>}
+      {result && <pre>{JSON.stringify(result, null, 2)}</pre>}
+    </div>
+  )
+}
+
+function UpdateUserSponsorshipStatus() {
+  const [result, setResult] = React.useState<{
+    success: boolean
+    message: string
+  } | null>(null)
+  const [error, setError] = React.useState<string | null>(null)
+
+  return (
+    <div>
+      <h3>sponsorship_updateUserStatus</h3>
+      <form
+        onSubmit={async (e) => {
+          e.preventDefault()
+          setError(null)
+          setResult(null)
+
+          const formData = new FormData(e.target as HTMLFormElement)
+          const userAddress = formData.get('userAddress') as string
+          const tier = formData.get('tier') as string
+          const apiKey = formData.get('apiKey') as string
+
+          try {
+            const [account] = await porto.provider.request({
+              method: 'eth_accounts',
+            })
+            const address = userAddress || account
+
+            if (!address) {
+              setError('No address provided and no account connected')
+              return
+            }
+
+            if (!apiKey) {
+              setError('API key is required')
+              return
+            }
+
+            const response = await fetch(getRelayUrl(), {
+              body: JSON.stringify({
+                id: 1,
+                jsonrpc: '2.0',
+                method: 'sponsorship_updateUserStatus',
+                params: [
+                  {
+                    api_key: apiKey,
+                    tier: tier || 'verified',
+                    user_address: address,
+                  },
+                ],
+              }),
+              headers: { 'Content-Type': 'application/json' },
+              method: 'POST',
+            })
+
+            const data = await response.json()
+            if (data.error) {
+              setError(JSON.stringify(data.error, null, 2))
+            } else {
+              setResult(data.result)
+            }
+          } catch (err) {
+            console.error(err)
+            setError(String(err))
+          }
+        }}
+      >
+        <div className="flex flex-col gap-2">
+          <input
+            name="userAddress"
+            placeholder="User Address (default: connected account)"
+            type="text"
+          />
+          <select name="tier">
+            <option value="unverified">Unverified</option>
+            <option value="verified">Verified</option>
+            <option value="premium">Premium</option>
+          </select>
+          <input
+            name="apiKey"
+            placeholder="API Key (required)"
+            type="password"
+          />
+          <button type="submit">Update Status</button>
+        </div>
+      </form>
+      {error && <pre className="text-red-500">{error}</pre>}
+      {result && <pre>{JSON.stringify(result, null, 2)}</pre>}
+    </div>
   )
 }
 

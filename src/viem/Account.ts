@@ -13,6 +13,7 @@ import {
 import { toAccount } from 'viem/accounts'
 import type { Assign, Compute } from '../core/internal/types.js'
 import type * as Storage from '../core/Storage.js'
+import type { prepareCalls } from './internal/relayActions.js'
 import * as Key from './Key.js'
 
 export type Account<
@@ -164,7 +165,9 @@ export function getKey(
   if (account.keys && account.keys.length > 0) {
     if (typeof key === 'number') return account.keys[key]
     return account.keys.find(
-      (key) => key.privateKey && (!role || key.role === role),
+      (key) =>
+        (key.privateKey && (!role || key.role === role)) ||
+        key.type === 'eip1193provider',
     )
   }
 
@@ -191,23 +194,33 @@ export async function sign(
   account: Account,
   parameters: sign.Parameters,
 ): Promise<Compute<Hex.Hex>> {
-  const { storage, replaySafe = true, wrap = true, webAuthn } = parameters
+  const {
+    storage,
+    replaySafe = true,
+    wrap = true,
+    webAuthn,
+    typedData,
+  } = parameters
 
   const key = getKey(account, parameters)
 
+  const wrapped = {
+    domain: { verifyingContract: account.address },
+    message: {
+      digest: parameters.payload,
+    },
+    primaryType: 'ERC1271Sign',
+    types: {
+      ERC1271Sign: [{ name: 'digest', type: 'bytes32' }],
+    },
+  } as TypedData.Definition
+
   const payload = (() => {
     if (!replaySafe) return parameters.payload
-    return TypedData.getSignPayload({
-      domain: { verifyingContract: account.address },
-      message: {
-        digest: parameters.payload,
-      },
-      primaryType: 'ERC1271Sign',
-      types: {
-        ERC1271Sign: [{ name: 'digest', type: 'bytes32' }],
-      },
-    })
+    return TypedData.getSignPayload(wrapped)
   })()
+
+  const typedDataPayload = !replaySafe ? typedData : wrapped
 
   const sign = (() => {
     if (!key) {
@@ -219,6 +232,7 @@ export async function sign(
         address: null,
         payload: hash,
         storage,
+        typedData: typedDataPayload,
         webAuthn,
         wrap,
       })
@@ -273,6 +287,10 @@ export declare namespace sign {
             | undefined
           getFn?: WebAuthnP256.sign.Options['getFn'] | undefined
         }
+      | undefined
+    typedData?:
+      | prepareCalls.ReturnType['typedData']
+      | TypedData.Definition
       | undefined
   }
 }

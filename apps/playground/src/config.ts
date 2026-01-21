@@ -1,8 +1,8 @@
-import { PortoConfig } from '@porto/apps'
+import { Env, PortoConfig } from '@porto/apps'
 import { exp1Address, exp2Address } from '@porto/apps/contracts'
 import { createStore } from 'mipd'
 import { Hex, Value } from 'ox'
-import { Chains, Dialog, Mode, RiseWallet } from 'rise-wallet'
+import { Chains, Dialog, Mode, RiseWallet, Transport } from 'rise-wallet'
 import type { ThemeFragment } from 'rise-wallet/theme'
 import { RelayClient } from 'rise-wallet/viem'
 
@@ -159,3 +159,11 @@ export const porto = RiseWallet.create({
 })
 
 export const client = RelayClient.fromPorto(porto)
+
+export function getRelayUrl(): string {
+  const env = Env.get()
+  return (
+    Transport.relayUrls[env as keyof typeof Transport.relayUrls]?.http ||
+    Transport.relayUrls.prod.http
+  )
+}

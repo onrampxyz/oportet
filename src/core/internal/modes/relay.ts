@@ -62,6 +62,7 @@ export function relay(parameters: relay.Parameters = {}) {
           permissions,
           internal,
           signInWithEthereum,
+          providerRdns,
         } = parameters
         const { client } = internal
 
@@ -70,14 +71,16 @@ export function relay(parameters: relay.Parameters = {}) {
         const feeTokens = await Tokens.getTokens(client)
 
         const adminKey = !mock
-          ? await Key.createWebAuthnP256({
-              createFn: webAuthn?.createFn,
-              label:
-                label ||
-                `${eoa.address.slice(0, 8)}\u2026${eoa.address.slice(-6)}`,
-              rpId: keystoreHost,
-              userId: Bytes.from(eoa.address),
-            })
+          ? providerRdns
+            ? await Key.createEip1193Provider({ rdns: providerRdns })
+            : await Key.createWebAuthnP256({
+                createFn: webAuthn?.createFn,
+                label:
+                  label ||
+                  `${eoa.address.slice(0, 8)}\u2026${eoa.address.slice(-6)}`,
+                rpId: keystoreHost,
+                userId: Bytes.from(eoa.address),
+              })
           : Key.createHeadlessWebAuthnP256()
         const sessionKey = await PermissionsRequest.toKey(permissions, {
           chainId: client.chain.id,
@@ -86,14 +89,47 @@ export function relay(parameters: relay.Parameters = {}) {
 
         const adminKeys = admins?.map((admin) => Key.from(admin))
 
-        const account = await RelayActions.upgradeAccount(client, {
-          account: eoa,
-          authorizeKeys: [
-            adminKey,
-            ...(adminKeys ?? []),
-            ...(sessionKey ? [sessionKey] : []),
-          ],
-        })
+        const { address: existingAccount } = providerRdns
+          ? await RelayActions.getAccount(client, { keyHash: adminKey.hash })
+          : { address: null }
+
+        const account = existingAccount
+          ? Account.from({
+              address: existingAccount,
+              keys: [
+                adminKey,
+                ...(adminKeys ?? []),
+                ...(sessionKey ? [sessionKey] : []),
+              ],
+            })
+          : await RelayActions.upgradeAccount(client, {
+              account: eoa,
+              authorizeKeys: [
+                adminKey,
+                ...(adminKeys ?? []),
+                ...(sessionKey ? [sessionKey] : []),
+              ],
+            })
+
+        if (existingAccount && sessionKey) {
+          const { context, digest, typedData } =
+            await RelayActions.prepareCalls(client, {
+              account,
+              authorizeKeys: [sessionKey],
+              key: adminKey,
+              preCalls: true,
+            })
+          const signature = await Key.sign(adminKey, {
+            address: null,
+            payload: digest,
+            typedData,
+          })
+          await RelayActions.sendPreparedCalls(client, {
+            context,
+            key: adminKey,
+            signature,
+          })
+        }
 
         address_internal = eoa.address
 
@@ -306,15 +342,19 @@ export function relay(parameters: relay.Parameters = {}) {
         )
         if (!adminKey) throw new Error('admin key not found.')
 
-        const { context, digest } = await RelayActions.prepareCalls(client, {
-          account,
-          authorizeKeys: [authorizeKey],
-          key: adminKey,
-          preCalls: true,
-        })
+        const { context, digest, typedData } = await RelayActions.prepareCalls(
+          client,
+          {
+            account,
+            authorizeKeys: [authorizeKey],
+            key: adminKey,
+            preCalls: true,
+          },
+        )
         const signature = await Key.sign(adminKey, {
           address: null,
           payload: digest,
+          typedData,
         })
         await RelayActions.sendPreparedCalls(client, {
           context,
@@ -326,7 +366,12 @@ export function relay(parameters: relay.Parameters = {}) {
       },
 
       async loadAccounts(parameters) {
-        const { internal, permissions, signInWithEthereum } = parameters
+        const {
+          internal,
+          permissions,
+          signInWithEthereum,
+          providerRdns: _providerRdns,
+        } = parameters
         const { client } = internal
 
         const feeTokens = await Tokens.getTokens(client)
@@ -362,42 +407,86 @@ export function relay(parameters: relay.Parameters = {}) {
           } as const
         })()
 
-        const { address, credentialId, webAuthnSignature } =
-          await (async () => {
-            if (mock) {
-              if (!address_internal)
-                throw new Error('address_internal not found.')
-              return {
-                address: address_internal,
-                credentialId: undefined,
-              } as const
-            }
+        const {
+          address,
+          credentialId,
+          webAuthnSignature,
+          rdns,
+          providerSignature,
+        } = await (async () => {
+          if (mock) {
+            if (!address_internal)
+              throw new Error('address_internal not found.')
+            return {
+              address: address_internal,
+              credentialId: undefined,
+            } as const
+          }
 
-            // If the address and credentialId are provided, we can skip the
-            // WebAuthn discovery step.
-            if (parameters.address && parameters.key)
+          // If the address and credentialId are provided, we can skip the
+          // WebAuthn discovery step.
+          if (parameters.address && parameters.key) {
+            if ('credentialId' in parameters.key)
               return {
                 address: parameters.address,
                 credentialId: parameters.key.credentialId,
               }
+            if ('rdns' in parameters.key)
+              return {
+                address: parameters.address,
+                rdns: parameters.key.rdns,
+              }
+          }
 
-            // Discovery step. We need to do this to extract the key id
-            // to query for the Account.
-            // We will also optionally sign over a digest to authorize
-            // a session key if the user has provided one.
-            const webAuthnSignature = await WebAuthnP256.sign({
-              challenge: digest,
-              getFn: webAuthn?.getFn,
-              rpId: keystoreHost,
+          if (_providerRdns) {
+            const key = await Key.createEip1193Provider({
+              rdns: _providerRdns,
             })
-            const response = webAuthnSignature.raw
-              .response as AuthenticatorAssertionResponse
 
-            const address = Bytes.toHex(new Uint8Array(response.userHandle!))
-            const credentialId = webAuthnSignature.raw.id
+            const account = await RelayActions.getAccount(client, {
+              keyHash: key.hash,
+            })
 
-            return { address, credentialId, webAuthnSignature }
-          })()
+            if (account.address) {
+              const signature =
+                digest !== '0x'
+                  ? await Key.sign(key, {
+                      address: null,
+                      payload: message as Hex.Hex,
+                      wrap: true,
+                    })
+                  : undefined
+
+              return {
+                address: account.address,
+                providerSignature: signature,
+                rdns: _providerRdns,
+              }
+            }
+            throw new Error(
+              `No account found for external wallet ${key.publicKey}`,
+            )
+          }
+
+          // Discovery step. We need to do this to extract the key id
+          // to query for the Account.
+          // We will also optionally sign over a digest to authorize
+          // a session key if the user has provided one.
+          const webAuthnSignature = await WebAuthnP256.sign({
+            challenge: digest,
+            getFn: webAuthn?.getFn,
+            rpId: keystoreHost,
+          })
+          const response = webAuthnSignature.raw
+            .response as AuthenticatorAssertionResponse
+
+          const address = Bytes.toHex(new Uint8Array(response.userHandle!))
+          const credentialId = webAuthnSignature.raw.id
+
+          return { address, credentialId, webAuthnSignature }
+        })()
+
+        const providerRdns = rdns ?? _providerRdns
 
         const keys = await RelayActions.getKeys(client, {
           account: address,
@@ -420,6 +509,12 @@ export function relay(parameters: relay.Parameters = {}) {
                     },
                     id: address,
                     rpId: keystoreHost,
+                  })
+                if (key.type === 'address' && providerRdns)
+                  return Key.fromEip1193Provider({
+                    ...key,
+                    account: key.publicKey,
+                    rdns: providerRdns,
                   })
               }
               return key
@@ -446,6 +541,8 @@ export function relay(parameters: relay.Parameters = {}) {
               },
             )
 
+          if (providerSignature) return providerSignature
+
           // Otherwise, we will sign over the digest for authorizing
           // the session key.
           return await Key.sign(adminKey, {
@@ -456,14 +553,16 @@ export function relay(parameters: relay.Parameters = {}) {
 
         // Prepare and send the authorize key pre-call.
         if (authorizeKey) {
-          const { context, digest } = await RelayActions.prepareCalls(client, {
-            account,
-            authorizeKeys: [authorizeKey],
-            preCalls: true,
-          })
+          const { context, digest, typedData } =
+            await RelayActions.prepareCalls(client, {
+              account,
+              authorizeKeys: [authorizeKey],
+              preCalls: true,
+            })
           const signature = await Key.sign(adminKey, {
             address: null,
             payload: digest,
+            typedData,
           })
           await RelayActions.sendPreparedCalls(client, {
             context,
@@ -492,7 +591,9 @@ export function relay(parameters: relay.Parameters = {}) {
               },
             )
             const signature = await Account.sign(account, {
-              payload: PersonalMessage.getSignPayload(Hex.fromString(message)),
+              payload: providerRdns
+                ? (message as Hex.Hex)
+                : PersonalMessage.getSignPayload(Hex.fromString(message)),
               role: 'admin',
             })
             const signature_erc8010 = await Erc8010.wrap(client, {
@@ -803,6 +904,7 @@ export function relay(parameters: relay.Parameters = {}) {
           payload: TypedData.getSignPayload(data),
           // If the domain is the Orchestrator, we don't need to replay-safe sign.
           replaySafe: !isOrchestrator,
+          typedData: data,
           webAuthn,
         })
 

@@ -783,6 +783,7 @@ export function from<
                 grantPermissions: permissions,
                 selectAccount,
                 signInWithEthereum,
+                providerRdns,
               } = capabilities ?? {}
 
               const internal = {
@@ -802,6 +803,7 @@ export function from<
                     internal,
                     label,
                     permissions,
+                    providerRdns,
                     signInWithEthereum,
                   })
                   return { accounts: [account] }
@@ -826,6 +828,17 @@ export function from<
                           publicKey: key.publicKey,
                         },
                       }
+                    if (
+                      key.type === 'eip1193provider' &&
+                      key.role === 'admin' &&
+                      !providerRdns
+                    )
+                      return {
+                        address: account?.address,
+                        key: {
+                          rdns: key.privateKey?.rdns,
+                        },
+                      }
                   }
                   return {
                     address: undefined,
@@ -835,6 +848,7 @@ export function from<
                 const loadAccountsParams = {
                   internal,
                   permissions,
+                  providerRdns,
                   signInWithEthereum,
                 }
                 try {

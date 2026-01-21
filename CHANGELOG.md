@@ -1,5 +1,11 @@
 # porto
 
+## 0.3.1
+
+### Patch Changes
+
+- Add support for injected wallets as primary signer
+
 ## 0.2.29
 
 ### Patch Changes

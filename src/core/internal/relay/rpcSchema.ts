@@ -53,6 +53,10 @@ export type Schema = RpcSchema_ox.From<
       ReturnType: z.input<typeof Rpc.wallet_feeTokens.Response>
     }
   | {
+      Request: z.input<typeof Rpc.wallet_getAccount.Request>
+      ReturnType: z.input<typeof Rpc.wallet_getAccount.Response>
+    }
+  | {
       Request: z.input<typeof Rpc.wallet_getAccounts.Request>
       ReturnType: z.input<typeof Rpc.wallet_getAccounts.Response>
     }

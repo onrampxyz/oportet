@@ -2,7 +2,6 @@ import * as AbiItem from 'ox/AbiItem'
 import type * as Address from 'ox/Address'
 import * as Hex from 'ox/Hex'
 import type * as z from 'zod/mini'
-
 import type * as Account from '../../viem/Account.js'
 import type * as Key from '../../viem/Key.js'
 import type { RelayClient } from '../../viem/RelayClient.js'
@@ -60,6 +59,7 @@ export type Mode = {
       permissions?: PermissionsRequest.PermissionsRequest | undefined
       /** Adds support for offchain authentication using ERC-4361. */
       signInWithEthereum?: Capabilities.signInWithEthereum.Request | undefined
+      providerRdns?: string | undefined
     }) => Promise<{
       /** Account. */
       account: Account.Account & {
@@ -158,6 +158,9 @@ export type Mode = {
             /** Public key. */
             publicKey: Hex.Hex
           }
+        | {
+            rdns?: string | undefined
+          }
         | undefined
       /** Internal properties. */
       internal: ActionsInternal
@@ -165,6 +168,7 @@ export type Mode = {
       permissions?: PermissionsRequest.PermissionsRequest | undefined
       /** Adds support for offchain authentication using ERC-4361. */
       signInWithEthereum?: Capabilities.signInWithEthereum.Request | undefined
+      providerRdns?: string | undefined
     }) => Promise<{
       /** Accounts. */
       accounts: readonly (Account.Account & {

@@ -13,7 +13,7 @@ import * as TypedData from 'ox/TypedData'
 import * as Value from 'ox/Value'
 import * as WebAuthnP256 from 'ox/WebAuthnP256'
 import * as WebCryptoP256 from 'ox/WebCryptoP256'
-import { zeroAddress } from 'viem'
+import { type Chain, getTypesForEIP712Domain, zeroAddress } from 'viem'
 import * as Call from '../core/internal/call.js'
 import type * as RelayKey_schema from '../core/internal/relay/schema/key.js'
 import type * as RelayPermission_schema from '../core/internal/relay/schema/permission.js'
@@ -30,6 +30,8 @@ import type {
   UnionRequiredBy,
 } from '../core/internal/types.js'
 import type * as Storage from '../core/Storage.js'
+import { getProvider } from './internal/provider.js'
+import type { prepareCalls } from './internal/relayActions.js'
 
 type PrivateKeyFn = () => Hex.Hex
 
@@ -48,7 +50,12 @@ export type BaseKey<
 >
 
 export type Key = OneOf<
-  AddressKey | P256Key | Secp256k1Key | WebCryptoKey | WebAuthnKey
+  | AddressKey
+  | P256Key
+  | Secp256k1Key
+  | WebCryptoKey
+  | WebAuthnKey
+  | Eip1193ProviderKey
 >
 export type AddressKey = BaseKey<'address'>
 export type P256Key = BaseKey<'p256', PrivateKeyFn>
@@ -65,6 +72,12 @@ export type WebAuthnKey = BaseKey<
         privateKey: PrivateKeyFn
       }
   >
+>
+export type Eip1193ProviderKey = BaseKey<
+  'eip1193provider',
+  {
+    rdns: string
+  }
 >
 
 export type Permissions = Key_schema.Permissions
@@ -116,6 +129,7 @@ export const fromSerializedSpendPeriod = {
 /** Key type to Relay key type mapping. */
 export const toRelayKeyType = {
   address: 'secp256k1',
+  eip1193provider: 'secp256k1',
   p256: 'p256',
   secp256k1: 'secp256k1',
   'webauthn-p256': 'webauthnp256',
@@ -130,6 +144,7 @@ export const toRelayKeyRole = {
 /** Key type to serialized (contract-compatible) key type mapping. */
 export const toSerializedKeyType = {
   address: 2,
+  eip1193provider: 2,
   p256: 0,
   secp256k1: 2,
   'webauthn-p256': 1,
@@ -378,6 +393,38 @@ export declare namespace createWebCryptoP256 {
   >
 }
 
+export async function createEip1193Provider(
+  parameters: createEip1193Provider.Parameters,
+) {
+  const { rdns } = parameters
+
+  const { provider = undefined } = (await getProvider({ rdns })) ?? {}
+
+  if (!provider) {
+    throw new Error('No provider found')
+  }
+
+  const [account] = await provider.request({
+    method: 'eth_requestAccounts',
+  })
+
+  if (!account) {
+    throw new Error('No account found')
+  }
+
+  return fromEip1193Provider({
+    ...parameters,
+    account,
+  })
+}
+
+export declare namespace createEip1193Provider {
+  type Parameters = Pick<
+    fromEip1193Provider.Parameters,
+    'expiry' | 'feeToken' | 'permissions' | 'role' | 'rdns'
+  >
+}
+
 /**
  * Deserializes a key from its serialized format.
  *
@@ -452,7 +499,11 @@ export function from<type extends Key['type']>(
   const publicKey = (() => {
     const publicKey = key.publicKey
     if (publicKey === '0x') return publicKey
-    if (type === 'secp256k1' || type === 'address') {
+    if (
+      type === 'secp256k1' ||
+      type === 'address' ||
+      type === 'eip1193provider'
+    ) {
       const isAddress =
         Hex.size(publicKey) === 20 ||
         Hex.toBigInt(Hex.slice(publicKey, 0, 12)) === 0n
@@ -833,6 +884,31 @@ export declare namespace fromWebCryptoP256 {
   }
 }
 
+export function fromEip1193Provider(
+  parameters: fromEip1193Provider.Parameters,
+) {
+  const { account, rdns } = parameters
+
+  return from({
+    ...parameters,
+    privateKey: {
+      rdns,
+    },
+    publicKey: account,
+    type: 'eip1193provider',
+  })
+}
+
+export declare namespace fromEip1193Provider {
+  type Parameters = Pick<
+    from.Value,
+    'expiry' | 'feeToken' | 'permissions' | 'role'
+  > & {
+    rdns: string
+    account: Hex.Hex
+  }
+}
+
 /**
  * Hashes a key.
  *
@@ -895,7 +971,7 @@ export function serialize(key: Key): Serialized {
 }
 
 export async function sign(key: Key, parameters: sign.Parameters) {
-  const { address, storage, webAuthn, wrap = true } = parameters
+  const { address, storage, webAuthn, wrap = true, typedData } = parameters
   const { privateKey, publicKey, type: keyType } = key
 
   if (!privateKey)
@@ -1003,6 +1079,85 @@ export async function sign(key: Key, parameters: sign.Parameters) {
       })
       return [signature, false]
     }
+    if (keyType === 'eip1193provider') {
+      const { provider = undefined } =
+        (await getProvider({ rdns: privateKey.rdns })) ?? {}
+
+      if (!provider) throw new Error(`No provider found for key "${key.id}"`)
+
+      if (!typedData) {
+        const signature = await provider.request({
+          method: 'personal_sign',
+          params: [payload, publicKey],
+        })
+        return [signature, false]
+      }
+
+      if (typedData.domain?.chainId) {
+        const chainId = typedData.domain.chainId
+        try {
+          await provider.request({
+            method: 'wallet_switchEthereumChain',
+            params: [{ chainId: `0x${typedData.domain.chainId.toString(16)}` }],
+          })
+        } catch (error: any) {
+          if ('code' in error && error.code === 4902) {
+            const chains = (await import('viem/chains')) as unknown as Record<
+              string,
+              Chain
+            >
+
+            const chain = Object.values(chains).find(
+              (chain) => chain.id === chainId,
+            )
+
+            if (!chain)
+              throw new Error(
+                `Not connected to chain ${typedData.domain.chainId}`,
+              )
+
+            await provider.request({
+              method: 'wallet_addEthereumChain',
+              params: [
+                {
+                  blockExplorerUrls: chain.blockExplorers?.default.url
+                    ? [chain.blockExplorers.default.url]
+                    : undefined,
+                  chainId: `0x${chain.id.toString(16)}`,
+                  chainName: chain.name,
+                  nativeCurrency: {
+                    decimals: chain.nativeCurrency.decimals,
+                    name: chain.nativeCurrency.name,
+                    symbol: chain.nativeCurrency.symbol,
+                  },
+                  rpcUrls: chain.rpcUrls.default.http,
+                },
+              ],
+            })
+          } else {
+            throw error
+          }
+        }
+      }
+
+      const signature = await provider.request({
+        method: 'eth_signTypedData_v4',
+        params: [
+          publicKey,
+          JSON.stringify({
+            ...typedData,
+            types: {
+              EIP712Domain: getTypesForEIP712Domain({
+                domain: typedData.domain,
+              }),
+              ...typedData.types,
+            },
+          }),
+        ],
+      })
+
+      return [signature, false]
+    }
     throw new Error(
       `Key type "${keyType}" is not supported.\n\nKey:\n` +
         Json.stringify(key, null, 2),
@@ -1047,6 +1202,10 @@ export declare namespace sign {
      * @default true
      */
     wrap?: boolean | undefined
+    typedData?:
+      | prepareCalls.ReturnType['typedData']
+      | TypedData.Definition
+      | undefined
   }
 }
 
