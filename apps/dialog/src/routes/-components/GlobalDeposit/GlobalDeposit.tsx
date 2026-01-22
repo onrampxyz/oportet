@@ -1,15 +1,17 @@
+import { Separator } from '@ariakit/react'
 import { Input } from '@porto/apps/components'
 import { Button, Deposit } from '@porto/ui'
 import { Value } from 'ox'
 import { useEffect, useMemo, useState } from 'react'
 import { Chains } from 'rise-wallet/index'
 import { formatUnits, parseUnits } from 'viem'
-import { useReadContract } from 'wagmi'
+import { riseTestnet } from 'viem/chains'
+import { useAccount, useReadContract } from 'wagmi'
 import { useFundsContext } from '~/contexts'
 import { useBridge, useDestinationAsset, useWalletAsset } from '~/hooks'
 import ArrowLeft from '~icons/lucide/arrow-left'
-import { Layout } from '../Layout'
 import { DropdownSelector, getAssets, SupportedChains } from '.'
+import { Layout } from '../Layout'
 import { Bridge, type BridgeState } from './Bridge'
 
 export type GlobalDepositProps = Readonly<{
@@ -27,6 +29,8 @@ export function GlobalDeposit({ onClose }: GlobalDepositProps) {
     setSelectedChain,
     setView,
   } = useFundsContext()
+
+  const { chainId } = useAccount()
 
   const [bridgeState, setBridgeState] = useState<BridgeState>({
     status: 'idle',
@@ -202,7 +206,23 @@ export function GlobalDeposit({ onClose }: GlobalDepositProps) {
             <>
               <div className="space-y-2 rounded-lg bg-th_base-alt p-2">
                 <div className="flex items-center justify-between gap-2">
-                  <p className="text-sm text-th_base-secondary">Token</p>
+                  <div className="flex items-center gap-2">
+                    <p className="text-sm text-th_base-secondary">Token</p>
+                    <Separator
+                      className="h-4 w-0.25 bg-th_base"
+                      orientation="vertical"
+                    />
+                    {chainId === riseTestnet.id && (
+                      <a
+                        className="text-sm text-th_base-secondary"
+                        href="https://demo.wallet.risechain.com/mint"
+                        rel="noopener noreferrer"
+                        target="_blank"
+                      >
+                        Mint
+                      </a>
+                    )}
+                  </div>
                   <div className="flex gap-2">
                     <p className="text-sm text-th_base-secondary">Balance:</p>
                     {isWalletAssetLoading ? (
