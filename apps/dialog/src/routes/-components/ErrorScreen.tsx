@@ -58,10 +58,7 @@ export function ErrorScreen(props: ErrorScreen.Props) {
             </UI.Button>
             <UI.Button.Anchor
               external
-              href={ErrorScreen.getBugReportMailto(
-                dialogError.title,
-                errorDetails,
-              )}
+              href={ErrorScreen.getBugReportUrl()}
               icon={<LucideBug className="size-[16px]" />}
               variant="warning"
               width="grow"
@@ -94,16 +91,8 @@ export namespace ErrorScreen {
     }
   }
 
-  export function getBugReportMailto(
-    errorTitle: string,
-    serializedError: string,
-  ) {
-    const subject = `RISE Wallet Error Report: ${errorTitle}`
-    const body =
-      'Please describe what you were doing when this error occurred:' +
-      `\n\n\n\n---\nError Details:\n${serializedError}`
-
-    return `mailto:support@ithaca.xyz?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
+  export function getBugReportUrl() {
+    return 'https://discord.com/invite/qhKnePXdSM'
   }
 
   export function Execution(props: Execution.Props) {

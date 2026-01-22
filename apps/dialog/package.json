@@ -28,8 +28,6 @@
     "@wagmi/core": "catalog:",
     "cva": "catalog:",
     "lucide-react": "^0.556.0",
-    "mipd": "catalog:",
-    "mipd-postmessage": "catalog:",
     "ox": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
@@ -37,7 +35,9 @@
     "rise-wallet": "workspace:*",
     "wagmi": "catalog:",
     "zod": "catalog:",
-    "zustand": "catalog:"
+    "zustand": "catalog:",
+    "mipd": "catalog:",
+    "mipd-postmessage": "catalog:"
   },
   "devDependencies": {
     "@iconify/json": "catalog:",
