@@ -1048,7 +1048,7 @@ export async function sign(key: Key, parameters: sign.Parameters) {
       const verificationTimeout = 10 * 60 * 1_000 // 10 minutes in milliseconds
 
       let requireVerification = !verificationOptional
-      if (storage && verificationOptional === undefined) {
+      if (storage) {
         const lastVerified = await storage.getItem<number>(cacheKey)
         requireVerification =
           !lastVerified || now - lastVerified > verificationTimeout
