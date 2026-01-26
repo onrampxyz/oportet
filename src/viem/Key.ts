@@ -971,7 +971,14 @@ export function serialize(key: Key): Serialized {
 }
 
 export async function sign(key: Key, parameters: sign.Parameters) {
-  const { address, storage, webAuthn, wrap = true, typedData } = parameters
+  const {
+    address,
+    storage,
+    webAuthn,
+    wrap = true,
+    typedData,
+    verificationOptional,
+  } = parameters
   const { privateKey, publicKey, type: keyType } = key
 
   if (!privateKey)
@@ -1040,7 +1047,7 @@ export async function sign(key: Key, parameters: sign.Parameters) {
       const now = Date.now()
       const verificationTimeout = 10 * 60 * 1_000 // 10 minutes in milliseconds
 
-      let requireVerification = true
+      let requireVerification = !verificationOptional
       if (storage) {
         const lastVerified = await storage.getItem<number>(cacheKey)
         requireVerification =
@@ -1206,6 +1213,7 @@ export declare namespace sign {
       | prepareCalls.ReturnType['typedData']
       | TypedData.Definition
       | undefined
+    verificationOptional?: boolean | undefined
   }
 }
 
