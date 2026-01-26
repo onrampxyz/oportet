@@ -89,12 +89,10 @@ export function onDialogRequest(
         if (rule) {
           if (
             typeof rule === 'object' &&
-            rule.sameOrigin &&
-            event.origin !== window.location.origin
+            ((rule.sameOrigin && event.origin === window.location.origin) ||
+              rule.privilegedOrigins?.some((origin) => event.origin === origin))
           ) {
-            // Allow bypass for RISEx origins
-            const risexOrigins = ['localhost:3009', 'rise.trade']
-            return risexOrigins.some((origin) => event.origin.endsWith(origin))
+            return true
           }
           return true
         }

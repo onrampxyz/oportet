@@ -9,15 +9,15 @@ const mock = import.meta.env.MODE === 'test'
 
 const config = {
   anvil: {
-    chains: [riseTestnet],
+    chains: [riseTestnet, sepolia],
     feeToken: 'ETH',
     mode: Mode.relay({
       mock,
-      multichain: false,
     }),
     relay: http(Transport.relayUrls.anvil.http),
     transports: {
       [riseTestnet.id]: http(),
+      [sepolia.id]: http(),
     },
   },
   prod: {
