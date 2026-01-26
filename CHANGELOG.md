@@ -1,5 +1,11 @@
 # porto
 
+## 0.3.4
+
+### Patch Changes
+
+- Fix dialog bypass logic
+
 ## 0.3.3
 
 ### Patch Changes
