@@ -1,6 +1,6 @@
 import type { PortoConfig } from '@porto/apps'
 import type { Address } from 'ox'
-import { riseTestnet, sepolia } from 'viem/chains'
+import { riseTestnet } from 'viem/chains'
 
 export const CORS_DESTROYER_URL = 'https://cors.porto.workers.dev'
 
