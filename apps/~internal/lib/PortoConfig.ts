@@ -13,7 +13,6 @@ const config = {
     feeToken: 'ETH',
     mode: Mode.relay({
       mock,
-      multichain: false,
     }),
     relay: http(Transport.relayUrls.anvil.http),
     transports: {

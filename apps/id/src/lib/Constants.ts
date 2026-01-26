@@ -40,7 +40,7 @@ export const defaultAssets: Record<
       symbol: 'ETH',
     },
   ],
-  [sepolia.id]: [
+  [Chains.sepolia.id]: [
     {
       address: '0x0000000000000000000000000000000000000000',
       decimals: 18,
