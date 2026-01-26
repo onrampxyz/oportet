@@ -563,6 +563,7 @@ export function relay(parameters: relay.Parameters = {}) {
             address: null,
             payload: digest,
             typedData,
+            verificationOptional: true,
           })
           await RelayActions.sendPreparedCalls(client, {
             context,
