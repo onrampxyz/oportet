@@ -993,8 +993,8 @@ export function requiresConfirmation(
       typeof policy.modes.headless === 'object' &&
       ((policy.modes.headless.sameOrigin &&
         targetOrigin === window.location.origin) ||
-        policy.modes.headless.privilegedOrigins?.some(
-          (origin) => origin === window.location.origin,
+        policy.modes.headless.privilegedOrigins?.some((origin) =>
+          window.location.origin.endsWith(origin),
         ))
     )
       return false

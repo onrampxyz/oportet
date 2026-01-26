@@ -90,7 +90,9 @@ export function onDialogRequest(
           if (
             typeof rule === 'object' &&
             ((rule.sameOrigin && event.origin === window.location.origin) ||
-              rule.privilegedOrigins?.some((origin) => event.origin === origin))
+              rule.privilegedOrigins?.some((origin) =>
+                event.origin.endsWith(origin),
+              ))
           ) {
             return true
           }
