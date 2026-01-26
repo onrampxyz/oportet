@@ -1,5 +1,17 @@
 # porto
 
+## 0.3.4
+
+### Patch Changes
+
+- Fix dialog bypass logic
+
+## 0.3.3
+
+### Patch Changes
+
+- Add privileged origins to bypass dialog
+
 ## 0.3.2
 
 ### Patch Changes

@@ -86,15 +86,16 @@ export function onDialogRequest(
         if (!request) return false
 
         const rule = policy?.modes?.headless
-        if (rule) {
-          if (
-            typeof rule === 'object' &&
-            ((rule.sameOrigin && event.origin === window.location.origin) ||
-              rule.privilegedOrigins?.some((origin) => event.origin === origin))
-          ) {
-            return true
-          }
-          return true
+        if (typeof rule === 'object') {
+          return (
+            (rule.sameOrigin && event.origin === window.location.origin) ||
+            rule.privilegedOrigins?.some((origin) =>
+              event.origin.endsWith(origin),
+            )
+          )
+        }
+        if (rule !== undefined) {
+          return rule
         }
 
         return false
