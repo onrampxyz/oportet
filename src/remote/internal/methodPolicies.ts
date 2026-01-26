@@ -26,7 +26,7 @@ export type MethodPolicies = readonly MethodPolicy[]
 export const privilegedOrigins = [
   'rise.trade',
   'wallet.risechain.com',
-  'localhost:5173',
+  'localhost:3009',
 ]
 
 export const methodPolicies = [
