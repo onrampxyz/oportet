@@ -1036,7 +1036,7 @@ export async function sign(key: Key, parameters: sign.Parameters) {
 
       const { credential, rpId } = privateKey
 
-      const cacheKey = `porto.webauthnVerified.${key.hash}`
+      const cacheKey = `risewallet.webauthnVerified.${key.hash}`
       const now = Date.now()
       const verificationTimeout = 10 * 60 * 1_000 // 10 minutes in milliseconds
 
@@ -1056,7 +1056,7 @@ export async function sign(key: Key, parameters: sign.Parameters) {
         credentialId: credential.id,
         getFn: webAuthn?.getFn,
         rpId,
-        userVerification: requireVerification ? 'required' : 'preferred',
+        userVerification: requireVerification ? 'required' : 'discouraged',
       })
 
       const response = raw.response as AuthenticatorAssertionResponse

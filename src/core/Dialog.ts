@@ -988,16 +988,21 @@ export function requiresConfirmation(
   const { methodPolicies, targetOrigin } = options
   const policy = methodPolicies?.find((x) => x.method === request.method)
   if (!policy) return true
-  if (policy.modes?.headless) {
+  if (policy.modes && typeof policy.modes.headless === 'object') {
     if (
-      typeof policy.modes.headless === 'object' &&
-      ((policy.modes.headless.sameOrigin &&
-        targetOrigin === window.location.origin) ||
-        policy.modes.headless.privilegedOrigins?.some((origin) =>
-          window.location.origin.endsWith(origin),
-        ))
+      policy.modes.headless.sameOrigin &&
+      targetOrigin === window.location.origin
     )
       return false
+    if (
+      policy.modes.headless.privilegedOrigins?.some((origin) =>
+        window.location.origin.endsWith(origin),
+      )
+    )
+      return false
+    return true
+  }
+  if (policy.modes?.headless !== undefined) {
     return false
   }
   return true
