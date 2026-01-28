@@ -54,13 +54,13 @@ const config = {
 const dialogHosts = {
   anvil: import.meta.env.PROD
     ? undefined
-    : 'https://anvil.localhost:5175/dialog/',
+    : 'https://anvil.localhost:5174/dialog/',
   prod: import.meta.env.PROD
     ? 'https://wallet.risechain.com/dialog/'
-    : 'https://localhost:5175/dialog/',
+    : 'https://localhost:5174/dialog/',
   stg: import.meta.env.PROD
     ? 'https://stg.wallet.risechain.com/dialog/'
-    : 'https://stg.localhost:5175/dialog/',
+    : 'https://stg.localhost:5174/dialog/',
 } as const satisfies Record<Env.Env, string | undefined>
 
 export function getConfig(

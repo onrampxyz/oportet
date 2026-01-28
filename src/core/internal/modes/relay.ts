@@ -15,6 +15,7 @@ import * as ContractActions from '../../../viem/ContractActions.js'
 import * as RelayActions_internal from '../../../viem/internal/relayActions.js'
 import * as Key from '../../../viem/Key.js'
 import * as RelayActions from '../../../viem/RelayActions.js'
+import { localStorage } from '../../Storage.js'
 import * as Erc8010 from '../erc8010.js'
 import * as Mode from '../mode.js'
 import * as PermissionsRequest from '../permissionsRequest.js'
@@ -548,6 +549,7 @@ export function relay(parameters: relay.Parameters = {}) {
           return await Key.sign(adminKey, {
             address: account.address,
             payload: digest,
+            storage: localStorage(),
           })
         })()
 
@@ -563,6 +565,7 @@ export function relay(parameters: relay.Parameters = {}) {
             address: null,
             payload: digest,
             typedData,
+            verificationOptional: true,
           })
           await RelayActions.sendPreparedCalls(client, {
             context,
