@@ -1,7 +1,7 @@
 import { Env } from '@porto/apps'
 import { useQuery } from '@tanstack/react-query'
 import { type Dispatch, type SetStateAction, useState } from 'react'
-import { type Address, parseAbiItem } from 'viem'
+import { type Address, encodeFunctionData, parseAbiItem } from 'viem'
 import { riseTestnet } from 'viem/chains'
 import { useSendCallsSync } from 'wagmi'
 import { porto } from '~/lib/Porto'
@@ -60,21 +60,27 @@ export function useBridge(params: UseBridgeParams) {
       const response = await sendCallsSyncAsync({
         calls: [
           {
-            abi: [
-              parseAbiItem('function approve(address spender, uint256 amount)'),
-            ],
-            args: [selectedToken.bridgeWrapper, amount],
-            functionName: 'approve',
+            data: encodeFunctionData({
+              abi: [
+                parseAbiItem(
+                  'function approve(address spender, uint256 amount)',
+                ),
+              ],
+              args: [selectedToken.bridgeWrapper, amount],
+              functionName: 'approve',
+            }),
             to: selectedToken.address,
           },
           {
-            abi: [
-              parseAbiItem(
-                'function bridgeLayerZero(address _bridge, uint256 _amoun, address _recipient)',
-              ),
-            ],
-            args: [selectedToken.bridgeContract, amount, account],
-            functionName: 'bridgeLayerZero',
+            data: encodeFunctionData({
+              abi: [
+                parseAbiItem(
+                  'function bridgeLayerZero(address _bridge, uint256 _amount, address _recipient)',
+                ),
+              ],
+              args: [selectedToken.bridgeContract, amount, account],
+              functionName: 'bridgeLayerZero',
+            }),
             to: selectedToken.bridgeWrapper,
           },
         ],
