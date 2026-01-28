@@ -3,15 +3,14 @@ import { Input } from '@porto/apps/components'
 import { Button, Deposit } from '@porto/ui'
 import { Value } from 'ox'
 import { useEffect, useMemo, useState } from 'react'
-import { Chains } from 'rise-wallet/index'
 import { formatUnits, parseUnits } from 'viem'
 import { riseTestnet } from 'viem/chains'
 import { useAccount, useReadContract } from 'wagmi'
 import { useFundsContext } from '~/contexts'
 import { useBridge, useDestinationAsset, useWalletAsset } from '~/hooks'
 import ArrowLeft from '~icons/lucide/arrow-left'
-import { Layout } from '../Layout'
 import { DropdownSelector, getAssets, SupportedChains } from '.'
+import { Layout } from '../Layout'
 import { Bridge, type BridgeState } from './Bridge'
 
 export type GlobalDepositProps = Readonly<{
@@ -48,7 +47,7 @@ export function GlobalDeposit({ onClose }: GlobalDepositProps) {
 
   const tokens = getAssets(selectedChain?.id)
   // Default to RISE, add handling when on mainnet
-  const destinationToken = getAssets(11155931)
+  const destinationToken = getAssets(riseTestnet.id)
 
   const selectedToken = useMemo(() => {
     return tokens.find(
@@ -202,7 +201,7 @@ export function GlobalDeposit({ onClose }: GlobalDepositProps) {
               selectedItem={selectedChain}
             />
           </div>
-          {selectedChain?.id !== Chains.riseTestnet.id && (
+          {selectedChain?.id !== riseTestnet.id && (
             <>
               <div className="space-y-2 rounded-lg bg-th_base-alt p-2">
                 <div className="flex items-center justify-between gap-2">
@@ -298,7 +297,7 @@ export function GlobalDeposit({ onClose }: GlobalDepositProps) {
               </div>
             </>
           )}
-          {selectedChain?.id === Chains.riseTestnet.id && (
+          {selectedChain?.id === riseTestnet.id && (
             <Deposit
               address={address ?? ''}
               chainId={selectedChain?.id}
@@ -307,7 +306,7 @@ export function GlobalDeposit({ onClose }: GlobalDepositProps) {
           )}
         </div>
       </Layout.Content>
-      {selectedChain?.id !== Chains.riseTestnet.id && (
+      {selectedChain?.id !== riseTestnet.id && (
         <Layout.Footer>
           <Layout.Footer.Actions>
             <Button

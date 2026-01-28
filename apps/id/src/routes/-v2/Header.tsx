@@ -59,7 +59,6 @@ export function Header() {
   const handleAddFunds = async () => {
     // if url has testnet search param
     const urlHasTestnet = window.location.search.includes('testnet')
-    console.log('urlHasTestnet:: ', urlHasTestnet)
 
     if (!urlHasTestnet) {
       addFunds.mutate({
@@ -72,13 +71,11 @@ export function Header() {
     await switchChainAsync({
       chainId: riseTestnet.id,
     }).catch()
-    console.log('capabilities.data:: ', capabilities.data)
 
     if (!capabilities.data) return
     const exp1 = capabilities.data?.[riseTestnet.id]?.feeToken?.tokens?.find(
       (t: any) => t.uid === 'exp1',
     )
-    console.log('exp1:: ', exp1)
 
     if (!exp1) return
     addFunds.mutate({
@@ -220,7 +217,7 @@ export function Header() {
             onClick={toggleTheme}
             size="square"
             title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
-            // variant="outline"
+          // variant="outline"
           >
             {theme === 'light' ? (
               <LucideMoon className="size-5 text-gray11" />

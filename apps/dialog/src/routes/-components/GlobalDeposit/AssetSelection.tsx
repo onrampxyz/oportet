@@ -29,7 +29,7 @@ export const BRIDGE_TOKENS: Record<number, BridgeToken[]> = {
       decimals: 18,
       icon: '/dialog/ui/token-icons/usdc.svg',
       minDeposit: Value.from('10', 18), // 0.1 USDC
-      name: 'USDC', // TODO: fix this
+      name: 'USDC',
       symbol: 'USDC',
     },
     {
@@ -41,7 +41,7 @@ export const BRIDGE_TOKENS: Record<number, BridgeToken[]> = {
       decimals: 18,
       icon: '/dialog/ui/token-icons/usdt.svg',
       minDeposit: Value.from('10', 18), // 0.1 USDC
-      name: 'USDT', // TODO: fix this
+      name: 'USDT',
       symbol: 'USDT',
     },
   ],
@@ -56,7 +56,7 @@ export const BRIDGE_TOKENS: Record<number, BridgeToken[]> = {
       decimals: 18,
       icon: '/dialog/ui/token-icons/usdc.svg',
       minDeposit: Value.from('10', 18), // 0.1 USDC
-      name: 'USDC', // TODO: fix this
+      name: 'USDC',
       symbol: 'USDC',
     },
     {
@@ -68,7 +68,7 @@ export const BRIDGE_TOKENS: Record<number, BridgeToken[]> = {
       decimals: 18,
       icon: '/dialog/ui/token-icons/usdt.svg',
       minDeposit: Value.from('10', 18), // 0.1 USDC
-      name: 'USDT', // TODO: fix this
+      name: 'USDT',
       symbol: 'USDT',
     },
   ],

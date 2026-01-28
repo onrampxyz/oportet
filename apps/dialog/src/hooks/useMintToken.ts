@@ -47,15 +47,13 @@ export function useMintToken(params: UseMintTokenParams) {
         params: [id],
       })
 
-      console.log('mint call:', status)
-
       return status
     } catch (e) {
       const error = e as Error
       const message =
         typeof error.cause === 'string' ? error.cause : error.message
 
-      console.log(
+      console.error(
         'mint error message:: ',
         ErrorFormatter.extractMessage(message),
       )

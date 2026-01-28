@@ -1,3 +1,4 @@
+import { Env } from '@porto/apps'
 import { Button, CopyButton, Details, Separator, Spinner } from '@porto/ui'
 import { type Hex, Value } from 'ox'
 import type { Chain } from '~/routes/-components/GlobalDeposit/ChainSelection'
@@ -118,7 +119,11 @@ export function Bridge(props: Readonly<BridgeProps>) {
                   <div className="flex items-center gap-2">
                     <a
                       className="flex items-center gap-1 text-sm text-th_base-secondary hover:underline"
-                      href={`https://testnet.layerzeroscan.com/tx/${bridgeState.sourceTxHash}`}
+                      href={
+                        Env.get() === 'prod'
+                          ? `https://testnet.layerzeroscan.com/tx/${bridgeState.sourceTxHash}`
+                          : `https://layerzeroscan.com/tx/${bridgeState.sourceTxHash}`
+                      }
                       rel="noopener noreferrer"
                       target="_blank"
                     >
