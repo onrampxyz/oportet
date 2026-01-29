@@ -112,15 +112,14 @@ export function Bridge(props: Readonly<BridgeProps>) {
           <div className="flex flex-col items-center py-4">
             {/* Source chain bullet */}
             <div
-              className={`size-3 rounded-full border ${
-                bridgeState.status === 'completed'
-                  ? 'border-green-500 bg-green-500'
-                  : bridgeState.status === 'failed'
-                    ? 'border-destructive bg-destructive'
-                    : bridgeState.status === 'pending'
-                      ? 'border-yellow-500 bg-yellow-500'
-                      : 'border-th_base bg-transparent'
-              }`}
+              className={`size-3 rounded-full ${bridgeState.status === 'completed'
+                ? 'bg-green-500'
+                : bridgeState.status === 'failed'
+                  ? 'bg-red-500'
+                  : bridgeState.status === 'pending'
+                    ? 'bg-yellow-500'
+                    : 'bg-th_base-alt'
+                }`}
             />
 
             {/* Dashed connector line */}
@@ -128,13 +127,12 @@ export function Bridge(props: Readonly<BridgeProps>) {
 
             {/* Destination chain bullet */}
             <div
-              className={`size-3 rounded-full border ${
-                bridgeState.status === 'completed'
-                  ? 'border-green-500 bg-green-500'
-                  : bridgeState.status === 'failed'
-                    ? 'border-destructive bg-destructive'
-                    : 'border-th_base bg-transparent'
-              }`}
+              className={`size-3 rounded-full ${bridgeState.status === 'completed'
+                ? 'bg-green-500'
+                : bridgeState.status === 'failed'
+                  ? 'bg-red-500'
+                  : 'bg-th_base-alt'
+                }`}
             />
           </div>
 
@@ -144,7 +142,7 @@ export function Bridge(props: Readonly<BridgeProps>) {
               <p className="pb-1 text-th_base-secondary">Source Chain</p>
               <div className="rounded-lg border border-th_base bg-th_base px-3 py-2">
                 <div className="flex items-center justify-between">
-                  <div className="flex gap-1">
+                  <div className="flex gap-2">
                     <img
                       alt={`${selectedChain.name}-icon`}
                       className={css({ height: 18, width: 18 })}
@@ -177,7 +175,7 @@ export function Bridge(props: Readonly<BridgeProps>) {
               <p className="pb-1 text-th_base-secondary">Destination Chain</p>
               <div className="rounded-lg border border-th_base bg-th_base px-3 py-2">
                 <div className="flex items-center justify-between">
-                  <div className="flex gap-1">
+                  <div className="flex gap-2">
                     <img
                       alt="RISE icon"
                       className={css({ height: 18, width: 18 })}
@@ -188,10 +186,10 @@ export function Bridge(props: Readonly<BridgeProps>) {
 
                   {(bridgeState.status === 'pending' ||
                     bridgeState.status === 'failed') && (
-                    <p className="text-th_base-secondary text-xs">
-                      Not Started
-                    </p>
-                  )}
+                      <p className="text-th_base-secondary text-xs">
+                        Not Started
+                      </p>
+                    )}
                   {/* TODO: Add LZ status here */}
                 </div>
                 <p className="text-th_base-secondary text-xs">
