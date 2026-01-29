@@ -181,7 +181,7 @@ function AddFundsContent(props: Readonly<AddFunds.Props>) {
   }
 
   if (view === 'global-deposit') {
-    return <GlobalDeposit onClose={onReject ?? (() => {})} />
+    return <GlobalDeposit />
   }
 
   return (
@@ -200,8 +200,8 @@ function AddFundsContent(props: Readonly<AddFunds.Props>) {
           {showApplePay &&
             address &&
             (onrampStatus?.email &&
-            onrampStatus.phone &&
-            !onrampStatus.reverifyPhone ? (
+              onrampStatus.phone &&
+              !onrampStatus.reverifyPhone ? (
               <div className="flex w-full flex-col">
                 {createOrder.isSuccess && createOrder.data?.url && (
                   <ApplePayIframe
@@ -213,10 +213,10 @@ function AddFundsContent(props: Readonly<AddFunds.Props>) {
                 )}
                 {(!iframeLoaded ||
                   lastOrderEvent?.eventName ===
-                    'onramp_api.apple_pay_button_pressed' ||
+                  'onramp_api.apple_pay_button_pressed' ||
                   lastOrderEvent?.eventName === 'onramp_api.polling_start') && (
-                  <ApplePayButton label="Buy with" loading />
-                )}
+                    <ApplePayButton label="Buy with" loading />
+                  )}
               </div>
             ) : (
               <ApplePayButton

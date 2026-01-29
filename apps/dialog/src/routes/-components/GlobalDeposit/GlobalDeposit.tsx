@@ -9,15 +9,11 @@ import { useAccount, useReadContract } from 'wagmi'
 import { useFundsContext } from '~/contexts'
 import { useBridge, useDestinationAsset, useWalletAsset } from '~/hooks'
 import ArrowLeft from '~icons/lucide/arrow-left'
-import { Layout } from '../Layout'
 import { DropdownSelector, getAssets, SupportedChains } from '.'
+import { Layout } from '../Layout'
 import { Bridge, type BridgeState } from './Bridge'
 
-export type GlobalDepositProps = Readonly<{
-  onClose: () => void
-}>
-
-export function GlobalDeposit({ onClose }: GlobalDepositProps) {
+export function GlobalDeposit() {
   const {
     address,
     amount,
@@ -154,13 +150,16 @@ export function GlobalDeposit({ onClose }: GlobalDepositProps) {
         bridgeError={null}
         bridgeState={bridgeState}
         chains={chains}
+        onNewTransaction={() => {
+          setBridgeState({
+            sourceChainId: selectedChain?.id,
+            status: 'idle',
+          })
+          setView('global-deposit')
+          setAmount('0')
+        }}
         onRetry={() => {
           bridge()
-        }}
-        onSuccess={() => {
-          refetchBalance()
-          refetchRiseBalance()
-          onClose()
         }}
         selectedChain={selectedChain}
         selectedToken={selectedToken}
@@ -181,7 +180,7 @@ export function GlobalDeposit({ onClose }: GlobalDepositProps) {
             <ArrowLeft className="size-4 text-th_base" />
           </Button>
           <Layout.Header.Default
-            subContent="Deposit to your RISE Wallet"
+            subContent="Bridge to your RISE Wallet"
             title="Global Deposit"
             variant="default"
           />
@@ -208,7 +207,7 @@ export function GlobalDeposit({ onClose }: GlobalDepositProps) {
                   <div className="flex items-center gap-2">
                     <p className="text-sm text-th_base-secondary">Token</p>
                     <Separator
-                      className="h-4 w-0.25 bg-th_base"
+                      className="h-4 w-0.25 bg-th_base-alt"
                       orientation="vertical"
                     />
                     {chainId === riseTestnet.id && (
