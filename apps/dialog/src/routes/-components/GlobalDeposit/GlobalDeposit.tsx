@@ -118,6 +118,14 @@ export function GlobalDeposit() {
     return Number(amount) < Number(minDeposit)
   }, [amount, selectedToken, minDepositAmount])
 
+  const onBack = () => {
+    setBridgeState({
+      sourceChainId: selectedChain?.id,
+      status: 'idle',
+    })
+    setView('global-deposit')
+  }
+
   // Initialize with defaults if not set
   useEffect(() => {
     if (!selectedChain && SupportedChains[0]) {
@@ -141,22 +149,16 @@ export function GlobalDeposit() {
       <Bridge
         amount={parseUnits(amount, selectedToken?.decimals ?? 18)}
         back={() => {
-          setBridgeState({
-            sourceChainId: selectedChain?.id,
-            status: 'idle',
-          })
-          setView('global-deposit')
+          onBack()
         }}
         bridgeError={null}
         bridgeState={bridgeState}
         chains={chains}
         onNewTransaction={() => {
-          setBridgeState({
-            sourceChainId: selectedChain?.id,
-            status: 'idle',
-          })
-          setView('global-deposit')
+          refetchBalance()
+          refetchRiseBalance()
           setAmount('0')
+          onBack()
         }}
         onRetry={() => {
           bridge()
@@ -207,7 +209,7 @@ export function GlobalDeposit() {
                   <div className="flex items-center gap-2">
                     <p className="text-sm text-th_base-secondary">Token</p>
                     <Separator
-                      className="h-4 w-0.25 bg-th_base-alt"
+                      className="h-4 border-th_base border-l-0.25"
                       orientation="vertical"
                     />
                     {chainId === riseTestnet.id && (
