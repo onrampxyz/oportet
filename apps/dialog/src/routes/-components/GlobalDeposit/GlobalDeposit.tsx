@@ -9,8 +9,8 @@ import { useAccount, useReadContract } from 'wagmi'
 import { useFundsContext } from '~/contexts'
 import { useBridge, useDestinationAsset, useWalletAsset } from '~/hooks'
 import ArrowLeft from '~icons/lucide/arrow-left'
-import { DropdownSelector, getAssets, SupportedChains } from '.'
 import { Layout } from '../Layout'
+import { DropdownSelector, getAssets, SupportedChains } from '.'
 import { Bridge, type BridgeState } from './Bridge'
 
 export function GlobalDeposit() {
