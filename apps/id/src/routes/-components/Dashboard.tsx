@@ -291,7 +291,7 @@ export function Dashboard() {
                     const formData = new FormData(
                       event.target as HTMLFormElement,
                     )
-                    // biome-ignore lint/suspicious/noNonNullAssertedOptionalChain: _
+                    // biome-ignore lint: noNonNullAssertion - value is expected
                     const email = formData.get('email')?.toString()!
                     setEmailData({ email, verified: false })
                     setEmail('')

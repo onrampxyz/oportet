@@ -39,9 +39,9 @@ function SignInButton() {
             },
           ],
         })
-        // biome-ignore lint/suspicious/noNonNullAssertedOptionalChain: _
+        // biome-ignore lint: noNonNullAssertion - value is expected
         const address = res.accounts.at(0)?.address!
-        // biome-ignore lint/suspicious/noNonNullAssertedOptionalChain: _
+        // biome-ignore lint: noNonNullAssertion - value is expected
         const siwe = res.accounts.at(0)?.capabilities?.signInWithEthereum!
         // TODO: Add hook for `wallet_verifySignature`
         const { valid } = await provider.request({

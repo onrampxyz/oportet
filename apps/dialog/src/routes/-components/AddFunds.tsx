@@ -31,7 +31,7 @@ export function AddFunds(props: AddFunds.Props) {
   const address = props.address ?? account?.address
   const chain = RemoteHooks.useChain(porto, { chainId })
 
-  const showApplePay = useShowApplePay()
+  const showApplePay = useShowApplePay(null)
   const client = RemoteHooks.useRelayClient(porto)
   const { data: onrampStatus } = useQuery({
     enabled: Boolean(showApplePay && address),

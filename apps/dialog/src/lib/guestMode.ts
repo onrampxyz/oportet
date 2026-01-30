@@ -1,6 +1,6 @@
-import type * as Messenger from 'porto/core/Messenger'
-import type { Account } from 'porto/viem'
 import * as React from 'react'
+import type * as Messenger from 'rise-wallet/core/Messenger'
+import type { Account } from 'rise-wallet/viem'
 import * as Dialog from './Dialog'
 import { porto } from './Porto'
 
