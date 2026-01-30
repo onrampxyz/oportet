@@ -254,6 +254,26 @@ export function iframe(options: iframe.Options = {}) {
         }
       })
 
+      // Safari ITP workaround: When accounts are set in the parent's store
+      // (after wallet_connect via popup), sync them to the iframe via postMessage.
+      // This is necessary because Safari's ITP partitions storage between windows
+      // opened from different origins, preventing the iframe from reading accounts
+      // stored by the popup even though they share the same origin.
+      if (UserAgent.isSafari()) {
+        internal.store.subscribe(
+          (state) => state.accounts,
+          (accounts, prevAccounts) => {
+            // Only sync when accounts are added (not when cleared)
+            if (accounts.length > 0 && prevAccounts.length === 0) {
+              messenger.send('__internal', {
+                accounts,
+                type: 'sync-accounts',
+              })
+            }
+          },
+        )
+      }
+
       let bodyStyle: CSSStyleDeclaration | null = null
 
       // store the opening element to restore the focus

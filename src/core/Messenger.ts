@@ -170,6 +170,11 @@ export type Schema = [
           type: 'dialog-lifecycle'
           action: 'request:close' | 'done:close'
         }
+      | {
+          // Sync accounts from popup to iframe (Safari ITP workaround)
+          type: 'sync-accounts'
+          accounts: Porto.State['accounts']
+        }
     response: undefined
   },
 ]
@@ -228,10 +233,8 @@ export function fromWindow(
     },
     async send(topic, payload, target) {
       const id = Utils.uuidv4()
-      w.postMessage(
-        Utils.normalizeValue({ id, payload, topic }),
-        target ?? targetOrigin ?? '*',
-      )
+      const normalizedPayload = Utils.normalizeValue({ id, payload, topic })
+      w.postMessage(normalizedPayload, target ?? targetOrigin ?? '*')
       return { id, payload, topic } as never
     },
     async sendAsync(topic, payload, target) {
@@ -262,13 +265,15 @@ export function bridge(parameters: bridge.Parameters): Bridge {
   let pending = false
 
   const ready = promise.withResolvers<ReadyOptions>()
+  // Prevent unhandled rejection if ready is rejected during destroy
+  ready.promise.catch(() => {})
   from_.on('ready', ready.resolve)
 
   const messenger = from({
     destroy() {
       from_.destroy()
       to.destroy()
-      if (pending) ready.reject()
+      if (pending) ready.reject(new Error('Messenger destroyed'))
     },
     on(topic, listener, id) {
       return from_.on(topic, listener, id)

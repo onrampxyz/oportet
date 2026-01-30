@@ -166,6 +166,16 @@ porto.messenger.on('__internal', (payload) => {
       action: 'done:close',
       type: 'dialog-lifecycle',
     })
+
+  // Safari ITP workaround: sync accounts from popup via parent.
+  // This is needed because Safari's ITP partitions storage between windows
+  // opened from different origins, preventing the iframe from reading accounts
+  // stored by the popup.
+  if (payload.type === 'sync-accounts' && payload.accounts)
+    porto._internal.store.setState((x) => ({
+      ...x,
+      accounts: payload.accounts as typeof x.accounts,
+    }))
 })
 
 porto.ready()
