@@ -21,6 +21,10 @@
     "globals": ["@apply", "@source", "@theme", "@custom-variant"],
     "linter": {
       "enabled": true
+    },
+    "parser": {
+      "allowWrongLineComments": true,
+      "cssModules": true
     }
   },
   "files": {
@@ -31,6 +35,7 @@
       "!**/dist",
       "!**/extension/.output",
       "!**/extension/.wxt",
+      "!**/styled-system",
       "!src/core/internal/_generated",
       "!test/**/_generated",
       "!apps/**/routeTree.gen.ts",

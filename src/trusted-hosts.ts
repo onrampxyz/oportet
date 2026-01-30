@@ -40,6 +40,13 @@ export const hostnames = [
   'swap.defillama.com',
   'uniswap.org',
   'www.bungee.exchange',
+  // Upstream additions
+  'hub.berachain.com',
+  'bend.berachain.com',
+  'honey.berachain.com',
+  'privote.live',
+  'portkey.bsky.nyc',
+  // RISE chain hosts
   'wallet.risechain.com',
   'risechain.com',
   'testnet.rise.trade',
