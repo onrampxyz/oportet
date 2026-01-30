@@ -63,8 +63,20 @@ export type LayerZeroSourceTx = {
   options: LayerZeroOptions
 }
 
+export type Status =
+  | 'WAITING'
+  | 'VALIDATING_TX'
+  | 'SUCCEEDED'
+  | 'FAILED'
+  | 'WAITING_FOR_HASH_DELIVERED'
+  | 'UNRESOLVABLE_COMMAND'
+  | 'MALFORMED_COMMAND'
+  | 'PAYLOAD_STORED'
+  | 'SIMULATION_REVERTED'
+  | 'RESOLVED_PAYLOAD_SIZE_NOT_PAID'
+
 export type LayerZeroSource = {
-  status: 'WAITING' | 'INFLIGHT' | 'DELIVERED' | 'FAILED'
+  status: Status
   tx: LayerZeroSourceTx
   failedTx: string[]
 }
@@ -77,7 +89,7 @@ export type LayerZeroDestinationTx = {
 }
 
 export type LayerZeroDestination = {
-  status: 'WAITING' | 'INFLIGHT' | 'DELIVERED' | 'FAILED'
+  status: Status
   tx: LayerZeroDestinationTx
   payloadStoredTx: string
   failedTx: string[]
@@ -193,11 +205,20 @@ export type LayerZeroMessagesResponse = {
  * }
  * ```
  */
+class LayerZeroApiError extends Error {
+  status: number
+  constructor(message: string, status: number) {
+    super(message)
+    this.name = 'LayerZeroApiError'
+    this.status = status
+  }
+}
+
 export function useLayerZeroMessage({
   transactionId,
   enabled = true,
 }: {
-  transactionId?: string | undefined
+  transactionId?: string
   enabled?: boolean
 }) {
   return useQuery({
@@ -207,14 +228,24 @@ export function useLayerZeroMessage({
         `${LAYERZERO_API_BASE_URL}/messages/tx/${transactionId}`,
       )
       if (!response.ok) {
-        throw new Error(
+        throw new LayerZeroApiError(
           `Failed to fetch LayerZero message: ${response.statusText}`,
+          response.status,
         )
       }
       return response.json() as Promise<LayerZeroMessagesResponse>
     },
     queryKey: ['layerzero', 'message', transactionId],
-    refetchInterval: 5_000,
-    staleTime: 3_000,
+    retry: (_failureCount, error) => {
+      // Retry on 404 errors (message not indexed yet) up to 10 times
+      if (error instanceof LayerZeroApiError && error.status === 404) {
+        return true
+      }
+
+      // Don't retry other errors
+      return false
+    },
+    retryDelay: 15_000,
+    staleTime: 5_000,
   })
 }

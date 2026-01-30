@@ -4,13 +4,15 @@ import type { Hex } from 'ox'
 import { css } from 'styled-system/css'
 import { formatUnits } from 'viem'
 import { riseTestnet } from 'viem/chains'
-import { useLayerZeroMessage } from '~/hooks'
+import { type Status, useLayerZeroMessage } from '~/hooks'
 import type { Chain } from '~/routes/-components/GlobalDeposit/ChainSelection'
 import { Layout } from '~/routes/-components/Layout'
 import ArrowLeft from '~icons/lucide/arrow-left'
+import CheckIcon from '~icons/lucide/check'
 import ExternalLink from '~icons/lucide/external-link'
 import XIcon from '~icons/lucide/x'
 
+// TODO: Fix this
 export type BridgeStatus = 'idle' | 'pending' | 'completed' | 'failed'
 
 export type BridgeState = {
@@ -73,18 +75,61 @@ export function Bridge(props: Readonly<BridgeProps>) {
     back,
   } = props
 
-  const lzMessage = useLayerZeroMessage({
-    enabled: !!bridgeState?.sourceTxHash,
+  const { status: lzStatus, data: lzData } = useLayerZeroMessage({
+    enabled: !!bridgeState?.sourceTxHash && bridgeState.status === "completed",
     transactionId: bridgeState?.sourceTxHash,
   })
 
-  if (lzMessage.status !== 'pending') {
-    console.log('lzMessage-data:: ', lzMessage.data)
-    console.log('lzMessage:: ', lzMessage)
+  if (lzStatus !== 'pending') {
+    console.log('lzMessage-data:: ', lzData)
+    console.log('lzMessage:: ', lzStatus)
   }
+
+  const sourceStatus = lzData?.data[0]?.source.status
+  const destinationStatus = lzData?.data[0]?.destination.status
 
   if (!selectedToken || !amount || !selectedChain) {
     return null
+  }
+
+  // TODO: Clean this up -- should also reflect isSuccess and isError flags
+  const getLzDisplayStatus = (status: Status) => {
+    switch (status) {
+      case 'SUCCEEDED':
+        return (
+          <div className="flex items-center gap-1">
+            <CheckIcon className="size-4" color="green" />
+            <p className="text-green-500 text-xs">Succeeded</p>
+          </div>
+        )
+      case 'WAITING':
+        return (
+          <div className="flex items-center gap-1">
+            <Spinner color="gray" size="small" />
+            <p className="text-th_base-secondary text-xs">Waiting</p>
+          </div>
+        )
+      case 'VALIDATING_TX':
+      case 'WAITING_FOR_HASH_DELIVERED':
+      case 'PAYLOAD_STORED':
+        return (
+          <div className="flex items-center gap-1">
+            <Spinner color="orange" size="small" />
+            <p className="text-xs text-yellow-600 capitalize">
+              {status.replaceAll('_', ' ')}
+            </p>
+          </div>
+        )
+      default:
+        return (
+          <div className="flex items-center gap-1">
+            <XIcon className="size-4" color="red" />
+            <p className='text-red-500 text-xs capitalize'>
+              {status.replaceAll('_', ' ')}
+            </p>
+          </div>
+        )
+    }
   }
 
   return (
@@ -162,7 +207,9 @@ export function Bridge(props: Readonly<BridgeProps>) {
                       <p>Failed</p>
                     </div>
                   )}
-                  {/* TODO: Add LZ status here */}
+
+                  {/*  Add LZ status here */}
+                  {sourceStatus && getLzDisplayStatus(sourceStatus)}
                 </div>
                 <p className="text-th_base-secondary text-xs">
                   {formatUnits(amount, selectedToken.decimals)}{' '}
@@ -190,7 +237,9 @@ export function Bridge(props: Readonly<BridgeProps>) {
                         Not Started
                       </p>
                     )}
-                  {/* TODO: Add LZ status here */}
+
+                  {/*  Add LZ status here */}
+                  {destinationStatus && getLzDisplayStatus(destinationStatus)}
                 </div>
                 <p className="text-th_base-secondary text-xs">
                   {formatUnits(amount, selectedToken.decimals)}{' '}
