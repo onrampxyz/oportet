@@ -40,7 +40,7 @@
   },
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.17.1",
-    "@biomejs/biome": "^2.2.6",
+    "@biomejs/biome": "^2.3.4",
     "@changesets/changelog-github": "^0.5.0",
     "@changesets/cli": "^2.27.7",
     "@clack/prompts": "~0.11.0",
@@ -132,12 +132,12 @@
   },
   "size-limit": [
     {
-      "name": "import { Porto } from 'porto'",
+      "name": "import { Porto } from 'rise-wallet'",
       "path": "./dist/index.js",
       "import": "{ Porto }"
     },
     {
-      "name": "import { porto } from 'porto/wagmi/Connector'",
+      "name": "import { porto } from 'rise-wallet/wagmi/Connector'",
       "path": "./dist/wagmi/Connector.js",
       "import": "*"
     }
@@ -146,7 +146,7 @@
     "overrides": {
       "abitype": "latest",
       "ox": "catalog:",
-      "porto": "workspace:*",
+      "rise-wallet": "workspace:*",
       "viem": "catalog:",
       "@hpke/core@<=1.7.4": ">=1.7.5",
       "@metamask/sdk-communication-layer@>=0.16.0 <=0.33.0": "0.33.1",
@@ -192,7 +192,7 @@
     }
   },
   "[!start-pkg]": {},
-  "name": "porto",
+  "name": "rise-wallet",
   "description": "Next-gen Account for Ethereum",
   "version": "0.2.37",
   "type": "module",
@@ -211,6 +211,7 @@
     "hono": "^4.10.3",
     "idb-keyval": "^6.2.1",
     "mipd": "^0.0.7",
+    "mipd-postmessage": "^0.0.5",
     "ox": "^0.9.6",
     "zod": "^4.1.5",
     "zustand": "^5.0.1"
