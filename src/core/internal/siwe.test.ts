@@ -531,13 +531,14 @@ describe('resolveAuthUrl', () => {
       },
       origin: 'https://example.com',
     },
-  ])(
-    'behavior: resolves authUrl correctly for $case',
-    ({ input, origin, expected }) => {
-      const result = SiweModule.resolveAuthUrl(input as any, origin)
-      expect(result).toEqual(expected)
-    },
-  )
+  ])('behavior: resolves authUrl correctly for $case', ({
+    input,
+    origin,
+    expected,
+  }) => {
+    const result = SiweModule.resolveAuthUrl(input as any, origin)
+    expect(result).toEqual(expected)
+  })
 })
 
 describe('resolveUrl', () => {
