@@ -137,16 +137,16 @@ export function Bridge(props: Readonly<BridgeProps>) {
   const getBulletStatus = (status: Status) => {
     switch (status) {
       case 'NOT_STARTED':
-        return <div className='h-3 w-2.5 rounded-full bg-th_base-alt' />
+        return <div className="h-3 w-2.5 rounded-full bg-th_base-alt" />
       case 'SUCCEEDED':
-        return <div className='h-3 w-2.5 rounded-full bg-green-600' />
+        return <div className="h-3 w-2.5 rounded-full bg-green-600" />
       case 'WAITING':
       case 'VALIDATING_TX':
       case 'WAITING_FOR_HASH_DELIVERED':
       case 'PAYLOAD_STORED':
-        return <div className='h-3 w-2.5 rounded-full bg-yellow-600' />
+        return <div className="h-3 w-2.5 rounded-full bg-yellow-600" />
       default:
-        return <div className='h-3 w-2.5 rounded-full bg-red-600' />
+        return <div className="h-3 w-2.5 rounded-full bg-red-600" />
     }
   }
 
@@ -174,12 +174,8 @@ export function Bridge(props: Readonly<BridgeProps>) {
           {/* Vertical connector with status bullets */}
           <div className="flex flex-col items-center py-4">
             {/* Source chain bullet - Transaction status here */}
-            {bridgeState.status === 'failed' && (
-              getBulletStatus("FAILED")
-            )}
-            {bridgeState.status === 'pending' && (
-              getBulletStatus("NOT_STARTED")
-            )}
+            {bridgeState.status === 'failed' && getBulletStatus('FAILED')}
+            {bridgeState.status === 'pending' && getBulletStatus('NOT_STARTED')}
             {/* Source chain bullet - LZ status here */}
             {bridgeState.status === 'completed' &&
               getBulletStatus(sourceStatus ?? 'WAITING')}
@@ -206,11 +202,10 @@ export function Bridge(props: Readonly<BridgeProps>) {
                     <span className="font-bold">{selectedChain?.name}</span>
                   </div>
 
-                  {bridgeState.status === 'failed' && (
-                    getLzDisplayStatus("FAILED")
-                  )}
+                  {bridgeState.status === 'failed' &&
+                    getLzDisplayStatus('FAILED')}
                   {bridgeState.status === 'pending' &&
-                    getLzDisplayStatus("NOT_STARTED")}
+                    getLzDisplayStatus('NOT_STARTED')}
                   {bridgeState.status === 'completed' &&
                     getLzDisplayStatus(sourceStatus ?? 'WAITING')}
                 </div>
