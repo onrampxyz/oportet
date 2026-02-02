@@ -1063,7 +1063,7 @@ export async function sign(key: Key, parameters: sign.Parameters) {
         credentialId: credential.id,
         getFn: webAuthn?.getFn,
         rpId,
-        userVerification: requireVerification ? 'required' : 'discouraged',
+        userVerification: requireVerification ? 'required' : 'preferred',
       })
 
       const response = raw.response as AuthenticatorAssertionResponse
