@@ -74,6 +74,7 @@ export type Status =
   | 'PAYLOAD_STORED'
   | 'SIMULATION_REVERTED'
   | 'RESOLVED_PAYLOAD_SIZE_NOT_PAID'
+  | 'NOT_STARTED'
 
 export type LayerZeroSource = {
   status: Status
@@ -236,6 +237,7 @@ export function useLayerZeroMessage({
       return response.json() as Promise<LayerZeroMessagesResponse>
     },
     queryKey: ['layerzero', 'message', transactionId],
+    refetchInterval: 10_000,
     retry: (_failureCount, error) => {
       // Retry on 404 errors (message not indexed yet) up to 10 times
       if (error instanceof LayerZeroApiError && error.status === 404) {
@@ -245,7 +247,7 @@ export function useLayerZeroMessage({
       // Don't retry other errors
       return false
     },
-    retryDelay: 15_000,
+    retryDelay: 10_000,
     staleTime: 5_000,
   })
 }

@@ -28,7 +28,7 @@ export function ChainSelection() {
         {address && <ReceiveViaQr address={address} />}
         <div className="mx-2 h-3.5 border-gray7 border-b-1 text-center">
           <span className="my-auto mt-[3px] inline-flex bg-gray2 px-2 text-th_base-secondary">
-            OR via
+            OR
           </span>
         </div>
         <p className="pt-4 text-center font-bold text-lg text-th_base">
