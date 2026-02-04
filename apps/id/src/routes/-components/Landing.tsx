@@ -79,7 +79,6 @@ export function Landing() {
     })
   }
 
-
   if (!isPlatformAuthenticatorAvailable) {
     return (
       <>
