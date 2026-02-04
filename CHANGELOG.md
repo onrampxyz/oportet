@@ -1,5 +1,29 @@
 # porto
 
+## 0.3.4
+
+### Patch Changes
+
+- Fix dialog bypass logic
+
+## 0.3.3
+
+### Patch Changes
+
+- Add privileged origins to bypass dialog
+
+## 0.3.2
+
+### Patch Changes
+
+- Add sepolia
+
+## 0.3.1
+
+### Patch Changes
+
+- Add support for injected wallets as primary signer
+
 ## 0.2.29
 
 ### Patch Changes

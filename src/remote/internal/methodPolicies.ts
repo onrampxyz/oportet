@@ -8,6 +8,7 @@ export type MethodPolicy = {
           | true
           | {
               sameOrigin?: boolean | undefined
+              privilegedOrigins?: string[] | undefined
             }
           | undefined
         dialog?:
@@ -22,12 +23,19 @@ export type MethodPolicy = {
 }
 export type MethodPolicies = readonly MethodPolicy[]
 
+export const privilegedOrigins = [
+  'rise.trade',
+  'wallet.risechain.com',
+  'localhost:3009',
+]
+
 export const methodPolicies = [
   {
     method: 'eth_requestAccounts',
     modes: {
       dialog: true,
       headless: {
+        privilegedOrigins,
         sameOrigin: true,
       },
     },
@@ -79,6 +87,7 @@ export const methodPolicies = [
       dialog: true,
       headless: !UserAgent.isSafari()
         ? {
+            privilegedOrigins,
             sameOrigin: true,
           }
         : undefined,

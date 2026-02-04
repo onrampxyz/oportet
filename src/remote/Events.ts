@@ -7,7 +7,11 @@ import type { Payload } from '../core/Messenger.js'
 import * as Actions from './Actions.js'
 import type * as Remote from './Porto.js'
 
-const trustedOrigins = ['id.porto.sh', 'localhost:5174', 'localhost:5173']
+const trustedOrigins = [
+  'wallet.risechain.com',
+  'localhost:5174',
+  'localhost:5173',
+]
 
 /**
  * Event listener which is triggered when a request is ready
@@ -82,14 +86,16 @@ export function onDialogRequest(
         if (!request) return false
 
         const rule = policy?.modes?.headless
-        if (rule) {
-          if (
-            typeof rule === 'object' &&
-            rule.sameOrigin &&
-            event.origin !== window.location.origin
+        if (typeof rule === 'object') {
+          return (
+            (rule.sameOrigin && event.origin === window.location.origin) ||
+            rule.privilegedOrigins?.some((origin) =>
+              event.origin.endsWith(origin),
+            )
           )
-            return false
-          return true
+        }
+        if (rule !== undefined) {
+          return rule
         }
 
         return false

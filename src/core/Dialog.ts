@@ -224,6 +224,26 @@ export function iframe(options: iframe.Options = {}) {
         }
       })
 
+      // Safari ITP workaround: When accounts are set in the parent's store
+      // (after wallet_connect via popup), sync them to the iframe via postMessage.
+      // This is necessary because Safari's ITP partitions storage between windows
+      // opened from different origins, preventing the iframe from reading accounts
+      // stored by the popup even though they share the same origin.
+      if (UserAgent.isSafari()) {
+        internal.store.subscribe(
+          (state) => state.accounts,
+          (accounts, prevAccounts) => {
+            // Only sync when accounts are added (not when cleared)
+            if (accounts.length > 0 && prevAccounts.length === 0) {
+              messenger.send('__internal', {
+                accounts,
+                type: 'sync-accounts',
+              })
+            }
+          },
+        )
+      }
+
       let bodyStyle: CSSStyleDeclaration | null = null
 
       // store the opening element to restore the focus
@@ -988,13 +1008,21 @@ export function requiresConfirmation(
   const { methodPolicies, targetOrigin } = options
   const policy = methodPolicies?.find((x) => x.method === request.method)
   if (!policy) return true
-  if (policy.modes?.headless) {
+  if (policy.modes && typeof policy.modes.headless === 'object') {
     if (
-      typeof policy.modes.headless === 'object' &&
       policy.modes.headless.sameOrigin &&
-      targetOrigin !== window.location.origin
+      targetOrigin === window.location.origin
     )
-      return true
+      return false
+    if (
+      policy.modes.headless.privilegedOrigins?.some((origin) =>
+        window.location.origin.endsWith(origin),
+      )
+    )
+      return false
+    return true
+  }
+  if (policy.modes?.headless !== undefined) {
     return false
   }
   return true
