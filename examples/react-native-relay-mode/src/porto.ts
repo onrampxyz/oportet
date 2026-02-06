@@ -1,7 +1,7 @@
 import { Hex, Value } from 'ox'
 import { Mode, Porto } from 'rise-wallet'
 
-import { baseSepolia } from 'viem/chains'
+import { sepolia } from 'viem/chains'
 import { exp1Address, exp2Address } from './contracts'
 import { createFn, getFn, rp } from './passkeys'
 
@@ -12,7 +12,7 @@ export const porto = Porto.create({
   }),
 })
 
-const chainId = baseSepolia.id
+const chainId = sepolia.id
 
 export const permissions = () =>
   ({
