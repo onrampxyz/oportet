@@ -47,8 +47,8 @@ export default defineConfig(({ mode }) => {
   if (mode === 'development') {
     plugins.push(
       Terminal({
+        console: 'terminal',
         output: ['console', 'terminal'],
-        console: 'terminal'
       }),
     )
   }
