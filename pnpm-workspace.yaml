@@ -64,4 +64,3 @@ minimumReleaseAgeExclude:
   - wagmi
   - zile
   - mipd-postmessage
-  - react-dom
