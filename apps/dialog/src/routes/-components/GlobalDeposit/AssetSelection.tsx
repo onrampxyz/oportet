@@ -21,14 +21,14 @@ export const BRIDGE_TOKENS: Record<number, BridgeToken[]> = {
   // Rise Testnet
   [riseTestnet.id]: [
     {
-      address: '0x52b0b93aa1818359257149E005eC1AC2BCc3Eb1E' as Address.Address,
+      address: '0x0ead66d71fad42509314912f84c35f20d012b66a' as Address.Address,
       bridgeContract:
-        '0x52b0b93aa1818359257149E005eC1AC2BCc3Eb1E' as Address.Address,
+        '0x1D361eA3AFb5fDe75E3f261831998154e1351dC2' as Address.Address,
       bridgeType: 'layerzero',
       bridgeWrapper: zeroAddress,
-      decimals: 18,
+      decimals: 6,
       icon: '/dialog/ui/token-icons/usdc.svg',
-      minDeposit: Value.from('10', 18), // 0.1 USDC
+      minDeposit: Value.from('10', 6), // 0.1 USDC
       name: 'USDC',
       symbol: 'USDC',
     },
@@ -48,9 +48,9 @@ export const BRIDGE_TOKENS: Record<number, BridgeToken[]> = {
   // Eth Sepolia
   11155111: [
     {
-      address: '0x28Cd50d58f80Da33B16542cdF8ce59717F66b957' as Address.Address,
+      address: '0x70315897fe28Dbe36DA81F10E1158bae1373C5b1' as Address.Address,
       bridgeContract:
-        '0x8421D6445915b251bE303475dfCdD083e4aCBA0f' as Address.Address,
+        '0x2C752f3E245A89828590B30c93daAAD19f31c801' as Address.Address,
       bridgeType: 'layerzero',
       bridgeWrapper: '0x226cefe884c9425377954fB9B5Cb9AD4BdCD398D',
       decimals: 18,
