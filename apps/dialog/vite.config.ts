@@ -48,6 +48,7 @@ export default defineConfig(({ mode }) => {
     plugins.push(
       Terminal({
         console: 'terminal',
+        output: ['console', 'terminal'],
       }),
     )
   }

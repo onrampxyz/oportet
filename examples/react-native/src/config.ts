@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { Value } from 'ox'
 import { Platform } from 'react-native'
-import { baseSepolia } from 'rise-wallet/core/Chains'
+import { sepolia } from 'rise-wallet/core/Chains'
 import { Mode } from 'rise-wallet/react-native'
 import { porto as portoConnector } from 'rise-wallet/wagmi'
 import { createConfig, createStorage, http } from 'wagmi'
@@ -9,7 +9,7 @@ import { createConfig, createStorage, http } from 'wagmi'
 import { exp1Address, exp2Address } from './contracts.ts'
 
 export const config = createConfig({
-  chains: [baseSepolia],
+  chains: [sepolia],
   connectors: [
     portoConnector({
       ...Platform.select({
@@ -21,7 +21,7 @@ export const config = createConfig({
   multiInjectedProviderDiscovery: false,
   storage: createStorage({ storage: AsyncStorage }),
   transports: {
-    [baseSepolia.id]: http(),
+    [sepolia.id]: http(),
   },
 })
 
@@ -31,7 +31,7 @@ declare module 'wagmi' {
   }
 }
 
-export const chainId = baseSepolia.id
+export const chainId = sepolia.id
 
 export const permissions = () =>
   ({

@@ -2,10 +2,11 @@ import * as Ariakit from '@ariakit/react'
 import { Button, Toast } from '@porto/apps/components'
 import type { Address } from 'ox'
 import { useEffect, useState } from 'react'
-import { Chains } from 'rise-wallet'
+import { Dialog } from 'rise-wallet'
 import { Hooks } from 'rise-wallet/wagmi'
 import { toast } from 'sonner'
 import { formatEther } from 'viem'
+import { riseTestnet } from 'viem/chains'
 import {
   useAccount,
   useBalance,
@@ -58,32 +59,41 @@ export function Header() {
   const handleAddFunds = async () => {
     // if url has testnet search param
     const urlHasTestnet = window.location.search.includes('testnet')
+
     if (!urlHasTestnet) {
       addFunds.mutate({
         address,
+        view: 'selection-network',
       })
       return
     }
+
     await switchChainAsync({
-      chainId: Chains.riseTestnet.id,
+      chainId: riseTestnet.id,
     }).catch()
+
     if (!capabilities.data) return
-    const exp1 = capabilities.data?.[
-      Chains.riseTestnet.id
-    ]?.feeToken?.tokens?.find((t: any) => t.uid === 'exp1')
+    const exp1 = capabilities.data?.[riseTestnet.id]?.feeToken?.tokens?.find(
+      (t: any) => t.uid === 'exp1',
+    )
+
     if (!exp1) return
     addFunds.mutate({
       address,
-      chainId: Chains.riseTestnet.id,
+      chainId: riseTestnet.id,
       token: exp1?.address as Address.Address,
       // @ts-expect-error TODO: fix type
       tokenAddress: exp1?.address as Address.Address,
+      view: 'selection-deposit',
     })
   }
+
+  const themeController = Dialog.createThemeController()
 
   const initialTheme = () => {
     // Check localStorage first
     const savedTheme = localStorage.getItem('__porto_theme')
+
     if (savedTheme === 'dark') {
       return 'dark'
     }
@@ -101,6 +111,9 @@ export function Header() {
       document.documentElement.classList.remove('scheme-light')
       document.documentElement.classList.add('scheme-light-dark')
       localStorage.setItem('__porto_theme', 'dark')
+      themeController.setTheme({
+        colorScheme: 'dark',
+      })
     } else {
       document.documentElement.classList.remove(
         'scheme-light-dark',
@@ -108,6 +121,9 @@ export function Header() {
       )
       document.documentElement.classList.add('scheme-light')
       localStorage.setItem('__porto_theme', 'light')
+      themeController.setTheme({
+        colorScheme: 'light',
+      })
     }
   }
 
@@ -125,6 +141,7 @@ export function Header() {
         />
       ))
     } catch (error) {
+      console.info(error)
       toast.custom((t) => (
         <Toast
           className={t}
@@ -210,8 +227,8 @@ export function Header() {
           </Button>
           <Button
             onClick={(event) => {
-              event.preventDefault()
               event.stopPropagation()
+              event.preventDefault()
               return handleAddFunds()
             }}
           >
@@ -220,6 +237,7 @@ export function Header() {
           <Button
             onClick={() => {
               disconnect()
+              localStorage.removeItem('risex-authInfo')
             }}
             variant="primary"
           >

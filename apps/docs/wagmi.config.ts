@@ -2,7 +2,7 @@ import { PortoConfig } from '@porto/apps'
 import { Dialog, Mode } from 'rise-wallet'
 import { porto } from 'rise-wallet/wagmi'
 import { createConfig, createStorage, http } from 'wagmi'
-import { baseSepolia, optimismSepolia } from 'wagmi/chains'
+import { optimismSepolia, sepolia } from 'wagmi/chains'
 
 const portoConfig = PortoConfig.getConfig()
 
@@ -21,14 +21,14 @@ export const connector = porto({
 })
 
 export const config = createConfig({
-  chains: [baseSepolia, optimismSepolia],
+  chains: [sepolia, optimismSepolia],
   connectors: [connector],
   multiInjectedProviderDiscovery: false,
   storage: createStorage({
     storage: typeof window !== 'undefined' ? localStorage : undefined,
   }),
   transports: {
-    [baseSepolia.id]: http(),
+    [sepolia.id]: http(),
     [optimismSepolia.id]: http(),
   },
 })
