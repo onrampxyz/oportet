@@ -794,7 +794,7 @@ export function from<
               }
 
               const { accounts } = await (async () => {
-                if (email || createAccount) {
+                if (email || createAccount || providerRdns) {
                   const { label = undefined } =
                     typeof createAccount === 'object' ? createAccount : {}
                   const { account } = await getMode().actions.createAccount({
@@ -828,11 +828,7 @@ export function from<
                           publicKey: key.publicKey,
                         },
                       }
-                    if (
-                      key.type === 'eip1193provider' &&
-                      key.role === 'admin' &&
-                      !providerRdns
-                    )
+                    if (key.type === 'eip1193provider' && key.role === 'admin')
                       return {
                         address: account?.address,
                         key: {
