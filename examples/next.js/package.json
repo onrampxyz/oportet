@@ -13,8 +13,8 @@
     "porto": "latest",
     "react": "^19.1",
     "react-dom": "^19.1",
-    "viem": "^2.37.8",
-    "wagmi": "^2"
+    "viem": "^2.38.5",
+    "wagmi": "^2.19.1"
   },
   "devDependencies": {
     "@types/node": "^22",
