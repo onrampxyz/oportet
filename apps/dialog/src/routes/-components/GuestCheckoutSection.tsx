@@ -34,7 +34,7 @@ export function GuestCheckoutSection(props: GuestCheckoutSection.Props) {
         {label ?? 'Sign in to proceed'}
       </Button>
 
-      <div className="-tracking-[2.8%] flex items-center whitespace-nowrap text-[12px] text-th_base-secondary leading-[17px]">
+      <div className="flex items-center whitespace-nowrap text-[12px] text-th_base-secondary leading-[17px] -tracking-[2.8%]">
         First time, or lost access?
         <div className="ms-2 h-px w-full bg-th_separator" />
       </div>
@@ -62,7 +62,7 @@ export function GuestCheckoutSection(props: GuestCheckoutSection.Props) {
             placeholder="example@ithaca.xyz"
             type="email"
           />
-          <div className="-tracking-[2.8%] absolute end-3 text-[12px] text-th_base-secondary leading-normal">
+          <div className="absolute end-3 text-[12px] text-th_base-secondary leading-normal -tracking-[2.8%]">
             Optional
           </div>
         </div>

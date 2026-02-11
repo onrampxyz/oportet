@@ -318,7 +318,7 @@ export function useCallsHistory<
         limit,
         sort,
       }),
-    [account, activeConnector, index, limit, sort],
+    [account, activeConnector],
   )
 
   return useQuery({

@@ -53,7 +53,7 @@ export function Example() {
     return (
       <div className="flex w-full items-center justify-center">
         <div className="flex w-full max-w-md items-center justify-center gap-3">
-          <div className="-tracking-[2.8%] text-[16px] text-gray11 leading-normal dark:text-gray10">
+          <div className="text-[16px] text-gray11 leading-normal -tracking-[2.8%] dark:text-gray10">
             Transaction sent.
           </div>
           <Button onClick={() => setHash(null)} size="small" type="button">

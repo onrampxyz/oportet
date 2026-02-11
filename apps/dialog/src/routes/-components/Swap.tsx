@@ -104,7 +104,7 @@ export function Swap(props: Swap.Props) {
             fiatDisplay={fiatDisplay}
             onFiatDisplayChange={setFiatDisplay}
           />
-          <div className="-mx-[10px] relative flex justify-center">
+          <div className="relative -mx-[10px] flex justify-center">
             <hr className="absolute top-1/2 w-full border-th_separator border-dashed" />
             <div className="relative flex size-[24px] items-center justify-center rounded-full bg-th_badge">
               <ArrowDown className="size-[16px] text-th_badge" />

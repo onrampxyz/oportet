@@ -21,10 +21,12 @@ import * as Store from './store.js'
 import * as UrlString from './urlString.js'
 import { uuidv4, withDedupe } from './utils.js'
 
-export type Provider = ox_Provider.Provider<{
-  includeEvents: true
-  schema: RpcSchema.Schema
-}> & {
+export type Provider = ox_Provider.Provider<
+  {
+    schema: RpcSchema.Schema
+  },
+  Record<string, unknown>
+> & {
   /**
    * Not part of versioned API, proceed with caution.
    * @deprecated

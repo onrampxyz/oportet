@@ -134,7 +134,7 @@ export function Landing() {
                 </div>
               </div>
 
-              <div className="-tracking-[2.8%] mt-3 hidden w-full rounded-full bg-red3 p-2 text-center text-[15px] text-red9 leading-[24px] peer-has-[:user-invalid]:block">
+              <div className="mt-3 hidden w-full rounded-full bg-red3 p-2 text-center text-[15px] text-red9 leading-[24px] -tracking-[2.8%] peer-has-[:user-invalid]:block">
                 This email is not a valid one.
               </div>
 
