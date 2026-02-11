@@ -144,8 +144,10 @@ export namespace wallet_addFunds {
   export const Parameters = z.object({
     address: z.optional(u.address()),
     chainId: z.optional(u.number()),
+    destination: z.optional(z.string()),
     token: z.optional(u.address()),
     value: z.optional(z.string()),
+    view: z.optional(z.string()),
   })
   export type Parameters = z.infer<typeof Parameters>
 

@@ -9,29 +9,37 @@ import { Hooks } from 'rise-wallet/wagmi'
 import { zeroAddress, zeroHash } from 'viem'
 import { useWatchBlockNumber } from 'wagmi'
 import { DepositButtons } from '~/components/DepositButtons'
-import { useOnrampOrder, useShowApplePay } from '~/lib/onramp'
+import { FundsProvider, useFundsContext, type View } from '~/contexts'
+import { useOnrampOrder } from '~/lib/onramp'
 import { porto } from '~/lib/Porto'
 import * as Tokens from '~/lib/Tokens'
 import { Layout } from '~/routes/-components/Layout'
-import TriangleAlertIcon from '~icons/lucide/triangle-alert'
+import Star from '~icons/ph/star-four-bold'
 import { ApplePayButton, ApplePayIframe } from './ActionPreview'
+import {
+  AssetSelection,
+  ChainSelection,
+  DepositSelection,
+  GlobalDeposit,
+} from './GlobalDeposit'
+import { DepositError } from './GlobalDeposit/DepositError'
 import { SetupApplePay } from './SetupApplePay'
 
 // const presetAmounts = ['30', '50', '100', '250'] as const
 // const maxAmount = 500
 
-type View = 'default' | 'error' | 'onramp' | 'setup-onramp'
-
-export function AddFunds(props: AddFunds.Props) {
+function AddFundsContent(props: Readonly<AddFunds.Props>) {
   const { chainId, onApprove, onReject, value } = props
 
-  const [view, setView] = React.useState<View>('default')
+  const { view, setView } = useFundsContext()
 
   const account = RemoteHooks.useAccount(porto)
   const address = props.address ?? account?.address
+
   const chain = RemoteHooks.useChain(porto, { chainId })
 
-  const showApplePay = useShowApplePay(null)
+  // const showApplePay = useShowApplePay()
+  const showApplePay = false
   const client = RemoteHooks.useRelayClient(porto)
   const { data: onrampStatus } = useQuery({
     enabled: Boolean(showApplePay && address),
@@ -145,53 +153,7 @@ export function AddFunds(props: AddFunds.Props) {
     }
   }, [balanceMap, onApprove, previousBalanceMap])
 
-  // const showFaucet = React.useMemo(() => {
-  //   if (import.meta.env.MODE === 'test') return true
-  //   // Don't show faucet if not on "default" view.
-  //   if (view !== 'default') return false
-  //   // Show faucet if on a testnet.
-  //   if (chain?.testnet) return true
-  //   return false
-  // }, [chain, view])
-
-  if (view === 'error')
-    return (
-      <Layout>
-        <Layout.Header>
-          <Layout.Header.Default
-            icon={TriangleAlertIcon}
-            title="Deposit failed"
-            variant="destructive"
-          />
-        </Layout.Header>
-
-        <Layout.Content className="px-1">
-          <p className="text-th_base">Your deposit was cancelled or failed.</p>
-          <p className="text-th_base-secondary">
-            No funds have been deposited.
-          </p>
-        </Layout.Content>
-
-        <Layout.Footer>
-          <Layout.Footer.Actions>
-            <Button
-              className="flex-grow"
-              onClick={() => onReject?.()}
-              variant="secondary"
-            >
-              Close
-            </Button>
-            <Button
-              className="flex-grow"
-              onClick={() => setView('default')}
-              variant="primary"
-            >
-              Try again
-            </Button>
-          </Layout.Footer.Actions>
-        </Layout.Footer>
-      </Layout>
-    )
+  if (view === 'error') return <DepositError />
 
   if (view === 'setup-onramp')
     return (
@@ -206,22 +168,35 @@ export function AddFunds(props: AddFunds.Props) {
       />
     )
 
+  if (view === 'selection-deposit') {
+    return <DepositSelection />
+  }
+
+  if (view === 'selection-network') {
+    return <ChainSelection />
+  }
+
+  if (view === 'selection-asset') {
+    return <AssetSelection />
+  }
+
+  if (view === 'global-deposit') {
+    return <GlobalDeposit />
+  }
+
   return (
     <Layout>
       <Layout.Header>
-        <Layout.Header.Default title="Add funds" variant="default" />
+        <Layout.Header.Default
+          icon={Star}
+          title="Add funds"
+          variant="default"
+        />
       </Layout.Header>
 
       <Layout.Content>
         <div className="flex flex-col gap-3">
           <Separator label="Select deposit method" size="medium" spacing={0} />
-          {/*{showFaucet && (
-            <Faucet
-              address={address}
-              chainId={chain?.id}
-              onApprove={onApprove}
-            />
-          )}*/}
           {showApplePay &&
             address &&
             (onrampStatus?.email &&
@@ -250,11 +225,20 @@ export function AddFunds(props: AddFunds.Props) {
               />
             ))}
           {view !== 'onramp' && (
-            <DepositButtons
-              address={address ?? ''}
-              chainId={chain?.id}
-              nativeTokenName={chain?.nativeCurrency?.symbol}
-            />
+            <>
+              <DepositButtons
+                address={address ?? ''}
+                chainId={chain?.id}
+                nativeTokenName={chain?.nativeCurrency?.symbol}
+              />
+              <Button
+                onClick={() => setView('global-deposit')}
+                variant="positive"
+                width="full"
+              >
+                Bridge from other chains
+              </Button>
+            </>
           )}
         </div>
       </Layout.Content>
@@ -271,6 +255,20 @@ export function AddFunds(props: AddFunds.Props) {
   )
 }
 
+export function AddFunds(props: Readonly<AddFunds.Props>) {
+  const account = RemoteHooks.useAccount(porto)
+  const address = props.address ?? account?.address
+
+  return (
+    <FundsProvider
+      address={address}
+      initialView={(props.view as View) ?? 'global-deposit'}
+    >
+      <AddFundsContent {...props} />
+    </FundsProvider>
+  )
+}
+
 export declare namespace AddFunds {
   export type Props = {
     address?: Address.Address | undefined
@@ -278,83 +276,6 @@ export declare namespace AddFunds {
     onApprove: (result: { id: Hex.Hex }) => void
     onReject?: () => void
     value?: string | undefined
+    view?: string
   }
 }
-
-// function Faucet(props: {
-//   address: Address.Address | undefined
-//   chainId: number | undefined
-//   onApprove: (result: { id: Hex.Hex }) => void
-// }) {
-//   const { address, chainId, onApprove } = props
-
-//   const [amount, setAmount] = React.useState<string>(presetAmounts[0])
-
-//   const client = RemoteHooks.useRelayClient(porto)
-//   const faucet = useMutation({
-//     async mutationFn(e: React.FormEvent<HTMLFormElement>) {
-//       e.preventDefault()
-//       e.stopPropagation()
-
-//       if (!address) throw new Error('address is required')
-//       if (!chainId) throw new Error('chainId is required')
-
-//       const value = Value.from(amount, 18)
-
-//       const data = await RelayActions.addFaucetFunds(client, {
-//         address,
-//         chain: { id: chainId },
-//         tokenAddress: exp1Address[chainId as never],
-//         value,
-//       })
-//       return data
-//     },
-//     onSuccess(data) {
-//       onApprove({ id: data.transactionHash })
-//     },
-//   })
-
-//   return (
-//     <form
-//       className="grid h-min grid-flow-row auto-rows-min grid-cols-1 space-y-3"
-//       onSubmit={(e) => faucet.mutate(e)}
-//     >
-//       <div className="col-span-1 row-span-1">
-//         <PresetsInput
-//           adornments={{
-//             end: {
-//               label: `Max. $${maxAmount}`,
-//               type: 'fill',
-//               value: String(maxAmount),
-//             },
-//             start: '$',
-//           }}
-//           inputMode="decimal"
-//           max={maxAmount}
-//           min={0}
-//           onChange={setAmount}
-//           placeholder="Enter amount"
-//           presets={presetAmounts.map((value) => ({
-//             label: `$${value}`,
-//             value,
-//           }))}
-//           type="number"
-//           value={amount}
-//         />
-//       </div>
-//       <div className="col-span-1 row-span-1 space-y-3.5">
-//         <Button
-//           className="w-full flex-1"
-//           data-testid="buy"
-//           disabled={!address || !amount || Number(amount) === 0}
-//           loading={faucet.isPending && 'Adding funds…'}
-//           type="submit"
-//           variant="primary"
-//           width="grow"
-//         >
-//           Add faucet funds
-//         </Button>
-//       </div>
-//     </form>
-//   )
-// }

@@ -1,0 +1,147 @@
+import { Env } from '@porto/apps'
+import { useQuery } from '@tanstack/react-query'
+import { type Dispatch, type SetStateAction, useMemo, useState } from 'react'
+import { type Address, encodeFunctionData, parseAbiItem } from 'viem'
+import { riseTestnet } from 'viem/chains'
+import { useSendCallsSync } from 'wagmi'
+import { porto } from '~/lib/Porto'
+import type {
+  BridgeState,
+  BridgeToken,
+} from '~/routes/-components/GlobalDeposit'
+import { ErrorFormatter } from '~/utils'
+
+export type UseBridgeParams = {
+  selectedChainId?: number
+  selectedToken?: BridgeToken
+  tokenBalance?: bigint
+  amount?: bigint
+  setBridgeState: Dispatch<SetStateAction<BridgeState>>
+  account: Address
+}
+
+export function useBridge(params: UseBridgeParams) {
+  const { selectedChainId, selectedToken, setBridgeState, amount, account } =
+    params
+
+  const targetChainId = Env.get() === 'prod' ? riseTestnet.id : riseTestnet.id // TODO: mainnet release switch chain id for prod
+
+  const [data, setData] = useState<any>()
+  const [error, setError] = useState<Error | undefined>()
+
+  // Get available chains
+  const { data: chains } = useQuery({
+    queryFn: () => {
+      // Filter out the target chain from available chains
+      return porto._internal.config.chains.filter((c) => c.id !== targetChainId)
+    },
+    queryKey: ['bridge-chains', targetChainId],
+  })
+
+  const { sendCallsSyncAsync } = useSendCallsSync({
+    mutation: {
+      retry: false,
+    },
+  })
+
+  // Bridge function
+  const bridge = async () => {
+    if (!selectedChainId || !selectedToken || !amount) return
+
+    setData(undefined)
+    setError(undefined)
+
+    setBridgeState({
+      sourceChainId: selectedChainId,
+      status: 'pending',
+    })
+
+    try {
+      const response = await sendCallsSyncAsync({
+        calls: [
+          {
+            data: encodeFunctionData({
+              abi: [
+                parseAbiItem(
+                  'function approve(address spender, uint256 amount)',
+                ),
+              ],
+              args: [selectedToken.bridgeWrapper, amount],
+              functionName: 'approve',
+            }),
+            to: selectedToken.address,
+          },
+          {
+            data: encodeFunctionData({
+              abi: [
+                parseAbiItem(
+                  'function bridgeLayerZero(address _bridge, uint256 _amount, address _recipient)',
+                ),
+              ],
+              args: [selectedToken.bridgeContract, amount, account],
+              functionName: 'bridgeLayerZero',
+            }),
+            to: selectedToken.bridgeWrapper,
+          },
+        ],
+        chainId: selectedChainId as never,
+        timeout: 60_000,
+      })
+
+      // Get transaction hash from receipts
+      const sourceTxHash = response.receipts?.[0]?.transactionHash
+
+      console.log('response-bridging::', response)
+      console.log('response-sourceTxHash::', sourceTxHash)
+
+      // id
+      // 0xec15a2fc13f6ef08fccf56c15046c4e77ad4ea24d0cdce744687de2e3c8aed43
+
+      // transactionHash
+      // 0x0204dc324eb817d05dd6bf8de98f8e5d7ae6815ae7c1e82e90979c81e0c94349
+
+      // 0xfdbb213449385b77378a899168af9d107de2481bb02dd55bf532764a410bc142 -- existing
+
+      if (response.status === 'failure') {
+        setBridgeState((prev) => ({
+          ...prev,
+          message: `Failed with status code ${response.statusCode}`,
+          status: 'failed',
+        }))
+      } else if (response.status === 'success') {
+        setBridgeState((prev) => ({
+          ...prev,
+          sourceTxHash,
+          status: 'completed',
+        }))
+      }
+
+      setData(response)
+      return response
+    } catch (e) {
+      const error = e as Error
+      console.log('error-bridging::', error)
+      const message =
+        typeof error.cause === 'string' ? error.cause : error.message
+
+      setError(error)
+      setBridgeState((prev) => ({
+        ...prev,
+        message: ErrorFormatter.extractMessage(message),
+        status: 'failed',
+      }))
+    }
+  }
+
+  const result = useMemo(() => {
+    return data
+  }, [data])
+
+  return {
+    bridge,
+    chains,
+    data: result,
+    error,
+    targetChainId,
+  }
+}

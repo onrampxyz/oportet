@@ -36,7 +36,8 @@ export namespace Input {
           default: '-tracking-[2.8%] h-10 px-3 text-[15px]',
         },
         variant: {
-          default: 'border bg-transparent text-gray12 placeholder:text-gray8',
+          default:
+            'border-th_base bg-th_field text-gray12 placeholder:text-gray8',
         },
       },
     },

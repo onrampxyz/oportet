@@ -49,3 +49,33 @@ export namespace ValueFormatter {
     )
   }
 }
+
+export namespace ErrorFormatter {
+  /**
+   * Extracts the actual error message from an error string.
+   * Looks for "Details:" or "Caused by:" patterns and returns the first sentence.
+   *
+   * @param errorMessage - The error message string to parse.
+   * @returns The extracted error message or the original message if no pattern is found.
+   */
+  export function extractMessage(errorMessage: string): string {
+    // Look for "Details:" or "Caused by:" patterns (case-insensitive)
+    const detailsRegex = /Details:\s*(.+?)(?:\.|$)/i
+    const causedByRegex = /Caused by:\s*(.+?)(?:\.|$)/i
+
+    const detailsMatch = detailsRegex.exec(errorMessage)
+    if (detailsMatch?.[1]) {
+      return detailsMatch[1].trim()
+    }
+
+    const causedByMatch = causedByRegex.exec(errorMessage)
+    if (causedByMatch?.[1]) {
+      return causedByMatch[1].trim()
+    }
+
+    // If no pattern found, return the first sentence of the original message
+    const firstSentenceRegex = /^(.+?)(?:\.|$)/
+    const firstSentence = firstSentenceRegex.exec(errorMessage)
+    return firstSentence?.[1]?.trim() || errorMessage
+  }
+}

@@ -12,7 +12,7 @@ export function CopyButton({
   size = 'small',
   value,
   variant = 'content',
-}: CopyButton.Props) {
+}: Readonly<CopyButton.Props>) {
   const { copy, notifying } = CopyButton.useCopy()
 
   const Icon = notifying ? LucideCopyCheck : LucideCopy
@@ -32,9 +32,9 @@ export function CopyButton({
       title={notifying ? 'Copied' : 'Copy to clipboard'}
       variant={variant}
     >
-      {iconPosition === 'start' && <Icon />}
+      {iconPosition === 'start' && <Icon color="var(--text-color-th_base)" />}
       {label_ && <span>{label_}</span>}
-      {iconPosition === 'end' && <Icon />}
+      {iconPosition === 'end' && <Icon color="var(--text-color-th_base)" />}
     </Button>
   )
 }

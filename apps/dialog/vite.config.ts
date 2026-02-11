@@ -44,8 +44,14 @@ export default defineConfig(({ mode }) => {
     }),
   ]
 
-  if (mode === 'development')
-    plugins.push(Terminal({ output: ['terminal', 'console'] }))
+  if (mode === 'development') {
+    plugins.push(
+      Terminal({
+        console: 'terminal',
+        output: ['console', 'terminal'],
+      }),
+    )
+  }
 
   return {
     base: '/dialog/',
