@@ -154,40 +154,44 @@ export function Landing() {
 
             <div className="h-3" />
 
-            <div className="h-3.5 border-gray7 border-b-1 text-center">
-              <span className="my-auto bg-gray2 px-2 font-[500] text-gray10">
-                or
-              </span>
-            </div>
+            {providers?.length > 0 && (
+              <>
+                <div className="h-3.5 border-gray7 border-b-1 text-center">
+                  <span className="my-auto bg-gray2 px-2 font-[500] text-gray10">
+                    or
+                  </span>
+                </div>
 
-            <div className="rounded-xl p-8 text-center">
-              Use Injected Signer
-              <div className="flex gap-2 p-3">
-                {providers?.map((provider) => {
-                  return (
-                    <button
-                      className="rounded-xl border border-gray7 p-2 hover:bg-gray3 focus:outline-none focus:ring-2 focus:ring-gray8 data-[connecting=true]:animate-bounce"
-                      data-connecting={
-                        isInjectedConnecting && provider.info.rdns === rdns
-                      }
-                      key={provider.info.uuid}
-                      onClick={(event) => {
-                        onInjectConnect(provider.info.rdns)
-                        event.preventDefault()
-                      }}
-                      type="button"
-                    >
-                      <img
-                        alt={provider.info.name}
-                        height={40}
-                        src={provider.info.icon}
-                        width={40}
-                      />
-                    </button>
-                  )
-                })}
-              </div>
-            </div>
+                <div className="rounded-xl p-8 text-center">
+                  Use Injected Signer
+                  <div className="flex items-center justify-center gap-2 p-3">
+                    {providers?.map((provider) => {
+                      return (
+                        <button
+                          className="rounded-xl border border-gray7 p-2 hover:bg-gray3 focus:outline-none focus:ring-2 focus:ring-gray8 data-[connecting=true]:animate-bounce"
+                          data-connecting={
+                            isInjectedConnecting && provider.info.rdns === rdns
+                          }
+                          key={provider.info.uuid}
+                          onClick={(event) => {
+                            onInjectConnect(provider.info.rdns)
+                            event.preventDefault()
+                          }}
+                          type="button"
+                        >
+                          <img
+                            alt={provider.info.name}
+                            height={40}
+                            src={provider.info.icon}
+                            width={40}
+                          />
+                        </button>
+                      )
+                    })}
+                  </div>
+                </div>
+              </>
+            )}
 
             <div className="h-3.5 border-gray7 border-b-1 text-center">
               <span className="my-auto bg-gray2 px-2 font-[500] text-gray10">
