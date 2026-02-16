@@ -2,15 +2,12 @@ import { Toast } from '@porto/apps/components'
 import { cx } from 'cva'
 import { Hooks } from 'rise-wallet/wagmi'
 import { toast } from 'sonner'
-import { formatEther } from 'viem'
-import { useConnection } from 'wagmi'
-import { useSelector, useWallet } from '~/hooks'
 import { AddressFormatter } from '~/utils'
 import LucideCopy from '~icons/lucide/copy'
 
 type TransactionStatus = 'pending' | 'completed' | 'failed'
 
-const StatusBadge = ({ status }: { status: TransactionStatus }) => {
+export const StatusBadge = ({ status }: { status: TransactionStatus }) => {
   const statusStyles = {
     completed:
       'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
@@ -32,11 +29,6 @@ const StatusBadge = ({ status }: { status: TransactionStatus }) => {
 }
 
 export function Transactions() {
-  const { address } = useConnection()
-  const { calls, isLoading } = useWallet({
-    address,
-  })
-
   const { data: callsHistory, isPending: isCallsHistoryPending } =
     Hooks.useCallsHistory({
       // address,
@@ -46,43 +38,43 @@ export function Transactions() {
 
   console.log('callsHistory:: ', callsHistory)
 
-  const getDate = (timestamp: number) => {
-    const date = new Date(timestamp * 1000)
+  // const getDate = (timestamp: number) => {
+  //   const date = new Date(timestamp * 1000)
 
-    return date.toLocaleDateString('en-US', {
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-      month: '2-digit',
-      year: '2-digit',
-    })
-  }
+  //   return date.toLocaleDateString('en-US', {
+  //     day: 'numeric',
+  //     hour: '2-digit',
+  //     minute: '2-digit',
+  //     month: '2-digit',
+  //     year: '2-digit',
+  //   })
+  // }
 
-  const getAmount = (decodedArgs: string) => {
-    if (decodedArgs === '') return 0
+  // const getAmount = (decodedArgs: string) => {
+  //   if (decodedArgs === '') return 0
 
-    const amountArg = JSON.parse(decodedArgs)
-    console.log('amountArg', amountArg)
+  //   const amountArg = JSON.parse(decodedArgs)
+  //   console.log('amountArg', amountArg)
 
-    return `${Number(formatEther(amountArg[1] || 0)).toFixed(2)}`
-  }
+  //   return `${Number(formatEther(amountArg[1] || 0)).toFixed(2)}`
+  // }
 
-  const getUniqueSelectors = () => {
-    if (!calls.data?.intents) return []
+  // const getUniqueSelectors = () => {
+  //   if (!calls.data?.intents) return []
 
-    const selectors = calls.data.intents
-      .map((transaction) => transaction.calls[0]?.selector)
-      .filter((selector): selector is string => !!selector)
+  //   const selectors = calls.data.intents
+  //     .map((transaction) => transaction.calls[0]?.selector)
+  //     .filter((selector): selector is string => !!selector)
 
-    // Return unique selectors only
-    return [...new Set(selectors)]
-  }
-  const uniqueSelectors = getUniqueSelectors()
+  //   // Return unique selectors only
+  //   return [...new Set(selectors)]
+  // }
+  // const uniqueSelectors = getUniqueSelectors()
 
-  const selectorQueries = useSelector({
-    enabled: uniqueSelectors.length > 0,
-    selectors: uniqueSelectors,
-  })
+  // const selectorQueries = useSelector({
+  //   enabled: uniqueSelectors.length > 0,
+  //   selectors: uniqueSelectors,
+  // })
 
   const handleCopyAddress = async (address: string) => {
     if (!address) return
@@ -132,60 +124,62 @@ export function Transactions() {
       )}
 
       {/* Transactions List */}
-      {callsHistory && <div className="flex flex-col gap-2 rounded-md border border-gray7 p-3">
-        {callsHistory?.map((call) => {
-          return (
-            <div className="grid gap-2" key={call.id} p-3>
-              {call.transactions.map((tx) => {
-                return (
-                  <div
-                    className='flex flex-wrap items-center justify-between gap-2 rounded-md bg-gray3 px-3 py-1'
-                    key={tx.transactionHash}
-                  >
-                    <div>
-                      <p className="text-gray10 text-xs">Chain Id</p>
-                      <p className="text-sm">{tx.chainId}</p>
-                    </div>
-                    <div>
-                      <p className="text-gray10 text-xs">Transaction Hash</p>
-                      <div className="flex items-center gap-2">
-                        <p className="text-sm">
-                          {AddressFormatter.mask(tx.transactionHash, {
-                            end: 12,
-                            start: 12,
-                          })}
-                        </p>
-                        {/* TODO: Make this reusable - copy button */}
-                        <button
-                          className="text-gray11 transition-colors hover:text-gray12"
-                          onClick={() => {
-                            // biome-ignore lint/nursery/noFloatingPromises: do not await
-                            handleCopyAddress(tx.transactionHash)
-                          }}
-                          title="Copy address"
-                          type="button"
+      {callsHistory && (
+        <div className="flex flex-col gap-2 rounded-md border border-gray7 p-3">
+          {callsHistory?.map((call) => {
+            return (
+              <div className="grid gap-2" key={call.id} p-3>
+                {call.transactions.map((tx) => {
+                  return (
+                    <div
+                      className="flex flex-wrap items-center justify-between gap-2 rounded-md bg-gray3 px-3 py-1"
+                      key={tx.transactionHash}
+                    >
+                      <div>
+                        <p className="text-gray10 text-xs">Chain Id</p>
+                        <p className="text-sm">{tx.chainId}</p>
+                      </div>
+                      <div>
+                        <p className="text-gray10 text-xs">Transaction Hash</p>
+                        <div className="flex items-center gap-2">
+                          <p className="text-sm">
+                            {AddressFormatter.mask(tx.transactionHash, {
+                              end: 12,
+                              start: 12,
+                            })}
+                          </p>
+                          {/* TODO: Make this reusable - copy button */}
+                          <button
+                            className="text-gray11 transition-colors hover:text-gray12"
+                            onClick={() => {
+                              // biome-ignore lint/nursery/noFloatingPromises: do not await
+                              handleCopyAddress(tx.transactionHash)
+                            }}
+                            title="Copy address"
+                            type="button"
+                          >
+                            <LucideCopy className="size-4" />
+                          </button>
+                        </div>
+                      </div>
+                      <div>
+                        <a
+                          className="text-sm underline"
+                          href={`https://testnet.risexplorer.com/tx/${tx.transactionHash}`}
+                          rel="noopener"
+                          target="_blank"
                         >
-                          <LucideCopy className="size-4" />
-                        </button>
+                          View Transaction
+                        </a>
                       </div>
                     </div>
-                    <div>
-                      <a
-                        className="text-sm underline"
-                        href={`https://testnet.risexplorer.com/tx/${tx.transactionHash}`}
-                        rel="noopener"
-                        target="_blank"
-                      >
-                        View Transaction
-                      </a>
-                    </div>
-                  </div>
-                )
-              })}
-            </div>
-          )
-        })}
-      </div>}
+                  )
+                })}
+              </div>
+            )
+          })}
+        </div>
+      )}
     </div>
   )
 }
