@@ -102,6 +102,8 @@ export function Transactions() {
     }
   }
 
+  const hasNoTransactions = (!isCallsHistoryPending) && (callsHistory?.length === 0 || !callsHistory)
+
   return (
     <div className="space-y-4">
       <div>
@@ -117,7 +119,7 @@ export function Transactions() {
         </div>
       )}
 
-      {!isCallsHistoryPending && callsHistory?.length === 0 && (
+      {hasNoTransactions && (
         <div className="flex flex-col items-center justify-center rounded-lg border border-gray5 bg-white p-12 dark:bg-gray1">
           <p className="text-gray10 text-sm">No transactions yet</p>
         </div>
