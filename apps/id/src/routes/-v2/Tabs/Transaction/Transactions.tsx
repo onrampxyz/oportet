@@ -1,3 +1,4 @@
+import { Separator } from '@ariakit/react'
 import { Toast } from '@porto/apps/components'
 import { cx } from 'cva'
 import { Hooks } from 'rise-wallet/wagmi'
@@ -10,16 +11,16 @@ type TransactionStatus = 'pending' | 'completed' | 'failed'
 export const StatusBadge = ({ status }: { status: TransactionStatus }) => {
   const statusStyles = {
     completed:
-      'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
-    failed: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400',
+      'text-green-700 dark:bg-green-900/30 dark:text-green-400',
+    failed: 'text-red-700 dark:bg-red-900/30 dark:text-red-400',
     pending:
-      'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400',
+      'text-amber-700 dark:bg-amber-900/30 dark:text-amber-400',
   }
 
   return (
     <span
       className={cx(
-        'rounded-full px-2.5 py-1 font-medium text-xs capitalize',
+        'rounded-full font-medium text-xs capitalize',
         statusStyles[status],
       )}
     >
@@ -36,19 +37,22 @@ export function Transactions() {
       sort: 'desc',
     })
 
-  console.log('callsHistory:: ', callsHistory)
+  const getDate = (timestamp: number) => {
+    const date = new Date(timestamp * 1000)
+    return date.toLocaleDateString('en-US', {
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      month: '2-digit',
+      year: '2-digit',
+    })
+  }
 
-  // const getDate = (timestamp: number) => {
-  //   const date = new Date(timestamp * 1000)
-
-  //   return date.toLocaleDateString('en-US', {
-  //     day: 'numeric',
-  //     hour: '2-digit',
-  //     minute: '2-digit',
-  //     month: '2-digit',
-  //     year: '2-digit',
-  //   })
-  // }
+  const getStatus = (status: number): TransactionStatus => {
+    if (status === 200) return 'completed'
+    if (status === 300) return 'pending'
+    return 'failed'
+  }
 
   // const getAmount = (decodedArgs: string) => {
   //   if (decodedArgs === '') return 0
@@ -102,7 +106,8 @@ export function Transactions() {
     }
   }
 
-  const hasNoTransactions = (!isCallsHistoryPending) && (callsHistory?.length === 0 || !callsHistory)
+  const hasNoTransactions =
+    !isCallsHistoryPending && (callsHistory?.length === 0 || !callsHistory)
 
   return (
     <div className="space-y-4">
@@ -127,14 +132,21 @@ export function Transactions() {
 
       {/* Transactions List */}
       {callsHistory && (
-        <div className="flex flex-col gap-2 rounded-md border border-gray7 p-3">
+        <div className="flex flex-col gap-2 rounded-md border border-gray7 p-2">
           {callsHistory?.map((call) => {
             return (
-              <div className="grid gap-2" key={call.id} p-3>
+              <div className="grid gap-1 rounded-md bg-gray3 px-3 py-2" key={call.id} >
+                <div className="flex items-center justify-between">
+                  <p className="text-gray10 text-xs">
+                    {getDate(call.timestamp)}
+                  </p>
+                  <StatusBadge status={getStatus(call.status)} />
+                </div>
+                <Separator className='opacity-25' />
                 {call.transactions.map((tx) => {
                   return (
                     <div
-                      className="flex flex-wrap items-center justify-between gap-2 rounded-md bg-gray3 px-3 py-1"
+                      className='flex flex-wrap items-center justify-between gap-2'
                       key={tx.transactionHash}
                     >
                       <div>
