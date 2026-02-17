@@ -1,4 +1,4 @@
-import { Button, ButtonArea, ChainsPath, Details } from '@porto/ui'
+import { Button, ButtonArea, ChainsPath, CopyButton, Details } from '@porto/ui'
 import { useQuery } from '@tanstack/react-query'
 import { cx } from 'cva'
 import { type Address, Base64, Value } from 'ox'
@@ -20,7 +20,7 @@ import * as Errors from '~/lib/DialogErrors'
 import { porto } from '~/lib/Porto'
 import * as Tokens from '~/lib/Tokens'
 import { Layout } from '~/routes/-components/Layout'
-import { PriceFormatter, ValueFormatter } from '~/utils'
+import { PriceFormatter, StringFormatter, ValueFormatter } from '~/utils'
 import ArrowDownLeft from '~icons/lucide/arrow-down-left'
 import ArrowUpRight from '~icons/lucide/arrow-up-right'
 import LucideFileText from '~icons/lucide/file-text'
@@ -297,6 +297,11 @@ export function ActionRequest(props: ActionRequest.Props) {
             <ActionRequest.AssetDiff assetDiff={assetDiff} />
           ) : undefined}
         </ActionRequest.PaneWithDetails>
+        <ActionRequest.CallDetails
+          calls={calls}
+          chainsPath={chainsPath}
+          fetchingQuote={fetchingQuote}
+        />
       </div>
     </ActionPreview>
   )
@@ -623,6 +628,87 @@ export namespace ActionRequest {
       quotes?: readonly Quote_schema.Quote[] | undefined
       status: 'pending' | 'success'
       hideDetails?: boolean | undefined
+    }
+  }
+
+  export function CallDetails(props: CallDetails.Props) {
+    const { calls, chainsPath, fetchingQuote } = props
+
+    const firstCall = calls[0]
+
+    const selector = React.useMemo(() => {
+      if (!firstCall?.data || firstCall.data === '0x' || firstCall.data.length < 10) return null
+      return firstCall.data.slice(0, 10) as `0x${string}`
+    }, [firstCall?.data])
+
+    const erc20FunctionName = React.useMemo(() => {
+      if (!firstCall?.data || firstCall.data === '0x') return null
+      try {
+        const decoded = decodeFunctionData({ abi: erc20Abi, data: firstCall.data })
+        return decoded.functionName
+      } catch {}
+      return null
+    }, [firstCall?.data])
+
+    const fourByteQuery = useQuery({
+      enabled: !erc20FunctionName && Boolean(selector),
+      queryFn: async () => {
+        const res = await fetch(
+          `https://api.4byte.sourcify.dev/signature-database/v1/lookup?function=${selector}`,
+        )
+        if (!res.ok) return null
+        const json = await res.json()
+        const matches: { name: string; filtered: boolean; hasVerifiedContract: boolean }[] | undefined =
+          json?.result?.function?.[selector as string]
+        if (!matches?.length) return null
+        // prefer verified contract match, fallback to first
+        const best = matches.find((m) => m.hasVerifiedContract) ?? matches[0]
+        return best?.name.split('(')[0] ?? null
+      },
+      queryKey: ['4byte', selector],
+    })
+
+    const functionName =
+      erc20FunctionName ?? fourByteQuery.data ?? (fourByteQuery.isError ? selector : null)
+
+    if (!firstCall?.to && chainsPath.length === 0 && !functionName) return null
+
+    return (
+      <Details loading={fetchingQuote} opened>
+        {firstCall?.to && (
+          <Details.Item
+            label={firstCall.data && firstCall.data !== '0x' ? 'Contract' : 'To'}
+            value={
+              <div className="flex items-center gap-[8px]" title={firstCall.to}>
+                {StringFormatter.truncate(firstCall.to)}
+                <CopyButton value={firstCall.to} />
+              </div>
+            }
+          />
+        )}
+        {selector && (
+          <Details.Item
+            label="Function"
+            value={fourByteQuery.isPending && !erc20FunctionName ? '…' : (functionName ?? selector)}
+          />
+        )}
+        {chainsPath.length > 0 && (
+          <Details.Item
+            label={`Network${chainsPath.length > 1 ? 's' : ''}`}
+            value={
+              <ChainsPath chainIds={chainsPath.map((chain) => chain.id)} />
+            }
+          />
+        )}
+      </Details>
+    )
+  }
+
+  export namespace CallDetails {
+    export type Props = {
+      calls: readonly Call[]
+      chainsPath: readonly Chain[]
+      fetchingQuote: boolean
     }
   }
 
