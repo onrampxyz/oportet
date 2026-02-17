@@ -637,14 +637,22 @@ export namespace ActionRequest {
     const firstCall = calls[0]
 
     const selector = React.useMemo(() => {
-      if (!firstCall?.data || firstCall.data === '0x' || firstCall.data.length < 10) return null
+      if (
+        !firstCall?.data ||
+        firstCall.data === '0x' ||
+        firstCall.data.length < 10
+      )
+        return null
       return firstCall.data.slice(0, 10) as `0x${string}`
     }, [firstCall?.data])
 
     const erc20FunctionName = React.useMemo(() => {
       if (!firstCall?.data || firstCall.data === '0x') return null
       try {
-        const decoded = decodeFunctionData({ abi: erc20Abi, data: firstCall.data })
+        const decoded = decodeFunctionData({
+          abi: erc20Abi,
+          data: firstCall.data,
+        })
         return decoded.functionName
       } catch {}
       return null
@@ -658,8 +666,9 @@ export namespace ActionRequest {
         )
         if (!res.ok) return null
         const json = await res.json()
-        const matches: { name: string; filtered: boolean; hasVerifiedContract: boolean }[] | undefined =
-          json?.result?.function?.[selector as string]
+        const matches:
+          | { name: string; filtered: boolean; hasVerifiedContract: boolean }[]
+          | undefined = json?.result?.function?.[selector as string]
         if (!matches?.length) return null
         // prefer verified contract match, fallback to first
         const best = matches.find((m) => m.hasVerifiedContract) ?? matches[0]
@@ -668,8 +677,7 @@ export namespace ActionRequest {
       queryKey: ['4byte', selector],
     })
 
-    const functionName =
-      erc20FunctionName ?? fourByteQuery.data ?? (fourByteQuery.isError ? selector : null)
+    const functionName = erc20FunctionName ?? fourByteQuery.data ?? null
 
     if (!firstCall?.to && chainsPath.length === 0 && !functionName) return null
 
@@ -677,7 +685,9 @@ export namespace ActionRequest {
       <Details loading={fetchingQuote} opened>
         {firstCall?.to && (
           <Details.Item
-            label={firstCall.data && firstCall.data !== '0x' ? 'Contract' : 'To'}
+            label={
+              firstCall.data && firstCall.data !== '0x' ? 'Contract' : 'To'
+            }
             value={
               <div className="flex items-center gap-[8px]" title={firstCall.to}>
                 {StringFormatter.truncate(firstCall.to)}
@@ -689,7 +699,11 @@ export namespace ActionRequest {
         {selector && (
           <Details.Item
             label="Function"
-            value={fourByteQuery.isPending && !erc20FunctionName ? '…' : (functionName ?? selector)}
+            value={
+              fourByteQuery.isPending && !erc20FunctionName
+                ? '…'
+                : (functionName ?? selector)
+            }
           />
         )}
         {chainsPath.length > 0 && (
