@@ -55,8 +55,11 @@ export type Mode = {
       internal: ActionsInternal
       /** Label to associate with the WebAuthn credential. */
       label?: string | undefined
-      /** Permissions to grant. */
-      permissions?: PermissionsRequest.PermissionsRequest | undefined
+      /** Permissions to grant. Can be a single request or an array for batching multiple session keys. */
+      permissions?:
+        | PermissionsRequest.PermissionsRequest
+        | readonly PermissionsRequest.PermissionsRequest[]
+        | undefined
       /** Adds support for offchain authentication using ERC-4361. */
       signInWithEthereum?: Capabilities.signInWithEthereum.Request | undefined
       providerRdns?: string | undefined
@@ -164,8 +167,11 @@ export type Mode = {
         | undefined
       /** Internal properties. */
       internal: ActionsInternal
-      /** Permissions to grant. */
-      permissions?: PermissionsRequest.PermissionsRequest | undefined
+      /** Permissions to grant. Can be a single request or an array for batching multiple session keys. */
+      permissions?:
+        | PermissionsRequest.PermissionsRequest
+        | readonly PermissionsRequest.PermissionsRequest[]
+        | undefined
       /** Adds support for offchain authentication using ERC-4361. */
       signInWithEthereum?: Capabilities.signInWithEthereum.Request | undefined
       providerRdns?: string | undefined
@@ -226,8 +232,11 @@ export type Mode = {
       label?: string | undefined
       /** Internal properties. */
       internal: ActionsInternal
-      /** Permissions to grant. */
-      permissions?: PermissionsRequest.PermissionsRequest | undefined
+      /** Permissions to grant. Can be a single request or an array for batching multiple session keys. */
+      permissions?:
+        | PermissionsRequest.PermissionsRequest
+        | readonly PermissionsRequest.PermissionsRequest[]
+        | undefined
     }) => Promise<{
       /** Digests to sign. */
       digests: {
