@@ -1,5 +1,4 @@
 import { Button } from '@porto/ui'
-import { Chains } from 'rise-wallet/index'
 import { useFundsContext } from '~/contexts'
 import { useBridgeSupportedChains } from '~/hooks'
 import { Layout } from '../Layout'
@@ -9,12 +8,12 @@ export function ChainSelection() {
   const { selectedChain, setSelectedChain, setView, address } =
     useFundsContext()
 
-  const { chains } = useBridgeSupportedChains()
+  const { chains, riseChainId } = useBridgeSupportedChains()
 
   return (
     <Layout>
       <Layout.Content>
-        {address && <ReceiveViaQr address={address} />}
+        {address && <ReceiveViaQr address={address} chainId={riseChainId} />}
         <div className="mx-2 h-3.5 border-gray7 border-b-1 text-center">
           <span className="my-auto mt-[3px] inline-flex bg-gray2 px-2 text-th_base-secondary">
             OR
@@ -35,20 +34,17 @@ export function ChainSelection() {
                 key={chain.name}
                 onClick={() => {
                   setSelectedChain(chain)
-                  if (chain.id === Chains.riseTestnet.id) {
-                    setView('global-deposit')
-                  } else {
-                    setView('selection-asset')
-                  }
+                  setView('selection-asset')
                 }}
                 type="button"
                 variant="secondary"
               >
                 <img
                   alt={`${chain.name}-icon`}
-                  height={20}
+                  className='rounded-full bg-th_base'
+                  height={24}
                   src={chain.icon}
-                  width={20}
+                  width={24}
                 />
                 <span className="pt-0.5">{chain.name}</span>
               </Button>

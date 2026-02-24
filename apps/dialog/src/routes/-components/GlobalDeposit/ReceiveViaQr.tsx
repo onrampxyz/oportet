@@ -1,10 +1,9 @@
 import { CopyButton, QrCode } from '@porto/ui'
 import { css } from 'styled-system/css'
 import type { Address } from 'viem'
-import { riseTestnet } from 'viem/chains'
 import { AddressFormatter } from '~/utils'
 
-export function ReceiveViaQr({ address }: Readonly<ReceiveViaQr.Props>) {
+export function ReceiveViaQr({ address, chainId }: Readonly<ReceiveViaQr.Props>) {
   return (
     <div className="mt-4 mb-2 rounded-lg border-1 border-th_secondary bg-th_base-alt p-2">
       <p className="pt-2 text-center font-bold text-lg text-th_base">
@@ -15,7 +14,7 @@ export function ReceiveViaQr({ address }: Readonly<ReceiveViaQr.Props>) {
       </p>
       <QrCode
         address={address ?? ''}
-        chainId={riseTestnet.id}
+        chainId={chainId}
         className="bg-th_base"
       />
       <div className="pt-2">
@@ -46,5 +45,6 @@ export function ReceiveViaQr({ address }: Readonly<ReceiveViaQr.Props>) {
 export namespace ReceiveViaQr {
   export interface Props {
     address: string
+    chainId: number
   }
 }

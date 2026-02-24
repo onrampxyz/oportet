@@ -6,7 +6,6 @@ import { Dialog } from 'rise-wallet'
 import { Hooks } from 'rise-wallet/wagmi'
 import { toast } from 'sonner'
 import { formatEther } from 'viem'
-import { riseTestnet } from 'viem/chains'
 import {
   useBalance,
   useCapabilities,
@@ -14,6 +13,7 @@ import {
   useDisconnect,
   useSwitchChain,
 } from 'wagmi'
+import { useRiseChain } from '~/hooks/useRiseChain'
 import { AddressFormatter } from '~/utils'
 import LucideCopy from '~icons/lucide/copy'
 import LucideMoon from '~icons/lucide/moon'
@@ -24,6 +24,7 @@ export function Header() {
   const { mutate: disconnect } = useDisconnect()
   const { mutateAsync: switchChainAsync } = useSwitchChain()
   const { data: balance } = useBalance({ address })
+  const { riseChainId } = useRiseChain()
 
   const capabilities = useCapabilities({
     query: { enabled: isConnected },
@@ -69,18 +70,18 @@ export function Header() {
     }
 
     await switchChainAsync({
-      chainId: riseTestnet.id,
+      chainId: riseChainId,
     }).catch()
 
     if (!capabilities.data) return
-    const exp1 = capabilities.data?.[riseTestnet.id]?.feeToken?.tokens?.find(
+    const exp1 = capabilities.data?.[riseChainId]?.feeToken?.tokens?.find(
       (t: any) => t.uid === 'exp1',
     )
 
     if (!exp1) return
     addFunds.mutate({
       address,
-      chainId: riseTestnet.id,
+      chainId: riseChainId,
       token: exp1?.address as Address.Address,
       // @ts-expect-error TODO: fix type
       tokenAddress: exp1?.address as Address.Address,
@@ -218,7 +219,7 @@ export function Header() {
             onClick={toggleTheme}
             size="square"
             title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
-            // variant="outline"
+          // variant="outline"
           >
             {theme === 'light' ? (
               <LucideMoon className="size-5 text-gray11" />

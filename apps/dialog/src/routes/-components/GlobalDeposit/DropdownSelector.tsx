@@ -1,6 +1,6 @@
-import { Button, DropdownMenu } from '@porto/ui'
-import type * as React from 'react'
-import { css } from 'styled-system/css'
+import { Button, DropdownMenu } from '@porto/ui';
+import type * as React from 'react';
+import { css } from 'styled-system/css';
 
 export function DropdownSelector<T extends { name: string; icon?: string }>(
   props: DropdownSelector.Props<T>,
@@ -43,8 +43,11 @@ export function DropdownSelector<T extends { name: string; icon?: string }>(
                 {selectedItem.icon && (
                   <img
                     alt=""
-                    className={css({ height: 20, width: 20 })}
+                    className="rounded-full bg-gray5"
+                    height={20}
                     src={selectedItem.icon}
+                    width={20}
+
                   />
                 )}
                 {selectedItem.name}
@@ -79,11 +82,10 @@ export function DropdownSelector<T extends { name: string; icon?: string }>(
                       {item.icon && (
                         <img
                           alt=""
-                          className={css({
-                            height: 20,
-                            width: 20,
-                          })}
+                          className="rounded-full bg-th_base"
+                          height={24}
                           src={item.icon}
+                          width={24}
                         />
                       )}
                       {item.name}
@@ -127,9 +129,9 @@ export declare namespace DropdownSelector {
     onContinue?: ((item: T) => void) | undefined
     /** Optional custom render function for items */
     renderItem?:
-      | ((item: T, isSelected: boolean) => React.ReactNode)
-      | undefined
-      | ((item: T, isSelected: boolean) => React.ReactNode)
+    | ((item: T, isSelected: boolean) => React.ReactNode)
+    | undefined
+    | ((item: T, isSelected: boolean) => React.ReactNode)
     continueButtonLabel?: string | undefined
     /** Disable the continue button */
     continueButtonDisabled?: boolean | undefined

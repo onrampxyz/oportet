@@ -1,10 +1,10 @@
 import { Spinner, Toast } from '@porto/apps/components'
 import { useMemo } from 'react'
-import { riseTestnet } from 'rise-wallet/core/Chains'
 import { Hooks } from 'rise-wallet/wagmi'
 import { toast } from 'sonner'
 import { useAccount } from 'wagmi'
 import { TruncatedAddress } from '~/components/TruncatedAddress'
+import { useRiseChain } from '~/hooks/useRiseChain'
 import LucideCheck from '~icons/lucide/check'
 import LucideCopy from '~icons/lucide/copy'
 import LucideShield from '~icons/lucide/shield-alert'
@@ -14,7 +14,7 @@ import { Connectors } from './Connectors'
 // component > internal > core > actions > rpc_method
 export function Recovery() {
   const account = useAccount()
-
+  const { riseChainId } = useRiseChain()
   const admins = Hooks.useAdmins({
     query: {
       enabled: account.status === 'connected',
@@ -157,7 +157,7 @@ export function Recovery() {
                   className="flex items-center gap-1 rounded-lg p-2 text-red-600 transition-colors hover:bg-red-50 dark:hover:bg-red-900/20"
                   onClick={() => {
                     if (!wallet.id || !wallet.publicKey) return
-                    const chainId = riseTestnet.id
+                    const chainId = riseChainId
                     revokeAdmin.mutate({
                       address: account.address,
                       chainId,

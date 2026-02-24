@@ -3,8 +3,7 @@ import { Button, CopyButton, Spinner } from '@porto/ui'
 import type { Hex } from 'ox'
 import { css } from 'styled-system/css'
 import { formatUnits } from 'viem'
-import { riseTestnet } from 'viem/chains'
-import { type Chain, type Status, useLayerZeroMessage } from '~/hooks'
+import { type Chain, type Status, useBridgeSupportedChains, useLayerZeroMessage } from '~/hooks'
 import { Layout } from '~/routes/-components/Layout'
 import { AddressFormatter } from '~/utils'
 import ArrowLeft from '~icons/lucide/arrow-left'
@@ -77,6 +76,7 @@ export function Bridge(props: Readonly<BridgeProps>) {
     back,
   } = props
 
+  const { riseChain } = useBridgeSupportedChains()
   const { status: lzStatus, data: lzData } = useLayerZeroMessage({
     enabled: !!bridgeState?.sourceTxHash && bridgeState.status === 'completed',
     transactionId: bridgeState?.sourceTxHash,
@@ -227,7 +227,8 @@ export function Bridge(props: Readonly<BridgeProps>) {
                       className={css({ height: 18, width: 18 })}
                       src="/dialog/chains/rise.svg"
                     />
-                    <span className="font-bold">{riseTestnet?.name}</span>
+                    {/* Destination is always RISE */}
+                    <span className="font-bold">{riseChain?.name}</span>
                   </div>
 
                   {getLzDisplayStatus(destinationStatus ?? 'NOT_STARTED')}

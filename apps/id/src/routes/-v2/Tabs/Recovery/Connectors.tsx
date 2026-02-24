@@ -1,7 +1,6 @@
 import * as Ariakit from '@ariakit/react'
 import { Button, Toast } from '@porto/apps/components'
 import { useMemo, useState } from 'react'
-import { riseTestnet } from 'rise-wallet/core/Chains'
 import { Hooks } from 'rise-wallet/wagmi'
 import { toast } from 'sonner'
 import {
@@ -12,12 +11,14 @@ import {
   useDisconnect,
   useSwitchChain,
 } from 'wagmi'
+import { useRiseChain } from '~/hooks/useRiseChain'
 import { mipdConfig } from '~/lib/Wagmi'
 import LucideChevronRight from '~icons/lucide/chevron-right'
 import LucideX from '~icons/lucide/x'
 
 export function Connectors({ label }: { label?: string }) {
   const account = useAccount()
+  const { riseChainId } = useRiseChain()
 
   const _connectors = useConnectors({ config: mipdConfig })
   // Filter out Porto connector
@@ -26,7 +27,9 @@ export function Connectors({ label }: { label?: string }) {
   }, [_connectors])
 
   if (!connectors.length) {
-    return null
+    return (
+      null
+    )
   }
 
   const connect = useConnect({ config: mipdConfig })
@@ -63,7 +66,7 @@ export function Connectors({ label }: { label?: string }) {
     event.stopPropagation()
 
     try {
-      const chainId = riseTestnet.id
+      const chainId = riseChainId
       // 1. disconnect in case user is connected from previous sessions
       await disconnectAll()
 

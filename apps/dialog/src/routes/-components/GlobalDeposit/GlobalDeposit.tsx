@@ -1,11 +1,10 @@
-import { Separator } from '@ariakit/react'
+import { Env } from '@porto/apps'
 import { Input } from '@porto/apps/components'
-import { Button, Deposit } from '@porto/ui'
+import { Button } from '@porto/ui'
 import { Value } from 'ox'
 import { useEffect, useMemo, useState } from 'react'
 import { formatEther, formatUnits, parseUnits } from 'viem'
-import { riseTestnet } from 'viem/chains'
-import { useConnection, useReadContract } from 'wagmi'
+import { useReadContract } from 'wagmi'
 import { useFundsContext } from '~/contexts'
 import {
   useBridge,
@@ -15,8 +14,8 @@ import {
   useWalletAsset,
 } from '~/hooks'
 import ArrowLeft from '~icons/lucide/arrow-left'
-import { Layout } from '../Layout'
 import { DropdownSelector } from '.'
+import { Layout } from '../Layout'
 import { Bridge, type BridgeState } from './Bridge'
 
 export function GlobalDeposit() {
@@ -31,7 +30,7 @@ export function GlobalDeposit() {
     setView,
   } = useFundsContext()
 
-  const { chainId } = useConnection()
+  const isProd = Env.get() === 'prod'
   const { chains: supportedChains, riseChainId } = useBridgeSupportedChains()
   const { tokens: supportedTokens } = useBridgeSupportedTokens()
 
@@ -211,25 +210,24 @@ export function GlobalDeposit() {
               selectedItem={selectedChain}
             />
           </div>
-          {selectedChain?.id !== riseTestnet.id && (
+          {selectedChain?.id !== riseChainId && (
             <>
               <div className="space-y-2 rounded-lg bg-th_base-alt p-2">
                 <div className="flex items-center justify-between gap-2">
                   <div className="flex items-center gap-2">
                     <p className="text-sm text-th_base-secondary">Token</p>
-                    <Separator
-                      className="h-4 border-th_base border-l-0.25"
-                      orientation="vertical"
-                    />
-                    {chainId === riseTestnet.id && (
-                      <a
-                        className="text-sm text-th_base-secondary"
-                        href="https://demo.wallet.risechain.com/mint"
-                        rel="noopener noreferrer"
-                        target="_blank"
-                      >
-                        Mint
-                      </a>
+                    {!isProd && (
+                      <>
+                        <div className="h-4 w-px bg-gray5" />
+                        <a
+                          className="text-sm text-th_base-secondary"
+                          href="https://demo.wallet.risechain.com/mint"
+                          rel="noopener noreferrer"
+                          target="_blank"
+                        >
+                          Mint
+                        </a>
+                      </>
                     )}
                   </div>
                   <div className="flex gap-2">
@@ -309,16 +307,9 @@ export function GlobalDeposit() {
               </div>
             </>
           )}
-          {selectedChain?.id === riseTestnet.id && (
-            <Deposit
-              address={address ?? ''}
-              chainId={selectedChain?.id}
-              label="Send tokens to this address"
-            />
-          )}
         </div>
       </Layout.Content>
-      {selectedChain?.id !== riseTestnet.id && (
+      {selectedChain?.id !== riseChainId && (
         <Layout.Footer>
           <Layout.Footer.Actions>
             <Button

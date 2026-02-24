@@ -1,8 +1,6 @@
-import { Env } from '@porto/apps'
 import { useQuery } from '@tanstack/react-query'
 import { type Dispatch, type SetStateAction, useMemo, useState } from 'react'
 import { type Address, encodeFunctionData, parseAbiItem } from 'viem'
-import { riseTestnet } from 'viem/chains'
 import { useSendCallsSync } from 'wagmi'
 import { porto } from '~/lib/Porto'
 import type {
@@ -10,6 +8,7 @@ import type {
   BridgeToken,
 } from '~/routes/-components/GlobalDeposit'
 import { ErrorFormatter } from '~/utils'
+import { useBridgeSupportedChains } from './useBridgeSupportedChains'
 
 export type UseBridgeParams = {
   selectedChainId?: number
@@ -24,7 +23,7 @@ export function useBridge(params: UseBridgeParams) {
   const { selectedChainId, selectedToken, setBridgeState, amount, account } =
     params
 
-  const targetChainId = Env.get() === 'prod' ? riseTestnet.id : riseTestnet.id // TODO: mainnet release switch chain id for prod
+  const { riseChainId } = useBridgeSupportedChains()
 
   const [data, setData] = useState<any>()
   const [error, setError] = useState<Error | undefined>()
@@ -33,9 +32,9 @@ export function useBridge(params: UseBridgeParams) {
   const { data: chains } = useQuery({
     queryFn: () => {
       // Filter out the target chain from available chains
-      return porto._internal.config.chains.filter((c) => c.id !== targetChainId)
+      return porto._internal.config.chains.filter((c) => c.id !== riseChainId)
     },
-    queryKey: ['bridge-chains', targetChainId],
+    queryKey: ['bridge-chains', riseChainId],
   })
 
   const { sendCallsSyncAsync } = useSendCallsSync({
@@ -94,14 +93,6 @@ export function useBridge(params: UseBridgeParams) {
       console.log('response-bridging::', response)
       console.log('response-sourceTxHash::', sourceTxHash)
 
-      // id
-      // 0xec15a2fc13f6ef08fccf56c15046c4e77ad4ea24d0cdce744687de2e3c8aed43
-
-      // transactionHash
-      // 0x0204dc324eb817d05dd6bf8de98f8e5d7ae6815ae7c1e82e90979c81e0c94349
-
-      // 0xfdbb213449385b77378a899168af9d107de2481bb02dd55bf532764a410bc142 -- existing
-
       if (response.status === 'failure') {
         setBridgeState((prev) => ({
           ...prev,
@@ -142,6 +133,6 @@ export function useBridge(params: UseBridgeParams) {
     chains,
     data: result,
     error,
-    targetChainId,
+    targetChainId: riseChainId,
   }
 }

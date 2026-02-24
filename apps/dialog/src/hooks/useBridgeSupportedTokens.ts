@@ -1,3 +1,4 @@
+import { Env } from '@porto/apps'
 import { Value } from 'ox'
 import { useMemo } from 'react'
 import { type Address, zeroAddress } from 'viem'
@@ -10,7 +11,7 @@ import type { BridgeToken } from '~/routes/-components/GlobalDeposit/Bridge'
  * - staging: testnet tokens (riseTestnet + sepolia)
  */
 export function useBridgeSupportedTokens() {
-  const isProd = import.meta.env.VITE_VERCEL_ENV === 'production'
+  const isProd = Env.get() === 'prod'
 
   const tokens = useMemo<Record<number, BridgeToken[]>>(() => {
     if (isProd) {
@@ -154,7 +155,7 @@ export function useBridgeSupportedTokens() {
         },
       ],
     }
-  }, [])
+  }, [isProd])
 
   return {
     isProd,

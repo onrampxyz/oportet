@@ -19,10 +19,6 @@ export function WalletBalances(props: Readonly<WalletBalancesProps>) {
 
   const chains = useChains()
 
-  console.log('balances:: ', balances)
-  console.log('chains:: ', chains)
-  console.log('-----------------------')
-
   const [openTransferId, setOpenTransferId] = useState<string | null>(null)
 
   const hasBalance = balances && balances?.length !== 0
@@ -100,7 +96,7 @@ export function WalletBalances(props: Readonly<WalletBalancesProps>) {
                 <div className="flex items-center gap-2">
                   <img
                     alt={`${chain.id}-Icon`}
-                    className="size-6 rounded-sm bg-gray5"
+                    className="size-6 rounded-sm bg-violet3"
                     src={getChainIcon(chain.id)}
                   />
                   <p className="font-bold text-sm">{chain.name}</p>

@@ -19,11 +19,6 @@ export const config = {
     host,
     theme: {
       colorScheme: theme as 'light' | 'light dark' | 'dark',
-      // baseBackground: '#e6e8ec',
-      // primaryBackground: '#625ca2',
-      // primaryContent: '#ffffff', //foreground
-      // secondaryBackground: '#e6e8ec',
-      // secondaryContent: '#bcc4',
     },
     themeController,
   }),

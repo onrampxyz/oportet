@@ -1,3 +1,4 @@
+import { Env } from '@porto/apps'
 import { useMemo } from 'react'
 import { mainnet, rise, riseTestnet, sepolia } from 'viem/chains'
 
@@ -14,10 +15,8 @@ export type Chain = {
  * - staging: riseTestnet + sepolia
  */
 export function useBridgeSupportedChains() {
-  const isProd = import.meta.env.VITE_VERCEL_ENV === 'production'
-
+  const isProd = Env.get() === 'prod'
   console.log('isProd:: ', isProd)
-  console.log('VITE_VERCEL_ENV:: ', import.meta.env.VITE_VERCEL_ENV)
 
   const chains = useMemo<Chain[]>(() => {
     return isProd
@@ -30,7 +29,7 @@ export function useBridgeSupportedChains() {
           //   },
           {
             blockExplorer: mainnet.blockExplorers.default.url,
-            icon: '/dialog/chains/sepolia.svg',
+            icon: '/dialog/chains/eth.svg',
             id: mainnet.id,
             name: mainnet.name,
           },
@@ -46,18 +45,24 @@ export function useBridgeSupportedChains() {
           //   },
           {
             blockExplorer: sepolia.blockExplorers.default.url,
-            icon: '/dialog/chains/sepolia.svg',
+            icon: '/dialog/chains/eth.svg',
             id: sepolia.id,
             name: sepolia.name,
           },
         ]
-  }, [])
+  }, [isProd])
 
-  const riseChainId = useMemo(() => (isProd ? rise.id : riseTestnet.id), [])
+  const riseChainId = useMemo(
+    () => (isProd ? rise.id : riseTestnet.id),
+    [isProd],
+  )
+
+  const riseChain = useMemo(() => (isProd ? rise : riseTestnet), [isProd])
 
   return {
     chains,
     isProd,
+    riseChain,
     riseChainId,
   }
 }
