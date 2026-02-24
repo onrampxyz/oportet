@@ -10,11 +10,9 @@ type TransactionStatus = 'pending' | 'completed' | 'failed'
 
 export const StatusBadge = ({ status }: { status: TransactionStatus }) => {
   const statusStyles = {
-    completed:
-      'text-green-700 dark:bg-green-900/30 dark:text-green-400',
+    completed: 'text-green-700 dark:bg-green-900/30 dark:text-green-400',
     failed: 'text-red-700 dark:bg-red-900/30 dark:text-red-400',
-    pending:
-      'text-amber-700 dark:bg-amber-900/30 dark:text-amber-400',
+    pending: 'text-amber-700 dark:bg-amber-900/30 dark:text-amber-400',
   }
 
   return (
@@ -135,18 +133,21 @@ export function Transactions() {
         <div className="flex flex-col gap-2 rounded-md border border-gray7 p-2">
           {callsHistory?.map((call) => {
             return (
-              <div className="grid gap-1 rounded-md bg-gray3 px-3 py-2" key={call.id} >
+              <div
+                className="grid gap-1 rounded-md bg-gray3 px-3 py-2"
+                key={call.id}
+              >
                 <div className="flex items-center justify-between">
                   <p className="text-gray10 text-xs">
                     {getDate(call.timestamp)}
                   </p>
                   <StatusBadge status={getStatus(call.status)} />
                 </div>
-                <Separator className='opacity-25' />
+                <Separator className="opacity-25" />
                 {call.transactions.map((tx) => {
                   return (
                     <div
-                      className='flex flex-wrap items-center justify-between gap-2'
+                      className="flex flex-wrap items-center justify-between gap-2"
                       key={tx.transactionHash}
                     >
                       <div>
