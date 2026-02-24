@@ -18,9 +18,9 @@ export function WalletBalances(props: Readonly<WalletBalancesProps>) {
 
   const chains = useChains()
 
-  console.log("balances:: ", balances)
-  console.log("chains:: ", chains)
-  console.log("-----------------------")
+  console.log('balances:: ', balances)
+  console.log('chains:: ', chains)
+  console.log('-----------------------')
 
   const [openTransferId, setOpenTransferId] = useState<string | null>(null)
 
