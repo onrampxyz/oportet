@@ -119,7 +119,7 @@ export function Transactions() {
       </div>
 
       {isCallsHistoryPending && (
-        <div className='flex min-h-40 flex-col items-center justify-center rounded-lg border border-gray5 bg-white p-2 dark:bg-gray1'>
+        <div className="flex min-h-40 flex-col items-center justify-center rounded-lg border border-gray5 bg-white p-2 dark:bg-gray1">
           <div className="size-6 animate-spin rounded-full border-2 border-gray8 border-t-transparent" />
           <p className="mt-3 text-gray10 text-sm">Loading transactions...</p>
         </div>

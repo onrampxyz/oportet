@@ -1,12 +1,8 @@
 import { Button, DiscIcon } from '@porto/ui'
 import type { Address } from 'ox'
-import { Value } from 'ox'
-import * as React from 'react'
-import { zeroAddress } from 'viem'
-import { riseTestnet } from 'viem/chains'
 import { useFundsContext } from '~/contexts'
+import { useBridgeSupportedTokens } from '~/hooks'
 import { Layout } from '../Layout'
-import type { BridgeToken } from './Bridge'
 
 export type Asset = {
   name: string
@@ -16,82 +12,14 @@ export type Asset = {
   address: Address.Address
 }
 
-// Hardcoded token configurations for bridging
-export const BRIDGE_TOKENS: Record<number, BridgeToken[]> = {
-  // Rise Testnet
-  [riseTestnet.id]: [
-    {
-      address: '0x0ead66d71fad42509314912f84c35f20d012b66a' as Address.Address,
-      bridgeContract:
-        '0x1D361eA3AFb5fDe75E3f261831998154e1351dC2' as Address.Address,
-      bridgeType: 'layerzero',
-      bridgeWrapper: zeroAddress,
-      decimals: 6,
-      icon: '/dialog/ui/token-icons/usdc.svg',
-      minDeposit: Value.from('10', 6), // 0.1 USDC
-      name: 'USDC',
-      symbol: 'USDC',
-    },
-    {
-      address: '0x57BfEf022E97Ad3877381a72b7E32F019596919e' as Address.Address,
-      bridgeContract:
-        '0x57BfEf022E97Ad3877381a72b7E32F019596919e' as Address.Address,
-      bridgeType: 'layerzero',
-      bridgeWrapper: zeroAddress,
-      decimals: 18,
-      icon: '/dialog/ui/token-icons/usdt.svg',
-      minDeposit: Value.from('10', 18), // 0.1 USDC
-      name: 'USDT',
-      symbol: 'USDT',
-    },
-  ],
-  // Eth Sepolia
-  11155111: [
-    {
-      address: '0x70315897fe28Dbe36DA81F10E1158bae1373C5b1' as Address.Address,
-      bridgeContract:
-        '0x2C752f3E245A89828590B30c93daAAD19f31c801' as Address.Address,
-      bridgeType: 'layerzero',
-      bridgeWrapper: '0x226cefe884c9425377954fB9B5Cb9AD4BdCD398D',
-      decimals: 18,
-      icon: '/dialog/ui/token-icons/usdc.svg',
-      minDeposit: Value.from('10', 18), // 0.1 USDC
-      name: 'USDC',
-      symbol: 'USDC',
-    },
-    {
-      address: '0x9Fe63D450edC97D700fA1D0081b84569102e5C1D' as Address.Address,
-      bridgeContract:
-        '0x046832405512D508b873E65174E51613291083bC' as Address.Address,
-      bridgeType: 'layerzero',
-      bridgeWrapper: '0x226cefe884c9425377954fB9B5Cb9AD4BdCD398D',
-      decimals: 18,
-      icon: '/dialog/ui/token-icons/usdt.svg',
-      minDeposit: Value.from('10', 18), // 0.1 USDC
-      name: 'USDT',
-      symbol: 'USDT',
-    },
-  ],
-}
-
-export function getAssets(id?: number) {
-  if (!id) return []
-
-  const tokens = (BRIDGE_TOKENS[id] ?? []).filter(
-    (token) => token.address.toLowerCase() !== zeroAddress.toLowerCase(),
-  )
-
-  return tokens
-}
-
 export function AssetSelection() {
   const { selectedAsset, selectedChain, setSelectedAsset, setView } =
     useFundsContext()
 
+  const { tokens } = useBridgeSupportedTokens()
+
   // Get tokens based on selected chain ID from BRIDGE_TOKENS
-  const supportedAssets = React.useMemo(() => {
-    return getAssets(selectedChain?.id)
-  }, [selectedChain])
+  const supportedAssets = tokens[selectedChain.id]
 
   return (
     <Layout>
@@ -104,7 +32,7 @@ export function AssetSelection() {
       </Layout.Header>
       <Layout.Content>
         <div className="space-y-2 pt-3">
-          {supportedAssets.map((asset) => {
+          {supportedAssets?.map((asset) => {
             return (
               <Button
                 className="justify-start! flex w-full items-center gap-2 rounded-lg"

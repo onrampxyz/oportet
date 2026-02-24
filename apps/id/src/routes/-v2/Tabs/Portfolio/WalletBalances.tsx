@@ -103,7 +103,7 @@ export function WalletBalances(props: Readonly<WalletBalancesProps>) {
                     className="size-6 rounded-sm bg-gray5"
                     src={getChainIcon(chain.id)}
                   />
-                  <p className='font-bold text-sm'>{chain.name}</p>
+                  <p className="font-bold text-sm">{chain.name}</p>
                   <div className="h-4 w-px bg-gray5" />
                   <p className="text-gray10 text-sm">
                     {filtered.length} token

@@ -1,26 +1,15 @@
 import { Button } from '@porto/ui'
 import { Chains } from 'rise-wallet/index'
 import { useFundsContext } from '~/contexts'
+import { useBridgeSupportedChains } from '~/hooks'
 import { Layout } from '../Layout'
 import { ReceiveViaQr } from './ReceiveViaQr'
-
-export type Chain = {
-  id: number
-  name: string
-  icon: string
-}
-
-export const SupportedChains: Chain[] = [
-  {
-    icon: '/dialog/chains/sepolia.svg',
-    id: Chains.sepolia.id,
-    name: Chains.sepolia.name,
-  },
-]
 
 export function ChainSelection() {
   const { selectedChain, setSelectedChain, setView, address } =
     useFundsContext()
+
+  const { chains } = useBridgeSupportedChains()
 
   return (
     <Layout>
@@ -38,7 +27,7 @@ export function ChainSelection() {
           Bridge to your RISE Wallet
         </p>
         <div className="space-y-2 pt-4">
-          {SupportedChains.map((chain) => {
+          {chains.map((chain) => {
             return (
               <Button
                 className="justify-start! flex w-full items-center gap-2 rounded-lg bg-th_base-alt!"

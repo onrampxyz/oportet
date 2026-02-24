@@ -207,7 +207,7 @@ export function Header() {
             <span className="flex items-center gap-1 font-semibold text-sm">
               {Number(formatEther(balance?.value ?? 0n)).toFixed(4)}{' '}
               <span className="text-sm">{balance?.symbol ?? 'ETH'}</span>
-              <div className='mx-1 h-4 w-px bg-gray5' />
+              <div className="mx-1 h-4 w-px bg-gray5" />
               <span className="text-sm">{chain?.name}</span>
             </span>
           </div>
@@ -218,7 +218,7 @@ export function Header() {
             onClick={toggleTheme}
             size="square"
             title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
-          // variant="outline"
+            // variant="outline"
           >
             {theme === 'light' ? (
               <LucideMoon className="size-5 text-gray11" />

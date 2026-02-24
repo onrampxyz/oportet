@@ -3,14 +3,20 @@ import { Input } from '@porto/apps/components'
 import { Button, Deposit } from '@porto/ui'
 import { Value } from 'ox'
 import { useEffect, useMemo, useState } from 'react'
-import { formatUnits, parseUnits } from 'viem'
+import { formatEther, formatUnits, parseUnits } from 'viem'
 import { riseTestnet } from 'viem/chains'
-import { useAccount, useReadContract } from 'wagmi'
+import { useConnection, useReadContract } from 'wagmi'
 import { useFundsContext } from '~/contexts'
-import { useBridge, useDestinationAsset, useWalletAsset } from '~/hooks'
+import {
+  useBridge,
+  useBridgeSupportedChains,
+  useBridgeSupportedTokens,
+  useDestinationAsset,
+  useWalletAsset,
+} from '~/hooks'
 import ArrowLeft from '~icons/lucide/arrow-left'
+import { DropdownSelector } from '.'
 import { Layout } from '../Layout'
-import { DropdownSelector, getAssets, SupportedChains } from '.'
 import { Bridge, type BridgeState } from './Bridge'
 
 export function GlobalDeposit() {
@@ -25,7 +31,9 @@ export function GlobalDeposit() {
     setView,
   } = useFundsContext()
 
-  const { chainId } = useAccount()
+  const { chainId } = useConnection()
+  const { chains: supportedChains, riseChainId } = useBridgeSupportedChains()
+  const { tokens: supportedTokens } = useBridgeSupportedTokens()
 
   const [bridgeState, setBridgeState] = useState<BridgeState>({
     status: 'idle',
@@ -41,12 +49,11 @@ export function GlobalDeposit() {
     tokenAddress: selectedAsset?.address ?? '0x',
   })
 
-  const tokens = getAssets(selectedChain?.id)
-  // Default to RISE, add handling when on mainnet
-  const destinationToken = getAssets(riseTestnet.id)
+  const tokens = supportedTokens[selectedChain?.id]
+  const destinationToken = supportedTokens[riseTestnet.id]
 
   const selectedToken = useMemo(() => {
-    return tokens.find(
+    return tokens?.find(
       (t) => t.address.toLowerCase() === selectedAsset?.address?.toLowerCase(),
     )
   }, [tokens, selectedAsset?.address])
@@ -78,14 +85,14 @@ export function GlobalDeposit() {
   const minDepositAmount = useMemo(() => {
     if (!minAmounts || !selectedToken) return null
 
-    return formatUnits(minAmounts, selectedToken.decimals)
+    return formatEther(minAmounts)
   }, [minAmounts, selectedToken])
 
   //TODO: add balance: riseBalance,
   const { refetch: refetchRiseBalance } = useDestinationAsset({
     address: address ?? '0x',
-    destinationChainId: 11155931, // TODO: Default to RISE, add handling when on mainnet
-    destinationTokenAddress: destinationToken[0]?.address,
+    destinationChainId: riseChainId,
+    destinationTokenAddress: destinationToken?.[0]?.address,
     enabled:
       bridgeState.status === 'completed' || bridgeState.status === 'failed',
     refetchInterval: bridgeState.status === 'pending' ? 2000 : false,
@@ -128,19 +135,20 @@ export function GlobalDeposit() {
 
   // Initialize with defaults if not set
   useEffect(() => {
-    if (!selectedChain && SupportedChains[0]) {
-      setSelectedChain(SupportedChains[0])
+    if (!selectedChain && supportedChains[0]) {
+      setSelectedChain(supportedChains[0])
     }
 
-    if (!selectedAsset && tokens[0]) {
-      setSelectedAsset(tokens[0])
+    if (!selectedAsset && tokens?.[0]) {
+      setSelectedAsset(tokens?.[0])
     }
   }, [
     selectedChain,
     setSelectedChain,
     selectedAsset,
     setSelectedAsset,
-    tokens[0],
+    tokens?.[0],
+    supportedChains,
   ])
 
   // Show bridge progress view
@@ -193,11 +201,12 @@ export function GlobalDeposit() {
           <div className="flex-1 space-y-2 rounded-lg bg-th_base-alt p-2">
             <p className="text-sm text-th_base-secondary">Source</p>
             <DropdownSelector
-              items={SupportedChains}
+              items={supportedChains}
               onSelect={(item) => {
                 setAmount('0')
                 setSelectedChain(item)
-                setSelectedAsset(getAssets(item.id)[0])
+                // setSelectedAsset(getAssets(item.id)[0])
+                setSelectedAsset(supportedTokens[item.id]?.[0])
               }}
               selectedItem={selectedChain}
             />
@@ -237,14 +246,16 @@ export function GlobalDeposit() {
                     )}
                   </div>
                 </div>
-                <DropdownSelector
-                  items={tokens}
-                  onSelect={(item) => {
-                    setAmount('0')
-                    setSelectedAsset(item)
-                  }}
-                  selectedItem={selectedAsset}
-                />
+                {tokens && (
+                  <DropdownSelector
+                    items={tokens}
+                    onSelect={(item) => {
+                      setAmount('0')
+                      setSelectedAsset(item)
+                    }}
+                    selectedItem={selectedAsset}
+                  />
+                )}
               </div>
 
               <div className="space-y-2 rounded-lg bg-th_base-alt p-2">

@@ -85,7 +85,6 @@ export function Recovery() {
 
   return (
     <div className="space-y-6">
-
       {/* Warning Banner */}
       <div className="flex items-start gap-3 rounded-lg border border-amber-300 bg-amber-50 p-4 dark:border-amber-700 dark:bg-amber-900/20">
         <LucideShield className="mt-0.5 size-5 shrink-0 text-amber-600 dark:text-amber-400" />
@@ -175,7 +174,6 @@ export function Recovery() {
           ))}
         </div>
 
-
         {/* Empty state (uncomment if needed when no wallets) */}
         {!admins?.isPending && recoverWallets.length === 0 && (
           <div className="flex flex-col items-center justify-center rounded-lg border border-gray5 bg-white p-12 dark:bg-gray1">
@@ -190,8 +188,6 @@ export function Recovery() {
             <Connectors label="Add your first Recovery Wallet" />
           </div>
         )}
-
-
       </div>
     </div>
   )

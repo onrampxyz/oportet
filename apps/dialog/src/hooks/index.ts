@@ -1,4 +1,6 @@
 export * from './useBridge'
+export * from './useBridgeSupportedChains'
+export * from './useBridgeSupportedTokens'
 export * from './useDestinationAsset'
 export * from './useLayerZero'
 export * from './useMintToken'

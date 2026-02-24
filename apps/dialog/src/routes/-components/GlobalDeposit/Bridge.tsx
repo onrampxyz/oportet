@@ -4,8 +4,7 @@ import type { Hex } from 'ox'
 import { css } from 'styled-system/css'
 import { formatUnits } from 'viem'
 import { riseTestnet } from 'viem/chains'
-import { type Status, useLayerZeroMessage } from '~/hooks'
-import type { Chain } from '~/routes/-components/GlobalDeposit/ChainSelection'
+import { type Chain, type Status, useLayerZeroMessage } from '~/hooks'
 import { Layout } from '~/routes/-components/Layout'
 import { AddressFormatter } from '~/utils'
 import ArrowLeft from '~icons/lucide/arrow-left'
@@ -28,12 +27,14 @@ export type BridgeToken = {
   symbol: string
   address: Hex.Hex
   bridgeContract: Hex.Hex
-  bridgeType: 'hyperlane' | 'layerzero'
+  bridgeType: 'hyperlane' | 'layerzero' | 'canonical'
+  lzEndpointId?: number
   minDeposit: bigint
   decimals: number
   bridgeWrapper: Hex.Hex
   icon: string
   name: string
+  adapter?: Hex.Hex
 }
 
 export type BridgeProps = {
