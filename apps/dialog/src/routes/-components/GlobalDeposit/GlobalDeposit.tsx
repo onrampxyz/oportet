@@ -49,8 +49,8 @@ export function GlobalDeposit() {
     tokenAddress: selectedAsset?.address ?? '0x',
   })
 
-  const tokens = supportedTokens[selectedChain?.id]
-  const destinationToken = supportedTokens[riseTestnet.id]
+  const tokens = supportedTokens[selectedChain?.id ?? riseChainId]
+  const destinationToken = supportedTokens[riseChainId]
 
   const selectedToken = useMemo(() => {
     return tokens?.find(

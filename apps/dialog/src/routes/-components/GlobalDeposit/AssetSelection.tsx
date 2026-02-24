@@ -18,6 +18,10 @@ export function AssetSelection() {
 
   const { tokens } = useBridgeSupportedTokens()
 
+  if (!selectedChain) {
+    return null
+  }
+
   // Get tokens based on selected chain ID from BRIDGE_TOKENS
   const supportedAssets = tokens[selectedChain.id]
 

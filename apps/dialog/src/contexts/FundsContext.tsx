@@ -1,7 +1,7 @@
 import type { Address } from 'ox'
 import type { ReactNode } from 'react'
 import { createContext, useContext, useMemo, useState } from 'react'
-import { Chain } from '~/hooks'
+import type { Chain } from '~/hooks'
 import type { BridgeToken } from '~/routes/-components/GlobalDeposit'
 
 export type View =
