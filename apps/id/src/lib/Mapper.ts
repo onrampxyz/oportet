@@ -29,7 +29,7 @@ export function assetToBalance(
   return {
     balance: asset.balance.toString(),
     balanceFormatted,
-    chainId: asset.chainId,
+    chainId: asset.chainId ?? 4153,
     decimals,
     isNative: asset.isNative ?? false,
     price,
