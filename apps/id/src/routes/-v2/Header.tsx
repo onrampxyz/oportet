@@ -8,9 +8,9 @@ import { toast } from 'sonner'
 import { formatEther } from 'viem'
 import { riseTestnet } from 'viem/chains'
 import {
-  useAccount,
   useBalance,
   useCapabilities,
+  useConnection,
   useDisconnect,
   useSwitchChain,
 } from 'wagmi'
@@ -20,9 +20,9 @@ import LucideMoon from '~icons/lucide/moon'
 import LucideSun from '~icons/lucide/sun'
 
 export function Header() {
-  const { isConnected, address } = useAccount()
-  const { disconnect } = useDisconnect()
-  const { switchChainAsync } = useSwitchChain()
+  const { isConnected, address, chain } = useConnection()
+  const { mutate: disconnect } = useDisconnect()
+  const { mutateAsync: switchChainAsync } = useSwitchChain()
   const { data: balance } = useBalance({ address })
 
   const capabilities = useCapabilities({
@@ -192,7 +192,6 @@ export function Header() {
       {/* Account info would go here */}
       <div className="flex flex-wrap items-center justify-between gap-3 p-3 md:p-6">
         <div className="flex gap-4">
-          <div className="h-10 w-10 rounded-full bg-violet9" />
           <div>
             <div className="flex items-center gap-2">
               <p className="text-sm">{AddressFormatter.mask(address)}</p>
@@ -205,10 +204,12 @@ export function Header() {
                 <LucideCopy className="size-4" />
               </button>
             </div>
-            <p className="font-semibold text-sm">
-              {formatEther(balance?.value ?? 0n)}{' '}
+            <span className="flex items-center gap-1 font-semibold text-sm">
+              {Number(formatEther(balance?.value ?? 0n)).toFixed(4)}{' '}
               <span className="text-sm">{balance?.symbol ?? 'ETH'}</span>
-            </p>
+              <div className='mx-1 h-4 w-px bg-gray5' />
+              <span className="text-sm">{chain?.name}</span>
+            </span>
           </div>
         </div>
         <Ariakit.Separator className="w-full border-gray5 md:hidden" />
@@ -217,7 +218,7 @@ export function Header() {
             onClick={toggleTheme}
             size="square"
             title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
-            // variant="outline"
+          // variant="outline"
           >
             {theme === 'light' ? (
               <LucideMoon className="size-5 text-gray11" />

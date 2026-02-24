@@ -113,24 +113,27 @@ export function Transactions() {
         <h2 className="font-semibold text-gray12 text-lg">
           Recent Transactions
         </h2>
+        <p className="mt-1 text-gray10 text-sm">
+          Track your most recent on-chain interactions
+        </p>
       </div>
 
       {isCallsHistoryPending && (
-        <div className="flex flex-col items-center justify-center rounded-lg border border-gray5 bg-white p-12 dark:bg-gray1">
+        <div className='flex min-h-40 flex-col items-center justify-center rounded-lg border border-gray5 bg-white p-2 dark:bg-gray1'>
           <div className="size-6 animate-spin rounded-full border-2 border-gray8 border-t-transparent" />
           <p className="mt-3 text-gray10 text-sm">Loading transactions...</p>
         </div>
       )}
 
       {hasNoTransactions && (
-        <div className="flex flex-col items-center justify-center rounded-lg border border-gray5 bg-white p-12 dark:bg-gray1">
-          <p className="text-gray10 text-sm">No transactions yet</p>
+        <div className="flex min-h-40 flex-col items-center justify-center rounded-lg border border-gray5 bg-white p-2 dark:bg-gray1">
+          <p className="text-gray10 text-sm">No transactions yet!</p>
         </div>
       )}
 
       {/* Transactions List */}
-      {callsHistory && (
-        <div className="flex flex-col gap-2 rounded-md border border-gray7 p-2">
+      {callsHistory && !hasNoTransactions && (
+        <div className="flex flex flex-col gap-2 rounded-md border border-gray7 p-2">
           {callsHistory?.map((call) => {
             return (
               <div

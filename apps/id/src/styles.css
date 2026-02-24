@@ -54,6 +54,11 @@ body,
   overflow-x: hidden;
 }
 
+#root {
+  overflow-y: scroll;
+  scrollbar-width: thin;
+}
+
 @layer utilities {
   input[type="number"]::-webkit-inner-spin-button,
   input[type="number"]::-webkit-outer-spin-button {

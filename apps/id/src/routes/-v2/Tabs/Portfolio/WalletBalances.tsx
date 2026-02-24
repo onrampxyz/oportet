@@ -1,9 +1,10 @@
 import { Button, Spinner } from '@porto/apps/components'
 import { cx } from 'cva'
 import { useState } from 'react'
+import { mainnet, sepolia } from 'viem/chains'
 import { useChains } from 'wagmi'
 import type { Balance } from '~/types/wallet'
-import { ValueFormatter } from '~/utils'
+import { AddressFormatter, ValueFormatter } from '~/utils'
 import LucideSend from '~icons/lucide/send'
 import { Transfer } from './Transfer'
 
@@ -32,7 +33,7 @@ export function WalletBalances(props: Readonly<WalletBalancesProps>) {
   }
 
   const handleTransfer = (balance: Balance) => {
-    const balanceId = `${balance.tokenId}-${balance.symbol}`
+    const balanceId = `${balance.chainId}-${balance.tokenId}-${balance.symbol}`
     // Toggle: if clicking the same balance, close it; otherwise open the new one
     setOpenTransferId((prev) => (prev === balanceId ? null : balanceId))
   }
@@ -44,8 +45,29 @@ export function WalletBalances(props: Readonly<WalletBalancesProps>) {
     }
   }
 
+  const getAssetIcon = (symbol: string) => {
+    switch (symbol) {
+      case 'USDC':
+        return '/icons/usdc.svg'
+      case 'USDT':
+        return '/icons/usdt.svg'
+      default:
+        return '/icons/eth.svg'
+    }
+  }
+
+  const getChainIcon = (id: number) => {
+    switch (id) {
+      case mainnet.id:
+      case sepolia.id:
+        return '/chains/ethereum.svg'
+      default:
+        return '/chains/rise.png'
+    }
+  }
+
   return (
-    <div className="space-y-4 rounded-lg border border-gray5 bg-white p-6 dark:bg-gray1">
+    <div className="space-y-4">
       <h2 className="font-semibold text-lg">Wallet Balances By Chain</h2>
       {/* Loading State */}
       {isLoading && (
@@ -64,28 +86,35 @@ export function WalletBalances(props: Readonly<WalletBalancesProps>) {
 
       {hasBalance &&
         !isLoading &&
-        chains?.map((chain) => (
-          <div className="" key={chain.id}>
-            <div className="mb-4 flex items-center justify-between">
-              <div>
-                <h3 className="font-semibold">{chain.id}</h3>
-                <p className="text-gray10 text-sm">
-                  {balances.length} token
-                  {balances.length !== 1 ? 's' : ''}
-                </p>
-              </div>
-              <div className="rounded-full bg-violet9/10 px-3 py-1">
-                <p className="font-mono text-violet9 text-xs">{chain.name}</p>
-              </div>
-            </div>
+        chains?.map((chain) => {
+          const filtered = balances.filter(({ chainId }) => {
+            return chainId === chain.id
+          })
 
-            <div className="space-y-2">
-              {balances
-                .filter(({ chainId }) => {
-                  return chainId === chain.id
-                })
-                .map((balance) => {
-                  const balanceId = `${balance.tokenId}-${balance.symbol}`
+          return (
+            <div
+              className="rounded-lg border border-gray5 bg-white p-6 dark:bg-gray1"
+              key={chain.id}
+            >
+              <div className="mb-4 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <img
+                    alt={`${chain.id}-Icon`}
+                    className="size-6 rounded-sm bg-gray5"
+                    src={getChainIcon(chain.id)}
+                  />
+                  <p className='font-bold text-sm'>{chain.name}</p>
+                  <div className="h-4 w-px bg-gray5" />
+                  <p className="text-gray10 text-sm">
+                    {filtered.length} token
+                    {filtered.length !== 1 ? 's' : ''}
+                  </p>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                {filtered.map((balance) => {
+                  const balanceId = `${balance.chainId}-${balance.tokenId}-${balance.symbol}`
                   const isOpen = openTransferId === balanceId
 
                   return (
@@ -96,18 +125,22 @@ export function WalletBalances(props: Readonly<WalletBalancesProps>) {
                           isOpen && 'rounded-b-none bg-gray2',
                         )}
                       >
-                        <div className="flex items-center gap-3">
-                          <div className="flex size-10 items-center justify-center rounded-full bg-gradient-to-br from-violet9 to-violet11">
-                            <span className="font-semibold text-sm text-white">
-                              {balance.symbol.charAt(0)}
-                            </span>
+                        <div className="flex items-center gap-2">
+                          <div className="flex size-10 items-center justify-center rounded-md">
+                            <img
+                              alt={`${balance.symbol}-Icon`}
+                              className="size-10"
+                              src={getAssetIcon(balance.symbol)}
+                            />
                           </div>
                           <div>
                             <p className="font-medium text-gray12 text-sm">
                               {balance.symbol}
                             </p>
                             <p className="text-gray10 text-xs capitalize">
-                              {balance.tokenId.replace(`${chain.id}-`, '')}
+                              {AddressFormatter.mask(
+                                balance.tokenId.replace(`${chain.id}-`, ''),
+                              )}
                             </p>
                           </div>
                         </div>
@@ -141,9 +174,10 @@ export function WalletBalances(props: Readonly<WalletBalancesProps>) {
                     </div>
                   )
                 })}
+              </div>
             </div>
-          </div>
-        ))}
+          )
+        })}
     </div>
   )
 }
