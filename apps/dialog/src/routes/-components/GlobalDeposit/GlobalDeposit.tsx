@@ -15,8 +15,8 @@ import {
   useWalletAsset,
 } from '~/hooks'
 import ArrowLeft from '~icons/lucide/arrow-left'
-import { DropdownSelector } from '.'
 import { Layout } from '../Layout'
+import { DropdownSelector } from '.'
 import { Bridge, type BridgeState } from './Bridge'
 
 export function GlobalDeposit() {
