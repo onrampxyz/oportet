@@ -1,4 +1,11 @@
-import { Button, ButtonArea, ChainsPath, CopyButton, Details } from '@porto/ui'
+import {
+  Button,
+  ButtonArea,
+  ChainsPath,
+  CopyButton,
+  Details,
+  TokenIcon,
+} from '@porto/ui'
 import { useQuery } from '@tanstack/react-query'
 import { cx } from 'cva'
 import { type Address, Base64, Value } from 'ox'
@@ -15,6 +22,8 @@ import {
   erc20Abi,
   ethAddress,
 } from 'viem'
+import { useReadContracts } from 'wagmi'
+import * as AbiDecoder from '~/lib/AbiDecoder'
 import * as Calls from '~/lib/Calls'
 import * as Errors from '~/lib/DialogErrors'
 import { porto } from '~/lib/Porto'
@@ -633,79 +642,24 @@ export namespace ActionRequest {
 
   export function CallDetails(props: CallDetails.Props) {
     const { calls, chainsPath, fetchingQuote } = props
+    const chainId = chainsPath[0]?.id
 
-    const firstCall = calls[0]
-
-    const selector = React.useMemo(() => {
-      if (
-        !firstCall?.data ||
-        firstCall.data === '0x' ||
-        firstCall.data.length < 10
-      )
-        return null
-      return firstCall.data.slice(0, 10) as `0x${string}`
-    }, [firstCall?.data])
-
-    const erc20FunctionName = React.useMemo(() => {
-      if (!firstCall?.data || firstCall.data === '0x') return null
-      try {
-        const decoded = decodeFunctionData({
-          abi: erc20Abi,
-          data: firstCall.data,
-        })
-        return decoded.functionName
-      } catch {}
-      return null
-    }, [firstCall?.data])
-
-    const fourByteQuery = useQuery({
-      enabled: !erc20FunctionName && Boolean(selector),
-      queryFn: async () => {
-        const res = await fetch(
-          `https://api.4byte.sourcify.dev/signature-database/v1/lookup?function=${selector}`,
-        )
-        if (!res.ok) return null
-        const json = await res.json()
-        const matches:
-          | { name: string; filtered: boolean; hasVerifiedContract: boolean }[]
-          | undefined = json?.result?.function?.[selector as string]
-        if (!matches?.length) return null
-        // prefer verified contract match, fallback to first
-        const best = matches.find((m) => m.hasVerifiedContract) ?? matches[0]
-        return best?.name.split('(')[0] ?? null
-      },
-      queryKey: ['4byte', selector],
-    })
-
-    const functionName = erc20FunctionName ?? fourByteQuery.data ?? null
-
-    if (!firstCall?.to && chainsPath.length === 0 && !functionName) return null
+    if (calls.length === 0) return null
 
     return (
       <Details loading={fetchingQuote} opened>
-        {firstCall?.to && (
-          <Details.Item
-            label={
-              firstCall.data && firstCall.data !== '0x' ? 'Contract' : 'To'
-            }
-            value={
-              <div className="flex items-center gap-[8px]" title={firstCall.to}>
-                {StringFormatter.truncate(firstCall.to)}
-                <CopyButton value={firstCall.to} />
-              </div>
-            }
-          />
-        )}
-        {selector && (
-          <Details.Item
-            label="Function"
-            value={
-              fourByteQuery.isPending && !erc20FunctionName
-                ? '…'
-                : (functionName ?? selector)
-            }
-          />
-        )}
+        {calls.map((call, i) => (
+          <React.Fragment
+            // biome-ignore lint/suspicious/noArrayIndexKey: calls have no stable id
+            key={i}
+          >
+            {i > 0 && <hr className="-mx-[10px] border-th_separator" />}
+            <CallDetails.CallRow
+              call={call}
+              chainId={chainId}
+            />
+          </React.Fragment>
+        ))}
         {chainsPath.length > 0 && (
           <Details.Item
             label={`Network${chainsPath.length > 1 ? 's' : ''}`}
@@ -723,6 +677,214 @@ export namespace ActionRequest {
       calls: readonly Call[]
       chainsPath: readonly Chain[]
       fetchingQuote: boolean
+    }
+
+    export function CallRow(props: CallRow.Props) {
+      const { call, chainId } = props
+
+      const hasData = Boolean(
+        call.data && call.data !== '0x' && call.data.length >= 10,
+      )
+
+      const selector = React.useMemo(() => {
+        if (!hasData) return null
+        return call.data!.slice(0, 10) as `0x${string}`
+      }, [call.data, hasData])
+
+      const erc20FunctionName = React.useMemo(() => {
+        if (!hasData) return null
+        try {
+          const decoded = decodeFunctionData({
+            abi: erc20Abi,
+            data: call.data!,
+          })
+          return decoded.functionName
+        } catch {}
+        return null
+      }, [call.data, hasData])
+
+      const fourByteQuery = useQuery({
+        enabled: !erc20FunctionName && Boolean(selector),
+        queryFn: async () => {
+          const res = await fetch(
+            `https://api.4byte.sourcify.dev/signature-database/v1/lookup?function=${selector}`,
+          )
+          if (!res.ok) return null
+          const json = await res.json()
+          const matches:
+            | { name: string; filtered: boolean; hasVerifiedContract: boolean }[]
+            | undefined = json?.result?.function?.[selector as string]
+          if (!matches?.length) return null
+          const best =
+            matches.find((m) => m.hasVerifiedContract) ?? matches[0]
+          if (!best?.name) return null
+          return { name: best.name.split('(')[0], signature: best.name }
+        },
+        queryKey: ['4byte', selector],
+      })
+
+      const tokenInfo = useReadContracts({
+        allowFailure: true,
+        contracts: [
+          {
+            abi: erc20Abi,
+            address: call.to,
+            chainId: chainId as never,
+            functionName: 'name',
+          },
+          {
+            abi: erc20Abi,
+            address: call.to,
+            chainId: chainId as never,
+            functionName: 'symbol',
+          },
+          {
+            abi: erc20Abi,
+            address: call.to,
+            chainId: chainId as never,
+            functionName: 'decimals',
+          },
+        ],
+        query: {
+          enabled: hasData && Boolean(call.to) && Boolean(chainId),
+          select: ([name, symbol, decimals]) => ({
+            decimals: decimals.result ?? 18,
+            name: name.result,
+            symbol: symbol.result,
+          }),
+        },
+      })
+
+      const erc20Amount = React.useMemo(() => {
+        if (!hasData || !call.data) return null
+        try {
+          const decoded = decodeFunctionData({ abi: erc20Abi, data: call.data })
+          if (
+            decoded.functionName === 'transfer' ||
+            decoded.functionName === 'transferFrom'
+          ) {
+            const amount =
+              decoded.functionName === 'transfer'
+                ? decoded.args[1]
+                : decoded.args[2]
+            const decimals = tokenInfo.data?.decimals ?? 18
+            const symbol = tokenInfo.data?.symbol ?? ''
+            return `${ValueFormatter.format(amount as bigint, decimals)}${symbol ? ` ${symbol}` : ''}`
+          }
+        } catch {}
+        return null
+      }, [call.data, hasData, tokenInfo.data])
+
+      const nativeAmount = React.useMemo(() => {
+        if (!call.value || call.value === 0n) return null
+        const chain = porto.config.chains.find((c) => c.id === chainId)
+        const symbol = chain?.nativeCurrency.symbol ?? 'ETH'
+        return `${ValueFormatter.format(call.value, 18)} ${symbol}`
+      }, [call.value, chainId])
+
+      const functionName =
+        erc20FunctionName ?? fourByteQuery.data?.name ?? null
+
+      const decodedArgs = React.useMemo(() => {
+        if (!hasData || !call.data) return null
+        // For ERC20 functions we already show amount separately, skip decoding
+        if (erc20FunctionName) return null
+        const sig = fourByteQuery.data?.signature ?? null
+        return AbiDecoder.tryDecodeFunctionData(sig, call.data)
+      }, [
+        hasData,
+        call.data,
+        erc20FunctionName,
+        fourByteQuery.data?.signature,
+      ])
+
+      return (
+        <>
+          {call.to && (
+            <Details.Item
+              label={hasData ? 'Contract' : 'To'}
+              value={
+                <div className="flex items-center gap-[8px]" title={call.to}>
+                  {tokenInfo.data?.name ? (
+                    <div className="flex items-center gap-[6px]">
+                      <TokenIcon
+                        className="size-4 shrink-0"
+                        symbol={tokenInfo.data.symbol}
+                      />
+                      <span>
+                        {tokenInfo.data.name}
+                        {tokenInfo.data.symbol && (
+                          <span className="text-th_base-secondary">
+                            {' '}({tokenInfo.data.symbol})
+                          </span>
+                        )}
+                      </span>
+                    </div>
+                  ) : (
+                    StringFormatter.truncate(call.to)
+                  )}
+                  <CopyButton value={call.to} />
+                </div>
+              }
+            />
+          )}
+          {selector &&
+            (fourByteQuery.isPending && !erc20FunctionName
+              ? true
+              : functionName) && (
+              <Details.Item
+                label="Function"
+                value={
+                  fourByteQuery.isPending && !erc20FunctionName
+                    ? '…'
+                    : functionName
+                }
+              />
+            )}
+          {decodedArgs?.args.map((arg, idx) => {
+            const isAddress =
+              arg.type === 'address' &&
+              typeof arg.value === 'string' &&
+              arg.value.startsWith('0x')
+            // Use arg name if available (from Sourcify), otherwise use "Argument N"
+            const label = arg.name.startsWith('arg')
+              ? `Argument ${idx + 1}`
+              : arg.name
+            return (
+              <Details.Item
+                key={arg.name}
+                label={label}
+                value={
+                  isAddress ? (
+                    <div
+                      className="flex items-center gap-[8px]"
+                      title={arg.value as string}
+                    >
+                      {StringFormatter.truncate(arg.value as string)}
+                      <CopyButton value={arg.value as string} />
+                    </div>
+                  ) : (
+                    AbiDecoder.formatDecodedValue(arg.value, arg.type)
+                  )
+                }
+              />
+            )
+          })}
+          {(erc20Amount || nativeAmount) && (
+            <Details.Item
+              label="Amount"
+              value={erc20Amount ?? nativeAmount}
+            />
+          )}
+        </>
+      )
+    }
+
+    export namespace CallRow {
+      export type Props = {
+        call: Call
+        chainId?: number
+      }
     }
   }
 
@@ -755,6 +917,9 @@ export namespace ActionRequest {
         const approve = identifyApproveCall(calls[0] as Call)
         if (approve) return approve
       }
+
+      // only identify send for single calls
+      if (calls.length > 1) return null
 
       // from this point we need a chainId
       if (chainId === undefined) return null
@@ -862,10 +1027,8 @@ export namespace ActionRequest {
       call: Call,
       nativeCurrency: { name: string; symbol: string },
     ): TxSend | null {
-      if (!call.data) return null
-
       // native
-      if (call.value && call.value > 0n && call.data === '0x') {
+      if (call.value && call.value > 0n && (!call.data || call.data === '0x')) {
         return {
           asset: {
             ...nativeCurrency,
@@ -881,7 +1044,7 @@ export namespace ActionRequest {
 
       // erc20
       try {
-        const decoded = decodeFunctionData({ abi: erc20Abi, data: call.data })
+        const decoded = decodeFunctionData({ abi: erc20Abi, data: call.data! })
         if (decoded.functionName === 'transfer') {
           const [recipient, amount] = decoded.args
           return {
@@ -908,7 +1071,7 @@ export namespace ActionRequest {
       value?: bigint
     }): Address.Address | null {
       // native
-      if (call.value && call.value > 0n && call.data === '0x') return call.to
+      if (call.value && call.value > 0n && (!call.data || call.data === '0x')) return call.to
 
       // erc20
       try {
