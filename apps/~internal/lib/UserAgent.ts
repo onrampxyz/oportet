@@ -54,9 +54,6 @@ export function isUnsupportedCliBrowser() {
 
 // based on https://github.com/shalanah/inapp-spy/blob/main/src/regexInApp.ts
 const inAppRegExps = [
-  'WebView',
-  '(iPhone|iPod|iPad)(?!.*Safari/)', // Apple devices but not with "Safari/" following
-  'Android.*wv\\)',
   'FB_\\w|FB\\w', // Match Facebook FB_ or FB then word char
   'Snapchat',
   'GSA',
