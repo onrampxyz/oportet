@@ -1,6 +1,6 @@
 import { Spinner } from '@porto/apps/components'
+import { Hooks } from 'oportet/wagmi'
 import { useMemo } from 'react'
-import { Hooks } from 'rise-wallet/wagmi'
 import { useAccount } from 'wagmi'
 import { SessionFormatter } from '~/utils'
 import LucideCopy from '~icons/lucide/copy'

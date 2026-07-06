@@ -40,7 +40,7 @@ export const defaultConfig = {
  *
  * @example
  * ```ts twoslash
- * import { Porto } from 'rise-wallet'
+ * import { Porto } from 'oportet'
  *
  * const porto = Porto.create()
  *

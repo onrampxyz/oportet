@@ -1,4 +1,4 @@
-import { Chains } from 'rise-wallet'
+import { Chains } from 'oportet'
 import type { Chain } from 'viem'
 import { DiscIcon } from '../DiscIcon/DiscIcon.js'
 import { chainIcons } from './icons.js'

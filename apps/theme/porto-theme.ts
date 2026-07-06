@@ -1,4 +1,4 @@
-import type { LightDarkColor, Theme } from 'rise-wallet/theme'
+import type { LightDarkColor, Theme } from 'oportet/theme'
 
 type FullTheme = Theme<'light dark'>
 

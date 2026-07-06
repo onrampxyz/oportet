@@ -8,6 +8,7 @@ import {
   expNftAbi,
   expNftAddress,
 } from '@porto/apps/contracts'
+import { Dialog } from 'oportet'
 import {
   AbiFunction,
   Hex,
@@ -20,7 +21,6 @@ import {
   Value,
 } from 'ox'
 import * as React from 'react'
-import { Dialog } from 'rise-wallet'
 import { erc20Abi, hashTypedData, isAddress, isHex, maxUint256 } from 'viem'
 import {
   generatePrivateKey,

@@ -1,4 +1,4 @@
-import * as PortoTheme from 'rise-wallet/theme'
+import * as PortoTheme from 'oportet/theme'
 import {
   type TailwindThemeMapping,
   tailwindThemeMappings,

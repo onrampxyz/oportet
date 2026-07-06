@@ -1,5 +1,5 @@
+import { Hooks } from 'oportet/wagmi'
 import * as React from 'react'
-import { Hooks } from 'rise-wallet/wagmi'
 import { useAccount, useConnectors, useDisconnect } from 'wagmi'
 
 import PWABadge from './PWABadge.tsx'

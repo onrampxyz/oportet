@@ -1,5 +1,5 @@
-import { sepolia } from 'rise-wallet/core/Chains'
-import { porto } from 'rise-wallet/wagmi'
+import { sepolia } from 'oportet/core/Chains'
+import { porto } from 'oportet/wagmi'
 import { createConfig, http } from 'wagmi'
 
 export const config = createConfig({

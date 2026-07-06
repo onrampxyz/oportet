@@ -1,6 +1,6 @@
 import { env } from 'cloudflare:workers'
 import { Hono } from 'hono'
-import { hostnames } from 'rise-wallet/trusted-hosts'
+import { hostnames } from 'oportet/trusted-hosts'
 
 const ttl = 600
 

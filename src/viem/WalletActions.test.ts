@@ -1,6 +1,6 @@
 import { setTimeout } from 'node:timers/promises'
+import { Key } from 'oportet/viem'
 import { Value } from 'ox'
-import { Key } from 'rise-wallet/viem'
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
 import * as Actions from 'viem/actions'
 import { describe, expect, test } from 'vitest'

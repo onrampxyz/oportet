@@ -1,6 +1,6 @@
 import { PortoConfig } from '@porto/apps'
-import { Mode, Storage } from 'rise-wallet'
-import { Porto } from 'rise-wallet/remote'
+import { Mode, Storage } from 'oportet'
+import { Porto } from 'oportet/remote'
 
 import * as ReactNative from './ReactNative.js'
 

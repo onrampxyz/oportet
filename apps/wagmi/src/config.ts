@@ -1,6 +1,6 @@
 import { PortoConfig } from '@porto/apps'
-import { Mode } from 'rise-wallet'
-import { porto } from 'rise-wallet/wagmi'
+import { Mode } from 'oportet'
+import { porto } from 'oportet/wagmi'
 import { createConfig, createStorage } from 'wagmi'
 
 const config = PortoConfig.getConfig()

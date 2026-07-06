@@ -1,8 +1,8 @@
 import { betterAuth } from 'better-auth'
 import { siwe } from 'better-auth/plugins'
 import type { Kysely } from 'kysely'
-import { Porto } from 'rise-wallet'
-import { RelayClient } from 'rise-wallet/viem'
+import { Porto } from 'oportet'
+import { RelayClient } from 'oportet/viem'
 import {
   generateSiweNonce,
   parseSiweMessage,

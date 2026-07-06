@@ -1,4 +1,6 @@
 import Checkbox from 'expo-checkbox'
+import { Key, RelayActions, RelayClient } from 'oportet/viem'
+import { Hooks } from 'oportet/wagmi'
 import { AbiFunction, type Hex, Json, Value } from 'ox'
 import * as React from 'react'
 import {
@@ -13,8 +15,6 @@ import {
   View,
 } from 'react-native'
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context'
-import { Key, RelayActions, RelayClient } from 'rise-wallet/viem'
-import { Hooks } from 'rise-wallet/wagmi'
 import {
   useAccount,
   useCapabilities,

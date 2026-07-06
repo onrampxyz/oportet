@@ -15,7 +15,7 @@
     "postinstall": "wxt prepare"
   },
   "dependencies": {
-    "rise-wallet": "workspace:*"
+    "oportet": "workspace:*"
   },
   "devDependencies": {
     "typescript": "catalog:",

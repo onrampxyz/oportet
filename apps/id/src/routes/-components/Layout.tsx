@@ -73,7 +73,7 @@ export namespace Layout {
           render={
             <a
               aria-label="Learn more about RISE Wallet"
-              href="https://docs.risechain.com/docs/rise-wallet"
+              href="https://docs.risechain.com/docs/oportet"
               rel="noreferrer"
               target="_blank"
             >

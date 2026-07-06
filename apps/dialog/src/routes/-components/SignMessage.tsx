@@ -1,6 +1,6 @@
 import { Button } from '@porto/ui'
+import { Hooks } from 'oportet/remote'
 import type { Address } from 'ox'
-import { Hooks } from 'rise-wallet/remote'
 
 import * as Dialog from '~/lib/Dialog'
 import { porto } from '~/lib/Porto'

@@ -11,7 +11,7 @@
     "export:docs": "./export-theme.ts --as mdx --out ../docs/pages/sdk/api/theme.mdx --no-confirm"
   },
   "dependencies": {
-    "rise-wallet": "workspace:*"
+    "oportet": "workspace:*"
   },
   "devDependencies": {
     "@types/bun": "^1.2.15",
