@@ -264,7 +264,10 @@ function Transfer({ chainId }: { chainId: Exclude<ChainId, 0> }) {
   const { data: capabilities, isLoading } = useCapabilities({ chainId })
 
   const tokens = React.useMemo(
-    () => capabilities?.requiredFunds.tokens,
+    () =>
+      capabilities?.requiredFunds.tokens as
+        | { address: Address; decimals: number; symbol: string }[]
+        | undefined,
     [capabilities],
   )
 
@@ -295,9 +298,7 @@ function Transfer({ chainId }: { chainId: Exclude<ChainId, 0> }) {
               return
             }
 
-            const token = capabilities?.requiredFunds.tokens.find(
-              (token) => token.symbol === symbol,
-            )
+            const token = tokens?.find((token) => token.symbol === symbol)
             if (!token) throw new Error(`Token ${symbol} not found`)
 
             sendCalls.sendCalls({
