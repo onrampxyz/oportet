@@ -141,8 +141,11 @@ export const relay = defineInstance((parameters?: RelayParameters) => {
       return await process_.start(($) => $`docker run ${args_}`, {
         ...options,
         resolver({ process, resolve, reject }) {
-          // TODO: remove once relay has feedback on startup.
-          setTimeout(3_000).then(resolve)
+          // Fallback for relay versions without startup feedback. 3s was too
+          // short under CI load (container not yet listening -> proxy 400s on
+          // the first requests); the message listener below resolves earlier
+          // on healthy boots.
+          setTimeout(15_000).then(resolve)
           process.stdout.on('data', (data) => {
             const message = data.toString()
             if (debug) console.log(message)
