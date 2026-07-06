@@ -183,7 +183,8 @@
     },
     "patchedDependencies": {
       "@tanstack/react-router": "patches/@tanstack__react-router.patch",
-      "@wagmi/cli": "patches/@wagmi__cli.patch"
+      "@wagmi/cli": "patches/@wagmi__cli.patch",
+      "ox@0.14.30": "patches/ox@0.14.30.patch"
     },
     "peerDependencyRules": {
       "ignoreMissing": [

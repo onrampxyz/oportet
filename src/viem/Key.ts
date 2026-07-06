@@ -33,6 +33,14 @@ import type * as Storage from '../core/Storage.js'
 import { getProvider } from './internal/provider.js'
 import type { prepareCalls } from './internal/relayActions.js'
 
+// Rise: in RN there is no porto `storage`, so the WebAuthn user-verification
+// cache in `sign` never persists and every sign forces `userVerification:
+// 'required'` (a passkey prompt on every action). Mirror the cache in an
+// in-memory, per-session Map. It can only RELAX (a recent verification lets a
+// sign be 'preferred'), never tighten, so `verificationOptional` callers are
+// unaffected and the storage-backed path stays byte-for-byte unchanged.
+const webauthnVerifiedCache = new Map<string, number>()
+
 type PrivateKeyFn = () => Hex.Hex
 
 export type BaseKey<
@@ -1048,10 +1056,14 @@ export async function sign(key: Key, parameters: sign.Parameters) {
       const verificationTimeout = 10 * 60 * 1_000 // 10 minutes in milliseconds
 
       let requireVerification = !verificationOptional
+      const lastVerified = storage
+        ? await storage.getItem<number>(cacheKey)
+        : webauthnVerifiedCache.get(cacheKey)
       if (storage) {
-        const lastVerified = await storage.getItem<number>(cacheKey)
         requireVerification =
           !lastVerified || now - lastVerified > verificationTimeout
+      } else if (lastVerified && now - lastVerified <= verificationTimeout) {
+        requireVerification = false
       }
 
       const {
@@ -1078,7 +1090,10 @@ export async function sign(key: Key, parameters: sign.Parameters) {
           { cause: { id, key } },
         )
 
-      if (requireVerification && storage) await storage.setItem(cacheKey, now)
+      if (requireVerification) {
+        if (storage) await storage.setItem(cacheKey, now)
+        else webauthnVerifiedCache.set(cacheKey, now)
+      }
 
       const signature = serializeWebAuthnSignature({
         metadata,

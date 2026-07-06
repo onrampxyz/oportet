@@ -1,0 +1,51 @@
+# PATCH CONTEXT
+# Why: Re-throw BaseError in WebAuthn registration/authentication flows so passkey errors surface instead of being swallowed.
+# Remove-when: Upstream ox re-throws BaseError in WebAuthn paths.
+diff --git a/_cjs/webauthn/Authentication.js b/_cjs/webauthn/Authentication.js
+index 0a15881..98bed77 100644
+--- a/_cjs/webauthn/Authentication.js
++++ b/_cjs/webauthn/Authentication.js
+@@ -194,6 +194,7 @@ async function sign(options) {
+         };
+     }
+     catch (error) {
++        if (error instanceof Errors.BaseError) throw error;
+         throw new SignFailedError({
+             cause: error,
+         });
+diff --git a/_cjs/webauthn/Registration.js b/_cjs/webauthn/Registration.js
+index 0cc2bb6..1e19ff5 100644
+--- a/_cjs/webauthn/Registration.js
++++ b/_cjs/webauthn/Registration.js
+@@ -46,6 +46,7 @@ async function create(options) {
+         };
+     }
+     catch (error) {
++        if (error instanceof Errors.BaseError) throw error;
+         throw new CreateFailedError({
+             cause: error,
+         });
+diff --git a/_esm/webauthn/Authentication.js b/_esm/webauthn/Authentication.js
+index c029914..c96a157 100644
+--- a/_esm/webauthn/Authentication.js
++++ b/_esm/webauthn/Authentication.js
+@@ -364,6 +364,7 @@ export async function sign(options) {
+         };
+     }
+     catch (error) {
++        if (error instanceof Errors.BaseError) throw error;
+         throw new SignFailedError({
+             cause: error,
+         });
+diff --git a/_esm/webauthn/Registration.js b/_esm/webauthn/Registration.js
+index af17770..2590627 100644
+--- a/_esm/webauthn/Registration.js
++++ b/_esm/webauthn/Registration.js
+@@ -57,6 +57,7 @@ export async function create(options) {
+         };
+     }
+     catch (error) {
++        if (error instanceof Errors.BaseError) throw error;
+         throw new CreateFailedError({
+             cause: error,
+         });

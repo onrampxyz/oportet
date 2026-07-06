@@ -854,7 +854,16 @@ export function from<
                     ...loadAccountsParams,
                   })
                 } catch (error) {
-                  if (error instanceof ox_Provider.UserRejectedRequestError)
+                  // Rise: RN passkey cancels surface as a raw { code: 4001 }
+                  // (EIP-1193 user-rejected) rather than an ox UserRejectedRequestError
+                  // instance; treat both as a hard rejection, not a stale-key retry.
+                  if (
+                    error instanceof ox_Provider.UserRejectedRequestError ||
+                    (error != null &&
+                      typeof error === 'object' &&
+                      'code' in error &&
+                      error.code === 4001)
+                  )
                     throw error
 
                   // error with `address`/`key` likely means one or both are stale, retry
