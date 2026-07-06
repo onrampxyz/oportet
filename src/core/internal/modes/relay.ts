@@ -444,11 +444,37 @@ export function relay(parameters: relay.Parameters = {}) {
           // If the address and credentialId are provided, we can skip the
           // WebAuthn discovery step.
           if (parameters.address && parameters.key) {
-            if ('credentialId' in parameters.key)
+            if ('credentialId' in parameters.key) {
+              // Rise: even when we skip WebAuthn discovery (address + credentialId
+              // known), the account's ERC-1271 verifier still needs a replay-safe
+              // passkey signature over the digest. Wrap the digest in the
+              // ERC1271Sign typed-data payload and sign it so the folded value
+              // flows into wrapSignature below (matches the discovery branch).
+              const replaySafeDigest =
+                digest !== '0x'
+                  ? TypedData.getSignPayload({
+                      domain: { verifyingContract: parameters.address },
+                      message: { digest },
+                      primaryType: 'ERC1271Sign',
+                      types: {
+                        ERC1271Sign: [{ name: 'digest', type: 'bytes32' }],
+                      },
+                    })
+                  : undefined
+              const webAuthnSignature = replaySafeDigest
+                ? await WebAuthnP256.sign({
+                    challenge: replaySafeDigest,
+                    credentialId: parameters.key.credentialId,
+                    getFn: webAuthn?.getFn,
+                    rpId: keystoreHost,
+                  })
+                : undefined
               return {
                 address: parameters.address,
                 credentialId: parameters.key.credentialId,
+                webAuthnSignature,
               }
+            }
             if ('rdns' in parameters.key)
               return {
                 address: parameters.address,
