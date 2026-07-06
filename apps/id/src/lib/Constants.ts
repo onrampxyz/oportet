@@ -1,4 +1,5 @@
 import type { PortoConfig } from '@porto/apps'
+import { Chains } from 'oportet'
 import type { Address } from 'ox'
 import { rise, riseTestnet, sepolia } from 'viem/chains'
 
@@ -31,6 +32,9 @@ export const defaultAssets: Record<
     coingeckoId?: string
   }>
 > = {
+  [Chains.anvil.id]: [ethAsset],
+  [Chains.anvil2.id]: [ethAsset],
+  [Chains.anvil3.id]: [ethAsset],
   [rise.id]: [
     {
       address: '0x0000000000000000000000000000000000000000',
