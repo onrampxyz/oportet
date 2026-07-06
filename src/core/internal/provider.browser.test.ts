@@ -275,7 +275,12 @@ describe('wallet_getPermissions', () => {
         params: [{ calls: [] }],
       }),
       async (iframe) => {
-        await iframe.getByTestId('buy').click()
+        // `buy` is an optional pre-step (not rendered in every flow); only
+        // `confirm` is required. Mirror upstream's guarded click so a missing
+        // `buy` button doesn't hang the locator for the full timeout.
+        try {
+          await iframe.getByTestId('buy').click({ timeout: 1000 })
+        } catch {}
         await iframe.getByTestId('confirm').click()
       },
     )
