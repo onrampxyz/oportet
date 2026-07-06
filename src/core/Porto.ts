@@ -49,10 +49,10 @@ export const defaultConfig = {
  */
 export function create<
   const chains extends readonly [Chains.Chain, ...Chains.Chain[]],
->(parameters?: ExactPartial<Config<chains>> | undefined): RiseWallet<chains>
+>(parameters?: ExactPartial<Config<chains>> | undefined): Porto<chains>
 export function create(
   parameters: ExactPartial<Config> | undefined = {},
-): RiseWallet {
+): Porto {
   const chains = parameters.chains ?? defaultConfig.chains
   const transports = Object.fromEntries(
     chains!.map((chain) => [
@@ -216,7 +216,7 @@ export type Config<
   transports: Record<chains[number]['id'], Transport>
 }
 
-export type RiseWallet<
+export type Porto<
   chains extends readonly [Chains.Chain, ...Chains.Chain[]] = readonly [
     Chains.Chain,
     ...Chains.Chain[],

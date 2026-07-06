@@ -25,7 +25,7 @@ export type PortoParameters<
   ],
 > = ExactPartial<Porto.Config<chains>>
 
-export function riseWallet<
+export function porto<
   const chains extends readonly [Chains.Chain, ...Chains.Chain[]],
 >(parameters: PortoParameters<chains> = {}) {
   type Provider = ReturnType<typeof Porto.create>['provider']
@@ -49,7 +49,7 @@ export function riseWallet<
       chainId: number
     }>
     getPortoInstance(): Promise<
-      Porto.RiseWallet<readonly [Chains.Chain, ...Chains.Chain[]]>
+      Porto.Porto<readonly [Chains.Chain, ...Chains.Chain[]]>
     >
     onConnect(connectInfo: ProviderConnectInfo): void
   }

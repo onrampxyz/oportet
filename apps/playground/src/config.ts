@@ -1,7 +1,7 @@
 import { Env, PortoConfig } from '@porto/apps'
 import { exp1Address, exp2Address } from '@porto/apps/contracts'
 import { createStore } from 'mipd'
-import { Chains, Dialog, Mode, RiseWallet, Transport } from 'oportet'
+import { Chains, Dialog, Mode, Porto, Transport } from 'oportet'
 import type { ThemeFragment } from 'oportet/theme'
 import { RelayClient } from 'oportet/viem'
 import { Hex, Value } from 'ox'
@@ -150,7 +150,7 @@ const chains = [
   ),
 ] as const
 
-export const porto = RiseWallet.create({
+export const porto = Porto.create({
   ...config,
   chains,
   merchantUrl: merchant ? '/merchant' : undefined,
