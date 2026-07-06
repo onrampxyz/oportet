@@ -1,4 +1,4 @@
-import { Base64 } from 'ox'
+import { Base64, Errors } from 'ox'
 import type * as PasskeysModule_ from 'react-native-passkeys'
 import type { relay } from '../internal/modes/relay.js'
 
@@ -95,7 +95,15 @@ export function createPasskeyAdapter(options?: {
 
         if (options?.signal) request.signal = options.signal
 
-        const response = await passkeys.create(request)
+        let response: Awaited<ReturnType<typeof passkeys.create>>
+        try {
+          response = await passkeys.create(request)
+        } catch (error) {
+          // Map an explicit user dismissal to a code-4001 rejection so the relay
+          // transport does not retry it (which would reopen the passkey sheet).
+          if (isPasskeyCancellation(error)) throwUserRejected(error)
+          throw error
+        }
         if (!response) return null
 
         return {
@@ -145,7 +153,15 @@ export function createPasskeyAdapter(options?: {
         if (publicKey.userVerification !== undefined)
           request.userVerification = publicKey.userVerification
 
-        const response = await passkeys.get(request)
+        let response: Awaited<ReturnType<typeof passkeys.get>>
+        try {
+          response = await passkeys.get(request)
+        } catch (error) {
+          // Same 4001 mapping as createFn: a dismissed unlock prompt must not
+          // retry (otherwise the second attempt falls through to create).
+          if (isPasskeyCancellation(error)) throwUserRejected(error)
+          throw error
+        }
 
         if (!response) return null
 
@@ -169,6 +185,51 @@ export function createPasskeyAdapter(options?: {
         } as unknown as Credential
       },
     },
+  }
+}
+
+/**
+ * Returns true when the native passkey error is an explicit user dismissal
+ * (Android: "UserCancelled" / NotAllowedError, iOS: "UserCancelledException").
+ * These must not be retried by the relay transport layer.
+ */
+function isPasskeyCancellation(error: unknown): boolean {
+  if (!(error instanceof Error)) return false
+  // Android CredentialManager rejects with message "UserCancelled".
+  if (error.message === 'UserCancelled') return true
+  // iOS ASAuthorization raises UserCancelledException.
+  if (error.name === 'UserCancelledException') return true
+  // Android Credential Manager wraps WebAuthn dismissal / no-match / timeout
+  // as androidx.credentials.exceptions.domerrors.NotAllowedError.
+  if (
+    typeof error.message === 'string' &&
+    error.message.includes('NotAllowedError')
+  )
+    return true
+  return false
+}
+
+/**
+ * Throws an ox BaseError for user passkey dismissal so ox's WebAuthnP256 catch
+ * blocks re-throw it (see patches/ox) instead of wrapping it. viem then receives
+ * code 4001, maps it to UserRejectedRequestError (shouldRetry() === false), and
+ * the passkey sheet does not reopen on each retry.
+ */
+function throwUserRejected(cause: unknown): never {
+  const normalized =
+    cause instanceof Error
+      ? cause
+      : new Error(typeof cause === 'string' ? cause : 'Passkey cancelled')
+  throw new UserCancelledError({ cause: normalized })
+}
+
+class UserCancelledError extends Errors.BaseError<Error> {
+  override readonly name = 'PasskeyUserCancelledError'
+  /** EIP-1193 user rejection code — the relay/viem shouldRetry is false for it. */
+  readonly code = 4001
+
+  constructor({ cause }: { cause: Error }) {
+    super('User rejected the passkey request', { cause })
   }
 }
 
