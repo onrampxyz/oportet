@@ -116,7 +116,8 @@ describe('Base', () => {
         - Expected "address"
         - Expected "p256"
         - Expected "secp256k1"
-        - Expected "webauthn-p256"]
+        - Expected "webauthn-p256"
+        - Expected "eip1193provider"]
     `,
     )
   })
