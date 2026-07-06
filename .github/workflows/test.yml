@@ -100,11 +100,14 @@ jobs:
           - env: ${{ inputs.env || 'prod' }}
             browser: 'false'
             enabled: ${{ inputs.test-deployment-node == true }}
-    env: 
+    env:
       CI: true
       VITE_DEFAULT_ENV: ${{ matrix.env }}
       VITE_RELAY_VERSION: ${{ needs.relay-release.outputs.relay_version || inputs.relay-ref }}
       VITE_RELAY_URL: ${{ inputs.relay-url }}
+      # Surface relay/anvil container output in CI logs while stabilizing the
+      # anvil harness; drop once the suite is reliably green.
+      VITE_RPC_DEBUG: 'true'
 
     steps:
       - name: Skip if not enabled
