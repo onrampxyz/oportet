@@ -19,6 +19,7 @@ export default defineConfig(({ mode }) => {
     },
     test: {
       alias: {
+        oportet: join(__dirname, '../src'),
         porto: join(__dirname, '../src'),
       },
       coverage: {
