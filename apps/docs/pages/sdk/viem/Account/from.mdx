@@ -7,7 +7,7 @@ Instantiates a delegated account from an address or account parameters.
 ### From Address
 
 ```ts twoslash
-import { Account } from 'porto/viem'
+import { Account } from 'oportet/viem'
 
 const account = Account.from('0x742d35Cc6634C0532925a3b8D2c88F65b5c92B23') // [!code focus]
 ```
@@ -15,7 +15,7 @@ const account = Account.from('0x742d35Cc6634C0532925a3b8D2c88F65b5c92B23') // [!
 ### From Account Parameters
 
 ```ts twoslash
-import { Account, Key } from 'porto/viem'
+import { Account, Key } from 'oportet/viem'
 
 const passkey = await Key.createWebAuthnP256({
   label: 'My Passkey',
@@ -30,7 +30,7 @@ const account = Account.from({ // [!code focus]
 ### With Custom Sign Function
 
 ```ts twoslash
-import { Account } from 'porto/viem'
+import { Account } from 'oportet/viem'
 
 const account = Account.from({ // [!code focus]
   address: '0x742d35Cc6634C0532925a3b8D2c88F65b5c92B23', // [!code focus]

@@ -1,69 +1,69 @@
-<svg aria-roledescription="sequence" role="graphics-document document" viewBox="-50 -10 660 517"
-  style="max-width: 3840px; max-height: 3840px;" xmlns:xlink="http://www.w3.org/1999/xlink"
-  xmlns="http://www.w3.org/2000/svg" width="100%" id="my-svg">
+<svg aria-roledescription="sequence" id="my-svg" role="graphics-document document" 
+  style="max-width: 3840px; max-height: 3840px;" viewBox="-50 -10 660 517" width="100%" 
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
   <g>
-    <rect class="rect" height="481" width="400" stroke="rgb(0,0,0, 0.5)" fill="rgb(0,0,0,0.1)" y="-5" x="180" /><text
-      style="text-anchor: middle; font-size: 16px; font-weight: 400;" class="text" alignment-baseline="central"
-      dominant-baseline="central" y="9" x="380">
+    <rect class="rect" fill="rgb(0,0,0,0.1)" height="481" stroke="rgb(0,0,0, 0.5)" width="400" x="180" y="-5" /><textalignment-baseline="central" class="text" 
+      dominant-baseline="central" 
+      style="text-anchor: middle; font-size: 16px; font-weight: 400;" x="380" y="9" >
       <tspan dy="0" x="380">Mode.relay</tspan>
     </text>
   </g>
   <g>
-    <rect filter="url(#drop-shadow)" data-look="neo" class="actor actor-bottom" ry="6" rx="6" name="R" height="65"
-      width="150" stroke="#666" fill="#eaeaea" y="391" x="405" /><text
-      style="text-anchor: middle; font-size: 16px; font-weight: 400;" class="actor actor-box"
-      alignment-baseline="central" dominant-baseline="central" y="423.5" x="480">
+    <rect class="actor actor-bottom" data-look="neo" fill="#eaeaea" filter="url(#drop-shadow)" height="65" name="R" rx="6" ry="6" stroke="#666" 
+      width="150" x="405" y="391" /><text
+      alignment-baseline="central" class="actor actor-box" dominant-baseline="central" 
+      style="text-anchor: middle; font-size: 16px; font-weight: 400;" x="480" y="423.5" >
       <tspan dy="0" x="480">Relay</tspan>
     </text>
   </g>
   <g>
-    <rect filter="url(#drop-shadow)" data-look="neo" class="actor actor-bottom" ry="6" rx="6" name="D" height="65"
-      width="150" stroke="#666" fill="#eaeaea" y="391" x="205" /><text
-      style="text-anchor: middle; font-size: 16px; font-weight: 400;" class="actor actor-box"
-      alignment-baseline="central" dominant-baseline="central" y="423.5" x="280">
+    <rect class="actor actor-bottom" data-look="neo" fill="#eaeaea" filter="url(#drop-shadow)" height="65" name="D" rx="6" ry="6" stroke="#666" 
+      width="150" x="205" y="391" /><text
+      alignment-baseline="central" class="actor actor-box" dominant-baseline="central" 
+      style="text-anchor: middle; font-size: 16px; font-weight: 400;" x="280" y="423.5" >
       <tspan dy="0" x="280">Porto Dialog</tspan>
     </text>
   </g>
   <g>
-    <rect filter="url(#drop-shadow)" data-look="neo" class="actor actor-bottom" ry="6" rx="6" name="A" height="65"
-      width="150" stroke="#666" fill="#eaeaea" y="391" x="0" /><text
-      style="text-anchor: middle; font-size: 16px; font-weight: 400;" class="actor actor-box"
-      alignment-baseline="central" dominant-baseline="central" y="423.5" x="75">
+    <rect class="actor actor-bottom" data-look="neo" fill="#eaeaea" filter="url(#drop-shadow)" height="65" name="A" rx="6" ry="6" stroke="#666" 
+      width="150" x="0" y="391" /><text
+      alignment-baseline="central" class="actor actor-box" dominant-baseline="central" 
+      style="text-anchor: middle; font-size: 16px; font-weight: 400;" x="75" y="423.5" >
       <tspan dy="0" x="75">Application</tspan>
     </text>
   </g>
   <g>
-    <line data-id="R" data-et="life-line" name="R" stroke="#999" stroke-width="0.5px" class="actor-line 200" y2="391"
-      x2="480" y1="93" x1="480" id="actor2" />
-    <g data-id="R" data-et="participant" data-look="neo" id="root-2">
-      <rect filter="url(#drop-shadow)" data-look="neo" class="actor actor-top" ry="6" rx="6" name="R" height="65"
-        width="150" stroke="#666" fill="#eaeaea" y="28" x="405" /><text
-        style="text-anchor: middle; font-size: 16px; font-weight: 400;" class="actor actor-box"
-        alignment-baseline="central" dominant-baseline="central" y="60.5" x="480">
+    <line class="actor-line 200" data-et="life-line" data-id="R" id="actor2" name="R" stroke="#999" stroke-width="0.5px" x1="480" 
+      x2="480" y1="93" y2="391"/>
+    <g data-et="participant" data-id="R" data-look="neo" id="root-2">
+      <rect class="actor actor-top" data-look="neo" fill="#eaeaea" filter="url(#drop-shadow)" height="65" name="R" rx="6" ry="6" stroke="#666" 
+        width="150" x="405" y="28" /><text
+        alignment-baseline="central" class="actor actor-box" dominant-baseline="central" 
+        style="text-anchor: middle; font-size: 16px; font-weight: 400;" x="480" y="60.5" >
         <tspan dy="0" x="480">Relay</tspan>
       </text>
     </g>
   </g>
   <g>
-    <line data-id="D" data-et="life-line" name="D" stroke="#999" stroke-width="0.5px" class="actor-line 200" y2="391"
-      x2="280" y1="93" x1="280" id="actor1" />
-    <g data-id="D" data-et="participant" data-look="neo" id="root-1">
-      <rect filter="url(#drop-shadow)" data-look="neo" class="actor actor-top" ry="6" rx="6" name="D" height="65"
-        width="150" stroke="#666" fill="#eaeaea" y="28" x="205" /><text
-        style="text-anchor: middle; font-size: 16px; font-weight: 400;" class="actor actor-box"
-        alignment-baseline="central" dominant-baseline="central" y="60.5" x="280">
+    <line class="actor-line 200" data-et="life-line" data-id="D" id="actor1" name="D" stroke="#999" stroke-width="0.5px" x1="280" 
+      x2="280" y1="93" y2="391"/>
+    <g data-et="participant" data-id="D" data-look="neo" id="root-1">
+      <rect class="actor actor-top" data-look="neo" fill="#eaeaea" filter="url(#drop-shadow)" height="65" name="D" rx="6" ry="6" stroke="#666" 
+        width="150" x="205" y="28" /><text
+        alignment-baseline="central" class="actor actor-box" dominant-baseline="central" 
+        style="text-anchor: middle; font-size: 16px; font-weight: 400;" x="280" y="60.5" >
         <tspan dy="0" x="280">Porto Dialog</tspan>
       </text>
     </g>
   </g>
   <g>
-    <line data-id="A" data-et="life-line" name="A" stroke="#999" stroke-width="0.5px" class="actor-line 200" y2="391"
-      x2="75" y1="93" x1="75" id="actor0" />
-    <g data-id="A" data-et="participant" data-look="neo" id="root-0">
-      <rect filter="url(#drop-shadow)" data-look="neo" class="actor actor-top" ry="6" rx="6" name="A" height="65"
-        width="150" stroke="#666" fill="#eaeaea" y="28" x="0" /><text
-        style="text-anchor: middle; font-size: 16px; font-weight: 400;" class="actor actor-box"
-        alignment-baseline="central" dominant-baseline="central" y="60.5" x="75">
+    <line class="actor-line 200" data-et="life-line" data-id="A" id="actor0" name="A" stroke="#999" stroke-width="0.5px" x1="75" 
+      x2="75" y1="93" y2="391"/>
+    <g data-et="participant" data-id="A" data-look="neo" id="root-0">
+      <rect class="actor actor-top" data-look="neo" fill="#eaeaea" filter="url(#drop-shadow)" height="65" name="A" rx="6" ry="6" stroke="#666" 
+        width="150" x="0" y="28" /><text
+        alignment-baseline="central" class="actor actor-box" dominant-baseline="central" 
+        style="text-anchor: middle; font-size: 16px; font-weight: 400;" x="75" y="60.5" >
         <tspan dy="0" x="75">Application</tspan>
       </text>
     </g>
@@ -88,17 +88,17 @@
     }
 
     #my-svg .edge-animation-slow {
-      stroke-dasharray: 9, 5 !important;
+      stroke-linecap: round;
+      stroke-dasharray: 9, 5;
       stroke-dashoffset: 900;
       animation: dash 50s linear infinite;
-      stroke-linecap: round;
     }
 
     #my-svg .edge-animation-fast {
-      stroke-dasharray: 9, 5 !important;
+      stroke-linecap: round;
+      stroke-dasharray: 9, 5;
       stroke-dashoffset: 900;
       animation: dash 20s linear infinite;
-      stroke-linecap: round;
     }
 
     #my-svg .error-icon {
@@ -123,8 +123,8 @@
     }
 
     #my-svg .edge-thickness-invisible {
-      stroke-width: 0;
       fill: none;
+      stroke-width: 0;
     }
 
     #my-svg .edge-pattern-dashed {
@@ -154,8 +154,8 @@
     }
 
     #my-svg .actor {
-      stroke: hsl(0, 0%, 70%);
       fill: #ffffff;
+      stroke: hsl(0, 0%, 70%);
       stroke-width: 2;
     }
 
@@ -164,9 +164,9 @@
     }
 
     #my-svg rect.note[data-look="neo"] {
-      stroke: hsl(52.6829268293, 60%, 73.9215686275%);
-      fill: #fff5ad;
       filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.25));
+      fill: #fff5ad;
+      stroke: hsl(52.6829268293, 60%, 73.9215686275%);
       stroke-width: 2;
     }
 
@@ -182,15 +182,15 @@
     }
 
     #my-svg .messageLine0 {
+      stroke: #333;
       stroke-width: 2;
       stroke-dasharray: none;
-      stroke: #333;
     }
 
     #my-svg .messageLine1 {
+      stroke: #333;
       stroke-width: 2;
       stroke-dasharray: 2, 2;
-      stroke: #333;
     }
 
     #my-svg #arrowhead path {
@@ -217,9 +217,9 @@
     }
 
     #my-svg .labelBox {
-      stroke: hsl(0, 0%, 70%);
-      fill: #ffffff;
       filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.25));
+      fill: #ffffff;
+      stroke: hsl(0, 0%, 70%);
     }
 
     #my-svg .labelText,
@@ -239,15 +239,15 @@
     }
 
     #my-svg .loopLine {
+      fill: hsl(0, 0%, 70%);
+      stroke: hsl(0, 0%, 70%);
       stroke-width: 2px;
       stroke-dasharray: 2, 2;
-      stroke: hsl(0, 0%, 70%);
-      fill: hsl(0, 0%, 70%);
     }
 
     #my-svg .note {
-      stroke: hsl(52.6829268293, 60%, 73.9215686275%);
       fill: #fff5ad;
+      stroke: hsl(52.6829268293, 60%, 73.9215686275%);
     }
 
     #my-svg .noteText,
@@ -279,9 +279,9 @@
 
     #my-svg .actorPopupMenuPanel {
       position: absolute;
-      fill: #ffffff;
       box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
       filter: drop-shadow(3px 5px 2px rgb(0 0 0 / 0.4));
+      fill: #ffffff;
     }
 
     #my-svg .actor-man circle,
@@ -303,8 +303,8 @@
     #my-svg [data-look="neo"].node rect,
     #my-svg [data-look="neo"].cluster rect,
     #my-svg [data-look="neo"].node polygon {
-      stroke: url(#my-svg-gradient);
       filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.25));
+      stroke: url(#my-svg-gradient);
     }
 
     #my-svg [data-look="neo"].node path {
@@ -317,13 +317,13 @@
     }
 
     #my-svg [data-look="neo"].node .neo-line path {
-      stroke: #000000;
       filter: none;
+      stroke: #000000;
     }
 
     #my-svg [data-look="neo"].node circle {
-      stroke: url(#my-svg-gradient);
       filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.25));
+      stroke: url(#my-svg-gradient);
     }
 
     #my-svg [data-look="neo"].node circle .state-start {
@@ -337,13 +337,13 @@
     }
 
     #my-svg [data-look="neo"].icon-shape .icon {
-      fill: url(#my-svg-gradient);
       filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.25));
+      fill: url(#my-svg-gradient);
     }
 
     #my-svg [data-look="neo"].icon-shape .icon-neo path {
-      stroke: url(#my-svg-gradient);
       filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.25));
+      stroke: url(#my-svg-gradient);
     }
 
     #my-svg :root {
@@ -352,7 +352,7 @@
   </style>
   <g />
   <defs>
-    <symbol height="24" width="24" id="computer">
+    <symbol height="24" id="computer" width="24" >
       <path
         d="M2 2v13h20v-13h-20zm18 11h-16v-9h16v9zm-10.228 6l.466-1h3.524l.467 1h-4.457zm14.228 3h-24l2-6h2.104l-1.33 4h18.45l-1.297-4h2.073l2 6zm-5-10h-14v-7h14v7z"
         transform="scale(.5)" />
@@ -366,60 +366,60 @@
     </symbol>
   </defs>
   <defs>
-    <symbol height="24" width="24" id="clock">
+    <symbol height="24" id="clock" width="24" >
       <path
         d="M12 2c5.514 0 10 4.486 10 10s-4.486 10-10 10-10-4.486-10-10 4.486-10 10-10zm0-2c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm5.848 12.459c.202.038.202.333.001.372-1.907.361-6.045 1.111-6.547 1.111-.719 0-1.301-.582-1.301-1.301 0-.512.77-5.447 1.125-7.445.034-.192.312-.181.343.014l.985 6.238 5.394 1.011z"
         transform="scale(.5)" />
     </symbol>
   </defs>
   <defs>
-    <marker orient="auto-start-reverse" markerHeight="12" markerWidth="12" markerUnits="userSpaceOnUse" refY="5"
-      refX="7.9" id="arrowhead">
+    <marker id="arrowhead" markerHeight="12" markerUnits="userSpaceOnUse" markerWidth="12" orient="auto-start-reverse" 
+      refX="7.9" refY="5">
       <path d="M -1 0 L 10 5 L 0 10 z" />
     </marker>
   </defs>
   <defs>
-    <marker refY="4.5" refX="4" orient="auto" markerHeight="8" markerWidth="15" id="crosshead">
-      <path style="stroke-dasharray: 0, 0;" d="M 1,2 L 6,7 M 6,2 L 1,7" stroke-width="1pt" stroke="#000000"
-        fill="none" />
+    <marker id="crosshead" markerHeight="8" markerWidth="15" orient="auto" refX="4" refY="4.5" >
+      <path d="M 1,2 L 6,7 M 6,2 L 1,7" 
+        fill="none" stroke="#000000" stroke-width="1pt" style="stroke-dasharray: 0, 0;" />
     </marker>
   </defs>
   <defs>
-    <marker orient="auto" markerHeight="28" markerWidth="20" refY="7" refX="15.5" id="filled-head">
+    <marker id="filled-head" markerHeight="28" markerWidth="20" orient="auto" refX="15.5" refY="7" >
       <path d="M 18,7 L9,13 L14,7 L9,1 Z" />
     </marker>
   </defs>
   <defs>
-    <marker markerUnits="userSpaceOnUse" orient="auto" markerHeight="40" markerWidth="60" refY="15" refX="15"
-      id="sequencenumber">
-      <circle r="10" cy="15" cx="15" />
+    <marker 
+      id="sequencenumber" markerHeight="40" markerUnits="userSpaceOnUse" markerWidth="60" orient="auto" refX="15" refY="15" >
+      <circle cx="15" cy="15" r="10" />
     </marker>
-  </defs><text style="font-size: 16px; font-weight: 400;" dy="1em" class="messageText" alignment-baseline="middle"
-    dominant-baseline="middle" text-anchor="middle" y="108" x="175">Action</text>
-  <line style="fill: none;" marker-end="url(#arrowhead)" stroke="none" stroke-width="2" data-to="D" data-from="A"
-    data-id="i0" data-et="message" class="messageLine0" y2="137" x2="273" y1="137" x1="76" /><text
-    style="font-size: 16px; font-weight: 400;" dy="1em" class="messageText" alignment-baseline="middle"
-    dominant-baseline="middle" text-anchor="middle" y="152" x="377">Prepare Action</text>
-  <line style="fill: none;" marker-end="url(#arrowhead)" stroke="none" stroke-width="2" data-to="R" data-from="D"
-    data-id="i1" data-et="message" class="messageLine0" y2="183" x2="473" y1="183" x1="281" /><text
-    style="font-size: 16px; font-weight: 400;" dy="1em" class="messageText" alignment-baseline="middle"
-    dominant-baseline="middle" text-anchor="middle" y="198" x="383">Digest</text>
-  <line style="stroke-dasharray: 3, 3; fill: none;" marker-end="url(#arrowhead)" stroke="none" stroke-width="2"
-    data-to="D" data-from="R" data-id="i2" data-et="message" class="messageLine1" y2="229" x2="287" y1="229" x1="479" />
-  <text style="font-size: 16px; font-weight: 400;" dy="1em" class="messageText" alignment-baseline="middle"
-    dominant-baseline="middle" text-anchor="middle" y="244" x="281">Sign Digest with Passkey</text>
-  <path style="fill: none;" marker-end="url(#arrowhead)" stroke="none" stroke-width="2" data-to="D" data-from="D"
-    data-id="i3" data-et="message" class="messageLine0" d="M 281,275 C 341,265 341,305 281,295" /><text
-    style="font-size: 16px; font-weight: 400;" dy="1em" class="messageText" alignment-baseline="middle"
-    dominant-baseline="middle" text-anchor="middle" y="320" x="377">Send Signed Action</text>
-  <line style="fill: none;" marker-end="url(#arrowhead)" stroke="none" stroke-width="2" data-to="R" data-from="D"
-    data-id="i4" data-et="message" class="messageLine0" y2="351" x2="473" y1="351" x1="281" /><text
-    style="font-size: 16px; font-weight: 400;" dy="1em" class="messageText" alignment-baseline="middle"
-    dominant-baseline="middle" text-anchor="middle" y="366" x="383">​</text>
-  <line style="stroke-dasharray: 3, 3; fill: none;" marker-end="url(#arrowhead)" stroke="none" stroke-width="2"
-    data-to="D" data-from="R" data-id="i5" data-et="message" class="messageLine1" y2="361" x2="287" y1="361" x1="479" />
-  <text style="font-size: 16px; font-weight: 400;" dy="1em" class="messageText" alignment-baseline="middle"
-    dominant-baseline="middle" text-anchor="middle" y="376" x="181">​</text>
-  <line style="stroke-dasharray: 3, 3; fill: none;" marker-end="url(#arrowhead)" stroke="none" stroke-width="2"
-    data-to="A" data-from="D" data-id="i6" data-et="message" class="messageLine1" y2="371" x2="82" y1="371" x1="279" />
+  </defs><text alignment-baseline="middle" class="messageText" 
+    dominant-baseline="middle" dy="1em" style="font-size: 16px; font-weight: 400;" text-anchor="middle" x="175" y="108" >Action</text>
+  <line class="messageLine0" data-et="message" data-from="A"
+    data-id="i0" data-to="D" marker-end="url(#arrowhead)" stroke="none" stroke-width="2" style="fill: none;" x1="76" x2="273" y1="137" y2="137" /><textalignment-baseline="middle" class="messageText" 
+    dominant-baseline="middle" dy="1em" 
+    style="font-size: 16px; font-weight: 400;" text-anchor="middle" x="377" y="152" >Prepare Action</text>
+  <line class="messageLine0" data-et="message" data-from="D"
+    data-id="i1" data-to="R" marker-end="url(#arrowhead)" stroke="none" stroke-width="2" style="fill: none;" x1="281" x2="473" y1="183" y2="183" /><textalignment-baseline="middle" class="messageText" 
+    dominant-baseline="middle" dy="1em" 
+    style="font-size: 16px; font-weight: 400;" text-anchor="middle" x="383" y="198" >Digest</text>
+  <line class="messageLine1" data-et="message" data-from="R" data-id="i2" 
+    data-to="D" marker-end="url(#arrowhead)" stroke="none" stroke-width="2" style="stroke-dasharray: 3, 3; fill: none;" x1="479" x2="287" y1="229" y2="229" />
+  <text alignment-baseline="middle" class="messageText" 
+    dominant-baseline="middle" dy="1em" style="font-size: 16px; font-weight: 400;" text-anchor="middle" x="281" y="244" >Sign Digest with Passkey</text>
+  <path class="messageLine0" d="M 281,275 C 341,265 341,305 281,295" data-et="message" data-from="D"
+    data-id="i3" data-to="D" marker-end="url(#arrowhead)" stroke="none" stroke-width="2" style="fill: none;" /><textalignment-baseline="middle" class="messageText" 
+    dominant-baseline="middle" dy="1em" 
+    style="font-size: 16px; font-weight: 400;" text-anchor="middle" x="377" y="320" >Send Signed Action</text>
+  <line class="messageLine0" data-et="message" data-from="D"
+    data-id="i4" data-to="R" marker-end="url(#arrowhead)" stroke="none" stroke-width="2" style="fill: none;" x1="281" x2="473" y1="351" y2="351" /><textalignment-baseline="middle" class="messageText" 
+    dominant-baseline="middle" dy="1em" 
+    style="font-size: 16px; font-weight: 400;" text-anchor="middle" x="383" y="366" >​</text>
+  <line class="messageLine1" data-et="message" data-from="R" data-id="i5" 
+    data-to="D" marker-end="url(#arrowhead)" stroke="none" stroke-width="2" style="stroke-dasharray: 3, 3; fill: none;" x1="479" x2="287" y1="361" y2="361" />
+  <text alignment-baseline="middle" class="messageText" 
+    dominant-baseline="middle" dy="1em" style="font-size: 16px; font-weight: 400;" text-anchor="middle" x="181" y="376" >​</text>
+  <line class="messageLine1" data-et="message" data-from="D" data-id="i6" 
+    data-to="A" marker-end="url(#arrowhead)" stroke="none" stroke-width="2" style="stroke-dasharray: 3, 3; fill: none;" x1="279" x2="82" y1="371" y2="371" />
 </svg>

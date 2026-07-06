@@ -7,7 +7,7 @@ Hook for retrieving assets for an account.
 Internally uses [`wallet_getAssets`](/sdk/rpc/wallet_getAssets).
 
 ```tsx twoslash
-import { Hooks } from 'porto/wagmi'
+import { Hooks } from 'oportet/wagmi'
 
 function Example() {
   const result = Hooks.useAssets({
@@ -39,7 +39,7 @@ function Example() {
 Address of the account to get assets for. If not provided, will use the connected account.
 
 ```tsx
-import { Hooks } from 'porto/wagmi'
+import { Hooks } from 'oportet/wagmi'
 
 function Example() {
   const result = Hooks.useAssets({

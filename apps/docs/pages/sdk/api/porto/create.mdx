@@ -9,11 +9,11 @@ Creates a new Porto instance.
 :::code-group
 
 ```ts [Named]
-import { Porto } from 'porto'
+import { Porto } from 'oportet'
 ```
 
 ```ts [Entrypoint]
-import * as Porto from 'porto/Porto'
+import * as Porto from 'oportet/Porto'
 ```
 
 :::
@@ -24,7 +24,7 @@ The simplest way to create a new Porto instance is to call the `Porto.create(){:
 This will automatically inject Porto's provider into your Application via [EIP-6963](https://eips.ethereum.org/EIPS/eip-6963).
 
 ```ts twoslash
-import { Porto } from 'porto'
+import { Porto } from 'oportet'
 
 Porto.create()
 ```
@@ -33,7 +33,7 @@ Porto.create()
 You can turn off announcement of the provider by passing `announceProvider: false{:ts}` as an option.
 
 ```ts twoslash
-import { Porto } from 'porto'
+import { Porto } from 'oportet'
 
 const porto = Porto.create({ announceProvider: false })
 ```
@@ -45,7 +45,7 @@ const porto = Porto.create({ announceProvider: false })
 You can access Porto's [EIP-1193 Provider](https://eips.ethereum.org/EIPS/eip-1193) directly via the `provider` instance.
 
 ```ts twoslash
-import { Porto } from 'porto'
+import { Porto } from 'oportet'
 
 const porto = Porto.create()
 

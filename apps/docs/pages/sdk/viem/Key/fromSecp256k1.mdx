@@ -7,7 +7,7 @@ Instantiates a Secp256k1 key from existing parameters. This allows you to create
 ### From Private Key
 
 ```ts twoslash
-import { Key } from 'porto/viem'
+import { Key } from 'oportet/viem'
 import { Secp256k1 } from 'ox'
 
 const privateKey = Secp256k1.randomPrivateKey()
@@ -20,7 +20,7 @@ const key = Key.fromSecp256k1({ // [!code focus]
 ### From Ethereum Address
 
 ```ts twoslash
-import { Key } from 'porto/viem'
+import { Key } from 'oportet/viem'
 
 const key = Key.fromSecp256k1({ // [!code focus]
   address: '0x742d35Cc6634C0532925a3b8D2c88F65b5c92B23', // [!code focus]
@@ -30,7 +30,7 @@ const key = Key.fromSecp256k1({ // [!code focus]
 ### Session Key
 
 ```ts twoslash
-import { Key } from 'porto/viem'
+import { Key } from 'oportet/viem'
 import { Secp256k1 } from 'ox'
 import { parseEther } from 'viem'
 

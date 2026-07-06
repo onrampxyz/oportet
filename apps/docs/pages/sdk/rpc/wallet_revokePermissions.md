@@ -19,7 +19,7 @@ type Request = {
 ## Example
 
 ```ts twoslash
-import { Porto } from 'porto'
+import { Porto } from 'oportet'
 
 const { provider } = Porto.create()
 

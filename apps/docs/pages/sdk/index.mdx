@@ -66,7 +66,7 @@ you can use `Porto.create()` to create a new instance of Porto, and inject itsel
 into the Account Connection library via [EIP-6963](https://eips.ethereum.org/EIPS/eip-6963).
 
 ```ts
-import { Porto } from 'porto'
+import { Porto } from 'oportet'
 
 Porto.create()
 ```
@@ -117,7 +117,7 @@ Once set up, you can use the `provider` instance to interact with Porto.
 :::code-group
 
 ```ts twoslash [Vanilla]
-import { Porto } from 'porto'
+import { Porto } from 'oportet'
 
 // 1. Initialize Porto.
 const porto = Porto.create()
@@ -131,7 +131,7 @@ const { accounts } = await porto.provider.request({
 ```ts twoslash [Viem]
 import { custom, createWalletClient } from 'viem'
 import { baseSepolia } from 'viem/chains'
-import { Porto } from 'porto'
+import { Porto } from 'oportet'
 
 // 1. Initialize Porto.
 const porto = Porto.create()

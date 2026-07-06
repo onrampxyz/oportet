@@ -5,8 +5,8 @@ a Viem Client that is connected to the [Porto Relay](/relay).
 
 ```ts twoslash
 import { createClient, http } from 'viem' 
-import { Chains } from 'porto' 
-import { Key, RelayActions } from 'porto/viem'
+import { Chains } from 'oportet' 
+import { Key, RelayActions } from 'oportet/viem'
 
 // Instantiate a Viem Client with Porto-compatible Chain. 
 const client = createClient({ 
@@ -24,6 +24,7 @@ const account = await RelayActions.createAccount(client, { // [!code focus]
 | Action | Description |
 | ------ | ------ |
 | [`createAccount`](/sdk/viem/RelayActions/createAccount) | Create a new Porto Account. |
+| [`getCallsHistory`](/sdk/viem/RelayActions/getCallsHistory) | Retrieve historical call bundles for an account. |
 | [`getCallsStatus`](/sdk/viem/RelayActions/getCallsStatus) | Retrieve the status of a call bundle. |
 | [`getCapabilities`](/sdk/viem/RelayActions/getCapabilities) | Retrieve the capabilities of the Relay. |
 | [`getKeys`](/sdk/viem/RelayActions/getKeys) | Retrieve all keys associated with an account. |

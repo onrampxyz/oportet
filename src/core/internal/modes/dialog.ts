@@ -25,7 +25,9 @@ import { relay } from './relay.js'
 export function dialog(parameters: dialog.Parameters = {}) {
   const {
     fallback = relay() as Mode.Mode,
+    features,
     host = Dialog.hostUrls.prod,
+    labels,
     renderer = Dialog.iframe(),
     theme,
     themeController,
@@ -33,6 +35,51 @@ export function dialog(parameters: dialog.Parameters = {}) {
 
   const listeners = new Set<(requestQueue: readonly QueuedRequest[]) => void>()
   const requestStore = RpcRequest.createStore()
+
+  // Wait for a queued request to be resolved.
+  function waitForQueuedRequest(
+    requestId: number,
+    store: Porto.Internal['store'],
+  ): Promise<any> {
+    return new Promise((resolve, reject) => {
+      const listener = (requestQueue: readonly QueuedRequest[]) => {
+        // Find the request in the queue based off its JSON-RPC identifier.
+        const queued = requestQueue.find((x) => x.request.id === requestId)
+
+        // If the request is not found and the queue is empty, reject the request
+        // as it will never be resolved (likely cancelled or dialog closed).
+        if (!queued && requestQueue.length === 0) {
+          listeners.delete(listener)
+          reject(new Provider.UserRejectedRequestError())
+          return
+        }
+
+        // If request not found but queue has other requests, wait for next update.
+        if (!queued) return
+
+        // If request found but not yet resolved, wait for next update.
+        if (queued.status !== 'success' && queued.status !== 'error') return
+
+        // We have a response, we can unsubscribe from the listener.
+        listeners.delete(listener)
+
+        // If the request was successful, resolve with the result.
+        if (queued.status === 'success') resolve(queued.result as any)
+        // Otherwise, reject with EIP-1193 Provider error.
+        else reject(Provider.parseError(queued.error))
+
+        // Remove the request from the queue.
+        store.setState((x) => ({
+          ...x,
+          requestQueue: x.requestQueue.filter(
+            (x) => x.request.id !== requestId,
+          ),
+        }))
+      }
+
+      listeners.add(listener)
+    })
+  }
 
   // Function to instantiate a provider for the dialog. This
   // will be used to queue up requests for the dialog and
@@ -72,48 +119,7 @@ export function dialog(parameters: dialog.Parameters = {}) {
             }
           })
 
-          // We need to wait for the request to be resolved.
-          return new Promise((resolve, reject) => {
-            const listener = (requestQueue: readonly QueuedRequest[]) => {
-              // Find the request in the queue based off its JSON-RPC identifier.
-              const queued = requestQueue.find(
-                (x) => x.request.id === request.id,
-              )
-
-              // If the request is not found and the queue is empty, reject the request
-              // as it will never be resolved (likely cancelled or dialog closed).
-              if (!queued && requestQueue.length === 0) {
-                listeners.delete(listener)
-                reject(new Provider.UserRejectedRequestError())
-                return
-              }
-
-              // If request not found but queue has other requests, wait for next update.
-              if (!queued) return
-
-              // If request found but not yet resolved, wait for next update.
-              if (queued.status !== 'success' && queued.status !== 'error')
-                return
-
-              // We have a response, we can unsubscribe from the listener.
-              listeners.delete(listener)
-
-              // If the request was successful, resolve with the result.
-              if (queued.status === 'success') resolve(queued.result as any)
-              // Otherwise, reject with EIP-1193 Provider error.
-              else reject(Provider.parseError(queued.error))
-
-              // Remove the request from the queue.
-              store.setState((x) => ({
-                ...x,
-                requestQueue: x.requestQueue.filter(
-                  (x) => x.request.id !== request.id,
-                ),
-              }))
-            }
-
-            listeners.add(listener)
-          })
+          return waitForQueuedRequest(request.id, store)
         },
       },
       { schema: RpcSchema.from<RpcSchema_porto.Schema>() },
@@ -244,6 +250,7 @@ export function dialog(parameters: dialog.Parameters = {}) {
                 address: account.address,
                 authUrl,
                 message,
+                publicKey: account.capabilities?.admins?.[0]?.publicKey,
                 signature,
               })
               return {
@@ -319,6 +326,21 @@ export function dialog(parameters: dialog.Parameters = {}) {
         const provider = getProvider(store)
         const result = await provider.request(request)
         return z.decode(RpcSchema_porto.wallet_getAssets.Response, result)
+      },
+
+      async getCallsHistory(parameters) {
+        const { internal } = parameters
+        const { store, request } = internal
+
+        if (request.method !== 'wallet_getCallsHistory')
+          throw new Error('Cannot get history for method: ' + request.method)
+
+        if (!renderer.supportsHeadless)
+          return fallback.actions.getCallsHistory(parameters)
+
+        const provider = getProvider(store)
+        const result = await provider.request(request)
+        return z.decode(RpcSchema_porto.wallet_getCallsHistory.Response, result)
       },
 
       async getCallsStatus(parameters) {
@@ -566,6 +588,7 @@ export function dialog(parameters: dialog.Parameters = {}) {
                   address: account.address,
                   authUrl,
                   message,
+                  publicKey: account.capabilities?.admins?.[0]?.publicKey,
                   signature,
                 })
                 return {
@@ -760,6 +783,7 @@ export function dialog(parameters: dialog.Parameters = {}) {
           account,
           asTxHash,
           calls,
+          chainId,
           internal,
           merchantUrl,
           requiredFunds,
@@ -771,16 +795,18 @@ export function dialog(parameters: dialog.Parameters = {}) {
         const feeToken = await resolveFeeToken(internal, parameters)
 
         // Try and extract an authorized key to sign the calls with.
-        const key = await Mode.getAuthorizedExecuteKey({
-          account,
-          calls,
-          permissionsId: parameters.permissionsId,
-        })
+        const key = account
+          ? await Mode.getAuthorizedExecuteKey({
+              account,
+              calls,
+              permissionsId: parameters.permissionsId,
+            })
+          : undefined
 
         // If a session key is found, try execute the calls with it
         // without sending a request to the dialog. If the key does not
         // have permission to execute the calls, fall back to the dialog.
-        if (key && key.role === 'session') {
+        if (key?.role === 'session' && account) {
           if (!renderer.supportsHeadless)
             return fallback.actions.sendCalls(parameters)
 
@@ -800,7 +826,7 @@ export function dialog(parameters: dialog.Parameters = {}) {
                       merchantUrl,
                       requiredFunds,
                     },
-                    chainId: client.chain.id,
+                    chainId,
                     from: account.address,
                     key,
                   },
@@ -866,16 +892,24 @@ export function dialog(parameters: dialog.Parameters = {}) {
 
         if (request.method === 'eth_sendTransaction') {
           // Send a transaction request to the dialog.
+          const caps = { feeToken, merchantUrl }
           const id = await provider.request({
             ...request,
+            _decoded: {
+              ...request._decoded,
+              params: [
+                {
+                  ...request._decoded?.params?.[0],
+                  capabilities: caps,
+                },
+              ],
+            },
             params: [
               {
                 ...request.params?.[0],
                 // @ts-expect-error
-                capabilities: {
-                  feeToken,
-                  merchantUrl,
-                },
+                capabilities: caps,
+                ...(chainId ? { chainId: Hex.fromNumber(chainId) } : {}),
               },
             ],
           })
@@ -895,6 +929,7 @@ export function dialog(parameters: dialog.Parameters = {}) {
                   feeToken,
                   merchantUrl,
                 },
+                ...(chainId ? { chainId: Hex.fromNumber(chainId) } : {}),
               },
             ],
           })
@@ -999,8 +1034,10 @@ export function dialog(parameters: dialog.Parameters = {}) {
       const { store } = internal
 
       const dialog = renderer.setup({
+        features,
         host,
         internal,
+        labels,
         theme,
         themeController,
       })
@@ -1036,10 +1073,128 @@ export declare namespace dialog {
      */
     fallback?: Mode.Mode | undefined
     /**
+     * Feature flags to control UI element visibility and behavior.
+     * @default undefined
+     */
+    features?:
+      | {
+          /**
+           * Enable or disable bug reporting functionality.
+           * When false, removes the bug report icon from the dialog header
+           * and disables the report feature on error screens (only showing the error).
+           *
+           * @default true
+           */
+          bugReporting?: boolean | undefined
+          /**
+           * Show or hide the email input field in the account creation flow.
+           * When false, the email input is hidden and Porto uses a truncated
+           * wallet address as the account label (e.g., "0x775da7…717e09").
+           *
+           * @default true
+           */
+          emailInput?: boolean | undefined
+          /**
+           * Show or hide the sign-up link in the signed-in view.
+           * When false, the sign-up link is not displayed.
+           *
+           * @default true
+           */
+          signUpLink?: boolean | undefined
+          /**
+           * Show or hide the create account button in the "Get started" view.
+           * When false, the create account button and "First time?" label are hidden.
+           *
+           * @default true
+           */
+          createAccount?: boolean | undefined
+        }
+      | undefined
+    /**
      * URL of the dialog embed.
      * @default 'http://id.porto.sh/dialog'
      */
     host?: string | undefined
+    /**
+     * Customizable text labels for the dialog interface.
+     * Allows customization of button text, prompts, and example values.
+     * @default undefined
+     */
+    labels?:
+      | {
+          /**
+           * Text shown before the domain name in the sign-in prompt.
+           * Displayed at the top of the dialog when signing in.
+           *
+           * @default "Use Porto to sign in to"
+           */
+          signInPrompt?: string | undefined
+          /**
+           * Text for the sign-in button.
+           * Shown when the user has the option to sign in with an existing account.
+           *
+           * @default "Sign in with Porto"
+           */
+          signIn?: string | undefined
+          /**
+           * Text for the sign-up button.
+           * Shown in the account creation flow.
+           *
+           * @default "Sign up with Porto"
+           */
+          signUp?: string | undefined
+          /**
+           * Text for the create account button.
+           * Shown when creating a new account with sign-in option available.
+           *
+           * @default "Create Porto account"
+           */
+          createAccount?: string | undefined
+          /**
+           * Text for the sign-in button when only sign-in is available (no sign-up option).
+           * Alternative label for the sign-in button in this context.
+           *
+           * @default "Continue with Porto"
+           */
+          signInAlt?: string | undefined
+          /**
+           * Dialog title shown in the frame header.
+           * Currently not implemented in the UI.
+           *
+           * @default "Porto"
+           */
+          dialogTitle?: string | undefined
+          /**
+           * Example email/account ID shown in the email input placeholder.
+           * Only used when features.emailInput is true (email input is visible).
+           *
+           * @default "example@ithaca.xyz"
+           */
+          exampleEmail?: string | undefined
+          /**
+           * Email address for bug reports.
+           * Only used when features.bugReporting is true (bug icon is visible).
+           *
+           * @default "support@ithaca.xyz"
+           */
+          bugReportEmail?: string | undefined
+          /**
+           * Text for the account switcher link.
+           * Shown in the signed-in view to allow switching accounts.
+           *
+           * @default "Switch"
+           */
+          switchAccount?: string | undefined
+          /**
+           * Text for the sign-up link.
+           * Only used when features.signUpLink is true.
+           * Shown in the signed-in view to allow creating a new account.
+           *
+           * @default "Sign up"
+           */
+          signUpLink?: string | undefined
+        }
+      | undefined
     /**
      * Dialog renderer.
      * @default Dialog.iframe()

@@ -485,7 +485,7 @@ declare namespace CheckUnsupportedBrowser {
 }
 
 const TanStackRouterDevtools =
-  import.meta.env.PROD || window !== window.parent || Boolean(window.opener)
+  import.meta.env.PROD || window !== window.parent || window.opener
     ? () => null
     : React.lazy(() =>
         import('@tanstack/react-router-devtools').then((res) => ({
@@ -494,7 +494,7 @@ const TanStackRouterDevtools =
       )
 
 const TanStackQueryDevtools =
-  import.meta.env.PROD || window !== window.parent || Boolean(window.opener)
+  import.meta.env.PROD || window !== window.parent || window.opener
     ? () => null
     : React.lazy(() =>
         import('@tanstack/react-query-devtools').then((res) => ({

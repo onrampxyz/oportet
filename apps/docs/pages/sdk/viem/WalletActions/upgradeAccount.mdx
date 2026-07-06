@@ -1,4 +1,4 @@
-import { WalletActions } from 'porto/viem'
+import { WalletActions } from 'oportet/viem'
 import { privateKeyToAccount, generatePrivateKey } from 'viem/accounts'
 import { TryItOut } from '../../../../components/TryItOut'
 
@@ -12,7 +12,7 @@ Viem Action for upgrading an Externally-Owned Account (EOA) into a Porto Account
 
 ```ts twoslash [example.ts]
 import { privateKeyToAccount } from 'viem/accounts'
-import { WalletActions } from 'porto/viem'
+import { WalletActions } from 'oportet/viem'
 import { client } from './config'
 
 const eoa = privateKeyToAccount('0x...')

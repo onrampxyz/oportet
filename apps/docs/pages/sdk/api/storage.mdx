@@ -18,7 +18,7 @@ By default, Porto uses [IndexedDB](https://developer.mozilla.org/en-US/docs/Web/
 ### `Storage.idb`
 
 ```ts twoslash
-import { Porto, Storage } from 'porto'
+import { Porto, Storage } from 'oportet'
 
 const porto = Porto.create({
   storage: Storage.idb() // default storage in browser environments
@@ -28,7 +28,7 @@ const porto = Porto.create({
 ### `Storage.cookie`
 
 ```ts twoslash
-import { Porto, Storage } from 'porto'
+import { Porto, Storage } from 'oportet'
 
 const porto = Porto.create({
   storage: Storage.cookie()
@@ -38,7 +38,7 @@ const porto = Porto.create({
 ### `Storage.localStorage`
 
 ```ts twoslash
-import { Porto, Storage } from 'porto'
+import { Porto, Storage } from 'oportet'
 
 const porto = Porto.create({
   storage: Storage.localStorage()
@@ -48,7 +48,7 @@ const porto = Porto.create({
 ### `Storage.memory`
 
 ```ts twoslash
-import { Porto, Storage } from 'porto'
+import { Porto, Storage } from 'oportet'
 
 const porto = Porto.create({
   storage: Storage.memory() // default storage in non-browser environments
@@ -58,7 +58,7 @@ const porto = Porto.create({
 ### Combining multiple storage options
 
 ```ts twoslash
-import { Porto, Storage } from 'porto'
+import { Porto, Storage } from 'oportet'
 
 const porto = Porto.create({
   storage: Storage.combine(Storage.cookie(), Storage.localStorage())

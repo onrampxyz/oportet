@@ -57,7 +57,7 @@ There are usages for each of the frameworks in the [`Router` API reference](/sdk
 
 ```ts
 import { env } from 'cloudflare:workers'
-import { Router, Route } from 'porto/server'
+import { Router, Route } from 'oportet/server'
 
 export default Router({ basePath: '/porto' })
   .route('/merchant', Route.merchant({
@@ -87,7 +87,7 @@ If your server is at a different location to your app, you will need to pass the
 to it on `Porto.create(){:js}`.
 
 ```ts twoslash  
-import { Porto } from 'porto'
+import { Porto } from 'oportet'
 
 const porto = await Porto.create({
   merchantUrl: 'https://myapi.com/porto/merchant' // [!code focus]

@@ -10,7 +10,7 @@ Internally uses [`wallet_grantPermissions`](/sdk/rpc/wallet_grantPermissions).
 ```tsx twoslash
 import * as React from 'react'
 // ---cut---
-import { Hooks } from 'porto/wagmi'
+import { Hooks } from 'oportet/wagmi'
 import { parseEther, toHex } from 'viem'
 
 const token = '0xaf3b0a5b4becc4fa1dfafe74580efa19a2ea49fa'
@@ -79,7 +79,7 @@ You can also grant permissions to a specific signing key by providing the `key` 
 ```tsx twoslash
 import * as React from 'react'
 // ---cut---
-import { Hooks } from 'porto/wagmi'
+import { Hooks } from 'oportet/wagmi'
 import { parseEther, toHex } from 'viem'
 import { privateKeyToAccount } from 'viem/accounts'
 
@@ -131,7 +131,7 @@ Address of the account to grant permissions for. If not provided, will use the c
 Timestamp (in seconds) when the permission expires.
 
 ```tsx
-import { Hooks } from 'porto/wagmi'
+import { Hooks } from 'oportet/wagmi'
 
 function Example() {
   const grantPermissions = Hooks.useGrantPermissions()
@@ -166,7 +166,7 @@ type Key = {
 ```
 
 ```tsx
-import { Hooks } from 'porto/wagmi'
+import { Hooks } from 'oportet/wagmi'
 import { privateKeyToAccount } from 'viem/accounts'
 
 function Example() {

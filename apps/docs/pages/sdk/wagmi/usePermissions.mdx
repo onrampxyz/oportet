@@ -7,7 +7,7 @@ Hook for retrieving active permissions for an account.
 Internally uses [`wallet_getPermissions`](/sdk/rpc/wallet_getPermissions).
 
 ```tsx
-import { Hooks } from 'porto/wagmi'
+import { Hooks } from 'oportet/wagmi'
 
 function Example() {
   const result = Hooks.usePermissions()
@@ -31,7 +31,7 @@ function Example() {
 Address of the account to get permissions for. If not provided, will use the connected account.
 
 ```tsx
-import { Hooks } from 'porto/wagmi'
+import { Hooks } from 'oportet/wagmi'
 
 function Example() {
   const result = Hooks.usePermissions({

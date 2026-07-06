@@ -44,7 +44,7 @@ type Response = {
 ## Example
 
 ```ts twoslash
-import { Porto } from 'porto'
+import { Porto } from 'oportet'
 import { PublicKey, Signature, WebCryptoP256 } from 'ox'
 
 const { provider } = Porto.create()

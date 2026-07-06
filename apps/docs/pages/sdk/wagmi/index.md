@@ -31,21 +31,27 @@ Import via named export or `Actions` namespace (better autocomplete DX and does 
 
 - `addFunds`
 - `createAccount`
+- `connect`
+- `disconnect`
+- `getAssets`
+- `getCallsHistory`
 - `getPermissions`
 - `grantPermissions`
 - `revokePermissions`
 - `upgradeAccount`
 
 ```ts
-import { Actions } from 'porto/wagmi' // Actions.getPermissions()
-import { connect } from 'porto/wagmi/Actions'
+import { Actions } from 'oportet/wagmi' // Actions.getPermissions()
+import { connect } from 'oportet/wagmi/Actions'
 ```
 
 ### React Hooks
 
 Import via named export or `Hooks` namespace (better autocomplete DX and does not impact tree shaking).
 
+- `useAssets`
 - `useAddFunds`
+- `useCallsHistory`
 - `useCreateAccount`
 - `useGrantPermissions`
 - `usePermissions`
@@ -53,6 +59,6 @@ Import via named export or `Hooks` namespace (better autocomplete DX and does no
 - `useUpgradeAccount`
 
 ```ts
-import { Hooks } from 'porto/wagmi' // Hooks.usePermissions()
-import { usePermissions } from 'porto/wagmi/Hooks'
+import { Hooks } from 'oportet/wagmi' // Hooks.usePermissions()
+import { usePermissions } from 'oportet/wagmi/Hooks'
 ```

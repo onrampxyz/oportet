@@ -65,7 +65,8 @@ export function GlobalDeposit() {
         type: 'function',
       },
     ],
-    address: selectedToken?.bridgeWrapper!,
+    address: selectedToken?.bridgeWrapper,
+    // biome-ignore lint/suspicious/noNonNullAssertedOptionalChain: query is gated by `enabled` below, so bridgeContract is defined when it runs
     args: [selectedToken?.bridgeContract!],
     chainId: selectedChain?.id as any,
     functionName: 'minAmounts',
