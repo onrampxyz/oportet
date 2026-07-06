@@ -7,9 +7,9 @@ import {
   TextButton,
   TokenIcon,
 } from '@porto/ui'
+import type * as Rpc from 'oportet/core/internal/schema/request'
 import { type Address, Value } from 'ox'
 import * as React from 'react'
-import type * as Rpc from 'oportet/core/internal/schema/request'
 import { type Chain, erc20Abi, maxUint256 } from 'viem'
 import { useReadContracts } from 'wagmi'
 import { PriceFormatter, StringFormatter } from '~/utils'

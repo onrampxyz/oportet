@@ -1,7 +1,7 @@
 import * as Query from '@tanstack/react-query'
-import type { Address } from 'ox'
 import * as Tokens from 'oportet/core/internal/tokens'
 import { Hooks } from 'oportet/remote'
+import type { Address } from 'ox'
 import type { Chain, Client, Transport } from 'viem'
 import { porto } from './Porto.js'
 

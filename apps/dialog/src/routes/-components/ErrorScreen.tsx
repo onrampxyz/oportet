@@ -1,6 +1,6 @@
 import * as UI from '@porto/ui'
-import type * as React from 'react'
 import { Actions } from 'oportet/remote'
+import type * as React from 'react'
 import * as Dialog from '~/lib/Dialog'
 import * as DialogErrors from '~/lib/DialogErrors'
 import { porto } from '~/lib/Porto'

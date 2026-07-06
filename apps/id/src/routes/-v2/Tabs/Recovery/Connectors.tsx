@@ -1,8 +1,8 @@
 import * as Ariakit from '@ariakit/react'
 import { Button, Toast } from '@porto/apps/components'
-import { useMemo, useState } from 'react'
 import { riseTestnet } from 'oportet/core/Chains'
 import { Hooks } from 'oportet/wagmi'
+import { useMemo, useState } from 'react'
 import { toast } from 'sonner'
 import {
   type Connector,

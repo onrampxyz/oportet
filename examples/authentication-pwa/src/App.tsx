@@ -1,5 +1,5 @@
-import * as React from 'react'
 import { Hooks } from 'oportet/wagmi'
+import * as React from 'react'
 import { useAccount, useConnectors, useDisconnect } from 'wagmi'
 
 import PWABadge from './PWABadge.tsx'

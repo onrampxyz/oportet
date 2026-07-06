@@ -2,7 +2,10 @@
   "$schema": "https://unpkg.com/@changesets/config@3.0.0/schema.json",
   "access": "public",
   "baseBranch": "main",
-  "changelog": ["@changesets/changelog-github", { "repo": "onrampxyz/oportet" }],
+  "changelog": [
+    "@changesets/changelog-github",
+    { "repo": "onrampxyz/oportet" }
+  ],
   "commit": false,
   "fixed": [],
   "ignore": ["extension"],

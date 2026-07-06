@@ -1,12 +1,12 @@
 import { Env, Query as Query_porto } from '@porto/apps'
 import * as Query from '@tanstack/react-query'
-import type { Address } from 'ox'
 import { type Account, RelayActions } from 'oportet'
 import * as RequiredFunds from 'oportet/core/internal/requiredFunds'
 import type * as Capabilities_schema from 'oportet/core/internal/schema/capabilities'
 import type * as Token from 'oportet/core/internal/schema/token'
 import { Hooks } from 'oportet/remote'
 import type { RelayClient } from 'oportet/viem'
+import type { Address } from 'ox'
 import { porto } from './Porto'
 import * as Tokens from './Tokens'
 

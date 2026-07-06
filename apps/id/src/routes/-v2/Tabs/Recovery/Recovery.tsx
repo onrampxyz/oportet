@@ -1,7 +1,7 @@
 import { Spinner, Toast } from '@porto/apps/components'
-import { useMemo } from 'react'
 import { riseTestnet } from 'oportet/core/Chains'
 import { Hooks } from 'oportet/wagmi'
+import { useMemo } from 'react'
 import { toast } from 'sonner'
 import { useAccount } from 'wagmi'
 import { TruncatedAddress } from '~/components/TruncatedAddress'

@@ -61,10 +61,11 @@ export function WalletBalances(props: Readonly<WalletBalancesProps>) {
       {hasBalance &&
         !isLoading &&
         chains?.map((chain) => {
-          const chainBalances =
-            balances.filter(({ chainId }) => chainId === chain.id);
+          const chainBalances = balances.filter(
+            ({ chainId }) => chainId === chain.id,
+          )
           return (
-            <div className="" key={chain.id} >
+            <div className="" key={chain.id}>
               <div className="mb-4 flex items-center justify-between">
                 <div>
                   <h3 className="font-semibold">{chain.id}</h3>
@@ -137,8 +138,9 @@ export function WalletBalances(props: Readonly<WalletBalancesProps>) {
                   )
                 })}
               </div>
-            </div>);
+            </div>
+          )
         })}
-    </div >
+    </div>
   )
 }

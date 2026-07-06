@@ -1,6 +1,6 @@
-import { useState } from 'react'
 import { Hooks } from 'oportet/wagmi'
 import { useConnect } from 'oportet/wagmi/Hooks'
+import { useState } from 'react'
 import {
   type EIP1193Provider,
   formatEther,
