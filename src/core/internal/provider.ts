@@ -21,10 +21,14 @@ import * as Store from './store.js'
 import * as UrlString from './urlString.js'
 import { uuidv4, withDedupe } from './utils.js'
 
-export type Provider = ox_Provider.Provider<{
-  includeEvents: true
-  schema: RpcSchema.Schema
-}> & {
+// ox >=0.14 moved event support out of `Options` (old `includeEvents: true`)
+// into the second type parameter (`eventMap: true` = required Emitter).
+export type Provider = ox_Provider.Provider<
+  {
+    schema: RpcSchema.Schema
+  },
+  true
+> & {
   /**
    * Not part of versioned API, proceed with caution.
    * @deprecated

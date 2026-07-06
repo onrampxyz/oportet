@@ -12,7 +12,7 @@ export const defaultConfig = {
  */
 export function create(
   parameters: ExactPartial<Porto.Config> | undefined = {},
-): Porto.RiseWallet {
+): Porto.Porto {
   return Porto.create({
     ...parameters,
     mode: parameters.mode ?? defaultConfig.mode,

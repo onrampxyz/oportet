@@ -1,4 +1,4 @@
-import { riseWallet as portoConnector } from 'oportet/wagmi'
+import { porto as portoConnector } from 'oportet/wagmi'
 import { createConfig, createStorage } from 'wagmi'
 import * as Porto from './Porto'
 

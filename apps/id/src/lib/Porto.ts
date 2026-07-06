@@ -1,5 +1,5 @@
 import { PortoConfig } from '@porto/apps'
-import { Dialog, Mode, type RiseWallet, Storage } from 'oportet'
+import { Dialog, Mode, type Porto, Storage } from 'oportet'
 import 'oportet/register'
 
 const theme = localStorage.getItem('__porto_theme') ?? 'light'
@@ -28,6 +28,6 @@ export const config = {
     themeController,
   }),
   storage: Storage.combine(Storage.cookie(), Storage.localStorage()),
-} as const satisfies RiseWallet.Config
+} as const satisfies Porto.Config
 
 // export const porto = Porto.create(config)

@@ -109,12 +109,12 @@ export type Porto<
     Chains.Chain,
     ...Chains.Chain[],
   ],
-> = Porto_.RiseWallet<chains> & {
+> = Porto_.Porto<chains> & {
   mode: Mode.Mode
   messenger: OneOf<Messenger.WithReady | Messenger.Messenger>
   methodPolicies?: MethodPolicies.MethodPolicies | undefined
   ready: () => Promise<void>
-  _internal: Porto_.RiseWallet<chains>['_internal'] & {
+  _internal: Porto_.Porto<chains>['_internal'] & {
     remoteStore: StoreApi<RemoteState>
   }
 }

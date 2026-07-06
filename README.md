@@ -54,12 +54,12 @@ bun add oportet wagmi viem @tanstack/react-query
 #### 1. Configure the Rise Wallet Connector
 
 ```tsx
-import { Chains, RiseWallet } from 'oportet'
-import { riseWallet } from 'oportet/wagmi'
+import { Chains, Porto } from 'oportet'
+import { porto } from 'oportet/wagmi'
 import { createConfig, http } from 'wagmi'
 
 // Export the connector for advanced usage
-export const rwConnector = riseWallet(RiseWallet.defaultConfig)
+export const rwConnector = porto(Porto.defaultConfig)
 
 // Create wagmi config
 export const config = createConfig({
