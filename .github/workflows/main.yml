@@ -18,6 +18,39 @@ jobs:
     uses: ./.github/workflows/extension.yml
     secrets: inherit
 
+  # Dry-run publish gate (exec-plan-porto-fork.md Slice 5). Always runs; proves
+  # the package builds and packs its published shape (dist + src) BEFORE the real
+  # publish is ever armed via ENABLE_PUBLISH. No registry write happens here.
+  publish-dry-run:
+    name: Publish (dry-run)
+    needs: [verify]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v5
+        with:
+          submodules: 'recursive'
+
+      - name: Install dependencies
+        uses: ./.github/actions/install-dependencies
+
+      - name: Build dist + apply publish trim
+        run: |
+          pnpm build:dist
+          pnpm tsx ./scripts/prepublish:pre.ts
+
+      - name: Pack and verify tarball contains dist + src
+        run: |
+          npm pack --ignore-scripts
+          tgz="$(ls oportet-*.tgz)"
+          version="$(node -p "require('./package.json').version")"
+          dist="$(tar tzf "$tgz" | grep -c 'package/dist/')"
+          src="$(tar tzf "$tgz" | grep -c 'package/src/')"
+          echo "oportet@$version -> $dist dist file(s) + $src src file(s)"
+          test "$dist" -gt 0 || { echo '::error::published tarball is missing dist/'; exit 1; }
+          test "$src" -gt 0 || { echo '::error::published tarball is missing src/'; exit 1; }
+
   changesets:
     name: Changesets
     needs: [verify, extension]
