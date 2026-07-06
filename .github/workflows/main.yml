@@ -21,6 +21,9 @@ jobs:
   changesets:
     name: Changesets
     needs: [verify, extension]
+    # Publishing stays off until the npm OIDC / trusted-publisher setup lands
+    # (exec-plan-porto-fork.md Slice 5). Set repo variable ENABLE_PUBLISH=true to arm.
+    if: vars.ENABLE_PUBLISH == 'true'
     permissions:
       contents: write
       id-token: write
