@@ -28,7 +28,7 @@
     "ox": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
-    "rise-wallet": "workspace:*",
+    "oportet": "workspace:*",
     "sonner": "catalog:",
     "valibot": "^1.1.0",
     "wagmi": "catalog:"

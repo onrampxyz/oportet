@@ -1,6 +1,6 @@
 import { PortoConfig } from '@porto/apps'
-import { Dialog, Mode, type RiseWallet, Storage } from 'rise-wallet'
-import 'rise-wallet/register'
+import { Dialog, Mode, type RiseWallet, Storage } from 'oportet'
+import 'oportet/register'
 
 const theme = localStorage.getItem('__porto_theme') ?? 'light'
 const themeController = Dialog.createThemeController()

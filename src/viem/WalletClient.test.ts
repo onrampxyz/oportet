@@ -1,5 +1,5 @@
-import { Porto } from 'rise-wallet'
-import { WalletClient } from 'rise-wallet/viem'
+import { Porto } from 'oportet'
+import { WalletClient } from 'oportet/viem'
 import { describe, expect, test } from 'vitest'
 
 describe('fromPorto', () => {

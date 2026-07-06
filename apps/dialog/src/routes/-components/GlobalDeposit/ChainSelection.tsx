@@ -1,5 +1,5 @@
 import { Button } from '@porto/ui'
-import { Chains } from 'rise-wallet/index'
+import { Chains } from 'oportet/index'
 import { useFundsContext } from '~/contexts'
 import { Layout } from '../Layout'
 import { ReceiveViaQr } from './ReceiveViaQr'

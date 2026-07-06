@@ -1,7 +1,7 @@
 import { Button } from '@porto/ui'
 import { useMutation } from '@tanstack/react-query'
 import { Json } from 'ox'
-import { Actions, Hooks } from 'rise-wallet/remote'
+import { Actions, Hooks } from 'oportet/remote'
 import { porto } from '~/lib/Porto'
 import { Layout } from '~/routes/-components/Layout'
 import LucideTriangleAlert from '~icons/lucide/triangle-alert'

@@ -15,7 +15,7 @@
     "@tanstack/react-query": "catalog:",
     "@tanstack/react-query-persist-client": "catalog:",
     "cva": "catalog:",
-    "rise-wallet": "workspace:*",
+    "oportet": "workspace:*",
     "react": "catalog:",
     "react-dom": "catalog:",
     "react-router": "^7",

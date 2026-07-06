@@ -37,16 +37,16 @@ For comprehensive guides and API reference, visit the [RISE Documentation](https
 
 ```bash
 # npm
-npm i rise-wallet wagmi viem @tanstack/react-query
+npm i oportet wagmi viem @tanstack/react-query
 
 # pnpm
-pnpm add rise-wallet wagmi viem @tanstack/react-query
+pnpm add oportet wagmi viem @tanstack/react-query
 
 # yarn
-yarn add rise-wallet wagmi viem @tanstack/react-query
+yarn add oportet wagmi viem @tanstack/react-query
 
 # bun
-bun add rise-wallet wagmi viem @tanstack/react-query
+bun add oportet wagmi viem @tanstack/react-query
 ```
 
 ### Basic Setup
@@ -54,8 +54,8 @@ bun add rise-wallet wagmi viem @tanstack/react-query
 #### 1. Configure the Rise Wallet Connector
 
 ```tsx
-import { Chains, RiseWallet } from 'rise-wallet'
-import { riseWallet } from 'rise-wallet/wagmi'
+import { Chains, RiseWallet } from 'oportet'
+import { riseWallet } from 'oportet/wagmi'
 import { createConfig, http } from 'wagmi'
 
 // Export the connector for advanced usage
@@ -132,7 +132,7 @@ export function WalletButton() {
 Create session keys for gasless transactions:
 
 ```tsx
-import { Hooks } from 'rise-wallet/wagmi'
+import { Hooks } from 'oportet/wagmi'
 
 const grantPermissions = Hooks.useGrantPermissions()
 

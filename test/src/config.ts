@@ -1,4 +1,4 @@
-import { type Account, type Chains, Mode, Porto, Storage } from 'rise-wallet'
+import { type Account, type Chains, Mode, Porto, Storage } from 'oportet'
 import { type HttpTransportConfig, http } from 'viem'
 import { relayUrls } from '../../src/core/Transport.js'
 import * as RelayActions from '../../src/viem/internal/relayActions.js'

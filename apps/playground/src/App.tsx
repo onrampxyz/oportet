@@ -20,7 +20,7 @@ import {
   Value,
 } from 'ox'
 import * as React from 'react'
-import { Dialog } from 'rise-wallet'
+import { Dialog } from 'oportet'
 import { erc20Abi, hashTypedData, isAddress, isHex, maxUint256 } from 'viem'
 import {
   generatePrivateKey,

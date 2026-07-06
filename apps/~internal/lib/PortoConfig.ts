@@ -1,5 +1,5 @@
-import { Mode, Transport } from 'rise-wallet'
-import type { Porto } from 'rise-wallet/remote'
+import { Mode, Transport } from 'oportet'
+import type { Porto } from 'oportet/remote'
 import { http, type ValueOf } from 'viem'
 import { rise, riseTestnet, sepolia } from 'viem/chains'
 

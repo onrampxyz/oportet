@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Hooks } from 'rise-wallet/wagmi'
+import { Hooks } from 'oportet/wagmi'
 import { useAccount, useConnectors, useDisconnect } from 'wagmi'
 
 export function App() {

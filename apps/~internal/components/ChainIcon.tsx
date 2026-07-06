@@ -1,5 +1,5 @@
 import { icons } from 'virtual:chain-icons'
-import { Chains } from 'rise-wallet'
+import { Chains } from 'oportet'
 import type { Chain } from 'viem'
 import IconUnknown from '~icons/porto/unknown'
 

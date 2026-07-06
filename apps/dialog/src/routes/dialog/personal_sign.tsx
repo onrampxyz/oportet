@@ -3,7 +3,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import { Hex, Siwe } from 'ox'
 import * as Provider from 'ox/Provider'
 import { useMemo } from 'react'
-import { Actions } from 'rise-wallet/remote'
+import { Actions } from 'oportet/remote'
 
 import { porto } from '~/lib/Porto'
 import { useAuthSessionRedirect } from '~/lib/ReactNative'

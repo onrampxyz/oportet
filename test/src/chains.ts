@@ -1,4 +1,4 @@
-import { Chains } from 'rise-wallet'
+import { Chains } from 'oportet'
 
 export function getChains(env: string) {
   if (env === 'anvil')

@@ -5,7 +5,7 @@
   "compilerOptions": {
     "paths": {
       "~/*": ["./src/*"],
-      "rise-wallet/*": ["../../src/*"],
+      "oportet/*": ["../../src/*"],
       "styled-system/*": ["./styled-system/*"],
       "@porto/ui": ["../ui/src/index.ts"]
     },

@@ -32,7 +32,7 @@
     "react": "catalog:",
     "react-dom": "catalog:",
     "react-intersection-observer": "^9.16.0",
-    "rise-wallet": "workspace:*",
+    "oportet": "workspace:*",
     "wagmi": "catalog:",
     "zod": "catalog:",
     "zustand": "catalog:",

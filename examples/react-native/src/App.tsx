@@ -13,8 +13,8 @@ import {
   View,
 } from 'react-native'
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context'
-import { Key, RelayActions, RelayClient } from 'rise-wallet/viem'
-import { Hooks } from 'rise-wallet/wagmi'
+import { Key, RelayActions, RelayClient } from 'oportet/viem'
+import { Hooks } from 'oportet/wagmi'
 import {
   useAccount,
   useCapabilities,

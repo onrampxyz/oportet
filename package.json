@@ -128,12 +128,12 @@
   },
   "size-limit": [
     {
-      "name": "import { Porto } from 'rise-wallet'",
+      "name": "import { Porto } from 'oportet'",
       "path": "./dist/index.js",
       "import": "{ Porto }"
     },
     {
-      "name": "import { porto } from 'rise-wallet/wagmi/Connector'",
+      "name": "import { porto } from 'oportet/wagmi/Connector'",
       "path": "./dist/wagmi/Connector.js",
       "import": "*"
     }
@@ -142,7 +142,7 @@
     "overrides": {
       "abitype": "latest",
       "ox": "catalog:",
-      "rise-wallet": "workspace:*",
+      "oportet": "workspace:*",
       "viem": "catalog:",
       "mipd-postmessage": "catalog:",
       "ws@>=8.0.0 <8.17.1": "8.17.1",
@@ -180,9 +180,9 @@
     }
   },
   "[!start-pkg]": {},
-  "name": "rise-wallet",
+  "name": "oportet",
   "description": "Next-gen Account for Ethereum",
-  "version": "0.3.5",
+  "version": "0.4.0",
   "type": "module",
   "bin": {
     "porto": "./dist/cli/bin/index.js"

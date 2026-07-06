@@ -4,9 +4,9 @@ import {
   stringifySearchWith,
 } from '@tanstack/react-router'
 import { Json, Provider, type RpcSchema } from 'ox'
-import type { RpcSchema as porto_RpcSchema } from 'rise-wallet'
-import * as RpcRequest from 'rise-wallet/core/internal/schema/request'
-import { Actions } from 'rise-wallet/remote'
+import type { RpcSchema as porto_RpcSchema } from 'oportet'
+import * as RpcRequest from 'oportet/core/internal/schema/request'
+import { Actions } from 'oportet/remote'
 
 import { routeTree } from '~/routeTree.gen.ts'
 import { porto } from './Porto'

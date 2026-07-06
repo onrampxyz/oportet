@@ -1,4 +1,4 @@
-import { Dialog, Mode, Porto } from 'rise-wallet'
+import { Dialog, Mode, Porto } from 'oportet'
 
 export default defineContentScript({
   main() {
