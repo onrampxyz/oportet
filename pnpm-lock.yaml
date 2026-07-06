@@ -172,6 +172,9 @@ patchedDependencies:
   '@wagmi/cli':
     hash: 6b99a8b8575a6640e47965065cf75f39120a1f07ea3ae1776a366a0ec296bfbb
     path: patches/@wagmi__cli.patch
+  ox@0.14.30:
+    hash: c10fd68fe9085a9f797bffb55c1ea047a46dc58f992eb6b29aa84d3df6ca1d0f
+    path: patches/ox@0.14.30.patch
 
 importers:
 
@@ -191,7 +194,7 @@ importers:
         version: 0.0.6(mipd@0.0.7(typescript@5.9.3))(typescript@5.9.3)(zod@4.1.5)
       ox:
         specifier: ^0.14.0
-        version: 0.14.30(typescript@5.9.3)(zod@4.1.5)
+        version: 0.14.30(patch_hash=c10fd68fe9085a9f797bffb55c1ea047a46dc58f992eb6b29aa84d3df6ca1d0f)(typescript@5.9.3)(zod@4.1.5)
       zod:
         specifier: ^4.1.5
         version: 4.1.5
@@ -384,7 +387,7 @@ importers:
         version: link:../..
       ox:
         specifier: ^0.14.0
-        version: 0.14.30(typescript@5.9.3)(zod@4.1.5)
+        version: 0.14.30(patch_hash=c10fd68fe9085a9f797bffb55c1ea047a46dc58f992eb6b29aa84d3df6ca1d0f)(typescript@5.9.3)(zod@4.1.5)
       react:
         specifier: 'catalog:'
         version: 19.2.7
@@ -606,7 +609,7 @@ importers:
         version: link:../..
       ox:
         specifier: ^0.14.0
-        version: 0.14.30(typescript@5.9.3)(zod@4.2.1)
+        version: 0.14.30(patch_hash=c10fd68fe9085a9f797bffb55c1ea047a46dc58f992eb6b29aa84d3df6ca1d0f)(typescript@5.9.3)(zod@4.2.1)
       react:
         specifier: 'catalog:'
         version: 19.2.7
@@ -703,7 +706,7 @@ importers:
         version: link:../..
       ox:
         specifier: ^0.14.0
-        version: 0.14.30(typescript@5.9.3)(zod@4.2.1)
+        version: 0.14.30(patch_hash=c10fd68fe9085a9f797bffb55c1ea047a46dc58f992eb6b29aa84d3df6ca1d0f)(typescript@5.9.3)(zod@4.2.1)
       react:
         specifier: 'catalog:'
         version: 19.2.7
@@ -1622,7 +1625,7 @@ importers:
         version: link:../..
       ox:
         specifier: ^0.14.0
-        version: 0.14.30(typescript@5.9.3)(zod@4.2.1)
+        version: 0.14.30(patch_hash=c10fd68fe9085a9f797bffb55c1ea047a46dc58f992eb6b29aa84d3df6ca1d0f)(typescript@5.9.3)(zod@4.2.1)
       react:
         specifier: 19.1.0
         version: 19.1.0
@@ -1695,7 +1698,7 @@ importers:
         version: link:../..
       ox:
         specifier: ^0.14.0
-        version: 0.14.30(typescript@5.9.3)(zod@4.2.1)
+        version: 0.14.30(patch_hash=c10fd68fe9085a9f797bffb55c1ea047a46dc58f992eb6b29aa84d3df6ca1d0f)(typescript@5.9.3)(zod@4.2.1)
       react:
         specifier: 19.1.0
         version: 19.1.0
@@ -16907,7 +16910,7 @@ snapshots:
       clsx: 1.2.1
       eventemitter3: 5.0.1
       idb-keyval: 6.2.1
-      ox: 0.14.30(typescript@5.9.3)(zod@4.2.1)
+      ox: 0.14.30(patch_hash=c10fd68fe9085a9f797bffb55c1ea047a46dc58f992eb6b29aa84d3df6ca1d0f)(typescript@5.9.3)(zod@4.2.1)
       preact: 10.24.2
       viem: 2.54.3(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.2.1)
       zustand: 5.0.3(@types/react@19.1.17)(react@19.1.0)(use-sync-external-store@1.4.0(react@19.1.0))
@@ -16927,7 +16930,7 @@ snapshots:
       clsx: 1.2.1
       eventemitter3: 5.0.1
       idb-keyval: 6.2.1
-      ox: 0.14.30(typescript@5.9.3)(zod@4.2.1)
+      ox: 0.14.30(patch_hash=c10fd68fe9085a9f797bffb55c1ea047a46dc58f992eb6b29aa84d3df6ca1d0f)(typescript@5.9.3)(zod@4.2.1)
       preact: 10.24.2
       viem: 2.54.3(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.2.1)
       zustand: 5.0.3(@types/react@19.1.17)(react@19.1.0)(use-sync-external-store@1.5.0(react@19.1.0))
@@ -16948,7 +16951,7 @@ snapshots:
       clsx: 1.2.1
       eventemitter3: 5.0.1
       idb-keyval: 6.2.1
-      ox: 0.14.30(typescript@5.9.3)(zod@4.2.1)
+      ox: 0.14.30(patch_hash=c10fd68fe9085a9f797bffb55c1ea047a46dc58f992eb6b29aa84d3df6ca1d0f)(typescript@5.9.3)(zod@4.2.1)
       preact: 10.24.2
       viem: 2.54.3(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.2.1)
       zustand: 5.0.3(@types/react@19.1.17)(react@19.1.0)(use-sync-external-store@1.4.0(react@19.1.0))
@@ -16973,7 +16976,7 @@ snapshots:
       clsx: 1.2.1
       eventemitter3: 5.0.1
       idb-keyval: 6.2.1
-      ox: 0.14.30(typescript@5.9.3)(zod@4.1.5)
+      ox: 0.14.30(patch_hash=c10fd68fe9085a9f797bffb55c1ea047a46dc58f992eb6b29aa84d3df6ca1d0f)(typescript@5.9.3)(zod@4.1.5)
       preact: 10.24.2
       viem: 2.54.3(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.5)
       zustand: 5.0.3(@types/react@19.1.17)(react@19.2.7)(use-sync-external-store@1.4.0(react@19.2.7))
@@ -16998,7 +17001,7 @@ snapshots:
       clsx: 1.2.1
       eventemitter3: 5.0.1
       idb-keyval: 6.2.1
-      ox: 0.14.30(typescript@5.9.3)(zod@4.2.1)
+      ox: 0.14.30(patch_hash=c10fd68fe9085a9f797bffb55c1ea047a46dc58f992eb6b29aa84d3df6ca1d0f)(typescript@5.9.3)(zod@4.2.1)
       preact: 10.24.2
       viem: 2.54.3(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.2.1)
       zustand: 5.0.3(@types/react@19.1.17)(react@19.2.7)(use-sync-external-store@1.4.0(react@19.2.7))
@@ -17416,7 +17419,7 @@ snapshots:
       clsx: 1.2.1
       eventemitter3: 5.0.1
       idb-keyval: 6.2.1
-      ox: 0.14.30(typescript@5.9.3)(zod@4.2.1)
+      ox: 0.14.30(patch_hash=c10fd68fe9085a9f797bffb55c1ea047a46dc58f992eb6b29aa84d3df6ca1d0f)(typescript@5.9.3)(zod@4.2.1)
       preact: 10.24.2
       viem: 2.54.3(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.2.1)
       zustand: 5.0.3(@types/react@19.1.17)(react@19.1.0)(use-sync-external-store@1.4.0(react@19.1.0))
@@ -17436,7 +17439,7 @@ snapshots:
       clsx: 1.2.1
       eventemitter3: 5.0.1
       idb-keyval: 6.2.1
-      ox: 0.14.30(typescript@5.9.3)(zod@4.1.5)
+      ox: 0.14.30(patch_hash=c10fd68fe9085a9f797bffb55c1ea047a46dc58f992eb6b29aa84d3df6ca1d0f)(typescript@5.9.3)(zod@4.1.5)
       preact: 10.24.2
       viem: 2.54.3(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.5)
       zustand: 5.0.3(@types/react@19.1.17)(react@19.2.7)(use-sync-external-store@1.4.0(react@19.2.7))
@@ -17456,7 +17459,7 @@ snapshots:
       clsx: 1.2.1
       eventemitter3: 5.0.1
       idb-keyval: 6.2.1
-      ox: 0.14.30(typescript@5.9.3)(zod@4.2.1)
+      ox: 0.14.30(patch_hash=c10fd68fe9085a9f797bffb55c1ea047a46dc58f992eb6b29aa84d3df6ca1d0f)(typescript@5.9.3)(zod@4.2.1)
       preact: 10.24.2
       viem: 2.54.3(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.2.1)
       zustand: 5.0.3(@types/react@19.1.17)(react@19.2.7)(use-sync-external-store@1.4.0(react@19.2.7))
@@ -32285,7 +32288,7 @@ snapshots:
     dependencies:
       mipd: 0.0.7(typescript@5.9.3)
       nanoid: 5.1.16
-      ox: 0.14.30(typescript@5.9.3)(zod@4.1.5)
+      ox: 0.14.30(patch_hash=c10fd68fe9085a9f797bffb55c1ea047a46dc58f992eb6b29aa84d3df6ca1d0f)(typescript@5.9.3)(zod@4.1.5)
       typescript: 5.9.3
     transitivePeerDependencies:
       - zod
@@ -32697,7 +32700,7 @@ snapshots:
       object-keys: 1.1.1
       safe-push-apply: 1.0.0
 
-  ox@0.14.30(typescript@5.9.3)(zod@3.22.4):
+  ox@0.14.30(patch_hash=c10fd68fe9085a9f797bffb55c1ea047a46dc58f992eb6b29aa84d3df6ca1d0f)(typescript@5.9.3)(zod@3.22.4):
     dependencies:
       '@adraffy/ens-normalize': 1.11.0
       '@noble/ciphers': 1.3.0
@@ -32712,7 +32715,7 @@ snapshots:
     transitivePeerDependencies:
       - zod
 
-  ox@0.14.30(typescript@5.9.3)(zod@3.25.76):
+  ox@0.14.30(patch_hash=c10fd68fe9085a9f797bffb55c1ea047a46dc58f992eb6b29aa84d3df6ca1d0f)(typescript@5.9.3)(zod@3.25.76):
     dependencies:
       '@adraffy/ens-normalize': 1.11.0
       '@noble/ciphers': 1.3.0
@@ -32727,7 +32730,7 @@ snapshots:
     transitivePeerDependencies:
       - zod
 
-  ox@0.14.30(typescript@5.9.3)(zod@4.1.5):
+  ox@0.14.30(patch_hash=c10fd68fe9085a9f797bffb55c1ea047a46dc58f992eb6b29aa84d3df6ca1d0f)(typescript@5.9.3)(zod@4.1.5):
     dependencies:
       '@adraffy/ens-normalize': 1.11.0
       '@noble/ciphers': 1.3.0
@@ -32742,7 +32745,7 @@ snapshots:
     transitivePeerDependencies:
       - zod
 
-  ox@0.14.30(typescript@5.9.3)(zod@4.2.1):
+  ox@0.14.30(patch_hash=c10fd68fe9085a9f797bffb55c1ea047a46dc58f992eb6b29aa84d3df6ca1d0f)(typescript@5.9.3)(zod@4.2.1):
     dependencies:
       '@adraffy/ens-normalize': 1.11.0
       '@noble/ciphers': 1.3.0
@@ -33132,7 +33135,7 @@ snapshots:
       hono: 4.10.3
       idb-keyval: 6.2.2
       mipd: 0.0.7(typescript@5.9.3)
-      ox: 0.14.30(typescript@5.9.3)(zod@4.2.1)
+      ox: 0.14.30(patch_hash=c10fd68fe9085a9f797bffb55c1ea047a46dc58f992eb6b29aa84d3df6ca1d0f)(typescript@5.9.3)(zod@4.2.1)
       viem: 2.54.3(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.2.1)
       zod: 4.2.1
       zustand: 5.0.5(@types/react@19.1.17)(react@19.1.0)(use-sync-external-store@1.4.0(react@19.1.0))
@@ -33152,7 +33155,7 @@ snapshots:
       hono: 4.10.3
       idb-keyval: 6.2.2
       mipd: 0.0.7(typescript@5.9.3)
-      ox: 0.14.30(typescript@5.9.3)(zod@4.2.1)
+      ox: 0.14.30(patch_hash=c10fd68fe9085a9f797bffb55c1ea047a46dc58f992eb6b29aa84d3df6ca1d0f)(typescript@5.9.3)(zod@4.2.1)
       viem: 2.54.3(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.2.1)
       zod: 4.2.1
       zustand: 5.0.5(@types/react@19.1.17)(react@19.1.0)(use-sync-external-store@1.4.0(react@19.1.0))
@@ -33172,7 +33175,7 @@ snapshots:
       hono: 4.10.3
       idb-keyval: 6.2.2
       mipd: 0.0.7(typescript@5.9.3)
-      ox: 0.14.30(typescript@5.9.3)(zod@4.2.1)
+      ox: 0.14.30(patch_hash=c10fd68fe9085a9f797bffb55c1ea047a46dc58f992eb6b29aa84d3df6ca1d0f)(typescript@5.9.3)(zod@4.2.1)
       viem: 2.54.3(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.2.1)
       zod: 4.2.1
       zustand: 5.0.5(@types/react@19.1.17)(react@19.2.7)(use-sync-external-store@1.4.0(react@19.2.7))
@@ -33196,7 +33199,7 @@ snapshots:
       hono: 4.10.3
       idb-keyval: 6.2.2
       mipd: 0.0.7(typescript@5.9.3)
-      ox: 0.14.30(typescript@5.9.3)(zod@4.2.1)
+      ox: 0.14.30(patch_hash=c10fd68fe9085a9f797bffb55c1ea047a46dc58f992eb6b29aa84d3df6ca1d0f)(typescript@5.9.3)(zod@4.2.1)
       viem: 2.54.3(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.2.1)
       zod: 4.2.1
       zustand: 5.0.5(@types/react@19.1.17)(react@19.1.0)(use-sync-external-store@1.4.0(react@19.1.0))
@@ -33220,7 +33223,7 @@ snapshots:
       hono: 4.10.3
       idb-keyval: 6.2.2
       mipd: 0.0.7(typescript@5.9.3)
-      ox: 0.14.30(typescript@5.9.3)(zod@4.2.1)
+      ox: 0.14.30(patch_hash=c10fd68fe9085a9f797bffb55c1ea047a46dc58f992eb6b29aa84d3df6ca1d0f)(typescript@5.9.3)(zod@4.2.1)
       viem: 2.54.3(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.5)
       zod: 4.2.1
       zustand: 5.0.5(@types/react@19.1.17)(react@19.2.7)(use-sync-external-store@1.4.0(react@19.2.7))
@@ -33244,7 +33247,7 @@ snapshots:
       hono: 4.10.3
       idb-keyval: 6.2.2
       mipd: 0.0.7(typescript@5.9.3)
-      ox: 0.14.30(typescript@5.9.3)(zod@4.2.1)
+      ox: 0.14.30(patch_hash=c10fd68fe9085a9f797bffb55c1ea047a46dc58f992eb6b29aa84d3df6ca1d0f)(typescript@5.9.3)(zod@4.2.1)
       viem: 2.54.3(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.5)
       zod: 4.2.1
       zustand: 5.0.5(@types/react@19.1.17)(react@19.2.7)(use-sync-external-store@1.4.0(react@19.2.7))
@@ -33268,7 +33271,7 @@ snapshots:
       hono: 4.10.3
       idb-keyval: 6.2.2
       mipd: 0.0.7(typescript@5.9.3)
-      ox: 0.14.30(typescript@5.9.3)(zod@4.2.1)
+      ox: 0.14.30(patch_hash=c10fd68fe9085a9f797bffb55c1ea047a46dc58f992eb6b29aa84d3df6ca1d0f)(typescript@5.9.3)(zod@4.2.1)
       viem: 2.54.3(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.2.1)
       zod: 4.2.1
       zustand: 5.0.5(@types/react@19.1.17)(react@19.1.0)(use-sync-external-store@1.5.0(react@19.1.0))
@@ -33292,7 +33295,7 @@ snapshots:
       hono: 4.10.3
       idb-keyval: 6.2.2
       mipd: 0.0.7(typescript@5.9.3)
-      ox: 0.14.30(typescript@5.9.3)(zod@4.2.1)
+      ox: 0.14.30(patch_hash=c10fd68fe9085a9f797bffb55c1ea047a46dc58f992eb6b29aa84d3df6ca1d0f)(typescript@5.9.3)(zod@4.2.1)
       viem: 2.54.3(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.2.1)
       zod: 4.2.1
       zustand: 5.0.5(@types/react@19.1.17)(react@19.1.0)(use-sync-external-store@1.5.0(react@19.1.0))
@@ -33316,7 +33319,7 @@ snapshots:
       hono: 4.10.3
       idb-keyval: 6.2.2
       mipd: 0.0.7(typescript@5.9.3)
-      ox: 0.14.30(typescript@5.9.3)(zod@4.2.1)
+      ox: 0.14.30(patch_hash=c10fd68fe9085a9f797bffb55c1ea047a46dc58f992eb6b29aa84d3df6ca1d0f)(typescript@5.9.3)(zod@4.2.1)
       viem: 2.54.3(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.2.1)
       zod: 4.2.1
       zustand: 5.0.5(@types/react@19.1.17)(react@19.2.7)(use-sync-external-store@1.5.0(react@19.2.7))
@@ -36020,7 +36023,7 @@ snapshots:
       '@scure/bip39': 1.6.0
       abitype: 1.2.4(typescript@5.9.3)(zod@3.22.4)
       isows: 1.0.7(ws@8.21.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))
-      ox: 0.14.30(typescript@5.9.3)(zod@3.22.4)
+      ox: 0.14.30(patch_hash=c10fd68fe9085a9f797bffb55c1ea047a46dc58f992eb6b29aa84d3df6ca1d0f)(typescript@5.9.3)(zod@3.22.4)
       ws: 8.21.0(bufferutil@4.0.9)(utf-8-validate@5.0.10)
     optionalDependencies:
       typescript: 5.9.3
@@ -36037,7 +36040,7 @@ snapshots:
       '@scure/bip39': 1.6.0
       abitype: 1.2.4(typescript@5.9.3)(zod@3.25.76)
       isows: 1.0.7(ws@8.21.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))
-      ox: 0.14.30(typescript@5.9.3)(zod@3.25.76)
+      ox: 0.14.30(patch_hash=c10fd68fe9085a9f797bffb55c1ea047a46dc58f992eb6b29aa84d3df6ca1d0f)(typescript@5.9.3)(zod@3.25.76)
       ws: 8.21.0(bufferutil@4.0.9)(utf-8-validate@5.0.10)
     optionalDependencies:
       typescript: 5.9.3
@@ -36054,7 +36057,7 @@ snapshots:
       '@scure/bip39': 1.6.0
       abitype: 1.2.4(typescript@5.9.3)(zod@4.1.5)
       isows: 1.0.7(ws@8.21.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))
-      ox: 0.14.30(typescript@5.9.3)(zod@4.1.5)
+      ox: 0.14.30(patch_hash=c10fd68fe9085a9f797bffb55c1ea047a46dc58f992eb6b29aa84d3df6ca1d0f)(typescript@5.9.3)(zod@4.1.5)
       ws: 8.21.0(bufferutil@4.0.9)(utf-8-validate@5.0.10)
     optionalDependencies:
       typescript: 5.9.3
@@ -36071,7 +36074,7 @@ snapshots:
       '@scure/bip39': 1.6.0
       abitype: 1.2.4(typescript@5.9.3)(zod@4.2.1)
       isows: 1.0.7(ws@8.21.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))
-      ox: 0.14.30(typescript@5.9.3)(zod@4.2.1)
+      ox: 0.14.30(patch_hash=c10fd68fe9085a9f797bffb55c1ea047a46dc58f992eb6b29aa84d3df6ca1d0f)(typescript@5.9.3)(zod@4.2.1)
       ws: 8.21.0(bufferutil@4.0.9)(utf-8-validate@5.0.10)
     optionalDependencies:
       typescript: 5.9.3
