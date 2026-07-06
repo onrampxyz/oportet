@@ -162,8 +162,6 @@ describe('createWebAuthnP256', () => {
         "prehash": false,
         "privateKey": {
           "credential": {
-            "attestationObject": undefined,
-            "clientDataJSON": undefined,
             "id": "m1-bMPuAqpWhCxHZQZTT6e-lSPntQbh3opIoGe7g4Qs",
             "publicKey": {
               "prefix": 4,

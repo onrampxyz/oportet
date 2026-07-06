@@ -643,12 +643,15 @@ export default defineConfig({
     },
   },
   vite: {
+    // vite-plugin-mkcert / the icons plugin are typed against vite 6; vocs
+    // bundles vite 7. Runtime-compatible, but the PluginOption type identity
+    // differs across majors.
     plugins: [
       Mkcert({
         hosts: ['localhost', 'stg.localhost', 'anvil.localhost'],
       }),
       Plugins.Icons(),
-    ],
+    ] as never,
     resolve: {
       alias: {
         porto: NodePath.join(process.cwd(), '../../src'),

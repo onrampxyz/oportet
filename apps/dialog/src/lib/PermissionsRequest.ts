@@ -8,8 +8,15 @@ import { porto } from './Porto.js'
 import * as Tokens from './Tokens.js'
 
 export function useResolve(
-  request: z.input<typeof PermissionsRequest.Schema> | undefined,
+  requestInput:
+    | z.input<typeof PermissionsRequest.Schema>
+    | readonly z.input<typeof PermissionsRequest.Schema>[]
+    | undefined,
 ) {
+  // #1055 allows batched permission requests (`Request | Request[]`). The
+  // dialog UI still renders/responds to a single request; batched grants are
+  // registered in relay mode. ponytail: first-of-array here, batch UI later.
+  const request = Array.isArray(requestInput) ? requestInput[0] : requestInput
   const client = Hooks.useRelayClient(porto)
 
   return useQuery({
