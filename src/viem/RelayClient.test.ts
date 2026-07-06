@@ -54,6 +54,7 @@ describe('fromPorto', () => {
         "name": "Base Client",
         "pollingInterval": 1000,
         "request": [Function],
+        "tokens": undefined,
         "transport": {
           "key": "relayProxy",
           "methods": undefined,

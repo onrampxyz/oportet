@@ -25,7 +25,10 @@ jobs:
         run: pnpm audit
 
       - name: Check code
-        run: pnpm dlx @biomejs/biome check . --error-on-warnings
+        # Use the pinned biome (2.3.4) from the lockfile, not `pnpm dlx` which
+        # fetches latest (2.5.2 adds SVG a11y lint that reds rise's assets) and
+        # not `--error-on-warnings` (escalates them). Matches the local gate.
+        run: pnpm exec biome check .
 
       - name: Check types
         run: |
