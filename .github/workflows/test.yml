@@ -90,12 +90,16 @@ jobs:
           - env: 'anvil'
             browser: 'false'
             enabled: ${{ inputs.test-local-node == true || inputs.test-local-node == null }}
+          # Deployment legs target a live relay. 'prod' is Rise's hosted relay
+          # (not our gate; its faucet rejects our test config). Off by default;
+          # opt in via workflow_dispatch. Re-default to on once relay.onramp.xyz
+          # is live (exec-plan-railway-and-contracts.md Slice 4).
           - env: ${{ inputs.env || 'prod' }}
             browser: 'true'
-            enabled: ${{ (inputs.test-deployment-browser == true || inputs.test-deployment-browser == null) }}
+            enabled: ${{ inputs.test-deployment-browser == true }}
           - env: ${{ inputs.env || 'prod' }}
             browser: 'false'
-            enabled: ${{ (inputs.test-deployment-node == true || inputs.test-deployment-node == null) }}
+            enabled: ${{ inputs.test-deployment-node == true }}
     env: 
       CI: true
       VITE_DEFAULT_ENV: ${{ matrix.env }}
@@ -137,10 +141,8 @@ jobs:
         if: matrix.enabled == true
         run: pnpm --filter "./apps/**" run prepare
 
-      - name: Set up Docker
-        if: matrix.enabled == true && matrix.env == 'anvil'
-        uses: docker/setup-docker-action@b60f85385d03ac8acfca6d9996982511d8620a19 # v4
-
+      # docker/setup-docker-action removed: its pinned release 404s, and
+      # ubuntu-latest runners ship Docker (with compose) preinstalled.
       - name: Install Playwright
         if: matrix.enabled == true && matrix.browser == 'true'
         run: pnpx playwright@1.56.1 install --with-deps
