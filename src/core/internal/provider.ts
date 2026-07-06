@@ -1220,7 +1220,18 @@ function announce(
     name = 'Rise Wallet',
     rdns = 'com.risechain.wallet',
   } = typeof info === 'object' ? info : {}
-  return Mipd.announceProvider({
+
+  // Guard against other extensions dispatching malformed eip6963:announceProvider
+  // events with null/undefined detail. mipd@0.0.7 does not null-check event.detail
+  // before accessing .info, which crashes in its store's .some() dedup check.
+  const guardHandler = (event: Event) => {
+    if (!(event as CustomEvent).detail?.info) event.stopImmediatePropagation()
+  }
+  window.addEventListener('eip6963:announceProvider', guardHandler, {
+    capture: true,
+  })
+
+  const unannounce = Mipd.announceProvider({
     info: {
       icon,
       name,
@@ -1229,6 +1240,12 @@ function announce(
     },
     provider: provider as any,
   })
+  return () => {
+    unannounce()
+    window.removeEventListener('eip6963:announceProvider', guardHandler, {
+      capture: true,
+    })
+  }
 }
 
 function getAdmins(
