@@ -194,8 +194,10 @@ describe('wallet_getPermissions', () => {
   // empty-calls sendCalls step leaves the `confirm` button disabled because
   // prepareCalls never resolves in this fork's dialog, so the click times
   // out. The connect + grant steps (the #1055-ported paths) pass — only the
-  // rewritten-dialog confirm fails. Reconciled by the take-all upstream merge
-  // (Slice 3), where this exact test passes; re-enable then.
+  // rewritten-dialog confirm fails. The Slice-3 take-all merge deliberately
+  // kept rise's dialog app (apps/dialog, resolved `--ours`) rather than
+  // upstream's, so this stays skipped until the dialog is reconciled on its
+  // own (upstream onramp / guest-mode graft).
   test.skip('behavior: grant on connect; grant another; get after connect', async () => {
     porto = getPorto()
 

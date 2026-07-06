@@ -7,11 +7,11 @@ Creates a framework-agnostic server route for merchant RPC operations. This allo
 :::code-group
 
 ```ts [Named]
-import { Route } from 'porto/server'
+import { Route } from 'oportet/server'
 ```
 
 ```ts [Entrypoint]
-import * as Route from 'porto/server/Route'
+import * as Route from 'oportet/server/Route'
 ```
 
 :::
@@ -20,7 +20,7 @@ import * as Route from 'porto/server/Route'
 
 ```ts twoslash
 // @noErrors
-import { Route } from 'porto/server'
+import { Route } from 'oportet/server'
 
 const route = Route.merchant({
   address: process.env.MERCHANT_ADDRESS,
@@ -50,7 +50,7 @@ When a function is provided to `sponsor`, the first parameter is a `request` obj
 In the following example, the call will only be sponsored if the `to` address is the same as the `target` address.
 
 ```ts
-import { Route } from 'porto/server'
+import { Route } from 'oportet/server'
 
 const target = '0x...'
 
@@ -67,7 +67,7 @@ const route = Route.merchant({
 You can also pass an `async` function to `sponsor` if you wish to call out to an external service to determine whether to sponsor the call.
 
 ```ts
-import { Route } from 'porto/server'
+import { Route } from 'oportet/server'
 import { myAsyncFunction } from './myAsyncFunction'
 
 const route = Route.merchant({

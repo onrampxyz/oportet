@@ -1,4 +1,4 @@
-import { WalletActions } from 'porto/viem'
+import { WalletActions } from 'oportet/viem'
 import { parseEther, toHex } from 'viem'
 import { TryItOut } from '../../../../components/TryItOut'
 
@@ -11,7 +11,7 @@ Viem Action for connecting an account using [ERC-7846](https://github.com/ethere
 :::code-group
 
 ```ts twoslash [example.ts]
-import { WalletActions } from 'porto/viem'
+import { WalletActions } from 'oportet/viem'
 import { client } from './config'
 
 const result = await WalletActions.connect(client) // [!code focus]
@@ -39,7 +39,7 @@ You can grant permissions for an application to perform actions on behalf of the
 :::code-group
 
 ```ts twoslash [example.ts]
-import { WalletActions } from 'porto/viem'
+import { WalletActions } from 'oportet/viem'
 import { parseEther, toHex } from 'viem'
 import { client } from './config'
 

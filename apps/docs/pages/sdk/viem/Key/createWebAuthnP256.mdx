@@ -7,7 +7,7 @@ Creates a WebAuthnP256 key using the [Web Authentication API](https://developer.
 ### Admin Key (Default)
 
 ```ts twoslash
-import { Key } from 'porto/viem'
+import { Key } from 'oportet/viem'
 
 const key = await Key.createWebAuthnP256({ // [!code focus]
   label: 'My Account Key', // [!code focus]
@@ -17,7 +17,7 @@ const key = await Key.createWebAuthnP256({ // [!code focus]
 ### Session Key with Permissions
 
 ```ts twoslash
-import { Key } from 'porto/viem'
+import { Key } from 'oportet/viem'
 import { parseEther } from 'viem'
 
 const key = await Key.createWebAuthnP256({ // [!code focus]

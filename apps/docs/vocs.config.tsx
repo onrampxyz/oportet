@@ -152,6 +152,10 @@ export default defineConfig({
             text: 'wallet_getCallsStatus',
           },
           {
+            link: '/relay/wallet_getCallsHistory',
+            text: 'wallet_getCallsHistory',
+          },
+          {
             link: '/relay/health',
             text: 'health',
           },
@@ -205,6 +209,10 @@ export default defineConfig({
           {
             link: '/sdk/guides/subscriptions',
             text: 'Subscriptions',
+          },
+          {
+            link: '/sdk/guides/guest-mode',
+            text: 'Guest Mode',
           },
           {
             link: '/sdk/guides/theming',
@@ -295,6 +303,10 @@ export default defineConfig({
                 text: 'getAssets',
               },
               {
+                link: '/sdk/wagmi/getCallsHistory',
+                text: 'getCallsHistory',
+              },
+              {
                 link: '/sdk/wagmi/grantPermissions',
                 text: 'grantPermissions',
               },
@@ -319,6 +331,10 @@ export default defineConfig({
               {
                 link: '/sdk/wagmi/useAssets',
                 text: 'useAssets',
+              },
+              {
+                link: '/sdk/wagmi/useCallsHistory',
+                text: 'useCallsHistory',
               },
               {
                 link: '/sdk/wagmi/useGrantPermissions',
@@ -366,6 +382,10 @@ export default defineConfig({
               {
                 link: '/sdk/viem/WalletActions/getAssets',
                 text: 'getAssets',
+              },
+              {
+                link: '/sdk/viem/WalletActions/getCallsHistory',
+                text: 'getCallsHistory',
               },
               {
                 link: '/sdk/viem/WalletActions/grantPermissions',
@@ -480,6 +500,10 @@ export default defineConfig({
                     text: 'getCallsStatus',
                   },
                   {
+                    link: '/sdk/viem/RelayActions/getCallsHistory',
+                    text: 'getCallsHistory',
+                  },
+                  {
                     link: '/sdk/viem/RelayActions/getCapabilities',
                     text: 'getCapabilities',
                   },
@@ -571,6 +595,10 @@ export default defineConfig({
             text: 'wallet_getCallsStatus',
           },
           {
+            link: '/sdk/rpc/wallet_getCallsHistory',
+            text: 'wallet_getCallsHistory',
+          },
+          {
             link: '/sdk/rpc/wallet_getPermissions',
             text: 'wallet_getPermissions',
           },
@@ -656,6 +684,13 @@ export default defineConfig({
       alias: {
         porto: NodePath.join(process.cwd(), '../../src'),
       },
+      dedupe: [
+        '@tanstack/react-query',
+        '@wagmi/core',
+        'react',
+        'react-dom',
+        'wagmi',
+      ],
     },
     server: {
       proxy: {},

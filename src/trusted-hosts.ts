@@ -45,4 +45,9 @@ export const hostnames = [
   'testnet.rise.trade',
   'dev.rise.trade',
   'rise.trade',
+  'hub.berachain.com',
+  'bend.berachain.com',
+  'honey.berachain.com',
+  'privote.live',
+  'portkey.bsky.nyc',
 ]

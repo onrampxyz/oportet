@@ -29,7 +29,7 @@ We will cover the other endpoints (e.g. `/siwe`, etc) in the next steps.
 
 ```ts
 import { Hono } from 'hono'
-import { Porto } from 'porto'
+import { Porto } from 'oportet'
 import { generateSiweNonce } from 'viem/siwe'
 
 const app = new Hono().basePath('/api')
@@ -64,8 +64,8 @@ checks on the SIWE message, nonce, token expiration, etc. For a complete example
 import { Hono } from 'hono'
 import { setCookie } from 'hono/cookie' // [!code ++]
 import * as jwt from 'hono/jwt' // [!code ++]
-import { Porto } from 'porto' // [!code ++]
-import { RelayClient } from 'porto/viem' // [!code ++]
+import { Porto } from 'oportet' // [!code ++]
+import { RelayClient } from 'oportet/viem' // [!code ++]
 import { generateSiweNonce, parseSiweMessage, verifySiweMessage } from 'viem/siwe' // [!code ++]
 
 const app = new Hono().basePath('/api')
@@ -114,7 +114,7 @@ control over the authentication URL.
 
 ```tsx
 import { useConnectors } from 'wagmi'
-import { Hooks } from 'porto/wagmi'
+import { Hooks } from 'oportet/wagmi'
 
 export function Example() {
   const [connector] = useConnectors()
@@ -167,7 +167,7 @@ In this example, we are using the `hono/jwt` middleware to check if the user is 
 ```tsx
 import { Hono } from 'hono'
 import { jwt } from 'hono/jwt'
-import { Porto } from 'porto'
+import { Porto } from 'oportet'
 
 const app = new Hono().basePath('/api')
 const porto = Porto.create()
@@ -189,7 +189,7 @@ We can also log out a user by deleting the `auth` cookie with `hono/cookie`'s `d
 import { Hono } from 'hono'
 import { deleteCookie } from 'hono/cookie' // [!code ++]
 import { jwt } from 'hono/jwt'
-import { Porto } from 'porto'
+import { Porto } from 'oportet'
 
 const app = new Hono().basePath('/api')
 const porto = Porto.create()

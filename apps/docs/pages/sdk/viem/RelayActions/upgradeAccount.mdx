@@ -10,7 +10,7 @@ via the `account` parameter.
 :::code-group
 
 ```ts twoslash [example.ts]
-import { Account, Key, RelayActions } from 'porto/viem'
+import { Account, Key, RelayActions } from 'oportet/viem'
 import { client } from './config'
 
 const account = await RelayActions.upgradeAccount(client, { // [!code focus]
@@ -34,7 +34,7 @@ and then passes the `signatures` to `RelayActions.upgradeAccount`.
 :::code-group
 
 ```ts twoslash [example.ts]
-import { Account, Key, RelayActions } from 'porto/viem'
+import { Account, Key, RelayActions } from 'oportet/viem'
 import { client } from './config'
 
 const eoa = Account.fromPrivateKey('0x...')

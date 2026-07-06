@@ -25,6 +25,7 @@ catalog:
   '@tanstack/react-router': ^1.114.25
   '@tanstack/react-router-devtools': ^1.114.25
   '@tanstack/router-plugin': ^1.114.17
+  '@typescript/native-preview': 7.0.0-dev.20251025.1
   '@types/node': ^22.15.32
   '@types/react': ^19.1
   '@types/react-dom': ^19.1

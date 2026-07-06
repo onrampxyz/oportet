@@ -1,34 +1,54 @@
 # porto
 
-## 0.3.5
+## 0.2.37
 
 ### Patch Changes
 
-- Fix Safari ITP bug
+- [#1032](https://github.com/ithacaxyz/porto/pull/1032) [`3f9eb89`](https://github.com/ithacaxyz/porto/commit/3f9eb89627b1ecedbc977b650f5e40b277d6c1c8) Thanks [@o-az](https://github.com/o-az)! - Added missing `WalletActions.getCallsHistory` export and types
 
-## 0.3.4
-
-### Patch Changes
-
-- Fix dialog bypass logic
-
-## 0.3.3
+## 0.2.36
 
 ### Patch Changes
 
-- Add privileged origins to bypass dialog
+- [#1019](https://github.com/ithacaxyz/porto/pull/1019) [`db24dd2`](https://github.com/ithacaxyz/porto/commit/db24dd2eedcd8f25cd8b83cd9bf9129c652e4199) Thanks [@o-az](https://github.com/o-az)! - Added `wallet_getCallsHistory` support and related Wagmi hook
 
-## 0.3.2
-
-### Patch Changes
-
-- Add sepolia
-
-## 0.3.1
+## 0.2.35
 
 ### Patch Changes
 
-- Add support for injected wallets as primary signer
+- [#1004](https://github.com/ithacaxyz/porto/pull/1004) [`b591519`](https://github.com/ithacaxyz/porto/commit/b5915198bdce1c4dfe0d227ad5b70533d65fdfd1) Thanks [@o-az](https://github.com/o-az)! - Reverted SIWE changes.
+
+- [`3c7139f`](https://github.com/ithacaxyz/porto/commit/3c7139f603fb8400168a248ef861d1ac14e10cdf) Thanks [@jxom](https://github.com/jxom)! - Added `publicKey` as a body parameter to `/siwe/verify`.
+
+## 0.2.34
+
+### Patch Changes
+
+- [#996](https://github.com/ithacaxyz/porto/pull/996) [`606bcd4`](https://github.com/ithacaxyz/porto/commit/606bcd4faee96e4e5c8d8f687f31981c10ce5dc5) Thanks [@o-az](https://github.com/o-az)! - Added SIWE support to `Mode.relay`, including `/nonce` and `/verify` endpoints.
+
+## 0.2.33
+
+### Patch Changes
+
+- [`89b9332`](https://github.com/ithacaxyz/porto/commit/89b9332176cc52a683b68b0cedc07505f1a697db) Thanks [@jxom](https://github.com/jxom)! - Added `gnosis` chain.
+
+## 0.2.32
+
+### Patch Changes
+
+- [`2be589f`](https://github.com/ithacaxyz/porto/commit/2be589fb7cf00e703d864b6c3375dd30b500ed64) Thanks [@jxom](https://github.com/jxom)! - Tweaked logic on `Account#sign`.
+
+## 0.2.31
+
+### Patch Changes
+
+- [`0e8a179`](https://github.com/ithacaxyz/porto/commit/0e8a17976966475d15550c9e06dc6d11c69fbed0) Thanks [@jxom](https://github.com/jxom)! - Exported types required for inference.
+
+## 0.2.30
+
+### Patch Changes
+
+- [#990](https://github.com/ithacaxyz/porto/pull/990) [`254f6bb`](https://github.com/ithacaxyz/porto/commit/254f6bbc72d3b026edfce300d8ce5bcedce45ee7) Thanks [@jxom](https://github.com/jxom)! - Always propagate `chainId` in `Mode.dialog`
 
 ## 0.2.29
 

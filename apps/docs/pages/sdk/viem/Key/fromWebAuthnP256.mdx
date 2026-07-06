@@ -7,7 +7,7 @@ Instantiates a WebAuthnP256 key from existing WebAuthn credential parameters. Th
 ### From WebAuthn Credential
 
 ```ts twoslash
-import { Key } from 'porto/viem'
+import { Key } from 'oportet/viem'
 import { Bytes, WebAuthnP256 } from 'ox'
 
 const credential = await WebAuthnP256.createCredential({
@@ -29,7 +29,7 @@ const key = Key.fromWebAuthnP256({ // [!code focus]
 ### Session Key with Permissions
 
 ```ts twoslash
-import { Key } from 'porto/viem'
+import { Key } from 'oportet/viem'
 import { Bytes, WebAuthnP256 } from 'ox'
 import { parseEther } from 'viem'
 

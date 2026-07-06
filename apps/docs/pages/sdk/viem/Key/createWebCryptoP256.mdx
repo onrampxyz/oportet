@@ -7,7 +7,7 @@ Creates a random non-extractable WebCryptoP256 key using the [Web Crypto API](ht
 ### Admin Key (Default)
 
 ```ts twoslash
-import { Key } from 'porto/viem'
+import { Key } from 'oportet/viem'
 
 const key = await Key.createWebCryptoP256() // [!code focus]
 ```
@@ -15,7 +15,7 @@ const key = await Key.createWebCryptoP256() // [!code focus]
 ### Session Key
 
 ```ts twoslash
-import { Key } from 'porto/viem'
+import { Key } from 'oportet/viem'
 import { parseEther } from 'viem'
 
 const key = await Key.createWebCryptoP256({ // [!code focus]

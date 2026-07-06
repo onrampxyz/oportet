@@ -160,9 +160,6 @@ export function from<
             }
 
             case 'wallet_addFunds': {
-              if (state.accounts.length === 0)
-                throw new ox_Provider.DisconnectedError()
-
               const { address, value, token } = request.params[0] ?? {}
 
               const account = address
@@ -170,12 +167,11 @@ export function from<
                     Address.isEqual(account.address, address),
                   )
                 : state.accounts[0]
-              if (!account) throw new ox_Provider.UnauthorizedError()
 
               const client = getClient()
 
               const result = await getMode().actions.addFunds({
-                address: account.address,
+                address: account?.address,
                 internal: {
                   client,
                   config,
@@ -242,9 +238,6 @@ export function from<
             }
 
             case 'eth_sendTransaction': {
-              if (state.accounts.length === 0)
-                throw new ox_Provider.DisconnectedError()
-
               const [{ capabilities, chainId, data = '0x', from, to, value }] =
                 request._decoded.params
 
@@ -258,7 +251,8 @@ export function from<
                     Address.isEqual(account.address, from),
                   )
                 : state.accounts[0]
-              if (!account) throw new ox_Provider.UnauthorizedError()
+
+              if (from && !account) throw new ox_Provider.UnauthorizedError()
 
               const { id } = await getMode().actions.sendCalls({
                 account,
@@ -270,6 +264,7 @@ export function from<
                     value,
                   },
                 ],
+                chainId: client.chain.id,
                 internal: {
                   client,
                   config,
@@ -971,6 +966,24 @@ export function from<
               >
             }
 
+            case 'wallet_getCallsHistory': {
+              const [parameters] = request._decoded.params ?? []
+
+              const client = getClient()
+
+              const response = await getMode().actions.getCallsHistory({
+                ...parameters,
+                internal: {
+                  client,
+                  config,
+                  request,
+                  store,
+                },
+              })
+
+              return z.encode(Rpc.wallet_getCallsHistory.Response, response)
+            }
+
             case 'wallet_getCapabilities': {
               const [_, chainIds] = request.params ?? []
 
@@ -1057,9 +1070,6 @@ export function from<
             }
 
             case 'wallet_sendCalls': {
-              if (state.accounts.length === 0)
-                throw new ox_Provider.DisconnectedError()
-
               const [parameters] = request._decoded.params
               const { calls, capabilities, chainId, from } = parameters
 
@@ -1073,11 +1083,13 @@ export function from<
                     Address.isEqual(account.address, from),
                   )
                 : state.accounts[0]
-              if (!account) throw new ox_Provider.UnauthorizedError()
+
+              if (from && !account) throw new ox_Provider.UnauthorizedError()
 
               const { id } = await getMode().actions.sendCalls({
                 account,
                 calls,
+                chainId: client.chain.id,
                 feeToken: capabilities?.feeToken,
                 internal: {
                   client,

@@ -7,7 +7,7 @@ Signs a payload using a Porto key. This function handles different key types and
 ### Sign with P256 Key
 
 ```ts twoslash
-import { Key } from 'porto/viem'
+import { Key } from 'oportet/viem'
 
 const key = Key.createP256()
 
@@ -20,7 +20,7 @@ const signature = await Key.sign(key, { // [!code focus]
 ### Sign with WebAuthn Key and Storage
 
 ```ts twoslash
-import { Key } from 'porto/viem'
+import { Key } from 'oportet/viem'
 
 const key = await Key.createWebAuthnP256({
   label: 'My Signing Key',
@@ -37,7 +37,7 @@ const signature = await Key.sign(key, { // [!code focus]
 By default, signatures are wrapped with key metadata. You can get the raw signature by setting `wrap: false`.
 
 ```ts twoslash
-import { Key } from 'porto/viem'
+import { Key } from 'oportet/viem'
 
 const key = Key.createP256()
 

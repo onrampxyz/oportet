@@ -10,7 +10,7 @@ Instantiates a server framework-agnostic router for Porto.
 
 ```ts twoslash
 // @noErrors
-import { Router, Route } from 'porto/server'
+import { Router, Route } from 'oportet/server'
 
 const router = Router()
   .route('/merchant', Route.merchant({/* ... */})
@@ -32,7 +32,7 @@ const router = Router()
 
 ```ts
 import { env } from 'cloudflare:workers'
-import { Router, Route } from 'porto/server'
+import { Router, Route } from 'oportet/server'
 
 export default Router({ basePath: '/porto' })
   .route('/merchant', Route.merchant({ /* ... */ })
@@ -44,7 +44,7 @@ export default Router({ basePath: '/porto' })
 ### Next.js
 
 ```ts [app/porto/[[...routes]]/route.ts]
-import { Router, Route } from 'porto/server'
+import { Router, Route } from 'oportet/server'
 
 const porto = Router({ basePath: '/porto' })
   .route('/merchant', Route.merchant({ /* ... */ })
@@ -61,7 +61,7 @@ export const POST = porto.fetch
 
 ```ts
 import { Hono } from 'hono'
-import { Router, Route } from 'porto/server'
+import { Router, Route } from 'oportet/server'
 
 const app = new Hono()
 
@@ -80,7 +80,7 @@ export default app
 ### Bun
 
 ```ts
-import { Router, Route } from 'porto/server'
+import { Router, Route } from 'oportet/server'
 
 const porto = Router({ basePath: '/porto' })
   .route('/merchant', Route.merchant({ /* ... */ })
@@ -94,7 +94,7 @@ Bun.serve(porto)
 ### Deno
 
 ```ts
-import { Router, Route } from 'porto/server'
+import { Router, Route } from 'oportet/server'
 
 const porto = Router({ basePath: '/porto' })
   .route('/merchant', Route.merchant({ /* ... */ })
@@ -109,7 +109,7 @@ Deno.serve(porto.fetch)
 
 ```ts
 import express from 'express'
-import { Router, Route } from 'porto/server'
+import { Router, Route } from 'oportet/server'
 
 const app = express()
 

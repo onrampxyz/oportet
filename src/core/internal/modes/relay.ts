@@ -59,6 +59,7 @@ export function relay(parameters: relay.Parameters = {}) {
         const {
           admins,
           email,
+          eoa: eoa_,
           label,
           permissions,
           internal,
@@ -67,7 +68,7 @@ export function relay(parameters: relay.Parameters = {}) {
         } = parameters
         const { client } = internal
 
-        const eoa = Account.fromPrivateKey(Secp256k1.randomPrivateKey())
+        const eoa = eoa_ ?? Account.fromPrivateKey(Secp256k1.randomPrivateKey())
 
         const feeTokens = await Tokens.getTokens(client)
 
@@ -197,6 +198,15 @@ export function relay(parameters: relay.Parameters = {}) {
           assetTypeFilter,
           chainFilter,
         })
+
+        return result
+      },
+
+      async getCallsHistory(parameters) {
+        const { internal, ...rest } = parameters
+        const { client } = internal
+
+        const result = await RelayActions_internal.getCallsHistory(client, rest)
 
         return result
       },
@@ -808,8 +818,11 @@ export function relay(parameters: relay.Parameters = {}) {
       },
 
       async sendCalls(parameters) {
-        const { account, asTxHash, calls, internal, merchantUrl } = parameters
+        const { account, asTxHash, calls, chainId, internal, merchantUrl } =
+          parameters
         const { client } = internal
+
+        if (!account) throw new Error('account required for relay mode')
 
         // Try and extract an authorized key to sign the calls with.
         const key = await Mode.getAuthorizedExecuteKey({
@@ -844,6 +857,7 @@ export function relay(parameters: relay.Parameters = {}) {
           merchantUrl,
           requiredFunds: multichain ? requiredFunds : undefined,
           webAuthn,
+          ...(chainId ? { chain: { id: chainId } } : {}),
         })
 
         if (asTxHash) {

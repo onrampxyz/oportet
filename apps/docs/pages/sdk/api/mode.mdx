@@ -22,7 +22,7 @@ In the diagram below, `Mode.dialog` is utilized within the Application to commun
 ### Usage
 
 ```ts twoslash
-import { Porto, Mode } from 'porto'
+import { Porto, Mode } from 'oportet'
 
 const porto = Porto.create({
   mode: Mode.dialog(), // [!code focus]
@@ -50,7 +50,7 @@ While the application uses `Mode.dialog` to communicate to the Dialog, the dialo
 :::
 
 ```ts twoslash
-import { Porto, Mode } from 'porto'
+import { Porto, Mode } from 'oportet'
 
 const porto = Porto.create({
   mode: Mode.dialog({
@@ -67,7 +67,7 @@ const porto = Porto.create({
 The [renderer](/sdk/api/dialog) to use for the dialog. Available: [`Dialog.iframe`](/sdk/api/dialog#dialogiframe), [`Dialog.popup`](/sdk/api/dialog#dialogpopup)
 
 ```ts twoslash
-import { Dialog, Porto, Mode } from 'porto'
+import { Dialog, Porto, Mode } from 'oportet'
 
 const porto = Porto.create({
   mode: Mode.dialog({
@@ -113,7 +113,7 @@ import 'porto/react-native/register'
 Then import `Porto` anywhere in your application:
 
 ```ts twoslash
-import { Porto, Mode } from 'porto'
+import { Porto, Mode } from 'oportet'
 
 const porto = Porto.create({
   mode: Mode.reactNative(), // [!code focus]
@@ -123,7 +123,7 @@ const porto = Porto.create({
 or
 
 ```ts twoslash
-import { Porto } from 'porto/react-native'
+import { Porto } from 'oportet/react-native'
 
 const porto = Porto.create()
 ```
@@ -131,9 +131,9 @@ const porto = Porto.create()
 #### Wagmi usage
 
 ```ts twoslash
-import { baseSepolia } from 'porto/core/Chains'
-import { Mode } from 'porto/react-native'
-import { porto } from 'porto/wagmi'
+import { baseSepolia } from 'oportet/core/Chains'
+import { Mode } from 'oportet/react-native'
+import { porto } from 'oportet/wagmi'
 import { Platform } from 'react-native'
 import { createConfig, http } from 'wagmi'
 
@@ -161,8 +161,8 @@ You can use it for both Wagmi's config and [`@tanstack/react-query`](https://tan
 
 ### Examples
 
-- [With `Mode.reactNative` (dialog) - Wagmi usage](https://github.com/ithacaxyz/porto/tree/main/examples/react-native)
-- [With `Mode.relay` (headless) - EIP1193 usage](https://github.com/ithacaxyz/porto/tree/main/examples/react-native-relay-mode)
+- [Porto x `Mode.reactNative` (dialog) x Wagmi](https://github.com/ithacaxyz/porto/tree/main/examples/react-native)
+- [Porto x `Mode.relay` (headless) x SIWE](https://github.com/ithacaxyz/porto/tree/main/examples/react-native-relay-mode)
 
 ### Options
 
@@ -219,7 +219,7 @@ In the diagram below, `Mode.relay` is utilized within the Porto Dialog (`id.port
 ### Usage
 
 ```ts twoslash
-import { Porto, Mode } from 'porto'
+import { Porto, Mode } from 'oportet'
 
 const porto = Porto.create({
   mode: Mode.relay(), // [!code focus]
@@ -240,7 +240,7 @@ const porto = Porto.create({
 Keystore host (WebAuthn relying party).
 
 ```ts twoslash
-import { Porto, Mode } from 'porto'
+import { Porto, Mode } from 'oportet'
 
 const porto = Porto.create({
   mode: Mode.relay({

@@ -7,7 +7,7 @@ Hook for revoking permissions.
 Internally uses [`wallet_revokePermissions`](/sdk/rpc/wallet_revokePermissions).
 
 ```tsx
-import { Hooks } from 'porto/wagmi'
+import { Hooks } from 'oportet/wagmi'
 
 function Example() {
   const revokePermissions = Hooks.useRevokePermissions()
@@ -48,7 +48,7 @@ function Example() {
 Address of the account to revoke permissions for. If not provided, will use the connected account.
 
 ```tsx
-import { Hooks } from 'porto/wagmi'
+import { Hooks } from 'oportet/wagmi'
 
 function Example() {
   const revokePermissions = Hooks.useRevokePermissions()
@@ -67,7 +67,7 @@ function Example() {
 The ID of the permission to revoke.
 
 ```tsx
-import { Hooks } from 'porto/wagmi'
+import { Hooks } from 'oportet/wagmi'
 
 function Example() {
   const revokePermissions = Hooks.useRevokePermissions()
@@ -89,7 +89,7 @@ Token to use to cover fees. Accepts:
 - Address: Address of the fee token (e.g. `"0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef"`).
 
 ```tsx
-import { Hooks } from 'porto/wagmi'
+import { Hooks } from 'oportet/wagmi'
 
 function Example() {
   const revokePermissions = Hooks.useRevokePermissions()
