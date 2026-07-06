@@ -15,95 +15,40 @@ describe('fromPorto', () => {
         "chain": {
           "blockExplorers": {
             "default": {
-              "apiUrl": "https://api.basescan.org/api",
-              "name": "Basescan",
-              "url": "https://basescan.org",
+              "apiUrl": "https://explorer.testnet.riselabs.xyz/api",
+              "name": "Blockscout",
+              "url": "https://explorer.testnet.riselabs.xyz/",
             },
           },
-          "blockTime": 2000,
           "contracts": {
-            "disputeGameFactory": {
-              "1": {
-                "address": "0x43edB88C4B80fDD2AdFF2412A7BebF9dF42cB40e",
-              },
-            },
-            "gasPriceOracle": {
-              "address": "0x420000000000000000000000000000000000000F",
-            },
-            "l1Block": {
-              "address": "0x4200000000000000000000000000000000000015",
-            },
-            "l1StandardBridge": {
-              "1": {
-                "address": "0x3154Cf16ccdb4C6d922629664174b904d80F2C35",
-                "blockCreated": 17482143,
-              },
-            },
-            "l2CrossDomainMessenger": {
-              "address": "0x4200000000000000000000000000000000000007",
-            },
-            "l2Erc721Bridge": {
-              "address": "0x4200000000000000000000000000000000000014",
-            },
-            "l2OutputOracle": {
-              "1": {
-                "address": "0x56315b90c40730925ec5485cf004d835058518A0",
-              },
-            },
-            "l2StandardBridge": {
-              "address": "0x4200000000000000000000000000000000000010",
-            },
-            "l2ToL1MessagePasser": {
-              "address": "0x4200000000000000000000000000000000000016",
-            },
             "multicall3": {
               "address": "0xca11bde05977b3631167028862be2a173976ca11",
-              "blockCreated": 5022,
-            },
-            "portal": {
-              "1": {
-                "address": "0x49048044D57e1C92A77f79988d21Fa8fAF74E97e",
-                "blockCreated": 17482143,
-              },
             },
           },
+          "extend": [Function],
           "fees": undefined,
-          "formatters": {
-            "block": {
-              "exclude": undefined,
-              "format": [Function],
-              "type": "block",
-            },
-            "transaction": {
-              "exclude": undefined,
-              "format": [Function],
-              "type": "transaction",
-            },
-            "transactionReceipt": {
-              "exclude": undefined,
-              "format": [Function],
-              "type": "transactionReceipt",
-            },
-          },
-          "id": 8453,
-          "name": "Base",
+          "formatters": undefined,
+          "id": 11155931,
+          "name": "RISE Testnet",
           "nativeCurrency": {
             "decimals": 18,
-            "name": "Ether",
+            "name": "RISE Testnet Ether",
             "symbol": "ETH",
           },
           "rpcUrls": {
             "default": {
               "http": [
-                "https://mainnet.base.org",
+                "https://testnet.riselabs.xyz",
+              ],
+              "webSocket": [
+                "wss://testnet.riselabs.xyz/ws",
               ],
             },
           },
-          "serializers": {
-            "transaction": [Function],
-          },
-          "sourceId": 1,
+          "serializers": undefined,
+          "testnet": true,
         },
+        "dataSuffix": undefined,
         "extend": [Function],
         "key": "base",
         "name": "Base Client",
