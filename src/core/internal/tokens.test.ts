@@ -52,7 +52,7 @@ describe.runIf(!Anvil.enabled)('getTokens', () => {
     const porto = TestConfig.getPorto()
     const client = TestConfig.getRelayClient(porto)
 
-    const tokens = await Tokens.getTokens(client, { chain: Chains.polygon })
+    const tokens = await Tokens.getTokens(client, { chain: Chains.sepolia })
 
     expect(
       tokens
@@ -118,7 +118,7 @@ describe.runIf(!Anvil.enabled)('getToken', () => {
 
     const token = await Tokens.getToken(client, {
       addressOrSymbol: 'native',
-      chain: Chains.polygon,
+      chain: Chains.sepolia,
     })
 
     expect({ ...token, nativeRate: null }).toMatchInlineSnapshot(`
@@ -210,7 +210,7 @@ describe.runIf(!Anvil.enabled)('resolveFeeToken', () => {
 
     const feeToken = await Tokens.resolveFeeToken(client, {
       addressOrSymbol: 'native',
-      chain: Chains.polygon,
+      chain: Chains.sepolia,
       store: porto._internal.store,
     })
 
