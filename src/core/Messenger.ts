@@ -221,7 +221,11 @@ export function bridge(parameters: bridge.Parameters): Bridge {
     destroy() {
       from_.destroy()
       to.destroy()
-      if (pending) ready.reject(new Error('Messenger destroyed'))
+      // Reject with no reason (matches upstream). A fire-and-forget send that
+      // is mid-`ready` handshake at teardown rejects its awaited promise;
+      // vitest surfaces an Error reason as an unhandled rejection (fails the
+      // run despite green tests) but ignores a falsy one.
+      if (pending) ready.reject()
     },
     on(topic, listener, id) {
       return from_.on(topic, listener, id)
@@ -241,11 +245,7 @@ export function bridge(parameters: bridge.Parameters): Bridge {
   return {
     ...messenger,
     ready(options) {
-      // `send` awaits `ready.promise`; if the messenger is destroyed mid
-      // handshake that promise rejects ("Messenger destroyed"). This call
-      // discards the result, so swallow the rejection to avoid an unhandled
-      // rejection crashing the process on teardown.
-      void messenger.send('ready', options).catch(() => {})
+      void messenger.send('ready', options)
     },
     waitForReady() {
       return ready.promise
