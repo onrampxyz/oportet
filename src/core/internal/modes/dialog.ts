@@ -24,7 +24,7 @@ import { relay } from './relay.js'
 
 export function dialog(parameters: dialog.Parameters = {}) {
   const {
-    fallback = relay(),
+    fallback = relay() as Mode.Mode,
     host = Dialog.hostUrls.prod,
     renderer = Dialog.iframe(),
     theme,
@@ -959,7 +959,8 @@ export function dialog(parameters: dialog.Parameters = {}) {
         if (request.method !== 'wallet_switchEthereumChain')
           throw new Error('Cannot switch chain for method: ' + request.method)
 
-        if (!renderer.supportsHeadless) return
+        if (!renderer.supportsHeadless)
+          return fallback.actions.switchChain?.(parameters)
 
         const provider = getProvider(store)
         return await provider.request(request)
