@@ -241,7 +241,11 @@ export function bridge(parameters: bridge.Parameters): Bridge {
   return {
     ...messenger,
     ready(options) {
-      void messenger.send('ready', options)
+      // `send` awaits `ready.promise`; if the messenger is destroyed mid
+      // handshake that promise rejects ("Messenger destroyed"). This call
+      // discards the result, so swallow the rejection to avoid an unhandled
+      // rejection crashing the process on teardown.
+      void messenger.send('ready', options).catch(() => {})
     },
     waitForReady() {
       return ready.promise
