@@ -236,6 +236,9 @@ class UserCancelledError extends Errors.BaseError<Error> {
 function ensureSubtleCrypto() {
   if (typeof globalThis.crypto === 'undefined') return
   const crypto = globalThis.crypto as { subtle?: Record<string, any> }
+  // Fill missing subtle-crypto methods IN PLACE. Never reassign crypto.subtle:
+  // it is a getter-only property in Node/web, so assignment throws — the adapter
+  // must be importable outside React Native (SSR, unit tests).
   const subtle = (crypto.subtle ??= {} as Record<string, any>)
 
   if (typeof subtle.importKey !== 'function')
@@ -251,8 +254,6 @@ function ensureSubtleCrypto() {
         throw new Error('Unsupported key export')
       return key.raw.buffer.slice(0)
     }
-
-  crypto.subtle = subtle
 }
 
 function convertCreationExtensions(
