@@ -1,8 +1,15 @@
-# RISE Wallet
+# oportet
 
-Next-generation smart contract wallet for Ethereum, built specifically for the [RISE chain](https://riselabs.xyz).
+**oportet** — Latin, _"it is necessary."_ The self-custodial account SDK an Onramp wallet needs.
 
-RISE Wallet is a fork of [Porto](https://github.com/ithacaxyz/porto), featuring passkey-based authentication, session keys, and seamless integration with modern web3 applications.
+oportet is Onramp's fork of the Porto smart-account SDK: passkey authentication, session keys, EIP-7702 smart accounts, and relay-mode signing — abstracting gas, chain IDs, and seed phrases away from the user.
+
+### Acknowledgements
+
+oportet builds on two upstreams:
+
+- **[Porto](https://github.com/ithacaxyz/porto)** (Ithaca) — the original account SDK that oportet forks.
+- **[porto-rise · RISE Wallet](https://github.com/risechain/porto-rise)** (RISE) — the React Native and passkey groundwork that oportet extends.
 
 <p>
   <a href="https://github.com/ithacaxyz/porto/blob/main/LICENSE-MIT">
