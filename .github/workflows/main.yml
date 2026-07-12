@@ -54,8 +54,8 @@ jobs:
   changesets:
     name: Changesets
     needs: [verify, extension]
-    # Publishing stays off until the npm OIDC / trusted-publisher setup lands
-    # (exec-plan-porto-fork.md Slice 5). Set repo variable ENABLE_PUBLISH=true to arm.
+    # Publishes via npm OIDC trusted publishing (configured on npmjs for this
+    # repo + workflow). Repo variable ENABLE_PUBLISH=true arms the job.
     if: vars.ENABLE_PUBLISH == 'true'
     permissions:
       contents: write
@@ -75,6 +75,12 @@ jobs:
       - name: Set up pnpm
         uses: wevm/actions/.github/actions/pnpm@f7ad7f00e16e73322562922c241f21f0c7ffbbec # main
 
+      # npm OIDC trusted publishing needs npm >= 11.5.1; the runner's default
+      # node ships older. No NPM_TOKEN: auth is the job's OIDC identity
+      # (id-token: write) against the trusted publisher configured on npmjs.
+      - name: Upgrade npm for OIDC publishing
+        run: npm install -g npm@latest
+
       - name: PR or publish
         id: changesets
         uses: changesets/action@06245a4e0a36c064a573d4150030f5ec548e4fcc # 06245a4e0a36c064a573d4150030f5ec548e4fcc
@@ -86,7 +92,6 @@ jobs:
           version: pnpm changeset:version
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           
       - name: Update latest release with extension artifacts
         if: steps.changesets.outputs.published == 'true'
