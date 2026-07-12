@@ -79,7 +79,9 @@ jobs:
       # node ships older. No NPM_TOKEN: auth is the job's OIDC identity
       # (id-token: write) against the trusted publisher configured on npmjs.
       - name: Upgrade npm for OIDC publishing
-        run: npm install -g npm@latest
+        # Pin to npm 11 (>= 11.5.1 supports OIDC): npm@latest is now 12.x which
+        # requires node >= 22.22.2, but the runner ships 22.18 -> EBADENGINE.
+        run: npm install -g npm@11
 
       - name: PR or publish
         id: changesets
