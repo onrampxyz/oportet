@@ -4,9 +4,28 @@ export { fallback, http, type Transport, webSocket } from 'viem'
 
 export const relayUrls = {
   anvil: { http: 'http://localhost:9119' },
-  prod: { http: 'https://relay.wallet.risechain.com' },
+  prod: { http: 'https://relay.onramp.xyz' },
   stg: { http: 'https://stg.relay.wallet.risechain.com' },
 } as const
+
+/**
+ * App-supplied bearer provider for authenticated relays (e.g. user-tied gas
+ * sponsorship quota). Set once at init via {@link setRelayAuthToken}; the default
+ * relay transport attaches the returned token as `Authorization: Bearer <token>`
+ * per request. Unset (default) sends no auth header — an open relay, like RISE's.
+ * Lets a consumer add relay auth without overriding the relay URL/transport.
+ */
+type RelayAuthToken = () => string | undefined | Promise<string | undefined>
+
+let relayAuthToken: RelayAuthToken | undefined
+
+export function setRelayAuthToken(provider: RelayAuthToken | undefined): void {
+  relayAuthToken = provider
+}
+
+export async function getRelayAuthToken(): Promise<string | undefined> {
+  return (await relayAuthToken?.()) ?? undefined
+}
 
 export function relayProxy(
   transports: relayProxy.Value,

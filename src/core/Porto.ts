@@ -19,7 +19,7 @@ import type * as Siwe from './internal/siwe.js'
 import type { ExactPartial, OneOf } from './internal/types.js'
 import * as Utils from './internal/utils.js'
 import * as Storage from './Storage.js'
-import { relayUrls } from './Transport.js'
+import { getRelayAuthToken, relayUrls } from './Transport.js'
 
 const browser = typeof window !== 'undefined' && typeof document !== 'undefined'
 
@@ -27,7 +27,17 @@ export const defaultConfig = {
   announceProvider: true,
   chains: Chains.all,
   mode: browser ? dialog({ host: hostUrls.prod }) : relay(),
-  relay: http(relayUrls.prod.http),
+  relay: http(relayUrls.prod.http, {
+    // Attach the app-supplied relay bearer (if any) per request without making
+    // the consumer override the relay URL. Unset provider => no auth header.
+    async onFetchRequest(_request, init) {
+      const token = await getRelayAuthToken()
+      if (!token) return
+      const headers = new Headers(init.headers)
+      headers.set('Authorization', `Bearer ${token}`)
+      return { ...init, headers }
+    },
+  }),
   storage:
     browser && typeof indexedDB !== 'undefined'
       ? Storage.idb()
