@@ -75,13 +75,18 @@ jobs:
       - name: Set up pnpm
         uses: wevm/actions/.github/actions/pnpm@f7ad7f00e16e73322562922c241f21f0c7ffbbec # main
 
-      # npm OIDC trusted publishing needs npm >= 11.5.1; the runner's default
-      # node ships older. No NPM_TOKEN: auth is the job's OIDC identity
-      # (id-token: write) against the trusted publisher configured on npmjs.
+      # npm OIDC trusted publishing needs npm >= 11.5.1. npm@latest is now 12.x,
+      # which requires node >= 22.22 (or >= 24.15); the wevm pnpm setup above
+      # ships 22.18, so bump the runner to Node 24 before upgrading npm.
+      - name: Use Node 24 for OIDC publishing
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 24
+
       - name: Upgrade npm for OIDC publishing
-        # Pin to npm 11 (>= 11.5.1 supports OIDC): npm@latest is now 12.x which
-        # requires node >= 22.22.2, but the runner ships 22.18 -> EBADENGINE.
-        run: npm install -g npm@11
+        # No NPM_TOKEN: auth is the job's OIDC identity (id-token: write) against
+        # the trusted publisher configured on npmjs.
+        run: npm install -g npm@latest
 
       - name: PR or publish
         id: changesets
