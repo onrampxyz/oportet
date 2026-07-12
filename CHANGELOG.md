@@ -1,5 +1,11 @@
 # porto
 
+## 0.5.0
+
+### Minor Changes
+
+- [`bac1721`](https://github.com/onrampxyz/oportet/commit/bac1721a734b1c0369b615bb6bafd0034d55f512) Thanks [@0xKrauser](https://github.com/0xKrauser)! - Add the React Native passkey adapter (`createReactNativePasskeyAdapter`), hoisted from upstream PR #1000, wired as the relay fallback behind the React Native dialog mode. Dismissed passkey prompts (Android `UserCancelled`/`NotAllowedError`, iOS `UserCancelledException`) now surface as EIP-1193 code `4001` so the relay transport does not retry and reopen the sheet.
+
 ## 0.2.37
 
 ### Patch Changes
