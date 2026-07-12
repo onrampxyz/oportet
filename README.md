@@ -1,6 +1,6 @@
 # oportet
 
-**oportet** — Latin, _"it is necessary."_ The self-custodial account SDK an Onramp wallet needs.
+**oportet** — Latin, _"it is necessary."_ The self-custodial account SDK a wallet needs.
 
 oportet is Onramp's fork of the Porto smart-account SDK: passkey authentication, session keys, EIP-7702 smart accounts, and relay-mode signing — abstracting gas, chain IDs, and seed phrases away from the user.
 
