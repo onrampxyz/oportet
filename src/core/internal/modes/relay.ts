@@ -467,7 +467,7 @@ export function relay(parameters: relay.Parameters = {}) {
                     credentialId: parameters.key.credentialId,
                     getFn: webAuthn?.getFn,
                     rpId: keystoreHost,
-                  })
+                  }).catch(U.rethrowUserRejection)
                 : undefined
               return {
                 address: parameters.address,
@@ -520,7 +520,7 @@ export function relay(parameters: relay.Parameters = {}) {
             challenge: digest,
             getFn: webAuthn?.getFn,
             rpId: keystoreHost,
-          })
+          }).catch(U.rethrowUserRejection)
           const response = webAuthnSignature.raw
             .response as AuthenticatorAssertionResponse
 

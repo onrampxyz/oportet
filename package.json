@@ -184,8 +184,7 @@
     },
     "patchedDependencies": {
       "@tanstack/react-router": "patches/@tanstack__react-router.patch",
-      "@wagmi/cli": "patches/@wagmi__cli.patch",
-      "ox@0.14.30": "patches/ox@0.14.30.patch"
+      "@wagmi/cli": "patches/@wagmi__cli.patch"
     },
     "peerDependencyRules": {
       "ignoreMissing": [
@@ -215,7 +214,7 @@
     "idb-keyval": "^6.2.1",
     "mipd": "^0.0.7",
     "mipd-postmessage": "^0.0.6",
-    "ox": "^0.9.6",
+    "ox": "^0.14.0",
     "zod": "^4.1.5",
     "zustand": "^5.0.1"
   },

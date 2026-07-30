@@ -65,3 +65,29 @@ export namespace withDedupe {
 
   export const cache = new Map<string, Promise<any>>()
 }
+
+/** EIP-1193 user-rejection code. viem's `shouldRetry` is false for it. */
+const userRejectedCode = 4001
+
+/**
+ * Re-surfaces a user rejection that `ox`'s WebAuthnP256 has wrapped.
+ *
+ * `WebAuthnP256.createCredential` / `.sign` funnel every failure from the
+ * caller-supplied `createFn` / `getFn` into `CredentialCreationFailedError` /
+ * `CredentialRequestFailedError`. That wrapper drops the EIP-1193 `code`, so a
+ * passkey the user dismissed reaches viem as a generic failure, `shouldRetry`
+ * returns true, and the passkey sheet reopens on every attempt.
+ *
+ * Our React Native adapter throws a `BaseError` carrying `code` 4001 for exactly
+ * that case, so pull it back out of the cause chain and throw the original.
+ *
+ * Matched structurally on `code` rather than with `instanceof`: the adapter that
+ * threw may come from a DIFFERENT copy of `ox` than the one that caught (the
+ * consumer app can supply its own `createFn`/`getFn`), and `instanceof` is false
+ * across duplicated module instances.
+ */
+export function rethrowUserRejection(error: unknown): never {
+  for (let cause: unknown = error; cause instanceof Error; cause = cause.cause)
+    if ((cause as { code?: unknown }).code === userRejectedCode) throw cause
+  throw error as Error
+}

@@ -29,6 +29,7 @@ import type {
   UnionOmit,
   UnionRequiredBy,
 } from '../core/internal/types.js'
+import * as U from '../core/internal/utils.js'
 import type * as Storage from '../core/Storage.js'
 import { getProvider } from './internal/provider.js'
 import type { prepareCalls } from './internal/relayActions.js'
@@ -290,7 +291,7 @@ export async function createWebAuthnP256(
       id: new Uint8Array(userId ?? Bytes.fromString(label)),
       name: label,
     },
-  })
+  }).catch(U.rethrowUserRejection)
 
   return fromWebAuthnP256({
     ...parameters,
@@ -1076,7 +1077,7 @@ export async function sign(key: Key, parameters: sign.Parameters) {
         getFn: webAuthn?.getFn,
         rpId,
         userVerification: requireVerification ? 'required' : 'preferred',
-      })
+      }).catch(U.rethrowUserRejection)
 
       const response = raw.response as AuthenticatorAssertionResponse
       if (!response?.userHandle)
