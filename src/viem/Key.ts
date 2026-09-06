@@ -1084,7 +1084,10 @@ export async function sign(key: Key, parameters: sign.Parameters) {
         throw new Error('No user handle in response', {
           cause: { response },
         })
-      const id = Bytes.toHex(new Uint8Array(response.userHandle!))
+      // The user handle carries the account address in its first 20 bytes.
+      // A passkey added next to the first one appends random bytes so the
+      // authenticator keeps both; the whole handle is not an address.
+      const id = Bytes.toHex(new Uint8Array(response.userHandle!).slice(0, 20))
       if (key.id && Address.validate(key.id) && !Address.isEqual(key.id, id))
         throw new Error(
           `supplied webauthn key "${key.id}" does not match signature webauthn key "${id}"`,
