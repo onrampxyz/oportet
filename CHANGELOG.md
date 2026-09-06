@@ -1,5 +1,11 @@
 # porto
 
+## 0.5.4
+
+### Patch Changes
+
+- [#5](https://github.com/onrampxyz/oportet/pull/5) [`808d2d4`](https://github.com/onrampxyz/oportet/commit/808d2d4fb3732d312a68d5e689779f7d541b901c) Thanks [@0xKrauser](https://github.com/0xKrauser)! - Signing with a WebAuthn key now reads the account address from the first 20 bytes of the user handle, the same way discovery does. A passkey added next to the first one carries a user handle with random bytes after the address; before this, signing with it threw an invalid-address error.
+
 ## 0.5.3
 
 ### Patch Changes
