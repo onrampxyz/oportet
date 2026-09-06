@@ -428,6 +428,7 @@ export function relay(parameters: relay.Parameters = {}) {
         const {
           address,
           credentialId,
+          publicKey: selectedPublicKey,
           webAuthnSignature,
           rdns,
           providerSignature,
@@ -472,6 +473,7 @@ export function relay(parameters: relay.Parameters = {}) {
               return {
                 address: parameters.address,
                 credentialId: parameters.key.credentialId,
+                publicKey: parameters.key.publicKey,
                 webAuthnSignature,
               }
             }
@@ -537,12 +539,21 @@ export function relay(parameters: relay.Parameters = {}) {
           chainIds: [client.chain.id],
         })
 
+        // The key the caller selected by public key carries the credential;
+        // without a selection, assume the first key is the admin WebAuthn key.
+        const selectedIndex = selectedPublicKey
+          ? keys.findIndex(
+              (key) =>
+                key.publicKey.toLowerCase() === selectedPublicKey.toLowerCase(),
+            )
+          : -1
+        const adminIndex = selectedIndex === -1 ? 0 : selectedIndex
+
         // Instantiate the account based off the extracted address and keys.
         const account = Account.from({
           address,
           keys: [...keys, ...authorizeKeys_].map((key, i) => {
-            // Assume that the first key is the admin WebAuthn key.
-            if (i === 0) {
+            if (i === adminIndex) {
               if (key.type === 'webauthn-p256')
                 return Key.fromWebAuthnP256({
                   ...key,
