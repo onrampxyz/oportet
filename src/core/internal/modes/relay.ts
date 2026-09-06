@@ -526,7 +526,12 @@ export function relay(parameters: relay.Parameters = {}) {
           const response = webAuthnSignature.raw
             .response as AuthenticatorAssertionResponse
 
-          const address = Bytes.toHex(new Uint8Array(response.userHandle!))
+          // The user handle starts with the account address; a passkey added
+          // next to the first one carries random bytes after it, so that the
+          // authenticator keeps both instead of replacing one with the other.
+          const address = Bytes.toHex(
+            new Uint8Array(response.userHandle!).slice(0, 20),
+          )
           const credentialId = webAuthnSignature.raw.id
 
           return { address, credentialId, webAuthnSignature }
