@@ -1052,7 +1052,7 @@ export async function sign(key: Key, parameters: sign.Parameters) {
 
       const { credential, rpId } = privateKey
 
-      const cacheKey = `risewallet.webauthnVerified.${key.hash}`
+      const cacheKey = `oportet.webauthnVerified.${key.hash}`
       const now = Date.now()
       const verificationTimeout = 10 * 60 * 1_000 // 10 minutes in milliseconds
 

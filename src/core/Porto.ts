@@ -21,6 +21,29 @@ import { getRelayAuthToken, relayUrls } from './Transport.js'
 
 const browser = typeof window !== 'undefined' && typeof document !== 'undefined'
 
+/** Default store key before the rename to `oportet.store`. */
+const legacyStorageKey = 'risewallet.store'
+
+/**
+ * Reads the pre-rename store key while the default key is still empty, so
+ * accounts saved under it survive; the next write lands under the new key.
+ * ponytail: never deletes the old entry. Drop once pre-0.6 stores are gone.
+ */
+function withLegacyStoreKey(
+  storage: Storage.Storage,
+  storageKey: string,
+): Storage.Storage {
+  if (storageKey !== defaultConfig.storageKey) return storage
+  return {
+    ...storage,
+    async getItem<value>(name: string) {
+      const stored = await storage.getItem<value>(name)
+      if (stored !== null || name !== storageKey) return stored
+      return storage.getItem<value>(legacyStorageKey)
+    },
+  }
+}
+
 export const defaultConfig = {
   announceProvider: true,
   chains: Chains.all,
@@ -40,7 +63,7 @@ export const defaultConfig = {
     browser && typeof indexedDB !== 'undefined'
       ? Storage.idb()
       : Storage.memory(),
-  storageKey: 'risewallet.store',
+  storageKey: 'oportet.store',
 } as const satisfies ExactPartial<Config>
 
 /**
@@ -124,7 +147,7 @@ export function create(
                 ),
                 chainIds: state.chainIds,
               }) as unknown as State,
-            storage: config.storage,
+            storage: withLegacyStoreKey(config.storage, config.storageKey),
             version: 5,
           },
         ),
