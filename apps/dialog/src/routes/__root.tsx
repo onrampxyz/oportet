@@ -386,20 +386,7 @@ function CheckUnsupportedBrowser(props: CheckUnsupportedBrowser.Props) {
     </>
   )
 
-  const action = (
-    <p>
-      Please switch to a{' '}
-      <a
-        className="text-th_base underline"
-        href="https://porto.sh/sdk/faq#which-browsers-are-supported"
-        rel="noreferrer"
-        target="_blank"
-      >
-        supported browser
-      </a>
-      .
-    </p>
-  )
+  const action = <p>Please switch to a supported browser.</p>
   const content = React.useMemo(() => {
     if (type === 'cli')
       return (

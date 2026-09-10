@@ -69,9 +69,8 @@ export default defineConfig(({ mode }) => {
           ? mode === 'test'
             ? '"http://localhost:5173"'
             : '"https://anvil.localhost:5173"'
-          : JSON.stringify(
-              env.VITE_WORKERS_URL ?? 'https://service.porto.workers.dev',
-            ),
+          : // No default: the fallback was Ithaca's service.porto.workers.dev.
+            JSON.stringify(env.VITE_WORKERS_URL ?? ''),
     },
     plugins,
     server: {

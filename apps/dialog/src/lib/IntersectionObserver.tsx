@@ -50,15 +50,8 @@ export function EnsureVisibility(props: {
                     ) : (
                       <>
                         To avoid this message, please contact the webmaster to
-                        add "{referrer?.url?.hostname}" as a trusted host to:{' '}
-                        <a
-                          className="break-all underline"
-                          href="https://github.com/ithacaxyz/porto/edit/main/src/trusted-hosts.ts"
-                          rel="noopener noreferrer"
-                          target="_blank"
-                        >
-                          github.com/ithacaxyz/porto/edit/main/src/trusted-hosts.ts
-                        </a>
+                        add "{referrer?.url?.hostname}" as a trusted host in
+                        oportet's src/trusted-hosts.ts.
                       </>
                     )}
                   </p>

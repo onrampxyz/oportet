@@ -6,10 +6,8 @@ import { zeroAddress } from 'viem'
 import * as z from 'zod/mini'
 import * as Dialog from './Dialog'
 
-const hostnames = [
-  'playground.porto.sh',
+const hostnames: string[] = [
   // TODO(onramp): Enable hostnames
-  // 'id.porto.sh',
   // 'relay.link',
 ]
 
@@ -30,11 +28,7 @@ export function useShowApplePay() {
     )
       return false
     // Only allow sites that are allowlisted
-    return Boolean(
-      hostnames.includes(referrer?.url?.hostname ?? '') ||
-        // Or Vercel porto previews
-        referrer?.url?.hostname.endsWith('preview.porto.sh'),
-    )
+    return hostnames.includes(referrer?.url?.hostname ?? '')
   }, [mode, referrer?.url])
 }
 

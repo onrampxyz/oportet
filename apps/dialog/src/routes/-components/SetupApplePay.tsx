@@ -243,7 +243,7 @@ export function SetupApplePay(props: SetupApplePay.Props) {
                 inputMode="email"
                 name="email"
                 onChange={setEmail}
-                placeholder="example@ithaca.xyz"
+                placeholder="you@example.com"
                 type="text"
                 value={email}
               />
