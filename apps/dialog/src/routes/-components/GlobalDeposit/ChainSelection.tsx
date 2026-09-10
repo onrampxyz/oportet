@@ -10,13 +10,9 @@ export type Chain = {
   icon: string
 }
 
-export const SupportedChains: Chain[] = [
-  {
-    icon: '/dialog/chains/sepolia.svg',
-    id: Chains.sepolia.id,
-    name: Chains.sepolia.name,
-  },
-]
+// Ethereum Sepolia, the only bridge source so far, is paused: the relay does
+// not serve it.
+export const SupportedChains: Chain[] = []
 
 export function ChainSelection() {
   const { selectedChain, setSelectedChain, setView, address } =

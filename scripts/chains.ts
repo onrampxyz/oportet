@@ -24,6 +24,10 @@ const environments = [
 }[]
 
 const configPath = './apps/~internal/lib/PortoConfig.ts'
+// Chains kept out of the dialog's PortoConfig even when Rise's relay serves
+// them, because our relay (relay.onramp.xyz) does not. The SDK's generated
+// chain exports and the docs table still list them.
+const pausedInDialog = new Set<string>(['sepolia'])
 const chainsSet = new Set<string>([])
 for (const environment of environments) {
   console.log(`\n${environment.name} — ${environment.rpc}`)
@@ -45,9 +49,12 @@ for (const environment of environments) {
     }
     const slug = entry[0]
     supportedChains.push(slug)
-    chainsSet.add(slug)
+    if (!pausedInDialog.has(slug)) chainsSet.add(slug)
   }
   supportedChains = supportedChains.toSorted()
+  const dialogChains = supportedChains.filter(
+    (slug) => !pausedInDialog.has(slug),
+  )
 
   console.log(
     `Found ${supportedChains.length} chains\n${supportedChains.map((v, i) => `${i + 1}. ${v}`).join('\n')}`,
@@ -55,15 +62,11 @@ for (const environment of environments) {
 
   console.log(`Updating ${configPath}`)
   const file = await readFile(configPath, 'utf8')
-  let content = replaceChainsByEnvironment(
-    file,
-    environment.name,
-    supportedChains,
-  )
+  let content = replaceChainsByEnvironment(file, environment.name, dialogChains)
   content = replaceTransportsByEnvironment(
     content,
     environment.name,
-    supportedChains,
+    dialogChains,
     environment.transportOverrides,
   )
   await writeFile(configPath, content)

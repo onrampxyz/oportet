@@ -45,33 +45,6 @@ export const BRIDGE_TOKENS: Record<number, BridgeToken[]> = {
       symbol: 'USDT',
     },
   ],
-  // Eth Sepolia
-  11155111: [
-    {
-      address: '0x70315897fe28Dbe36DA81F10E1158bae1373C5b1' as Address.Address,
-      bridgeContract:
-        '0x2C752f3E245A89828590B30c93daAAD19f31c801' as Address.Address,
-      bridgeType: 'layerzero',
-      bridgeWrapper: '0x226cefe884c9425377954fB9B5Cb9AD4BdCD398D',
-      decimals: 18,
-      icon: '/dialog/ui/token-icons/usdc.svg',
-      minDeposit: Value.from('10', 18), // 0.1 USDC
-      name: 'USDC',
-      symbol: 'USDC',
-    },
-    {
-      address: '0x9Fe63D450edC97D700fA1D0081b84569102e5C1D' as Address.Address,
-      bridgeContract:
-        '0x046832405512D508b873E65174E51613291083bC' as Address.Address,
-      bridgeType: 'layerzero',
-      bridgeWrapper: '0x226cefe884c9425377954fB9B5Cb9AD4BdCD398D',
-      decimals: 18,
-      icon: '/dialog/ui/token-icons/usdt.svg',
-      minDeposit: Value.from('10', 18), // 0.1 USDC
-      name: 'USDT',
-      symbol: 'USDT',
-    },
-  ],
 }
 
 export function getAssets(id?: number) {
