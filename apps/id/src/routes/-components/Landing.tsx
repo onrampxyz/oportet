@@ -90,7 +90,7 @@ export function Landing() {
             <p className="text-center font-[500] text-[31px]">Sail the seas</p>
             <div className="h-2" />
             <p className="max-w-[24ch] text-center text-[18px] text-base text-gray11 tracking-[-2.8%]">
-              RISE Wallet is a seamless, friendly way to use digital assets
+              Oportet is a seamless, friendly way to use digital assets
               on-the-go.
             </p>
           </div>

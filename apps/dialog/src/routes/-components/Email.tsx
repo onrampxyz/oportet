@@ -69,7 +69,7 @@ export function Email(props: Email.Props) {
     if (cli) return undefined
     return (
       <>
-        Use <span className="font-medium">RISE Wallet</span> to sign in to{' '}
+        Use <span className="font-medium">Oportet</span> to sign in to{' '}
         {hostname ? (
           <>
             <span className="font-medium">{hostname}</span>
@@ -179,7 +179,7 @@ export function Email(props: Email.Props) {
                 {invalid ? (
                   'Invalid email'
                 ) : actions.includes('sign-in') ? (
-                  'Create RISE Wallet account'
+                  'Create Oportet account'
                 ) : (
                   <div className="flex gap-2">
                     <IconScanFace className="size-5.25" />

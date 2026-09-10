@@ -17,7 +17,7 @@ export function Intro() {
       </p>
       <div className="flex flex-col gap-y-10">
         <div className="mt-auto space-y-2">
-          <h1 className="mt-auto font-medium text-4xl">RISE Wallet</h1>
+          <h1 className="mt-auto font-medium text-4xl">Oportet</h1>
           <p className="font-normal text-[19px] leading-[24px]">
             A home for your digital assets,
             <br />

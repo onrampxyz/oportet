@@ -171,7 +171,7 @@ function RouteComponent() {
                   <div>{domain}</div>
                 </div>
               ) : (
-                'RISE Wallet'
+                'Oportet'
               )}
             </div>
           ),

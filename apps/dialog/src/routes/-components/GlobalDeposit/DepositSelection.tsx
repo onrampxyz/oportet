@@ -9,7 +9,7 @@ export function DepositSelection() {
     <Layout>
       <Layout.Header>
         <Layout.Header.Default
-          subContent="Deposit to your RISE Wallet via Global Deposit and Onramp"
+          subContent="Deposit to your Oportet wallet via Global Deposit and Onramp"
           title="Global Deposit"
           variant="default"
         />

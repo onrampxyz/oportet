@@ -51,7 +51,7 @@ export namespace Layout {
         {/* TEMPORARILY HIDE */}
         {/* {right ?? (
           <Button
-            render={<Link aria-label="About RISE Wallet" to="/about" />}
+            render={<Link aria-label="About Oportet" to="/about" />}
             size="square"
             variant="outline"
           >

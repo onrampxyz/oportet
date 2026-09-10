@@ -31,7 +31,7 @@ export function ChainSelection() {
           Global Deposit
         </p>
         <p className="text-center text-sm text-th_base-secondary">
-          Bridge to your RISE Wallet
+          Bridge to your Oportet wallet
         </p>
         <div className="space-y-2 pt-4">
           {SupportedChains.map((chain) => {

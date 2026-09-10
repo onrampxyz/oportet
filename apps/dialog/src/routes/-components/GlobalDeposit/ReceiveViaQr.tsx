@@ -7,9 +7,7 @@ import { AddressFormatter } from '~/utils'
 export function ReceiveViaQr({ address }: Readonly<ReceiveViaQr.Props>) {
   return (
     <div className="mt-4 mb-2 rounded-lg border-1 border-th_secondary bg-th_base-alt p-2">
-      <p className="pt-2 text-center font-bold text-lg text-th_base">
-        RISE Wallet
-      </p>
+      <p className="pt-2 text-center font-bold text-lg text-th_base">Oportet</p>
       <p className="pb-2 text-center text-sm text-th_base">
         Receive tokens via QR
       </p>

@@ -181,7 +181,7 @@ export function GlobalDeposit() {
             <ArrowLeft className="size-4 text-th_base" />
           </Button>
           <Layout.Header.Default
-            subContent="Bridge to your RISE Wallet"
+            subContent="Bridge to your Oportet wallet"
             title="Global Deposit"
             variant="default"
           />
