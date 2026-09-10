@@ -54,12 +54,8 @@ const dialogHosts = {
   anvil: import.meta.env.PROD
     ? undefined
     : 'https://anvil.localhost:5174/dialog/',
-  prod: import.meta.env.PROD
-    ? 'https://wallet.risechain.com/dialog/'
-    : 'https://localhost:5174/dialog/',
-  stg: import.meta.env.PROD
-    ? 'https://stg.wallet.risechain.com/dialog/'
-    : 'https://stg.localhost:5174/dialog/',
+  prod: import.meta.env.PROD ? undefined : 'https://localhost:5174/dialog/',
+  stg: import.meta.env.PROD ? undefined : 'https://stg.localhost:5174/dialog/',
 } as const satisfies Record<Env.Env, string | undefined>
 
 export function getConfig(
@@ -72,18 +68,6 @@ export function getDialogHost(env = Env.get()): string {
   const url = (() => {
     if (import.meta.env.VITE_DIALOG_HOST)
       return import.meta.env.VITE_DIALOG_HOST
-    if (
-      import.meta.env.VITE_VERCEL_ENV === 'preview' &&
-      import.meta.env.VITE_VERCEL_BRANCH_URL
-    )
-      return (
-        'https://' +
-        import.meta.env.VITE_VERCEL_BRANCH_URL.replace(
-          /(.*)(-git.*)/,
-          'rise-wallet-testnet-dialog$2',
-        ) +
-        '/dialog/'
-      )
     return dialogHosts[env]
   })()
   return url + '?relayEnv=' + env

@@ -25,10 +25,9 @@ const AuthSessionStatus = {
 type AuthSessionStatus =
   (typeof AuthSessionStatus)[keyof typeof AuthSessionStatus]
 
+// oportet runs no hosted dialog; `Mode.dialog()` needs an explicit `host`.
 export const hostUrls = {
   local: 'http://localhost:5175/dialog/',
-  prod: 'https://wallet.risechain.com/dialog',
-  stg: 'https://stg.wallet.risechain.com/dialog',
 } as const
 
 /** Dialog interface. */

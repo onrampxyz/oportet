@@ -8,9 +8,7 @@ import { devtools, persist, subscribeWithSelector } from 'zustand/middleware'
 import { createStore, type Mutate, type StoreApi } from 'zustand/vanilla'
 import type * as Account from '../viem/Account.js'
 import * as Chains from './Chains.js'
-import { hostUrls } from './Dialog.js'
 import type * as Mode from './internal/mode.js'
-import { dialog } from './internal/modes/dialog.js'
 import { relay } from './internal/modes/relay.js'
 import type * as internal from './internal/porto.js'
 import * as Provider from './internal/provider.js'
@@ -26,7 +24,7 @@ const browser = typeof window !== 'undefined' && typeof document !== 'undefined'
 export const defaultConfig = {
   announceProvider: true,
   chains: Chains.all,
-  mode: browser ? dialog({ host: hostUrls.prod }) : relay(),
+  mode: relay(),
   relay: http(relayUrls.prod.http, {
     // Attach the app-supplied relay bearer (if any) per request without making
     // the consumer override the relay URL. Unset provider => no auth header.
@@ -200,7 +198,7 @@ export type Config<
   feeToken?: State['feeToken'] | undefined
   /**
    * Mode to use.
-   * @default Mode.dialog()
+   * @default Mode.relay()
    */
   mode: Mode.Mode | null
   /**

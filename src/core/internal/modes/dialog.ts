@@ -26,7 +26,7 @@ export function dialog(parameters: dialog.Parameters = {}) {
   const {
     fallback = relay() as Mode.Mode,
     features,
-    host = Dialog.hostUrls.prod,
+    host,
     labels,
     renderer = Dialog.iframe(),
     theme,
@@ -1030,6 +1030,11 @@ export function dialog(parameters: dialog.Parameters = {}) {
     config: parameters,
     name: 'dialog',
     setup(parameters) {
+      if (!host)
+        throw new Error(
+          '`Mode.dialog()` needs a `host`: oportet does not run a hosted dialog.',
+        )
+
       const { internal } = parameters
       const { store } = internal
 
@@ -1111,8 +1116,8 @@ export declare namespace dialog {
         }
       | undefined
     /**
-     * URL of the dialog embed.
-     * @default 'http://id.porto.sh/dialog'
+     * URL of the dialog embed. Required: oportet does not run a hosted dialog,
+     * so setup throws without one.
      */
     host?: string | undefined
     /**
