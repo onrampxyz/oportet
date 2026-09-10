@@ -55,10 +55,16 @@ export function ActionRequest(props: ActionRequest.Props) {
     address,
     calls,
     chainId,
+    // Keep the quote the user is signing; don't re-quote under them.
+    enabled: !loading,
     feeToken,
     merchantUrl,
     refetchInterval: ({ state }) => (state.error ? false : 15_000),
     requiredFunds,
+    // Fresh for one refetch interval, so refocusing the dialog doesn't
+    // re-quote on top of the interval. A quote left in a background tab
+    // longer than that is still refetched on refocus.
+    staleTime: 15_000,
   })
 
   const capabilities = prepareCallsQuery.data?.capabilities

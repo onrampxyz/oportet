@@ -29,6 +29,7 @@ export namespace prepareCalls {
       requiredFunds,
       refetchInterval,
       revokeKeys,
+      staleTime,
     } = options
 
     return Query.queryOptions({
@@ -78,6 +79,7 @@ export namespace prepareCalls {
         revokeKeys,
       }),
       refetchInterval,
+      staleTime,
     })
   }
 
@@ -90,7 +92,7 @@ export namespace prepareCalls {
       queryKey.Options<calls> &
         Pick<
           Query.UseQueryOptions<Data, Error, Data, QueryKey>,
-          'enabled' | 'refetchInterval'
+          'enabled' | 'refetchInterval' | 'staleTime'
         >
 
     export function queryKey<const calls extends readonly unknown[]>(
