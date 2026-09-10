@@ -1,20 +1,24 @@
-import { http, createClient } from 'viem'
+import { type Chain, http, createClient } from 'viem'
 import { getCapabilities } from 'viem/actions'
 import { readFile, writeFile } from 'node:fs/promises'
 import * as Chains from 'viem/chains'
+import * as OportetChains from '../src/core/Chains.js'
+import { relayUrls } from '../src/core/Transport.js'
 
 // TODO: Update wagmi.config.ts
 console.log('Fetching chains for environments.')
 
+// Each environment reads the relay its dialog talks to (the `relay` transport
+// in `apps/~internal/lib/PortoConfig.ts`).
 const environments = [
   {
     name: 'prod',
-    rpc: 'https://relay.wallet.risechain.com',
+    rpc: relayUrls.prod.http,
     transportOverrides: {},
   },
   {
     name: 'stg',
-    rpc: 'https://stg.relay.wallet.risechain.com',
+    rpc: relayUrls.stg.http,
     transportOverrides: {},
   },
 ] as const satisfies readonly {
@@ -24,11 +28,21 @@ const environments = [
 }[]
 
 const configPath = './apps/~internal/lib/PortoConfig.ts'
-// Chains kept out of the dialog's PortoConfig even when Rise's relay serves
-// them, because our relay (relay.onramp.xyz) does not. The SDK's generated
-// chain exports and the docs table still list them.
+// Chains kept out of the dialog's PortoConfig even when an environment's relay
+// serves them. Rise's stg relay still serves Sepolia; our relay
+// (relay.onramp.xyz) does not. Only PortoConfig is filtered: the SDK's
+// generated chain exports and the docs table list what the prod relay serves.
 const pausedInDialog = new Set<string>(['sepolia'])
 const chainsSet = new Set<string>([])
+// Chains viem does not define yet, resolved from `src/core/Chains.ts` instead.
+const oportetSlugs = new Set<string>()
+const chainNames = new Map<string, string>()
+const viemChains = Object.entries(Chains)
+// The namespace also exports `all` (an array) and `isAnvil`; keep chains only.
+const oportetChains = Object.entries<unknown>(OportetChains).filter(
+  (entry): entry is [string, Chain] =>
+    typeof entry[1] === 'object' && entry[1] !== null && 'id' in entry[1],
+)
 for (const environment of environments) {
   console.log(`\n${environment.name} — ${environment.rpc}`)
 
@@ -39,17 +53,22 @@ for (const environment of environments) {
   const capabilities = await getCapabilities(client)
   const supportedChainIds = Object.keys(capabilities).map(Number)
 
-  const allChains = Object.entries(Chains)
   let supportedChains: string[] = []
   for (const chainId of supportedChainIds) {
-    const entry = allChains.find(([, chain]) => chain.id === chainId)
+    const viemEntry = viemChains.find(([, chain]) => chain.id === chainId)
+    const entry =
+      viemEntry ?? oportetChains.find(([, chain]) => chain.id === chainId)
     if (!entry) {
-      console.warn(`No chain found for id ${chainId}. Please add it to Viem.`)
+      console.warn(
+        `No chain found for id ${chainId}. Add it to viem or src/core/Chains.ts.`,
+      )
       continue
     }
-    const slug = entry[0]
+    const [slug, chain] = entry
+    chainNames.set(slug, chain.name)
+    if (!viemEntry) oportetSlugs.add(slug)
     supportedChains.push(slug)
-    if (!pausedInDialog.has(slug)) chainsSet.add(slug)
+    if (viemEntry && !pausedInDialog.has(slug)) chainsSet.add(slug)
   }
   supportedChains = supportedChains.toSorted()
   const dialogChains = supportedChains.filter(
@@ -74,7 +93,12 @@ for (const environment of environments) {
   if (environment.name === 'prod') {
     const chainsPath = './src/core/internal/_generated/chains.ts'
     console.log(`Updating ${chainsPath}`)
-    const content = exportChains(supportedChains)
+    // ponytail: oportet's own chains are exported by src/core/Chains.ts, so the
+    // generated file (and with it `Chains.all`) leaves them out. Add them to
+    // `Chains.all` by hand when the SDK should default to them.
+    const content = exportChains(
+      supportedChains.filter((slug) => !oportetSlugs.has(slug)),
+    )
     await writeFile(chainsPath, content)
 
     const docsPath = './apps/docs/pages/sdk/api/chains.mdx'
@@ -97,6 +121,12 @@ console.log('\nDone.')
 
 ////////////////////////////////////////////////////////////////////////////////////
 
+// How PortoConfig names a chain: viem chains through its `viem/chains` import,
+// oportet's own through its `Chains` import from `oportet`.
+function ref(slug: string) {
+  return oportetSlugs.has(slug) ? `Chains.${slug}` : slug
+}
+
 function replaceChainsByEnvironment(
   content: string,
   environment: 'prod' | 'stg',
@@ -111,7 +141,7 @@ function replaceChainsByEnvironment(
     const baseIndent = '    '
     const chainIndent = '      '
     const chainsList = newChains
-      .map((chain) => `${chainIndent}${chain},`)
+      .map((chain) => `${chainIndent}${ref(chain)},`)
       .join('\n')
     return `${start}\n${chainsList}\n${baseIndent}${end}`
   })
@@ -132,7 +162,7 @@ function replaceTransportsByEnvironment(
     const baseIndent = '      '
     const transportsList = newChains
       .map((chain) => {
-        const chainId = `${chain}.id`
+        const chainId = `${ref(chain)}.id`
         const rpcUrl = transportOverrides[chain]
         const transport = rpcUrl
           ? rpcUrl.startsWith('http')
@@ -154,8 +184,9 @@ function replaceChainsForViemChainsImport(
 
   return content.replace(pattern, () => {
     const indent = '  '
-    const chainsList = newChains.map((chain) => `${indent}${chain}`).join(',\n')
-    return `import {\n${chainsList},\n} from 'viem/chains'`
+    // One `name,` line per chain, so an empty list still leaves a valid import.
+    const chainsList = newChains.map((chain) => `${indent}${chain},\n`).join('')
+    return `import {\n${chainsList}} from 'viem/chains'`
   })
 }
 
@@ -174,11 +205,7 @@ function replaceChainsSupportedTable(content: string, newChains: string[]) {
 
   return content.replace(pattern, (_match, tableHeader) => {
     const rows = newChains
-      .map((chain) => {
-        // biome-ignore lint/performance/noDynamicNamespaceImportAccess: _
-        const displayName = Chains[chain as keyof typeof Chains].name
-        return `| ${displayName} | \`Chains.${chain}\` |`
-      })
+      .map((chain) => `| ${chainNames.get(chain)} | \`Chains.${chain}\` |`)
       .join('\n')
 
     return `${tableHeader}${rows}`
