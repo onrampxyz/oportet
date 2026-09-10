@@ -20,7 +20,6 @@ import {
   useDisconnect,
   useSendCalls,
   useWaitForCallsStatus,
-  useWatchBlockNumber,
   WagmiProvider,
 } from 'wagmi'
 import { porto } from '~/lib/Porto'
@@ -135,32 +134,28 @@ function DepositFromWallet(props: {
 
   const {
     data: { assets, nonZeroAssets },
-    refetch: refetchAssets,
   } = useQuery({
     enabled: Boolean(externalAccount && chainId),
     initialData: [],
     async queryFn() {
       if (!chainId) throw new Error('Missing chainId')
       if (!externalAccount) throw new Error('Missing account')
+      const hexChainId = Hex.fromNumber(chainId)
       const response = await porto.provider.request({
         method: 'wallet_getAssets',
-        params: [{ account: externalAccount }],
+        // Only this chain is read below; unfiltered, the relay reads every
+        // chain it serves.
+        params: [{ account: externalAccount, chainFilter: [hexChainId] }],
       })
-      return response[Hex.fromNumber(chainId)]
+      return response[hexChainId]
     },
     queryKey: ['assets', { account: externalAccount, chainId }],
+    // Polled rather than refetched on every block, to spare relay calls.
+    refetchInterval: 20_000,
     select: (assets = []) => ({
       assets,
       nonZeroAssets: assets.filter((asset) => asset.balance !== '0x0'),
     }),
-  })
-
-  useWatchBlockNumber({
-    chainId: chainId as never,
-    enabled: Boolean(externalAccount && chainId),
-    onBlockNumber() {
-      refetchAssets()
-    },
   })
 
   useAccountEffect({

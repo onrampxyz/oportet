@@ -7,7 +7,6 @@ import { Hooks } from 'oportet/wagmi'
 import type { Address, Hex } from 'ox'
 import * as React from 'react'
 import { zeroAddress, zeroHash } from 'viem'
-import { useWatchBlockNumber } from 'wagmi'
 import { DepositButtons } from '~/components/DepositButtons'
 import { FundsProvider, useFundsContext, type View } from '~/contexts'
 import { useOnrampOrder } from '~/lib/onramp'
@@ -105,13 +104,17 @@ function AddFundsContent(props: Readonly<AddFunds.Props>) {
   }, [address, onrampStatus])
 
   const { data: tokens } = Tokens.getTokens.useQuery()
-  const { data: assets, refetch: refetchAssets } = Hooks.useAssets({
+  const { data: assets } = Hooks.useAssets({
     account: account?.address,
+    // Only the chain the deposit lands on: unfiltered, the relay reads every
+    // chain it serves.
+    chainFilter: chain ? [chain.id] : undefined,
     query: {
-      enabled: Boolean(account?.address),
+      enabled: Boolean(account?.address && chain),
+      // Polled rather than refetched on every block, to spare relay calls.
+      refetchInterval: 20_000,
       select: (data) =>
-        // As we support interop, we can listen to the
-        // aggregated assets across all supported chains.
+        // Aggregated assets across the filtered chain(s).
         data[0],
     },
   })
@@ -135,12 +138,6 @@ function AddFundsContent(props: Readonly<AddFunds.Props>) {
     }
     return addressBalanceMap
   }, [assets, tokens])
-  useWatchBlockNumber({
-    enabled: Boolean(account?.address),
-    onBlockNumber() {
-      refetchAssets()
-    },
-  })
   const previousBalanceMap = usePrevious({ value: balanceMap })
 
   // Close dialog when one of the token balances increases
