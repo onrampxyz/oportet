@@ -32,7 +32,12 @@ export function relayProxy(
 ): relayProxy.ReturnType {
   return (config) => {
     const transport_public = transports.public(config)
-    const transport_relay = transports.relay(config)
+    // The proxy retries relay requests itself, so the relay transport must not
+    // retry too (viem's `fallback` does the same for its transports). Nested
+    // retries turn one failed request into 16, and re-send requests the caller
+    // marked `retryCount: 0` (e.g. `wallet_sendPreparedCalls`). An explicit
+    // `retryCount` on the relay transport still wins.
+    const transport_relay = transports.relay({ ...config, retryCount: 0 })
 
     return createTransport({
       key: relayProxy.type,
