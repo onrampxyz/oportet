@@ -16,23 +16,13 @@ const environments = [
     rpc: relayUrls.prod.http,
     transportOverrides: {},
   },
-  {
-    name: 'stg',
-    rpc: relayUrls.stg.http,
-    transportOverrides: {},
-  },
 ] as const satisfies readonly {
-  name: 'prod' | 'stg'
+  name: 'prod'
   rpc: string
   transportOverrides: Partial<Record<keyof typeof Chains, string>>
 }[]
 
 const configPath = './apps/~internal/lib/PortoConfig.ts'
-// Chains kept out of the dialog's PortoConfig even when an environment's relay
-// serves them. Rise's stg relay still serves Sepolia; our relay
-// (relay.onramp.xyz) does not. Only PortoConfig is filtered: the SDK's
-// generated chain exports and the docs table list what the prod relay serves.
-const pausedInDialog = new Set<string>(['sepolia'])
 const chainsSet = new Set<string>([])
 // Chains viem does not define yet, resolved from `src/core/Chains.ts` instead.
 const oportetSlugs = new Set<string>()
@@ -68,12 +58,10 @@ for (const environment of environments) {
     chainNames.set(slug, chain.name)
     if (!viemEntry) oportetSlugs.add(slug)
     supportedChains.push(slug)
-    if (viemEntry && !pausedInDialog.has(slug)) chainsSet.add(slug)
+    if (viemEntry) chainsSet.add(slug)
   }
   supportedChains = supportedChains.toSorted()
-  const dialogChains = supportedChains.filter(
-    (slug) => !pausedInDialog.has(slug),
-  )
+  const dialogChains = supportedChains
 
   console.log(
     `Found ${supportedChains.length} chains\n${supportedChains.map((v, i) => `${i + 1}. ${v}`).join('\n')}`,
@@ -129,7 +117,7 @@ function ref(slug: string) {
 
 function replaceChainsByEnvironment(
   content: string,
-  environment: 'prod' | 'stg',
+  environment: 'prod',
   newChains: string[],
 ) {
   const pattern = new RegExp(
@@ -149,7 +137,7 @@ function replaceChainsByEnvironment(
 
 function replaceTransportsByEnvironment(
   content: string,
-  environment: 'prod' | 'stg',
+  environment: 'prod',
   newChains: string[],
   transportOverrides: Record<string, string>,
 ): string {

@@ -5,7 +5,6 @@ export { fallback, http, type Transport, webSocket } from 'viem'
 export const relayUrls = {
   anvil: { http: 'http://localhost:9119' },
   prod: { http: 'https://relay.onramp.xyz' },
-  stg: { http: 'https://stg.relay.wallet.risechain.com' },
 } as const
 
 /**

@@ -676,7 +676,7 @@ export default defineConfig({
     // differs across majors.
     plugins: [
       Mkcert({
-        hosts: ['localhost', 'stg.localhost', 'anvil.localhost'],
+        hosts: ['localhost', 'anvil.localhost'],
       }),
       Plugins.Icons(),
     ] as never,

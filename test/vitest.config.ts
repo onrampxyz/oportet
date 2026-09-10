@@ -8,8 +8,8 @@ export default defineConfig(({ mode }) => {
 
   const defaultEnv = (() => {
     if (env.VITE_DEFAULT_ENV) return env.VITE_DEFAULT_ENV
-    if (env.RPC_URL?.includes('sepolia')) return 'stg'
-    if (env.RPC_URL?.includes('mainnet')) return 'prod'
+    if (env.RPC_URL?.includes('sepolia') || env.RPC_URL?.includes('mainnet'))
+      return 'prod'
     return 'anvil'
   })()
 

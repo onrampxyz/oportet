@@ -32,7 +32,7 @@ export default defineConfig(({ mode }) => {
     skipMkcert
       ? null
       : Mkcert({
-          hosts: ['localhost', 'stg.localhost', 'anvil.localhost'],
+          hosts: ['localhost', 'anvil.localhost'],
         }),
     Tailwindcss(),
     React(),

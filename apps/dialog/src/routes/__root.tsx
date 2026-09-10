@@ -35,7 +35,6 @@ const env = (
   {
     anvil: 'anvil',
     prod: undefined,
-    stg: 'staging',
   } satisfies Record<Env.Env, string | undefined>
 )[Env.get()]
 

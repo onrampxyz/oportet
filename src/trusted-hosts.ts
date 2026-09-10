@@ -35,7 +35,6 @@ export const hostnames = [
   'sponsor-porto.vercel.app',
   'sponsoring-privy.porto.workers.dev',
   'staging.kiwistand.com',
-  'stg.localhost',
   'sushi.com',
   'swap.defillama.com',
   'uniswap.org',

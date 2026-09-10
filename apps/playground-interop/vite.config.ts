@@ -9,7 +9,7 @@ export default defineConfig({
     react(),
     tailwindcss(),
     mkcert({
-      hosts: ['localhost', 'stg.localhost', 'anvil.localhost'],
+      hosts: ['localhost', 'anvil.localhost'],
     }),
   ],
   resolve: {
