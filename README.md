@@ -54,7 +54,7 @@ bun add oportet wagmi viem @tanstack/react-query
 
 ### Basic Setup
 
-#### 1. Configure the Rise Wallet Connector
+#### 1. Configure the Oportet Connector
 
 ```tsx
 import { Chains, Porto } from 'oportet'
@@ -62,12 +62,12 @@ import { porto } from 'oportet/wagmi'
 import { createConfig, http } from 'wagmi'
 
 // Export the connector for advanced usage
-export const rwConnector = porto(Porto.defaultConfig)
+export const oportetConnector = porto(Porto.defaultConfig)
 
 // Create wagmi config
 export const config = createConfig({
   chains: [Chains.riseTestnet],
-  connectors: [rwConnector],
+  connectors: [oportetConnector],
   transports: {
     [Chains.riseTestnet.id]: http('https://testnet.riselabs.xyz'),
   },
@@ -117,11 +117,11 @@ export function WalletButton() {
     )
   }
 
-  const rwConnector = connectors.find(c => c.id === 'com.risechain.wallet')
-  if (!rwConnector) return null
+  const oportetConnector = connectors.find(c => c.id === 'com.oportet.identity')
+  if (!oportetConnector) return null
 
   return (
-    <button onClick={() => connect.mutate({ connector: rwConnector })}>
+    <button onClick={() => connect.mutate({ connector: oportetConnector })}>
       Connect with Passkey
     </button>
   )

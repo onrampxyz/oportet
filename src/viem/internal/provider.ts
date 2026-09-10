@@ -7,10 +7,10 @@ const mipdStore = Mipd.createStore()
 export async function getProvider(parameters: { rdns: string }) {
   const parentProviders = mipdPMStore
     .getProviders()
-    .filter((p) => p.info.rdns !== 'com.risechain.wallet')
+    .filter((p) => p.info.rdns !== 'com.oportet.identity')
   const providers = mipdStore
     .getProviders()
-    .filter((p) => p.info.rdns !== 'com.risechain.wallet')
+    .filter((p) => p.info.rdns !== 'com.oportet.identity')
 
   return (
     providers.find((p) => p.info.rdns === parameters.rdns) ??

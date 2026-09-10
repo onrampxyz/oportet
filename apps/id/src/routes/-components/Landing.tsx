@@ -58,7 +58,7 @@ export function Landing() {
   const providers = React.useMemo(
     () =>
       [...parentProviders, ...selfProviders].filter(
-        (provider) => provider.info.rdns !== 'com.risechain.wallet',
+        (provider) => provider.info.rdns !== 'com.oportet.identity',
       ),
     [parentProviders, selfProviders],
   )

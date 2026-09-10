@@ -48,7 +48,7 @@ function RouteComponent() {
 
     const injectedProviders = [...parentProviders, ...selfProviders]
       .filter((provider) => {
-        return provider.info.rdns !== 'com.risechain.wallet'
+        return provider.info.rdns !== 'com.oportet.identity'
       })
       .filter((provider) => {
         const name = provider?.info?.name
