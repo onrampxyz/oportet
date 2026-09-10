@@ -20,9 +20,14 @@ import {
   ChainSelection,
   DepositSelection,
   GlobalDeposit,
+  SupportedChains,
 } from './GlobalDeposit'
 import { DepositError } from './GlobalDeposit/DepositError'
 import { SetupApplePay } from './SetupApplePay'
+
+// Global Deposit bridges from SupportedChains. While it has none, its form
+// would open empty, so Add Funds opens on the plain deposit view instead.
+const canBridge = SupportedChains.length > 0
 
 // const presetAmounts = ['30', '50', '100', '250'] as const
 // const maxAmount = 500
@@ -228,13 +233,15 @@ function AddFundsContent(props: Readonly<AddFunds.Props>) {
                 chainId={chain?.id}
                 nativeTokenName={chain?.nativeCurrency?.symbol}
               />
-              <Button
-                onClick={() => setView('global-deposit')}
-                variant="positive"
-                width="full"
-              >
-                Bridge from other chains
-              </Button>
+              {canBridge && (
+                <Button
+                  onClick={() => setView('global-deposit')}
+                  variant="positive"
+                  width="full"
+                >
+                  Bridge from other chains
+                </Button>
+              )}
             </>
           )}
         </div>
@@ -259,7 +266,9 @@ export function AddFunds(props: Readonly<AddFunds.Props>) {
   return (
     <FundsProvider
       address={address}
-      initialView={(props.view as View) ?? 'global-deposit'}
+      initialView={
+        (props.view as View) ?? (canBridge ? 'global-deposit' : 'default')
+      }
     >
       <AddFundsContent {...props} />
     </FundsProvider>
