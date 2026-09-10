@@ -103,15 +103,10 @@ export async function getCapabilities<
     type Schema = Extract<RpcSchema.Viem[number], { Method: typeof method }>
     const result = await withCache(
       () =>
-        client.request<Schema>(
-          {
-            method,
-            params: chainIds ? [chainIds] : undefined,
-          },
-          {
-            retryCount: 0,
-          },
-        ),
+        client.request<Schema>({
+          method,
+          params: chainIds ? [chainIds] : undefined,
+        }),
       {
         cacheKey: `${client.uid}.${method}.${chainIds?.join(',')}`,
       },
@@ -495,35 +490,30 @@ export async function prepareCalls<
   try {
     const method = 'wallet_prepareCalls' as const
     type Schema = Extract<RpcSchema.Viem[number], { Method: typeof method }>
-    const result = await client.request<Schema>(
-      {
-        method,
-        params: [
-          z.encode(RpcSchema.wallet_prepareCalls.Parameters, {
-            calls,
-            capabilities: {
-              ...capabilities,
-              meta: {
-                ...capabilities?.meta,
-              },
+    const result = await client.request<Schema>({
+      method,
+      params: [
+        z.encode(RpcSchema.wallet_prepareCalls.Parameters, {
+          calls,
+          capabilities: {
+            ...capabilities,
+            meta: {
+              ...capabilities?.meta,
             },
-            // biome-ignore lint/suspicious/noNonNullAssertedOptionalChain: _
-            chainId: chain?.id!,
-            from: address,
-            key: key
-              ? {
-                  prehash: key.prehash,
-                  publicKey: key.publicKey,
-                  type: key.type,
-                }
-              : undefined,
-          }),
-        ],
-      },
-      {
-        retryCount: 0,
-      },
-    )
+          },
+          // biome-ignore lint/suspicious/noNonNullAssertedOptionalChain: _
+          chainId: chain?.id!,
+          from: address,
+          key: key
+            ? {
+                prehash: key.prehash,
+                publicKey: key.publicKey,
+                type: key.type,
+              }
+            : undefined,
+        }),
+      ],
+    })
     return Object.assign(
       z.decode(RpcSchema.wallet_prepareCalls.Response, result),
       { _raw: result },
@@ -580,25 +570,20 @@ export async function prepareUpgradeAccount<chain extends Chain | undefined>(
   try {
     const method = 'wallet_prepareUpgradeAccount' as const
     type Schema = Extract<RpcSchema.Viem[number], { Method: typeof method }>
-    const result = await client.request<Schema>(
-      {
-        method,
-        params: [
-          z.encode(
-            RpcSchema.wallet_prepareUpgradeAccount.Parameters,
-            U.normalizeValue({
-              address,
-              capabilities,
-              chainId: chain?.id,
-              delegation,
-            }),
-          ),
-        ],
-      },
-      {
-        retryCount: 0,
-      },
-    )
+    const result = await client.request<Schema>({
+      method,
+      params: [
+        z.encode(
+          RpcSchema.wallet_prepareUpgradeAccount.Parameters,
+          U.normalizeValue({
+            address,
+            capabilities,
+            chainId: chain?.id,
+            delegation,
+          }),
+        ),
+      ],
+    })
     return z.decode(RpcSchema.wallet_prepareUpgradeAccount.Response, result)
   } catch (error) {
     parseSchemaError(error)
@@ -706,20 +691,15 @@ export async function getOnrampContactInfo(
   try {
     const method = 'account_getOnrampContactInfo' as const
     type Schema = Extract<RpcSchema.Viem[number], { Method: typeof method }>
-    const result = await client.request<Schema>(
-      {
-        method,
-        params: [
-          z.encode(RpcSchema.account_getOnrampContactInfo.Parameters, {
-            address,
-            secret,
-          }),
-        ],
-      },
-      {
-        retryCount: 0,
-      },
-    )
+    const result = await client.request<Schema>({
+      method,
+      params: [
+        z.encode(RpcSchema.account_getOnrampContactInfo.Parameters, {
+          address,
+          secret,
+        }),
+      ],
+    })
     return z.decode(RpcSchema.account_getOnrampContactInfo.Response, result)
   } catch (error) {
     parseSchemaError(error)
@@ -758,19 +738,14 @@ export async function onrampStatus(
   try {
     const method = 'account_onrampStatus' as const
     type Schema = Extract<RpcSchema.Viem[number], { Method: typeof method }>
-    const result = await client.request<Schema>(
-      {
-        method,
-        params: [
-          z.encode(RpcSchema.account_onrampStatus.Parameters, {
-            address,
-          }),
-        ],
-      },
-      {
-        retryCount: 0,
-      },
-    )
+    const result = await client.request<Schema>({
+      method,
+      params: [
+        z.encode(RpcSchema.account_onrampStatus.Parameters, {
+          address,
+        }),
+      ],
+    })
     return z.decode(RpcSchema.account_onrampStatus.Response, result)
   } catch (error) {
     parseSchemaError(error)
@@ -1174,23 +1149,18 @@ export async function verifySignature<chain extends Chain | undefined>(
     type Schema = Extract<RpcSchema.Viem[number], { Method: typeof method }>
     const result = await (async () => {
       const result = await client
-        .request<Schema>(
-          {
-            method,
-            params: [
-              z.encode(RpcSchema.wallet_verifySignature.Parameters, {
-                address,
-                // biome-ignore lint/suspicious/noNonNullAssertedOptionalChain: _
-                chainId: chain?.id!,
-                digest,
-                signature,
-              }),
-            ],
-          },
-          {
-            retryCount: 0,
-          },
-        )
+        .request<Schema>({
+          method,
+          params: [
+            z.encode(RpcSchema.wallet_verifySignature.Parameters, {
+              address,
+              // biome-ignore lint/suspicious/noNonNullAssertedOptionalChain: _
+              chainId: chain?.id!,
+              digest,
+              signature,
+            }),
+          ],
+        })
         .catch(fallback)
       if (result.valid) return result
       return fallback()

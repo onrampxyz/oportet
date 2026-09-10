@@ -1,6 +1,7 @@
 import { createClient, http } from 'viem'
 import { afterAll, beforeAll, describe, expect, test } from 'vitest'
 import * as Http from '../../test/src/http.js'
+import * as RelayActions from '../viem/internal/relayActions.js'
 import * as Chains from './Chains.js'
 import * as Transport from './Transport.js'
 
@@ -44,5 +45,11 @@ describe('relayProxy', () => {
       ),
     ).rejects.toThrow()
     expect(requests).toMatchInlineSnapshot('1')
+  })
+
+  test('behavior: retries a read-only relay action', async () => {
+    requests = 0
+    await expect(RelayActions.getCapabilities(getClient())).rejects.toThrow()
+    expect(requests).toMatchInlineSnapshot('4')
   })
 })
