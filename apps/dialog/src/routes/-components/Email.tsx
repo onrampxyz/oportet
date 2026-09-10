@@ -156,7 +156,7 @@ export function Email(props: Email.Props) {
                   setEmailInput(event.target.value)
                   setInvalid(false)
                 }}
-                placeholder="example@risechain.com"
+                placeholder="you@example.com"
                 type="email"
               />
               <div className="-tracking-[2.8%] absolute end-3 text-[12px] text-th_base-secondary leading-normal">

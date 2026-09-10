@@ -1,4 +1,4 @@
-import { Button, LogoMark } from '@porto/apps/components'
+import { LogoMark } from '@porto/apps/components'
 import { cx } from 'cva'
 import type { PropsWithChildren } from 'react'
 
@@ -58,29 +58,6 @@ export namespace Layout {
             <CircleHelp className="size-5 text-gray10" />
           </Button>
         )} */}
-      </div>
-    )
-  }
-
-  export function IntegrateFooter() {
-    return (
-      <div className="mt-auto mb-4 flex h-min min-w-[500px] items-center justify-center gap-x-3 max-lg:hidden">
-        <p className="font-[500] text-gray10 text-sm">
-          Want to integrate RISE Wallet with your application?
-        </p>
-        <Button
-          className="h-min w-min! px-2! py-1"
-          render={
-            <a
-              aria-label="Learn more about RISE Wallet"
-              href="https://docs.risechain.com/docs/oportet"
-              rel="noreferrer"
-              target="_blank"
-            >
-              Learn more
-            </a>
-          }
-        />
       </div>
     )
   }

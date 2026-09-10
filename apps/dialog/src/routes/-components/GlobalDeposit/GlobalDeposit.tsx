@@ -5,7 +5,7 @@ import { Value } from 'ox'
 import { useEffect, useMemo, useState } from 'react'
 import { formatUnits, parseUnits } from 'viem'
 import { riseTestnet } from 'viem/chains'
-import { useAccount, useReadContract } from 'wagmi'
+import { useReadContract } from 'wagmi'
 import { useFundsContext } from '~/contexts'
 import { useBridge, useDestinationAsset, useWalletAsset } from '~/hooks'
 import ArrowLeft from '~icons/lucide/arrow-left'
@@ -24,8 +24,6 @@ export function GlobalDeposit() {
     setSelectedChain,
     setView,
   } = useFundsContext()
-
-  const { chainId } = useAccount()
 
   const [bridgeState, setBridgeState] = useState<BridgeState>({
     status: 'idle',
@@ -213,16 +211,6 @@ export function GlobalDeposit() {
                       className="h-4 border-th_base border-l-0.25"
                       orientation="vertical"
                     />
-                    {chainId === riseTestnet.id && (
-                      <a
-                        className="text-sm text-th_base-secondary"
-                        href="https://demo.wallet.risechain.com/mint"
-                        rel="noopener noreferrer"
-                        target="_blank"
-                      >
-                        Mint
-                      </a>
-                    )}
                   </div>
                   <div className="flex gap-2">
                     <p className="text-sm text-th_base-secondary">Balance:</p>

@@ -219,8 +219,6 @@ export function Landing() {
           </div>
         </div>
       </div>
-
-      <Layout.IntegrateFooter />
     </>
   )
 }

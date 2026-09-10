@@ -34,10 +34,6 @@ oportet builds on two upstreams:
 - **Wagmi Integration**: Drop-in replacement for traditional wallet connectors
 - **Multi-platform**: Works on web, mobile (React Native), and desktop
 
-## Documentation
-
-For comprehensive guides and API reference, visit the [RISE Documentation](https://docs.risechain.com).
-
 ## Quick Start
 
 ### Installation
@@ -201,12 +197,6 @@ forge test --config-path ./contracts/account/foundry.toml # Test
 forge build --config-path ./contracts/demo/foundry.toml # Build
 forge test --config-path ./contracts/demo/foundry.toml # Test
 ```
-
-## Resources
-
-- [Documentation](https://docs.risechain.com) - Comprehensive guides and API reference
-- [RISE Chain](https://risechain.com) - Learn about the RISE blockchain
-- [Examples](https://docs.risechain.com/builders/wallet) - Integration examples and tutorials
 
 ## License
 

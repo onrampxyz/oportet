@@ -92,8 +92,6 @@ function RouteComponent() {
           />
         </div>
       </div>
-
-      <Layout.IntegrateFooter />
     </>
   )
 }
