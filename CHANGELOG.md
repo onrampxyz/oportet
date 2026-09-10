@@ -1,5 +1,17 @@
 # porto
 
+## 0.5.5
+
+### Patch Changes
+
+- [`e6d56c9`](https://github.com/onrampxyz/oportet/commit/e6d56c986a19b91b608476d43d3b0600e3b291bf) Thanks [@0xKrauser](https://github.com/0xKrauser)! - `wallet_getAdmins` now reads keys only on the chain it reports admins for, and `wallet_getPermissions` reads keys on the current chain when `chainIds` is omitted. Both used to call the relay's `wallet_getKeys` without chain IDs, which makes the relay read every chain it serves. Pass `chainIds` to `wallet_getPermissions` to get permissions on other chains.
+
+- [`cb6a80d`](https://github.com/onrampxyz/oportet/commit/cb6a80d85612239f35f50ea83c9971b4bf641ee5) Thanks [@0xKrauser](https://github.com/0xKrauser)! - Read-only relay actions retry again. Making `relayProxy` build its relay transport with `retryCount: 0` stopped the inner transport from retrying, and that made every relay action marked `retryCount: 0` single-shot, reads included, so one slow response failed the call. `getCapabilities`, `prepareCalls`, `prepareUpgradeAccount`, `verifySignature` and the onramp status reads now go through the proxy's retries (4 attempts, as before). Actions that submit or send something stay single-shot: `sendPreparedCalls`, `upgradeAccount`, `addFaucetFunds`, and the email and phone set, resend and verify actions.
+
+- [`1a4189f`](https://github.com/onrampxyz/oportet/commit/1a4189f70fd3ad3ded61fb3e7d332aeb17d6d393) Thanks [@0xKrauser](https://github.com/0xKrauser)! - `Transport.relayProxy` now creates the relay transport with `retryCount: 0` and does the retrying itself, the way viem's `fallback` treats its transports. Both layers used to retry, so one failed relay request could go out 16 times. Requests sent with `retryCount: 0`, such as `wallet_sendPreparedCalls`, were still retried up to 3 times by the inner transport. A relay transport created with an explicit `retryCount` keeps it.
+
+- [`cce8679`](https://github.com/onrampxyz/oportet/commit/cce867996c5ec3fa16b3acf2edf6fd601bc95c55) Thanks [@0xKrauser](https://github.com/0xKrauser)! - Added `Chains.robinhood` for Robinhood Chain (4663), an Arbitrum Orbit L2 that viem does not define yet. It is only an export for now: `Chains.all` and `Porto.defaultConfig` do not include it.
+
 ## 0.5.4
 
 ### Patch Changes
