@@ -11,11 +11,15 @@ import * as Utils from './utils.js'
 /** Gets a Viem client for Porto Dialog. */
 export async function getWalletClient(options: getWalletClient.Options = {}) {
   const { dialog: host } = options
+  if (!host)
+    throw new Error(
+      'Pass --dialog <hostname>: oportet does not run a hosted dialog.',
+    )
   const porto = Porto.create({
     announceProvider: false,
     chains: [Chains.riseTestnet],
     mode: Mode.dialog({
-      host: host ? new URL('/dialog', 'https://' + host).toString() : undefined,
+      host: new URL('/dialog', 'https://' + host).toString(),
       renderer: await Dialog.cli(),
     }),
   })

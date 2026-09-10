@@ -20,9 +20,7 @@ cli
       default: false,
     },
   )
-  .option('-d, --dialog <hostname>', 'Dialog hostname', {
-    default: 'id.porto.sh',
-  })
+  .option('-d, --dialog <hostname>', 'Dialog hostname (required)')
   .option('-t, --testnet', 'Onboard via testnet', {
     default: false,
   })

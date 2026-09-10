@@ -417,7 +417,6 @@ export function iframe(options: iframe.Options = {}) {
                 'Detected insecure protocol (HTTP).',
                 `\n\nThe Porto iframe is not supported on HTTP origins (${window.location.origin})`,
                 'due to lack of WebAuthn support.',
-                'See https://porto.sh/sdk#secure-origins-https for more information.',
               )
             return secure
           })()
@@ -436,7 +435,7 @@ export function iframe(options: iframe.Options = {}) {
                 `Warning: Browser does not support IntersectionObserver v2 or host "${hostUrl.hostname}" is not trusted by Porto.`,
                 'This may result in the dialog falling back to a popup.',
                 '',
-                `Add "${hostUrl.hostname}" to the trusted hosts list to enable iframe dialog: https://github.com/ithacaxyz/porto/edit/main/src/trusted-hosts.ts`,
+                `Add "${hostUrl.hostname}" to src/trusted-hosts.ts to enable the iframe dialog.`,
               ].join('\n'),
             )
 

@@ -1035,8 +1035,8 @@ export async function sign(key: Key, parameters: sign.Parameters) {
       if (privateKey.privateKey) {
         const { payload: wrapped, metadata } = WebAuthnP256.getSignPayload({
           challenge: payload,
-          origin: 'https://ithaca.xyz',
-          rpId: 'ithaca.xyz',
+          origin: 'https://onramp.xyz',
+          rpId: 'onramp.xyz',
         })
         const { r, s } = P256.sign({
           hash: true,

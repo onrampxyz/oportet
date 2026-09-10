@@ -1,7 +1,7 @@
 /**
  * JSON-RPC Schemas.
  *
- * @see https://github.com/ithacaxyz/relay/tree/main/src/types/rpc
+ * @see https://github.com/onrampxyz/oportet-relay/tree/main/src/types/rpc
  */
 
 import * as z from 'zod/mini'

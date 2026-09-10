@@ -1172,15 +1172,11 @@ export declare namespace dialog {
           /**
            * Example email/account ID shown in the email input placeholder.
            * Only used when features.emailInput is true (email input is visible).
-           *
-           * @default "example@ithaca.xyz"
            */
           exampleEmail?: string | undefined
           /**
            * Email address for bug reports.
            * Only used when features.bugReporting is true (bug icon is visible).
-           *
-           * @default "support@ithaca.xyz"
            */
           bugReportEmail?: string | undefined
           /**

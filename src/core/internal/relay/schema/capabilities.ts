@@ -1,7 +1,7 @@
 /**
  * RPC capabilities.
  *
- * @see https://github.com/ithacaxyz/relay/blob/main/src/types/capabilities.rs
+ * @see https://github.com/onrampxyz/oportet-relay/blob/main/src/types/rpc/capabilities.rs
  */
 
 import * as z from 'zod/mini'

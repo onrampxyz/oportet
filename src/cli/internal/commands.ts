@@ -191,7 +191,7 @@ export async function createAccount(_: unknown, args: createAccount.Arguments) {
         fs.rmSync(tempKeyFile)
       } catch {}
   }
-  prompts.log.info('Manage your account at: https://id.porto.sh')
+  prompts.log.info(`Manage your account at: https://${args.dialog}`)
 
   shouldPrintKeyOnExit = false
   if (adminKey) {
