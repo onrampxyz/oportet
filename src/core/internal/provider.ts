@@ -448,6 +448,9 @@ export function from<
 
               const keys = await getMode().actions.getKeys({
                 account,
+                // Admins are reported for this chain, so only read its keys;
+                // without `chainIds` the relay reads every chain it serves.
+                chainIds: [client.chain.id],
                 internal: {
                   client,
                   config,
@@ -571,7 +574,9 @@ export function from<
 
               const keys = await getMode().actions.getKeys({
                 account,
-                chainIds,
+                // Default to the current chain; without `chainIds` the relay
+                // reads every chain it serves.
+                chainIds: chainIds ?? [client.chain.id],
                 internal: {
                   client,
                   config,

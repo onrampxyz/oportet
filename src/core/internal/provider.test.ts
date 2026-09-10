@@ -1,4 +1,4 @@
-import { Key, Mode } from 'oportet'
+import { Account, Chains, Key, Mode, Porto, Storage } from 'oportet'
 import { Route } from 'oportet/server'
 import {
   Address,
@@ -45,6 +45,31 @@ describe.each([['relay', Mode.relay]] as const)('%s', (type, mode) => {
       ...config,
       mode,
     })
+
+  // Connected Porto whose `getKeys` records the chain IDs it is asked for
+  // instead of calling the relay.
+  const getPortoWithKeysSpy = () => {
+    const chainIds: (readonly number[] | undefined)[] = []
+    const mode_ = mode({ mock: true })
+    const porto = Porto.create({
+      chains: [Chains.anvil, Chains.anvil2],
+      mode: Mode.from({
+        ...mode_,
+        actions: {
+          ...mode_.actions,
+          async getKeys(parameters) {
+            chainIds.push(parameters.chainIds)
+            return []
+          },
+        },
+      }),
+      storage: Storage.memory(),
+    })
+    porto._internal.store.setState({
+      accounts: [Account.from('0x0000000000000000000000000000000000000001')],
+    })
+    return { chainIds, porto }
+  }
 
   describe('eth_accounts', () => {
     test('default', async () => {
@@ -536,6 +561,25 @@ describe.each([['relay', Mode.relay]] as const)('%s', (type, mode) => {
       expect(address).toBeDefined()
       expect(keys.length).toBe(1)
     })
+
+    test('behavior: reads keys on the requested chain only', async () => {
+      const { chainIds, porto } = getPortoWithKeysSpy()
+      await porto.provider.request({ method: 'wallet_getAdmins' })
+      await porto.provider.request({
+        method: 'wallet_getAdmins',
+        params: [{ chainId: Hex.fromNumber(Chains.anvil2.id) }],
+      })
+      expect(chainIds).toMatchInlineSnapshot(`
+        [
+          [
+            31337,
+          ],
+          [
+            31338,
+          ],
+        ]
+      `)
+    })
   })
 
   describe('wallet_grantPermissions', () => {
@@ -956,6 +1000,25 @@ describe.each([['relay', Mode.relay]] as const)('%s', (type, mode) => {
           })),
         ).matchSnapshot()
       }
+    })
+
+    test('behavior: reads keys on the current chain when `chainIds` is omitted', async () => {
+      const { chainIds, porto } = getPortoWithKeysSpy()
+      await porto.provider.request({ method: 'wallet_getPermissions' })
+      await porto.provider.request({
+        method: 'wallet_getPermissions',
+        params: [{ chainIds: [Hex.fromNumber(Chains.anvil2.id)] }],
+      })
+      expect(chainIds).toMatchInlineSnapshot(`
+        [
+          [
+            31337,
+          ],
+          [
+            31338,
+          ],
+        ]
+      `)
     })
   })
 
