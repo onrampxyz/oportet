@@ -1,5 +1,25 @@
 # porto
 
+## 0.6.0
+
+### Minor Changes
+
+- [`67b304c`](https://github.com/onrampxyz/oportet/commit/67b304cab2df01a2978679a0baa3b831b1b5ab8d) Thanks [@0xKrauser](https://github.com/0xKrauser)! - Removed `Transport.relayUrls.stg`. It pointed at RISE's staging relay (stg.relay.wallet.risechain.com), which oportet does not run. The relay URLs are now `anvil` and `prod`.
+
+- [`7b91482`](https://github.com/onrampxyz/oportet/commit/7b91482754b09589bf9aadd16e1de02618123696) Thanks [@0xKrauser](https://github.com/0xKrauser)! - `Porto.create()` now defaults to `Mode.relay()` in the browser too. The browser default used to be `Mode.dialog()` pointed at RISE's hosted dialog (wallet.risechain.com), which oportet does not run. `Mode.dialog()` no longer has a default `host` and throws at setup without one. `Dialog.hostUrls` keeps only `local`.
+
+- [`9f20bf6`](https://github.com/onrampxyz/oportet/commit/9f20bf6b309b72aed126f047585c5d8b2d3aa44d) Thanks [@0xKrauser](https://github.com/0xKrauser)! - The wallet now announces itself as `com.oportet.identity`, named "Oportet". It used to reuse RISE Wallet's identity (`com.risechain.wallet`, "Rise Wallet"). The wagmi connector id changes to match, so code that looks the connector up by id needs the new value. The connector icon is no longer RISE's logo; it now uses the same icon as the EIP-6963 announcement.
+
+### Patch Changes
+
+- [`ee88b05`](https://github.com/onrampxyz/oportet/commit/ee88b054eb26e20397e4aa1836efd55ce3f17054) Thanks [@0xKrauser](https://github.com/0xKrauser)! - Removed pointers to Ithaca's porto services from the SDK. The porto.sh and porto.workers.dev hosts are no longer trusted hosts. Dialog warnings no longer link to porto's docs and repo. Headless WebAuthn P-256 signatures use `onramp.xyz` as origin and RP ID instead of `ithaca.xyz`. The CLI's `--dialog` flag has no `id.porto.sh` default and is required.
+
+- [`9e4295d`](https://github.com/onrampxyz/oportet/commit/9e4295d644086a8d3e69d0cc56100f847458d58e) Thanks [@0xKrauser](https://github.com/0xKrauser)! - Removed RISE's domains from the dialog's trust lists. `trusted-hosts` no longer lists wallet.risechain.com, risechain.com or the rise.trade hosts. `wallet.risechain.com` and `rise.trade` are no longer privileged origins that can connect without showing the dialog, and `wallet.risechain.com` is no longer a trusted event origin.
+
+- [`02bcb83`](https://github.com/onrampxyz/oportet/commit/02bcb83794a8e6c75a944596fe21e1a711809966) Thanks [@0xKrauser](https://github.com/0xKrauser)! - The default `storageKey` is now `oportet.store` (was `risewallet.store`). While `oportet.store` is empty, the store reads `risewallet.store`, so accounts saved before the rename are kept. The WebAuthn verification cache key changed from `risewallet.webauthnVerified.*` to `oportet.webauthnVerified.*`, which means at most one extra passkey verification.
+
+- [`5205e08`](https://github.com/onrampxyz/oportet/commit/5205e089b86b9a5536bdc7b0d56809f83b030bc9) Thanks [@0xKrauser](https://github.com/0xKrauser)! - The default relay URL (`Transport.relayUrls.prod`) is now `https://id.oportet.xyz`. `relay.onramp.xyz` still serves the same relay, so code that pins the old URL keeps working.
+
 ## 0.5.5
 
 ### Patch Changes
