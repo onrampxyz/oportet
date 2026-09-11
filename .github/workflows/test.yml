@@ -90,10 +90,8 @@ jobs:
           - env: 'anvil'
             browser: 'false'
             enabled: ${{ inputs.test-local-node == true || inputs.test-local-node == null }}
-          # Deployment legs target a live relay. 'prod' is Rise's hosted relay
-          # (not our gate; its faucet rejects our test config). Off by default;
-          # opt in via workflow_dispatch. Re-default to on once relay.onramp.xyz
-          # is live (exec-plan-railway-and-contracts.md Slice 4).
+          # Deployment legs target the live relay (relayUrls.prod,
+          # id.oportet.xyz). Off by default; opt in via workflow_dispatch.
           - env: ${{ inputs.env || 'prod' }}
             browser: 'true'
             enabled: ${{ inputs.test-deployment-browser == true }}

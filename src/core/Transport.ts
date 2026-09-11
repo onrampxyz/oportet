@@ -4,7 +4,7 @@ export { fallback, http, type Transport, webSocket } from 'viem'
 
 export const relayUrls = {
   anvil: { http: 'http://localhost:9119' },
-  prod: { http: 'https://relay.onramp.xyz' },
+  prod: { http: 'https://id.oportet.xyz' },
 } as const
 
 /**
